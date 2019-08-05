@@ -40,10 +40,14 @@ int EPS_Init()
 	IsisSolarPanelv2_State_t state = IsisSolarPanelv2_initialize( slave0_spi );
 	if (state == ISIS_SOLAR_PANEL_STATE_NOINIT)
 			return E_NOT_INITIALIZED;
-	err = FRAM_read(eps_threshold_voltages, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
-	if (err)
-			return err;
-	err = FRAM_read(&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE);
+	IsisSolarPanelv2_sleep();
+	err = GetThresholdVoltages(eps_threshold_voltages);
+	if (err) {
+		voltage_t temp[] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
+		memcpy(temp, eps_threshold_voltages);
+		return err;
+	}
+	err = GetAlpha(&alpha);
 	if (err)
 			return err;
 	err = EPS_Conditioning();
@@ -52,6 +56,7 @@ int EPS_Init()
 
 int EPS_Conditioning()
 {
+
 	return 0;
 }
 
@@ -67,12 +72,14 @@ int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]
 
 int GetThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 {
-	return 0;
+	int err = FRAM_read(thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+	return err;
 }
 
 int GetAlpha(float *alpha)
 {
-	return 0;
+	int err = FRAM_read(&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE);
+	return err;
 }
 
 int RestoreDefaultAlpha()
