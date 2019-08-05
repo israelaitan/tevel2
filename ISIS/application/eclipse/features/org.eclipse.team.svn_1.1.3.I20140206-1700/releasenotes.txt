@@ -1,0 +1,48 @@
+********************************************************************************
+*                          Subversive Release Notes                            *
+*                                                                              *
+* Subversive - a brand new Eclipse Client for Subversion (SVN)                 *
+* See details at http://www.eclipse.org/subversive                             *
+********************************************************************************
+
+Version 1.1.3.I20140206-1700 release date: 06 February 2014
+
+1. What's New
+
+   The version is 1.1.3 service release. 
+   
+   Changes comparatively to the previous release version are listed below. The full list of 
+   changes you can find in Change Log.
+		
+	Fixes:
+	 * NPE in EditTreeConflictsPanel [ID-LZRIO] (bug 425263)
+	 * Ignored files shown as outgoing additions (bug 392750)
+	 * There're unnecessary accesses to the file system while loading information on versioned resources (bug 427184)
+	 * There is an exception in Synchronize View when handling an obstructed resource of unexpected kind (dir instead of file) (bug 427183)
+	 * GetPropertiesOperation fails for deleted resource with SVN Kit 1.8.3 connector (bug 427093)
+	 * SVN 1.7 working copy format detection fails with SVN 1.8.3 connector (bug 427092)
+	 * Cannot commit package deletion (greyed out) (bug 426706)
+	 * Exception in "Extract All" after resource were moved [ID-ALWO7] (bug 422453)
+	 * Eclipse freezes when synchronizing with SVN repository (bug 417832)
+	
+	
+2. Information
+
+2.1. System Requirements
+
+   Subversive requires JDK 1.5 or higher and supports following versions of Eclipse:
+    * 3.6
+    * 3.7
+    * 3.8
+    * 4.2
+    * 4.3
+   
+   Subversive supports 
+    Subversion version 1.4-1.6 with SVN Kit 1.3.8 and JavaHL 1.6.15,
+    Subversion version 1.7 with SVN Kit 1.7.11 and JavaHL 1.7.9, 
+    Subversion version 1.8 with SVN Kit 1.8.3 and JavaHL 1.8.5
+
+2.2 Known issues
+
+	* "Deadlock when JNA is loading" problem on Mac OS X [using SVN Kit 1.3.x/1.7.x connector]
+	* Deleting and replacing a resource is a SVN delete/add instead of a modify

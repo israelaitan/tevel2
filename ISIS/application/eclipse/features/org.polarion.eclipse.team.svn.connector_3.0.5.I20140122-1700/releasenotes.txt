@@ -1,0 +1,47 @@
+********************************************************************************
+*                        Subversive connectors Change Log                      *
+*                                                                              *
+* Subversive - a brand new Eclipse Client for Subversion (SVN)                 *
+* See details at http://www.eclipse.org/subversive and http://www.polarion.com *
+********************************************************************************
+
+This connectors works only with Subversive version which is distributed from Eclipse.org site.
+ 
+Version 3.0.2.I20130808-1700 release date: 08 August 2013
+
+1. What's New
+
+   The version is 3.0.2 service release.
+   
+   Changes in compare with previous version are listed below. The full list of 
+   changes you can find in Change Log.	 
+
+	Features:
+	 * Include SVN Kit 1.7.10 version (bug 414897)
+	 * Update JavaHL binaries to 1.7.9 (bug 406738)
+	 * Incoming deletions not shown any more in the Synchronize View (bug 404264)
+	
+	Fixes:
+	 * Include SVN1.7 connectors sources into the build (bug 412924)
+	 * Connectors build fails on Linux (bug 412920)
+
+2. Information
+
+2.1. System Requirements
+
+   Subversive requires JDK 1.5 or higher and supports following versions of Eclipse:
+    * 3.6
+    * 3.7
+    * 3.8
+    * 4.2
+    * 4.3
+       
+   Subversive supports 
+    Subversion version 1.4-1.6 with SVN Kit 1.3.8 and JavaHL 1.6.15,
+    Subversion version 1.7 with SVN Kit 1.7.11 and JavaHL 1.7.9,
+    Subversion version 1.8 with SVN Kit 1.8.0 and JavaHL 1.8.0
+
+2.2 Known issues
+
+	* "Deadlock when JNA is loading" problem on Mac OS X [using SVN Kit connector]
+	* Deleting and replacing a resource is a SVN delete/add instead of a modify

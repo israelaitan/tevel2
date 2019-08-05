@@ -1,0 +1,128 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: OLE_MFC - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "midl.exe /nologo /D "NDEBUG" /tlb "Release/OLE_MFC.tlb" /mktyplib203 /win32 "d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.odl""
+Creating command line "rc.exe /l 0x40c /fo"Release/OLE_MFC.res" /i "Release" /d "NDEBUG" /d "_AFXDLL" "d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.rc"" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB51.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/OLE_MFC.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\at91boot_dll.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\DlgProxy.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFCDlg.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB51.tmp" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB52.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /Fp"Release/OLE_MFC.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB52.tmp" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB53.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:no /pdb:"Release/OLE_MFC.pdb" /machine:I386 /out:"Release/OLE_MFC.exe" 
+".\Release\at91boot_dll.obj"
+".\Release\DlgProxy.obj"
+".\Release\OLE_MFC.obj"
+".\Release\OLE_MFCDlg.obj"
+".\Release\StdAfx.obj"
+".\Release\OLE_MFC.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB53.tmp"
+<h3>Output Window</h3>
+Creating Type Library...
+Processing d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.odl
+OLE_MFC.odl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\oaidl.idl
+oaidl.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\objidl.idl
+objidl.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\unknwn.idl
+unknwn.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\wtypes.idl
+wtypes.idl
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+at91boot_dll.cpp
+DlgProxy.cpp
+OLE_MFC.cpp
+OLE_MFCDlg.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+OLE_MFC.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: OLE_MFC - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "midl.exe /nologo /D "_DEBUG" /tlb "Debug/OLE_MFC.tlb" /mktyplib203 /win32 "d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.odl""
+Creating command line "rc.exe /l 0x40c /fo"Debug/OLE_MFC.res" /i "Debug" /d "_DEBUG" /d "_AFXDLL" "d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.rc"" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5A.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/OLE_MFC.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\at91boot_dll.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\DlgProxy.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.cpp"
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFCDlg.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5A.tmp" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5B.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/OLE_MFC.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5B.tmp" 
+Creating temporary file "C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5C.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/OLE_MFC.pdb" /debug /machine:I386 /out:"Debug/OLE_MFC.exe" /pdbtype:sept 
+".\Debug\at91boot_dll.obj"
+".\Debug\DlgProxy.obj"
+".\Debug\OLE_MFC.obj"
+".\Debug\OLE_MFCDlg.obj"
+".\Debug\StdAfx.obj"
+".\Debug\OLE_MFC.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\bin.li\LOCALS~1\Temp\RSPB5C.tmp"
+<h3>Output Window</h3>
+Creating Type Library...
+Processing d:\sam-ba\samba-v2.12\trunk\examples\samba_multiple_programming\ole_with_mfc\OLE_MFC.odl
+OLE_MFC.odl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\oaidl.idl
+oaidl.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\objidl.idl
+objidl.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\unknwn.idl
+unknwn.idl
+Processing C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\wtypes.idl
+wtypes.idl
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+at91boot_dll.cpp
+DlgProxy.cpp
+OLE_MFC.cpp
+OLE_MFCDlg.cpp
+Generating Code...
+Linking...
+Creating command line "bscmake.exe /nologo /o"Debug/OLE_MFC.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\at91boot_dll.sbr" ".\Debug\DlgProxy.sbr" ".\Debug\OLE_MFC.sbr" ".\Debug\OLE_MFCDlg.sbr""
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+OLE_MFC.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

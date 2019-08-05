@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<package id="manifest-0-042-5e53-33a41d">
+    <release tarname="libquadmath-4.6.1-2-mingw32-dll-0.tar.lzma" />
+    <references>
+        <sysroot id="sysroot-0-002-a7c6-d7dbb5" />
+    </references>
+    <manifest>
+        <file path="bin/libquadmath-0.dll" />
+    </manifest>
+</package>

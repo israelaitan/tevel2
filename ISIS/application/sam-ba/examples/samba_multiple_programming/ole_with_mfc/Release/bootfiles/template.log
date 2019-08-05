@@ -1,0 +1,88 @@
+-I- Waiting ...
+-I- TCL platform : Windows NT
+-I- SAM-BA 2.12 rc4 on : windows
+current connection is \USBserial\COM32, \\USBserial\\COM32 to be matched 
+-I- Retrieved arguments from command line :
+-I- argv 0 : \USBserial\COM32
+-I- argv 1 : AT91SAM9G15-EK
+-I- argv 2 : bootfiles\sam9gx5.tcl
+-I- Connection : \USBserial\COM32 (target(comType) = 0)
+-I- Board : at91sam9g15-ek
+-I- Traces Level : 4
+-I- target(handle) : 18207584
+Read device Chip ID at 0xfffff240 --- get 0x819a05a1
+-I- Found processor : at91sam9g15 (Chip ID : 0x819a05a1)
+sourcing device file C:/Program Files/Atmel/sam-ba_2.12_rc4/sam-ba.exe/../tcl_lib/devices/at91sam9g15.tcl
+sourcing board description file C:/Program Files/Atmel/sam-ba_2.12_rc4/sam-ba.exe/../tcl_lib/at91sam9g15-ek/at91sam9g15-ek.tcl
+-I- Loading applet applet-lowlevelinit-sam9g15.bin at address 0x300000
+-I- Memory Size : 0x0 bytes
+-I- Buffer address : 0x4
+-I- Buffer size: 0x0 bytes
+-I- Applet initialization done
+-I- Low level initialized
+-I- External RAM Settings :  extRamVdd=0, extRamType=1, extRamDataBusWidth=32, extDDRamModel=0
+-I- External RAM Settings :  extRamVdd=0, extRamType=1, extRamDataBusWidth=32, extDDRamModel=0
+-I- Loading applet applet-extram-sam9g15.bin at address 0x300000
+-I- Memory Size : 0x8000000 bytes
+-I- Buffer address : 0x300B90
+-I- Buffer size: 0x0 bytes
+-I- Applet initialization done
+-I- External RAM initialized
+-I- Command line mode : Execute script file : bootfiles\sam9gx5.tcl
+-I- === Initialize the SerialFlash access ===
+-I- SERIALFLASH::Init 0 (trace level : 4)
+-I- Loading applet applet-serialflash-sam9g15.bin at address 0x20000000
+-I- Memory Size : 0x400000 bytes
+-I- Buffer address : 0x20009B4C
+-I- Buffer size: 0x4000 bytes
+-I- Applet initialization done
+GENERIC::SendFile bootfiles/133k.bin at address 0x0
+-I- File size : 0x21400 byte(s)
+-I- Complete 0%
+-I- 	Writing: 0x4000 bytes at 0x0 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 12%
+-I- 	Writing: 0x4000 bytes at 0x4000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 24%
+-I- 	Writing: 0x4000 bytes at 0x8000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 36%
+-I- 	Writing: 0x4000 bytes at 0xC000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 48%
+-I- 	Writing: 0x4000 bytes at 0x10000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 60%
+-I- 	Writing: 0x4000 bytes at 0x14000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 72%
+-I- 	Writing: 0x4000 bytes at 0x18000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 84%
+-I- 	Writing: 0x4000 bytes at 0x1C000 (buffer addr : 0x20009B4C)
+-I- 	0x4000 bytes written by applet
+-I- Complete 96%
+-I- 	Writing: 0x1400 bytes at 0x20000 (buffer addr : 0x20009B4C)
+-I- 	0x1400 bytes written by applet
+GENERIC::ReceiveFile bootfiles/temp8722587.bin : 0x21400 bytes from address 0x0
+-I- Complete 0%
+-I- 	Reading: 0x4000 bytes at 0x0 (buffer addr : 0x20009B4C)
+-I- Complete 12%
+-I- 	Reading: 0x4000 bytes at 0x4000 (buffer addr : 0x20009B4C)
+-I- Complete 24%
+-I- 	Reading: 0x4000 bytes at 0x8000 (buffer addr : 0x20009B4C)
+-I- Complete 36%
+-I- 	Reading: 0x4000 bytes at 0xC000 (buffer addr : 0x20009B4C)
+-I- Complete 48%
+-I- 	Reading: 0x4000 bytes at 0x10000 (buffer addr : 0x20009B4C)
+-I- Complete 60%
+-I- 	Reading: 0x4000 bytes at 0x14000 (buffer addr : 0x20009B4C)
+-I- Complete 72%
+-I- 	Reading: 0x4000 bytes at 0x18000 (buffer addr : 0x20009B4C)
+-I- Complete 84%
+-I- 	Reading: 0x4000 bytes at 0x1C000 (buffer addr : 0x20009B4C)
+-I- Complete 96%
+-I- 	Reading: 0x1400 bytes at 0x20000 (buffer addr : 0x20009B4C)
+-I- Sent file match exactly!
+

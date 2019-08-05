@@ -16,5 +16,7 @@
 #define EPS_I2C_BUS_INDEX 0			//!< index of the EPS I2C
 #define EPS_I2C_ADDR 0x02			//!< I2C address of the EPS
 
+#define ANTS_I2C_ADDR_SIDE_A 0x04			//!< I2C address of the side A ants
+#define ANTS_I2C_ADDR_SIDE_B 0x06			//!< I2C address of the side B ants
 
 #endif /* SYSI2CADDR_H_ */

@@ -1,0 +1,89 @@
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+#include <hal/Drivers/I2C.h>
+#include <hal/Drivers/SPI.h>
+#include <hal/Timing/Time.h>
+#include <at91/utility/exithandler.h>
+#include <string.h>
+#include "GlobalStandards.h"
+#include "SubSystemModules/PowerManagment/EPS.h"
+#include "SubSystemModules/Communication/TRXVU.h"
+#include "SubSystemModules/Maintenance/Maintenance.h"
+#include "InitSystem.h"
+#include "TLM_management.h"
+#include <hal/Storage/FRAM.h>
+
+#ifdef GOMEPS
+	#include <satellite-subsystems/GomEPS.h>
+#endif
+#ifdef ISISEPS
+	#include <satellite-subsystems/IsisEPS.h>
+#endif
+#define I2c_SPEED_Hz 100000
+#define I2c_Timeout 10
+#define I2c_TimeoutTest portMAX_DELAY
+#define TIME_Sync_Interval 0
+#define TIME_SATELLITE_LAUNCH_TIME {}
+
+Boolean isFirstActivation()
+{
+	return FALSE;
+}
+
+void firstActivationProcedure()
+{
+}
+
+void WriteDefaultValuesToFRAM()
+{
+}
+
+int StartFRAM()
+{
+	int err = FRAM_start();
+	PRINT_IF_ERR(StartFRAM);
+	return err;
+}
+
+int StartI2C()
+{
+	int err = I2C_start(I2c_SPEED_Hz, I2c_Timeout);
+	PRINT_IF_ERR(StartI2C);
+	return err;
+}
+
+int StartSPI()
+{
+	int err = SPI_start(bus1_spi, slave1_spi);
+	PRINT_IF_ERR(StartSPI);
+	return err;
+}
+
+int StartTIME()
+{
+	Time curr_time = TIME_SATELLITE_LAUNCH_TIME;
+	int err = TIME_start(&curr_time, TIME_Sync_Interval);
+	PRINT_IF_ERR(StartTIME);
+	if (!err && !isFirstActivation()) {
+		time_unix time_before_restart = 0;
+		err = FRAM_read(&time_before_restart, MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+		if (!err)
+			err = Time_setUnixEpoch(time_before_restart);
+	}
+	return err;
+}
+
+int DeploySystem()
+{
+	return 0;
+}
+
+#define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
+int InitSubsystems()
+{
+	if (StartFRAM())
+		return -1;
+	return 0;
+}
+

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="rtos.stateviewer"
+      label="WHIS StateViewer"
+      version="2.0.6.201309271121"
+      provider-name="WITTENSTEIN high integrity systems"
+      plugin="rtos.stateviewer.brand">
+
+   <description url="http://www.highintegritysystems.com">
+      The StateVIEWER Kernel Aware Plug-in for Eclipse provides a 
+snapshot view of the Free/OpenRTOS or SafeRTOS data structures 
+presented in a meaningful tabular format. This allows the 
+current state of tasks and queues to be inspected directly 
+from within the Eclipse Workbench IDE.
+   </description>
+
+   <copyright url="http://www.highintegritysystems.com">
+      Copyright of WITTENSTEIN aerospace &amp; simulation ltd, 2013.
+   </copyright>
+
+   <license url="license.html">
+      STATEVIEWER PLUG-IN LICENSE AGREEMENT
+
+ATTENTION: PLEASE READ THIS DOCUMENT CAREFULLY BEFORE INSTALLING THE SOFTWARE. THE INDIVIDUAL OR ENTITY INSTALLING THIS SOFTWARE AGREES TO BE BOUND BY THE TERMS OF THIS LICENSE. IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT INSTALL OR USE THE SOFTWARE.
+
+This License Agreement (the &apos;Agreement&apos;) is entered into at the date of installation of the Software (the &apos;Effective Date&apos;) by and between the USER and WITTENSTEIN aerospace &amp; simulation ltd, a corporation registered under the laws of England and trading as WITTENSTEIN high integrity systems (WHIS), who are together referred to hereinafter as the Parties.
+
+BACKGROUND
+
+WHEREAS, WHIS desires to grant the User or Users a license to use WHIS Software.
+
+WHEREAS, the USER wishes to use the Software to assist with the development and debug of embedded application software.
+
+NOW, THEREFORE, in consideration of the foregoing and of the mutual promises contained in this Agreement, the Parties hereby agree as follows:
+
+1.         Definitions.
+The following capitalized terms have the meanings set forth below:
+
+1.1       “Academic Use” means Use by individuals for teaching, learning or non-commercial research within, or as part of an assignment from, a recognized non‑profit making educational organization.
+1.2       “Software” means the WHIS STATEVIEWER Plug-in Software Application and all files contained in its installation utility.
+1.3       “Use” means installation of the Software in a software development environment to facilitate internal development, testing and debugging of software applications.
+1.4       “User” or “Licensee” A User or Licensee is any person installing Software into their software development environment.
+2.         License Grant
+WHIS hereby grants to the Licensee, under all of WHIS’ intellectual property rights, subject to the terms and conditions of this License, a non-exclusive, worldwide, non-transferable License, to:
+
+(a)        Download the Software from the WHIS website and install it for their own Use;
+
+(b)        Download the Software for Academic Use (for the avoidance of doubt, an academic user may install the Software on many computers for multiple Academic Users to Use);
+
+provided the Licensee does not reverse engineer, copy or redistribute any of the Software.
+
+3.         Ownership
+WHIS retains all rights, title, and interest in and to the Software.
+
+4.         Disclaimer of Warranties.
+WITH THE EXCEPTION OF MATTERS EXPRESSLY PROVIDED FOR UNDER THE TERMS OF THIS AGREEMENT, THE PARTIES DISCLAIM ALL WARRANTIES, REPRESENTATIONS AND CONDITIONS, WHICH ARE IMPLIED, WHETHER BY STATUTE, COMMON LAW OR OTHERWISE, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTY AS TO SATISFACTORY QUALITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+5.         Limitation of Liability
+5.1       IN NO EVENT WILL WHIS BE LIABLE TO THE LICENSEE OR THE LICENSEE’S ORGANIZATION FOR ANY LOST PROFITS, LOST REVENUES OR LOSS OF BUSINESS ADVANTAGE OR ANY INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER BASED ON BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, AND WHETHER OR NOT SUCH PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+5.2       THE LIMITATIONS SPECIFIED IN THIS CLAUSE 5 SHALL SURVIVE AND APPLY EVEN IF ANY LIMITED REMEDY SPECIFIED IN THIS AGREEMENT IS FOUND TO HAVE FAILED IN ITS ESSENTIAL PURPOSE.
+6.         Term and Termination
+6.1       Termination.  Without prejudice to any other right or remedy which may be available to it, WHIS may terminate this Agreement by giving written notice in the event that the Licensee commits a material breach of this Agreement and fails to cure such breach (where capable of remedy) within sixty (60) days of receiving written notice thereof from the non-breaching party.
+7.         General Provisions.
+7.1       Assignment.  No party may assign this Agreement or any rights or obligations hereunder without the prior written consent of the other party.
+7.2       Other Activities.  Each party reserves the right to be engaged in, solely or jointly with third parties, marketing, development, or other activities with respect to technologies or products which are competitive with technologies or products purchased, used or implemented in conjunction with this Agreement and the relationship between the parties hereunder shall not prevent any such activities by either party.
+7.3       Governing Law.  This Agreement shall be governed by, interpreted and construed, and performance hereunder shall be determined in accordance with the laws of England. The application of the UN Convention on Contracts for the International Sale of Goods is expressly excluded. In the event of disputes or claims relating to this Agreement, both parties agree to seek an amicable settlement. Should an amicable settlement not be reached, then any controversy or claim arising out of or in connection with this Agreement shall be finally settled by an arbitration using an independent recognized arbitration service determined by WHIS.
+7.4       Relationship of the Parties.  Nothing in this Agreement shall be construed to create a relationship of employer and employee, principal and agent, joint venture, partnership or association between WHIS and the Licensee.
+7.5       Non-Waiver.  The failure of either party at any time to require performance by the other party of any provision hereof shall not affect in any way, or act as a waiver of, the right to require the other party to perform in accordance with this Agreement at any other time, nor shall the waiver of either party of a breach of a provision of this Agreement be held or taken to be a waiver of the provision itself.
+7.6       Severability.  If any term of this Agreement is held to be invalid or unenforceable for any reason, the remainder of the provisions shall continue in full force and effect, and the parties shall substitute a valid provision with the same intent and economic effect.
+7.7       Headings.  The paragraph headings appearing in this Agreement are inserted only as a matter of convenience and in no way define, limit, construe or describe the scope or extent of such paragraph, or in any way affect such agreements.
+7.8       Disclosure.  The parties agree that a party shall not publicly disclose in any advertisement materials or any press releases the terms or content of this Agreement without the prior written approval of the other party.
+7.9       Bringing into Effect.  This Agreement shall come into effect when the Licensee has indicated agreement with the terms and conditions.
+7.10    Entire Agreement.  This Agreement contains the parties&apos; entire understanding with respect to the matters contained herein and supersedes any prior oral or written understandings with respect to the subject matter hereof.  There are no promises, covenants or undertakings other than those set forth herein and therein.  This Agreement may not be modified except by written amendment signed by both parties.
+8.         Publicity
+Unless otherwise notified by the other Party both Parties have the right to give favorable reference to the others use of the Software for marketing and general publicity purposes.
+   </license>
+
+   <plugin
+         id="rtos.openrtos.viewer"
+         download-size="0"
+         install-size="0"
+         version="2.0.6.201309271121"
+         unpack="false"/>
+
+   <plugin
+         id="rtos.openrtos.viewer.dsf"
+         download-size="0"
+         install-size="0"
+         version="2.0.6.201309271121"
+         unpack="false"/>
+
+   <plugin
+         id="rtos.safertos.viewer"
+         download-size="0"
+         install-size="0"
+         version="2.0.6.201309271121"
+         unpack="false"/>
+
+   <plugin
+         id="rtos.safertos.viewer.dsf"
+         download-size="0"
+         install-size="0"
+         version="2.0.6.201309271121"
+         unpack="false"/>
+
+   <plugin
+         id="rtos.stateviewer.brand"
+         download-size="0"
+         install-size="0"
+         version="2.0.6.201309271121"/>
+
+</feature>

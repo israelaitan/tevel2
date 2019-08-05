@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.team.svn.revision.graph"
+      label="%featureName"
+      version="1.1.0.I20130619-1700"
+      provider-name="%providerName">
+
+   <description>
+      Subversive revision graph.
+   </description>
+
+   <license url="license.html">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://download.eclipse.org/technology/subversive/1.1/update-site/"/>
+      <discovery label="%discoverySiteName" url="http://download.eclipse.org/technology/subversive/1.1/update-site/"/>
+   </url>
+
+   <requires>
+      <import feature="org.eclipse.team.svn" version="1.0.0.I20120601-1700" match="compatible"/>      
+      <import feature="org.eclipse.gef" version="3.4.0" match="compatible"/>      
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.team.svn.revision.graph"
+         download-size="7"
+         install-size="7"
+         version="1.1.0.I20130527-1700"
+         unpack="false"/>
+
+</feature>

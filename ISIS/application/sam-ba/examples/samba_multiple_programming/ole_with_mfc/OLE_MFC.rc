@@ -1,0 +1,262 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDI_SAMBA,IDC_STATIC,11,17,20,20
+    LTEXT           "SAM-BA Multiple Programming Example",IDC_STATIC,40,10,
+                    132,10,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2012",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_OLE_MFC_DIALOG DIALOGEX 0, 0, 452, 255
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "SAM-BA Multiple Programming Exmaple"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Start",IDOK,21,218,92,23
+    PUSHBUTTON      "Close",IDCANCEL,353,218,80,21
+    LISTBOX         IDC_LIST1,17,37,126,159,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,
+                    153,37,124,14
+    CONTROL         "Progress2",IDC_PROGRESS2,"msctls_progress32",WS_BORDER,
+                    153,58,124,14
+    CONTROL         "Progress1",IDC_PROGRESS3,"msctls_progress32",WS_BORDER,
+                    153,79,124,14
+    CONTROL         "Progress1",IDC_PROGRESS4,"msctls_progress32",WS_BORDER,
+                    153,100,124,14
+    LTEXT           "Static",IDC_STATIC1,285,39,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC3,285,81,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC2,285,61,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC4,285,101,138,11,NOT WS_VISIBLE
+    PUSHBUTTON      "Program all devices",IDC_PROGRAMALL,151,218,92,23,
+                    WS_DISABLED
+    LTEXT           "Double click one device to program",IDC_STATIC_DEV,20,
+                    198,121,11,NOT WS_VISIBLE | NOT WS_GROUP
+    CONTROL         "Auto Programming Mode",IDC_AUTO,"Button",
+                    BS_AUTORADIOBUTTON,23,14,118,14
+    PUSHBUTTON      "Scan Devices",IDC_SCAN,22,218,92,23
+    CONTROL         "Manual  Mode",IDC_MANU,"Button",BS_AUTORADIOBUTTON,154,
+                    14,118,14
+    CONTROL         "Progress1",IDC_PROGRESS5,"msctls_progress32",WS_BORDER,
+                    153,121,124,14
+    CONTROL         "Progress1",IDC_PROGRESS6,"msctls_progress32",WS_BORDER,
+                    153,141,124,14
+    CONTROL         "Progress1",IDC_PROGRESS7,"msctls_progress32",WS_BORDER,
+                    153,162,124,14
+    CONTROL         "Progress1",IDC_PROGRESS8,"msctls_progress32",WS_BORDER,
+                    153,183,124,14
+    LTEXT           "Static",IDC_STATIC5,285,120,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC6,285,162,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC7,285,142,138,11,NOT WS_VISIBLE
+    LTEXT           "Static",IDC_STATIC8,285,183,138,11,NOT WS_VISIBLE
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "OLE_MFC MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "OLE_MFC\0"
+            VALUE "LegalCopyright", "Copyright (C) 2005\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "OLE_MFC.EXE\0"
+            VALUE "ProductName", "OLE_MFC Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_OLE_MFC_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 445
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_SAMBA               ICON    DISCARDABLE     "res\\tclkit.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_ABOUTBOX            "&About OLE_MFC..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\OLE_MFC.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\OLE_MFC.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\OLE_MFC.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

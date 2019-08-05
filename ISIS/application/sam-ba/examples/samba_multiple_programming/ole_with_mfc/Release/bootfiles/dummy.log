@@ -1,0 +1,10 @@
+-I- Waiting ...
+-I- TCL platform : Windows NT
+-I- SAM-BA 2.12 rc4 on : windows
+current connection is \USBserial\COM25, \\USBserial\\COM25 to be matched 
+-I- Retrieved arguments from command line :
+-I- argv 0 : \USBserial\COM25
+-I- argv 1 : XXX-EK
+-I- argv 2 : bootfiles\dummy.tcl
+-E- Board xxx-ek not found
+-E- Supported boards : at91sam7a3-ek at91sama5d3x-ek no_board at91sam9260-ek at91sam3s4-ek at91sam7xc512-ek at91cap7-stk at91sam3u4-ek at91sam7x256-ek at91cap9-stk at91sam7se512-ek at91sam9rl64-ek at91sam7s161-ek at91sam3x8-ek at91sam9263-ek at91sam7l64-ek at91sam9m10-ekes at91sam4s8-ek at91sam7s256-ek at91sam3s2-ek at91sam9x35-ek at91sam3n1-ek at91sam3u2-ek at91cap7-dk-mem33 at91sam9xe256-ek at91sam7se32-ek at91sam7xc128-ek rf231usb-rd at91sam9g15-ek at91sam7s32-ek at91sam7x512-ek at91cap9-dk-mem18 at91sam7s321-ek at91sam9g35-ek at91sam9g45-ekes at91sam9g10-ek at91sam9261-ek at91sam3n4-ek at91sam7l128-ek at91sam7s512-ek at91cap9-dk-mem33 at91sam9xe512-ek at91sam3s8-ek at91sam4s16-ek at91sam3x4-ek at91sam9n12-ek at91sam7x128-ek at91sam3n2-ek at91sam4s4-ek at91sam9m10-g45-ek at91sam7s64-ek at91sam7xc256-ek at91sam9x25-ek sam4s-xpld at91sam7se256-ek at91sam3x2-ek at91sam3s16-ek at91sam7s128-ek at91sam3s1-ek at91sam9g25-ek at91sam9xe128-ek at91sam3u1-ek at91sam7s16-ek at91sam3sd8-ek at91sam9g20-ek

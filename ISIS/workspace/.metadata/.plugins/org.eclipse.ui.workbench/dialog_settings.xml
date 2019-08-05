@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.internal.QuickAccess">
+		<item value="1025" key="dialogWidth"/>
+		<item value="525" key="dialogHeight"/>
+		<list key="orderedProviders">
+			<item value="org.eclipse.ui.commands"/>
+			<item value="org.eclipse.ui.commands"/>
+		</list>
+		<list key="textArray">
+			<item value="font"/>
+			<item value="line nu"/>
+		</list>
+		<list key="orderedElements">
+			<item value="org.eclipse.ui.window.preferences(preferencePageId=org.eclipse.ui.preferencePages.ColorsAndFonts)"/>
+			<item value="org.eclipse.ui.editors.lineNumberToggle"/>
+		</list>
+		<list key="textEntries">
+			<item value="1"/>
+			<item value="1"/>
+		</list>
+	</section>
+	<section name="WorkbenchPreferenceDialogSettings">
+		<item value="8" key="DIALOG_Y_ORIGIN"/>
+		<item value="374" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="ImportExportAction">
+		<item value="org.eclipse.ui.wizards.import.ExternalProject" key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID"/>
+		<list key="ImportExportPage.STORE_EXPANDED_IMPORT_CATEGORIES">
+			<item value="org.eclipse.ui.Basic"/>
+		</list>
+	</section>
+</section>

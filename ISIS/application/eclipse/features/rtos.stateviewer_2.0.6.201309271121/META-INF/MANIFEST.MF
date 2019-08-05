@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: 1.6.0_26 (Sun Microsystems Inc.)
+
+Name: license.html
+SHA1-Digest: x55mujjCFGXDo31cXxtI8ovau9A=
+
+Name: feature.xml
+SHA1-Digest: 79G6lKNtxEvQwJtE4tsxGm+V9OY=
+

@@ -1,0 +1,56 @@
+Patch Release Notes ¡V SAM-BA 2.12
+-----------------------
+Release version: 2.12 patch2
+Release date: 2012
+
+New features
+
+  - add at91sam3n0 at91sam3n00 support.
+  - add at91sam4l support
+  - add 4K page size NAND flash support for at91sam9n12 ,at91sam9x5 and at91sama5d3x (N25Q256A, W25Q256)
+  - add serial flash 4-bytes address mode support for at91sam9n12 ,at91sam9x5 and at91sama5d3x
+  - JLINKARM.DLL updated to 4.54.1.0
+
+Bug fix
+  - fix sam9g20 NAND flash usb timeout issue.
+  - fix sam3n1 applet stack overflow.
+  - fix sam3n2 COM port connection issue.
+  - sam3x8 remove the lowlevel init and SDRAM/Nandflash support.
+  - move PMECC_Correction_Algo() function in the applet for sama5d3x.
+  - Update NAND flash driver for sama5d3x to fix non-onfi NAND flash accessing issue.
+  
+Contact Information
+---------------------
+For support on the AT91 Software Package please send request to at91@atmel.com
+
+  
+---------------------
+Copyright (c) 2012, Atmel Corporation All rights reserved.
+
+ * ----------------------------------------------------------------------------
+ *         ATMEL Microcontroller Software Support
+ * ----------------------------------------------------------------------------
+ * Copyright (c) 2012, Atmel Corporation
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the disclaimer below.
+ *
+ * Atmel's name may not be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * DISCLAIMER: THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+ * DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ----------------------------------------------------------------------------

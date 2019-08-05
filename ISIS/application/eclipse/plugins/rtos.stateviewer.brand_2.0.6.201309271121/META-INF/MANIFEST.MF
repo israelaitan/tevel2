@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-Vendor: WITTENSTEIN high integrity systems
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 2.0.6.201309271121
+Bundle-Name: StateViewer
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: rtos.stateviewer.brand;singleton:=true
+
+Name: Wittlogo32v2.png
+SHA1-Digest: aWq3n2qTAgjtPYQfjAeeie/4NL4=
+
+Name: about.properties
+SHA1-Digest: ufCaT2T0zVz0r6jo9VI2+oideYA=
+
+Name: about.ini
+SHA1-Digest: xHKiyEUGsoyhv8E9LqyXRTqkqXM=
+

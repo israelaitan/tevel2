@@ -1,0 +1,42 @@
+// OLE_MFC.odl : type library source for OLE_MFC.exe
+
+// This file will be processed by the MIDL compiler to produce the
+// type library (OLE_MFC.tlb).
+
+[ uuid(0BC132B0-139D-4B5D-82AC-A9C1A015CE63), version(1.0) ]
+library OLE_MFC
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+
+	//  Primary dispatch interface for COLE_MFCDoc
+	
+	[ uuid(52A1CB2F-AD32-4A75-8239-35E706ED16AB) ]
+	dispinterface IOLE_MFC
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(COLE_MFCDlgAutoProxy)
+			//}}AFX_ODL_PROP
+			
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(COLE_MFCDlgAutoProxy)
+			//}}AFX_ODL_METHOD
+
+	};
+
+	//  Class information for COLE_MFCDoc
+	
+	[ uuid(59A1794A-9D7F-49DC-96AF-879BEC70992C) ]
+	coclass OLE_MFC
+	{
+		[default] dispinterface IOLE_MFC;
+	};
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};

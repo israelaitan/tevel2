@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeMetadataRepository version='1.0.0'?>
+<repository name='Eclipse (4.3) and Equinox Kepler Repository' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
+  <properties size='1'>
+    <property name='p2.timestamp' value='1372250545206'/>
+  </properties>
+  <children size='2'>
+    <child location='categoriesKepler'/>
+    <child location='R-4.3-201306052000'/>
+  </children>
+</repository>
