@@ -39,7 +39,7 @@
 #define INDEX_DOWN_FULL		2
 #define INDEX_DOWN_CRUISE	1
 #define INDEX_DOWN_SAFE		0
-
+#define NUMBER_OF_EPS		1
 /*!
  * @brief initializes the EPS subsystem.
  * @return	0 on success

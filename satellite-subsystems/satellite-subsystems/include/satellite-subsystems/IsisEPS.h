@@ -55,7 +55,7 @@
 #define IEPS_LOSTATEHV_SIZE       17			// HV has 7 channels: 3 + 7 x 2 = 17
 #define IEPS_LOSTATE_MAX_SIZE     19			// this is actually the allocated size of the local struct: 3 + 2x8 = 19. This excludes the CC & STAT which is in a separate struct.
 
-#define IEPS_HRESET_KEY			  0xA6			// hard reset key
+#define IEPS_HRESET_KEY			  0xA6			// h,,ard reset key
 #define IEPS_CONF_KEY		  	  0xA7			// load configuration key value required to be passed as a parameter to the load configuration function
 
 /**
@@ -63,7 +63,7 @@
  */
 typedef enum __attribute__ ((__packed__)) _ieps_mode_t
 {
-	ieps_mode_startup = 0, ///< startup mode
+	ieps_mode_startup = 0, ///< startup mode,,
 	ieps_mode_emlopo = 1, ///< emergency-low-power mode
 	ieps_mode_nominal = 2 ///< nominal mode
 } ieps_mode_t;
