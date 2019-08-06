@@ -52,6 +52,9 @@ void delete_allTMFilesFromSD()
 static int getNumOfFilesInFS()
 {
 	FS fs;
+	int err = FRAM_read( (unsigned char*)&fs, FSFRAM, sizeof(fs));
+	if (err)
+		return err;
 	return fs.num_of_files;
 }
 //return -1 on fail
@@ -68,26 +71,67 @@ FileSystemResult InitializeFS(Boolean first_time)
 FileSystemResult c_fileCreate(char* c_file_name,
 		int size_of_element)
 {
+	C_FILE c_file;
+	int currTime = 0;
+	unsigned int err = Time_getUnixEpoch(&currTime);
+	if (err)
+		return FS_FAIL;
+	c_file.creation_time = currTime;
+	c_file.last_time_modified = -1;
+	c_file.name = c_file_name;
+	c_file.num_of_files = 0;
+	c_file.size_of_element = size_of_element;
+
+	int n = getNumOfFilesInFS();
+	if ( n < 0 )
+		return FS_FAIL;
+	unsigned int top = C_FILES_BASE_ADDR + n * sizeof(C_FILE);
+	err = FRAM_write( (unsigned char *)&c_file, top, sizeof(C_FILE));
+	if (err)
+		return FS_FAIL;
+	err = setNumOfFilesInFS(n + 1);
+	if (err)
+		return FS_FAIL;
 	return FS_SUCCSESS;
 }
 //write element with timestamp to file
 static void writewithEpochtime(F_FILE* file, byte* data, int size,unsigned int time)
 {
 }
+
 // get C_FILE struct from FRAM by name
-static Boolean get_C_FILE_struct(char* name,C_FILE* c_file,unsigned int *address)
+static Boolean get_C_FILE_struct(char* name, C_FILE* c_file, unsigned int *address)
 {
+	int nFiles = getNumOfFilesInFS();
+	if (nFiles)
+		return FALSE;
+	unsigned int currAddr = C_FILES_BASE_ADDR;
+	for (int i = 0; i < nFiles; i++) {
+		int err = FRAM_read( c_file, currAddr, sizeof(C_FILE));
+		if (err)
+			return FALSE;
+		if (strcmp( c_file->name, name ) == 0) {
+			if (address)
+				(*address) = currAddr;
+			return TRUE;
+		}
+		currAddr += sizeof(C_FILE);
+	}
 	return FALSE;
 }
+
 //calculate index of file in chain file by time
 static int getFileIndex(unsigned int creation_time, unsigned int current_time)
 {
-	return 0;
+	return (current_time - creation_time) / SKIP_FILE_TIME_SEC;
 }
+
 //write to curr_file_name
-void get_file_name_by_index(char* c_file_name,int index,char* curr_file_name)
+void get_file_name_by_index(char* c_file_name, int index, char* curr_file_name)
 {
+	sprintf(curr_file_name, "%s%d.%s", c_file_name, index, FS_FILE_ENDING);
 }
+
 FileSystemResult c_fileReset(char* c_file_name)
 {
 	return FS_SUCCSESS;
@@ -95,10 +139,43 @@ FileSystemResult c_fileReset(char* c_file_name)
 
 FileSystemResult c_fileWrite(char* c_file_name, void* element)
 {
-	return FS_SUCCSESS;
+	C_FILE c_file;
+	Boolean  res = get_C_FILE_struct(c_file_name, &c_file, NULL);
+	if (res == FALSE)
+		return FS_FAIL;
+	unsigned int currTime = 0;
+	unsigned int err = Time_getUnixEpoch( &currTime );
+	if (err)
+		return FS_FAIL;
+	unsigned int index = getFileIndex(c_file.creation_time, currTime);
+	char curr_file_name[FILE_NAME_WITH_INDEX_SIZE];
+	get_file_name_by_index(c_file_name, index, curr_file_name);
+	//TODO: update num of files in the cfile struct and curr time
+	FileSystemResult fsr = fileWrite(curr_file_name, element, c_file.size_of_element);
+	return fsr;
 }
+
 FileSystemResult fileWrite(char* file_name, void* element,int size)
 {
+	int timeStamp = 0;
+	unsigned int err = Time_getUnixEpoch(&timeStamp);
+	if (err)
+		return FS_FAIL;
+	F_FILE *file;
+	file = f_open(file_name, ”a”);
+	if (!file)
+		return FS_FAIL;
+	if( f_write(timeStamp, 1, size_of(unsigned int), file) != 1 ) {
+		f_close(file);
+		//we can probe for error type using getlasterror
+		//might be wrong if we manage to write time stamp and fail here
+		return FS_FAIL;
+	}
+	if( f_write(element, 1, size) != 1 ) {
+			f_close(file);
+			return FS_FAIL;
+	}
+	f_close(file);
 	return FS_SUCCSESS;
 }
 static FileSystemResult deleteElementsFromFile(char* file_name,unsigned long from_time,
@@ -106,18 +183,44 @@ static FileSystemResult deleteElementsFromFile(char* file_name,unsigned long fro
 {
 	return FS_SUCCSESS;
 }
+
 FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
 		time_unix to_time)
 {
 	return FS_SUCCSESS;
 }
-FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
+
+FileSystemResult fileRead(char* file_name, byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, int element_size)
 {
+	//TODO: not completed
+	F_FILE *file;
+	file = f_open(file_name, ”r”);
+	if (!file)
+		return FS_FAIL;
+	unsigned int currTimeStamp = 0;
+
+	while ( from_time > currTimeStamp ) {
+		if ( f_read(&currTimeStamp, 1, size_of(unsigned int), file) != 1 ) {
+			f_close(file);
+			//we can probe for error type using getlasterror
+			//might be wrong if we manage to write time stamp and fail here
+			return FS_FAIL;
+		}
+		long err = f_seek(file, element_size, SEEK_CUR);
+		if (err)
+			return FS_FAIL;
+	}
+	if (from_time == currTimeStamp) {
+		long err = f_seek(file, -(element_size + sizeof(unsigned int)), SEEK_CUR);
+		if (err)
+			return FS_FAIL;
+	}
+
 	return FS_SUCCSESS;
 }
-FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
-		time_unix from_time, time_unix to_time, int* read,time_unix* last_read_time)
+FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
+		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time)
 {
 	return FS_SUCCSESS;
 }
