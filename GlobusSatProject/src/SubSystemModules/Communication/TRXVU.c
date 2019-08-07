@@ -25,7 +25,8 @@
 #endif
 #define SIZE_RXFRAME	200
 #define SIZE_TXFRAME	235
-
+#define QUEUE_LENGTH	16
+#define QUEUE_ITEM_SIZE	4
 
 Boolean 		g_mute_flag = MUTE_OFF;				// mute flag - is the mute enabled
 time_unix 		g_mute_end_time = 0;				// time at which the mute will end
@@ -41,14 +42,50 @@ xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
 
 void InitSemaphores()
 {
+	xDumpQueue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
+	vSemaphoreCreateBinary(xDumpLock);
+	vSemaphoreCreateBinary(xIsTransmitting);
 }
 
 int InitTrxvu() {
-	return 0;
+	//init ants
+	ISIStrxvuBitrateStatus bps = trxvu_bitrate_9600;
+	ISIStrxvuFrameLengths frameLengths;
+	frameLengths.maxAX25frameLengthRX = SIZE_RXFRAME;
+	frameLengths.maxAX25frameLengthTX = SIZE_TXFRAME;
+	ISIStrxvuI2CAddress i2cAddr;
+	i2cAddr.addressVu_rc = I2C_TRXVU_RC_ADDR;
+	i2cAddr.addressVu_tc = I2C_TRXVU_TC_ADDR;
+	int err = IsisTrxvu_initialize(&i2cAddr, &frameLengths, &bps, 1);
+	//delay 100
+	InitSemaphores();
+	//read fram beacon bitrate
+	return err;
 }
 
 int TRX_Logic() {
-	return 0;
+	int err = 0;
+	sat_packet_t packet = { 0 };
+	int nFrames = GetNumberOfFramesInBuffer();
+	if ( nFrames > 0 ) {
+		err = GetOnlineCommand( &packet );
+		ResetGroundCommWDT();
+		if (err == 0) {
+			err = ActUponCommand(packet);
+			SendAckPacket(ACK_RECEIVE_COMM, &packet, &err, sizeof(int));
+		}
+
+	} else {
+		//TODO: get delayed command will decide if execution time is now and will response accordingly
+		int nDelayed = GetDelayedCommandBufferCount();
+		if ( nDelayed > 0 ) {
+				err = GetDelayedCommand( &packet );
+				if (err == command_found)
+					err = ActUponCommand(packet);
+		}
+	}
+    BeaconLogic();
+	return err;
 }
 
 int GetNumberOfFramesInBuffer() {
@@ -88,6 +125,27 @@ int BeaconSetBitrate() {
 }
 
 void BeaconLogic() {
+	unsigned int now = 0;
+	int err = Time_getUnixEpoch( &now );
+	if (err)
+		return;
+	if ( (now - g_prev_beacon_time) < g_beacon_interval_time * 1000)
+		return;
+
+	WOD_Telemetry_t wod = { 0 };
+	GetCurrentWODTelemetry( &wod );
+	BeaconSetBitrate();
+	sat_packet_t packet;
+	packet.cmd_type = telemetry_cmd_type;
+	packet.cmd_subtype = BEACON_SUBTYPE;
+	packet.data = wod;
+	packet.length = sizeof(wod);
+	err = TransmitSplPacket(packet, NULL);
+	//TODO: log error
+	//TODO: check not bigger than 200 chars
+	g_prev_beacon_time = now;
+	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_bitrate_9600);
+	//TODO: check if need to change bitrate
 }
 
 int muteTRXVU(time_unix duration) {

@@ -20,7 +20,32 @@ int ClearDelayedCMD_FromBuffer(unsigned int start_addr, unsigned int end_addr)
 
 int ParseDataToCommand(unsigned char * data, unsigned int length, sat_packet_t *cmd)
 {
-	return 0;
+	if (data == NULL || cmd == NULL)
+		return null_pointer_error;
+	if (length > MAX_COMMAND_DATA_LENGTH)
+		return index_out_of_bound;
+
+	int id = 0;
+	spl_command_type_t type;
+	trxvu_subtypes_t subType;
+	int metaSize = sizeof(int) + sizeof(spl_command_type_t) + sizeof(trxvu_subtypes_t);
+	char dataCopy[length - metaSize];
+
+	int offset = 0;
+	memcpy(&id, data + offset, sizeof(int));
+	offset += sizeof(int);
+	memcpy(&type, data + offset, sizeof(spl_command_type_t));
+	offset += sizeof(spl_command_type_t);
+	memcpy(&subType, data + offset, sizeof(trxvu_subtypes_t));
+	offset += sizeof(trxvu_subtypes_t);
+	memcpy(dataCopy, data + offset, length - metaSize);
+
+	//TODO: check for errors
+	cmd->ID = id;
+	cmd->cmd_type = type;
+	cmd->cmd_subtype = subType;
+	cmd->data = dataCopy;
+	return command_succsess;
 }
 
 int AssmbleCommand(unsigned char *data, unsigned int data_length, char type,
