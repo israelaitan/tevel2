@@ -45,7 +45,7 @@ int ParseDataToCommand(unsigned char * data, unsigned int length, sat_packet_t *
 	cmd->cmd_type = type;
 	cmd->cmd_subtype = subType;
 	cmd->data = dataCopy;
-	return command_succsess;
+	return command_succsess;//we can use assemblecommand instead
 }
 
 int AssmbleCommand(unsigned char *data, unsigned int data_length, char type,
