@@ -149,18 +149,33 @@ void BeaconLogic() {
 }
 
 int muteTRXVU(time_unix duration) {
+	unsigned int now = 0;
+	Time_getUnixEpoch(now);
+	g_mute_end_time = now + duration;
+	SetMuteFlag(TRUE);
 	return 0;
 }
 
 void UnMuteTRXVU() {
+	g_mute_end_time = 0;
+	g_mute_flag = FALSE;
 }
 
 Boolean GetMuteFlag() {
-	return FALSE;
+	Boolean ended = CheckForMuteEnd();
+	if (ended)
+		UnMuteTRXVU();
+	return g_mute_flag;
 }
 
 Boolean CheckForMuteEnd() {
-	return FALSE;
+	unsigned int now = 0;
+	Time_getUnixEpoch(now);
+	if (now >= g_mute_end_time) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 int GetTrxvuBitrate(ISIStrxvuBitrateStatus *bitrate) {
@@ -173,7 +188,11 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data,
 }
 
 int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
-	return 0;
+	unsigned char avail = 0;//TODO:
+	int realSize = sizeof(sat_packet_t) - MAX_COMMAND_DATA_LENGTH + packet->length;
+	//TODO: semapfhors
+	int err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX, packet, realSize, &avail);
+	return err;
 }
 
 int UpdateBeaconBaudCycle(unsigned char cycle)

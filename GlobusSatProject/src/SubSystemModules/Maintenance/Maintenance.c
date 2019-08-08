@@ -42,13 +42,26 @@ int WakeupFromResetCMD()
 
 void ResetGroundCommWDT()
 {
+	unsigned int now = 0;
+	int err = Time_getUnixEpoch(&now);
+
+	err = FRAM_read((unsined char *)&now, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 }
 
 // check if last communication with the ground station has passed WDT kick time
 // and return a boolean describing it.
 Boolean IsGroundCommunicationWDTKick()
 {
-	return FALSE;
+	unsigned int now = 0;
+	int err = Time_getUnixEpoch(&now);
+
+	unsigned char noCommPeriod[NO_COMM_WDT_KICK_TIME_SIZE];
+	err = FRAM_read(noCommPeriod, NO_COMM_WDT_KICK_TIME_ADDR, NO_COMM_WDT_KICK_TIME_SIZE);
+
+	unsigned char lastComm[LAST_COMM_TIME_SIZE];
+	err = FRAM_read(lastComm, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+
+	return (lastComm + noCommPeriod) <= now;
 }
 
 //TODO: add to command dictionary

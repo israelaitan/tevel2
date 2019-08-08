@@ -389,7 +389,6 @@ int IsisTrxvu_rcGetFrameCount(unsigned char index, unsigned short *frameCount);
  *  @return      Error code according to <hal/errors.h>
  */
 int IsisTrxvu_rcGetCommandFrame(unsigned char index, ISIStrxvuRxFrame *rx_frame);
-
 /**
  *  @brief       Retrieve a block of telemetry from the TRXVU receiver.
  *  @note		 use this version with TRXVU revA/revB boards
@@ -402,7 +401,7 @@ int IsisTrxvu_rcGetTelemetryAll(unsigned char index, ISIStrxvuRxTelemetry *telem
 /**
  *  @brief       Retrieve a block of telemetry from the TRXVU receiver.
  *  @note		 use this version with TRXVU revC or later
- *  @param[in]   index index of ISIS TRXVU I2C bus address.
+ * ,,,,,,, @param[in]   index index of ISIS TRXVU I2C bus address.
  *  @param[out]  telemetry Pointer to the union where the telemetry should be stored.
  *  @return      Error code according to <hal/errors.h>
  */
