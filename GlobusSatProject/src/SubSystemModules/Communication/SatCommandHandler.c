@@ -5,6 +5,7 @@
 
 #include "GlobalStandards.h"
 #include "SatCommandHandler.h"
+#include "SPL.h"
 
 
 typedef struct __attribute__ ((__packed__)) delayed_cmd_t
@@ -44,7 +45,7 @@ int ParseDataToCommand(unsigned char * data, unsigned int length, sat_packet_t *
 	cmd->ID = id;
 	cmd->cmd_type = type;
 	cmd->cmd_subtype = subType;
-	cmd->data = dataCopy;
+	memcpy(cmd->data, dataCopy,  length - metaSize);
 	return command_succsess;//we can use assemblecommand instead
 }
 

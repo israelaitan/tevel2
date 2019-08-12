@@ -1,0 +1,41 @@
+int ParseDataToCommand(unsigned char * data,
+		sat_packet_t *cmd)
+{
+	if(NULL == data || NULL == cmd){
+		return null_pointer_error;
+	}
+	void *err = NULL;
+
+	unsigned int offset = 0;
+
+	unsigned int id = 0;
+	memcpy(&id,data,sizeof(id));
+	if (NULL == err) {
+			return execution_error;
+	}
+	offset += sizeof(id);
+
+	char type;
+	err = memcpy(&type,data+offset,sizeof(type));
+	if (NULL == err) {
+		return execution_error;
+	}
+	offset += sizeof(type);
+
+	char subtype;
+	err = memcpy(&subtype, data + offset,sizeof(subtype));
+	if (NULL == err) {
+		return execution_error;
+	}
+	offset += sizeof(subtype);
+
+
+	unsigned int data_length = 0;
+	err = memcpy(&data_length, data + offset,sizeof(data_length));
+		if (NULL == err) {
+			return execution_error;
+		}
+	offset += sizeof(data_length);
+
+	return AssembleCommand(data+offset,data_length,type,subtype,id,cmd);
+}

@@ -45,7 +45,7 @@ void ResetGroundCommWDT()
 	unsigned int now = 0;
 	int err = Time_getUnixEpoch(&now);
 
-	err = FRAM_read((unsined char *)&now, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+	err = FRAM_read((unsigned char *)&now, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 }
 
 // check if last communication with the ground station has passed WDT kick time
@@ -61,7 +61,10 @@ Boolean IsGroundCommunicationWDTKick()
 	unsigned char lastComm[LAST_COMM_TIME_SIZE];
 	err = FRAM_read(lastComm, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
-	return (lastComm + noCommPeriod) <= now;
+	if (( *(int *)lastComm + *(int *)noCommPeriod) <= now)
+		return TRUE;
+	else
+		return FALSE;
 }
 
 //TODO: add to command dictionary

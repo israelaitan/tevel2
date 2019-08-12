@@ -78,7 +78,7 @@ FileSystemResult c_fileCreate(char* c_file_name,
 		return FS_FAIL;
 	c_file.creation_time = currTime;
 	c_file.last_time_modified = -1;
-	c_file.name = c_file_name;
+	strcpy(c_file.name, c_file_name);
 	c_file.num_of_files = 0;
 	c_file.size_of_element = size_of_element;
 
@@ -137,6 +137,30 @@ FileSystemResult c_fileReset(char* c_file_name)
 	return FS_SUCCSESS;
 }
 
+FileSystemResult fileWrite(char* file_name, void* element, int size)
+{
+	unsigned int timeStamp = 0;
+	unsigned int err = Time_getUnixEpoch(&timeStamp);
+	if (err)
+		return FS_FAIL;
+	F_FILE *file;
+	file = f_open(file_name, 'a');
+	if (!file)
+		return FS_FAIL;
+	if ( f_write((void *)&timeStamp, 1, sizeof(unsigned int), file) != 1 ) {
+		f_close(file);
+		//we can probe for error type using getlasterror
+		//might be wrong if we manage to write time stamp and fail here
+		return FS_FAIL;
+	}
+	if ( f_write(element, 1, size, file) != 1 ) {
+		f_close(file);
+		return FS_FAIL;
+	}
+	f_close(file);
+	return FS_SUCCSESS;
+}
+
 FileSystemResult c_fileWrite(char* c_file_name, void* element)
 {
 	C_FILE c_file;
@@ -151,33 +175,10 @@ FileSystemResult c_fileWrite(char* c_file_name, void* element)
 	char curr_file_name[FILE_NAME_WITH_INDEX_SIZE];
 	get_file_name_by_index(c_file_name, index, curr_file_name);
 	//TODO: update num of files in the cfile struct and curr time
-	FileSystemResult fsr = fileWrite(curr_file_name, element, c_file.size_of_element);
+	FileSystemResult fsr = fileWrite(curr_file_name,element, c_file.size_of_element);
 	return fsr;
 }
 
-FileSystemResult fileWrite(char* file_name, void* element,int size)
-{
-	int timeStamp = 0;
-	unsigned int err = Time_getUnixEpoch(&timeStamp);
-	if (err)
-		return FS_FAIL;
-	F_FILE *file;
-	file = f_open(file_name, ”a”);
-	if (!file)
-		return FS_FAIL;
-	if( f_write(timeStamp, 1, size_of(unsigned int), file) != 1 ) {
-		f_close(file);
-		//we can probe for error type using getlasterror
-		//might be wrong if we manage to write time stamp and fail here
-		return FS_FAIL;
-	}
-	if( f_write(element, 1, size) != 1 ) {
-			f_close(file);
-			return FS_FAIL;
-	}
-	f_close(file);
-	return FS_SUCCSESS;
-}
 static FileSystemResult deleteElementsFromFile(char* file_name,unsigned long from_time,
 		unsigned long to_time,int full_element_size)
 {
@@ -195,13 +196,13 @@ FileSystemResult fileRead(char* file_name, byte* buffer, int size_of_buffer,
 {
 	//TODO: not completed
 	F_FILE *file;
-	file = f_open(file_name, ”r”);
+	file = f_open(file_name, 'r');
 	if (!file)
 		return FS_FAIL;
 	unsigned int currTimeStamp = 0;
 
 	while ( from_time > currTimeStamp ) {
-		if ( f_read(&currTimeStamp, 1, size_of(unsigned int), file) != 1 ) {
+		if ( f_read(&currTimeStamp, 1, sizeof(unsigned int), file) != 1 ) {
 			f_close(file);
 			//we can probe for error type using getlasterror
 			//might be wrong if we manage to write time stamp and fail here
@@ -219,6 +220,7 @@ FileSystemResult fileRead(char* file_name, byte* buffer, int size_of_buffer,
 
 	return FS_SUCCSESS;
 }
+
 FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time)
 {

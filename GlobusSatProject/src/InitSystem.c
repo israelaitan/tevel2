@@ -71,10 +71,16 @@ void firstActivationProcedure()
 
 	//fram write deploy time
 	unsigned int epochTime;
-	int err = Time_getUnixEpoch(&epochTime);
+	err = Time_getUnixEpoch(&epochTime);
+	if (err)
+		PRINT_IF_ERR(Time_getUnixEpoch);
 	err = FRAM_write(&epochTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
+	if (err)
+		PRINT_IF_ERR(FRAM_write);
 	int firstActivation = 0;
 	err = FRAM_write(&firstActivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE);
+	if (err)
+		PRINT_IF_ERR(FRAM_write);
 }
 
 void WriteDefaultValuesToFRAM()
@@ -106,7 +112,7 @@ int StartSPI()
 int StartTIME()
 {
 	Time curr_time = TIME_SATELLITE_LAUNCH_TIME;
-	int err = TIME_start(&curr_time, TIME_Sync_Interval);
+	int err = Time_start(&curr_time, TIME_Sync_Interval);
 	PRINT_IF_ERR(StartTIME);
 	if (!err && !isFirstActivation()) {
 		time_unix time_before_restart = 0;
@@ -129,8 +135,7 @@ int InitSubsystems()
 {
 	if (StartFRAM())
 		return -1;
-	if (WriteDefaultValuesToFRAM())
-			return -1;
+	WriteDefaultValuesToFRAM();
 	if (StartTIME())
 			return -1;
 	if (StartSPI())

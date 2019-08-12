@@ -22,7 +22,7 @@ int GetBatteryVoltage(voltage_t *vbatt)
 {
 	ieps_enghk_data_cdb_t data = {0};
 	ieps_statcmd_t status = {0};
-	int err = IsisEPS_getEngHKDataCDB(0, ieps_board_mb, data, status);
+	int err = IsisEPS_getEngHKDataCDB(0, ieps_board_mb, &data, &status);
 	if (err)
 		return err;
 	if(status.fields.cmd_error != 0)
@@ -42,11 +42,10 @@ int EPS_Init()
 			return E_NOT_INITIALIZED;
 	IsisSolarPanelv2_sleep();
 	err = GetThresholdVoltages(eps_threshold_voltages);
-	if (err) {
-		voltage_t temp[] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
-		memcpy(temp, eps_threshold_voltages);
+	if (err)
 		return err;
-	}
+	voltage_t temp[] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
+	memcpy(temp, eps_threshold_voltages, NUMBER_OF_THRESHOLD_VOLTAGES);
 	err = GetAlpha(&alpha);
 	if (err)
 			return err;

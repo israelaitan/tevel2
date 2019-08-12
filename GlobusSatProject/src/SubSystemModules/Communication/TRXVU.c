@@ -71,7 +71,7 @@ int TRX_Logic() {
 		err = GetOnlineCommand( &packet );
 		ResetGroundCommWDT();
 		if (err == 0) {
-			err = ActUponCommand(packet);
+			err = ActUponCommand(&packet);
 			SendAckPacket(ACK_RECEIVE_COMM, &packet, &err, sizeof(int));
 		}
 
@@ -81,7 +81,7 @@ int TRX_Logic() {
 		if ( nDelayed > 0 ) {
 				err = GetDelayedCommand( &packet );
 				if (err == command_found)
-					err = ActUponCommand(packet);
+					err = ActUponCommand(&packet);
 		}
 	}
     BeaconLogic();
@@ -138,9 +138,9 @@ void BeaconLogic() {
 	sat_packet_t packet;
 	packet.cmd_type = telemetry_cmd_type;
 	packet.cmd_subtype = BEACON_SUBTYPE;
-	packet.data = wod;
+	memcpy(packet.data, &wod, sizeof(wod));
 	packet.length = sizeof(wod);
-	err = TransmitSplPacket(packet, NULL);
+	err = TransmitSplPacket(&packet, NULL);
 	//TODO: log error
 	//TODO: check not bigger than 200 chars
 	g_prev_beacon_time = now;

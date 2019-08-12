@@ -20,6 +20,7 @@
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Communication/SatCommandHandler.h"
 
 int GetTelemetryFilenameByType(tlm_type_t tlm_type, char filename[MAX_F_FILE_NAME_SIZE])
 {
@@ -58,7 +59,7 @@ int GetTelemetryFilenameByType(tlm_type_t tlm_type, char filename[MAX_F_FILE_NAM
 				strcpy(filename, FILENAME_RX_REVC);
 				break;
 			case tlm_rx_frame:
-				memcpy(filename, FILENAME_RX_FRAME);
+				strcpy(filename, FILENAME_RX_FRAME);
 				break;
 			case tlm_antenna:
 				strcpy(filename, FILENAME_ANTENNA_TLM);
@@ -88,7 +89,7 @@ void TelemetrySaveEPS()
 	err = GetTelemetryFilenameByType( tlm_eps_raw_mb, filename );
 	if (p_rsp_code.fields.cmd_error != 0)
 		return;
-	err = c_fileWrite(filename, p_rawhk_data_mb);
+	err = c_fileWrite(filename, &p_rawhk_data_mb);
 	if (err)
 		return;
 
@@ -96,23 +97,23 @@ void TelemetrySaveEPS()
 	err = GetTelemetryFilenameByType( tlm_eps_eng_mb, filename );
 	if (p_rsp_code.fields.cmd_error != 0)
 		return;
-	err = c_fileWrite(filename, p_enghk_data_mb);
+	err = c_fileWrite(filename, &p_enghk_data_mb);
 	if (err)
 		return;
 
-	err = IsisEPS_getRawHKDataCDB(index, &p_rawhk_data_cdb, &p_rsp_code);
+	err = IsisEPS_getRawHKDataCDB(index, ieps_board_mb, &p_rawhk_data_cdb, &p_rsp_code);
 	err = GetTelemetryFilenameByType( tlm_eps_raw_cdb, filename );
 	if (p_rsp_code.fields.cmd_error != 0)
 		return;
-	err = c_fileWrite(filename, p_rawhk_data_cdb);
+	err = c_fileWrite(filename, &p_rawhk_data_cdb);
 	if (err)
 		return;
 
-	err = IsisEPS_getEngHKDataCDB(index, &p_enghk_data_cdb, &p_rsp_code);
+	err = IsisEPS_getEngHKDataCDB(index, ieps_board_mb, &p_enghk_data_cdb, &p_rsp_code);
 	err = GetTelemetryFilenameByType( tlm_eps_eng_cdb, filename );
 	if (p_rsp_code.fields.cmd_error != 0)
 		return;
-	err = c_fileWrite(filename, p_enghk_data_cdb);
+	err = c_fileWrite(filename, &p_enghk_data_cdb);
 	if (err)
 		return;
 
