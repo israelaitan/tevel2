@@ -50,7 +50,8 @@ src/main.d: ../src/main.c \
  C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
  ../src/SubSystemModules/Maintenance/Maintenance.h ../src/InitSystem.h \
- ../src/main.h
+ ../src/main.h \
+ C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/GomEPS.h
 
 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
 
@@ -159,3 +160,5 @@ C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/includ
 ../src/InitSystem.h:
 
 ../src/main.h:
+
+C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/GomEPS.h:
