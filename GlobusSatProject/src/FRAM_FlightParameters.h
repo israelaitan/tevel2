@@ -18,6 +18,9 @@
 #define DEPLOYMENT_TIME_ADDR			0X05		//<! time at which the satellites starts deployment
 #define DEPLOYMENT_TIME_SIZE			4			//<! size of parameter in bytes
 
+#define TOTAL_AWAITED_TIME_ADDR			0X09
+#define TOTAL_AWAITED_TIME_SIZE			4
+
 #define MOST_UPDATED_SAT_TIME_ADDR		0x52		//<! this parameters saves the sat time to be read after resets
 #define MOST_UPDATED_SAT_TIME_SIZE		4			//<! size of the parameter in bytes
 

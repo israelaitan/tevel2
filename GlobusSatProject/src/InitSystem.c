@@ -40,6 +40,7 @@
 		.addressSideB = ANTS_I2C_ADDR_SIDE_B }
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 #define Deployment_Time 10
+#define DEPLOYMENT_TOTAL_WAIT_TIME_MINUTE 30
 #define N_MAX_DEPLOY_ATTEMPT 3
 #define N_ANTS_PER_SIDE 2
 
@@ -54,10 +55,6 @@ Boolean isFirstActivation()//not good what about error?
 
 void firstActivationProcedure()
 {
-	//do it every minute instead and write to fram e.g. to avoid restart every 15 minute
-	// collect telemetry also every 30 sec app
-	const portTickType xDelay = 1000 * 60 * 30 / portTICK_RATE_MS;
-	vTaskDelay( xDelay );
 	//deploy ants
 	ISISantsI2Caddress antsAddr = ANTS_SATELLITE_ADDR;
 	int err = IsisAntS_initialize(&antsAddr, N_ANTS_PER_SIDE);
@@ -125,9 +122,24 @@ int StartTIME()
 
 int DeploySystem()
 {
-	if (isFirstActivation()) {
-		firstActivationProcedure();
+	if (!isFirstActivation())
+		return 0;
+	// collect telemetry also every 30 sec app
+	const portTickType xDelay = 1000 * 60 / portTICK_RATE_MS;
+	unsigned int alreadyAwaitedTime = 0;
+	int err = FRAM_read(&alreadyAwaitedTime, TOTAL_AWAITED_TIME_ADDR, TOTAL_AWAITED_TIME_SIZE);
+	PRINT_IF_ERR(err);
+	if (!err)
+		return err;//maybe we should deploy anyway without waiting
+	while (alreadyAwaitedTime < DEPLOYMENT_TOTAL_WAIT_TIME_MINUTE) {
+		vTaskDelay( xDelay );
+		alreadyAwaitedTime++;
+		err = FRAM_write(&alreadyAwaitedTime, TOTAL_AWAITED_TIME_ADDR, TOTAL_AWAITED_TIME_SIZE);
+		PRINT_IF_ERR(err);
+		if (!err)
+			return err;//maybe we should deploy anyway without waiting
 	}
+	firstActivationProcedure();
 	return 0;
 }
 
