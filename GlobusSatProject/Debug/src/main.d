@@ -50,8 +50,13 @@ src/main.d: ../src/main.c \
  C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
  ../src/SubSystemModules/Maintenance/Maintenance.h ../src/InitSystem.h \
- ../src/main.h \
- C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/GomEPS.h
+ ../src/main.h ../src/TestingDemos/MainTest.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/EpsTestingDemo.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/FileSystemTestingDemo.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/MaintenanceTestingDemo.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TrxvuTestingDemo.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/CommandsTestingDemo.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TelemetryTestingDemo.h
 
 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
 
@@ -161,4 +166,16 @@ C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/includ
 
 ../src/main.h:
 
-C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/GomEPS.h:
+../src/TestingDemos/MainTest.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/EpsTestingDemo.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/FileSystemTestingDemo.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/MaintenanceTestingDemo.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TrxvuTestingDemo.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/CommandsTestingDemo.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TelemetryTestingDemo.h:

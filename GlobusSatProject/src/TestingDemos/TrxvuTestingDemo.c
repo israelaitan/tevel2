@@ -1,3 +1,7 @@
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+
 #include "TrxvuTestingDemo.h"
 
 #include <string.h>
@@ -21,7 +25,8 @@
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Communication/SPL.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
-
+#include "SubSystemModules/Communication/Beacon.h"
+#include "SubSystemModules/Communication/SatDataTx.h"
 
 Boolean TestInitTrxvu()
 {

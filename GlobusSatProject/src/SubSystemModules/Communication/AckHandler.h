@@ -13,6 +13,8 @@
  * @brief transmits an ack packet as an SPL packet(using the SPL protocol)
  * @param[in] acksubtype type of ack to be sent according to acl_subtype_t enumeration
  * @param[in] cmd the command for which the ACK is a response to. CAN BE NULL COMMAND FOR SYSTEM ACK!
+ * @param[in] data data to send to GS with the ack
+ * @param[in] length the data length in bytes
  * @note the ACK is sent with the corresponding ID of the ACK inside the SPL packet
  * @return errors according t <hal/errors.h>
  */

@@ -83,23 +83,23 @@ Boolean TestUpdateThreshVoltages()
 {
 	printf("Updating threshold voltages value\n");
 
-	voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES] = {6501,7101,7301,7401,7201,6601};
+	EpsThreshVolt_t thresh_volts = {.raw = {6501,7101,7301,7401,7201,6601}};
 
 	int err = 0;
 	printf("Updating threshold voltage array to:");
 	for(int i = 0; i <NUMBER_OF_THRESHOLD_VOLTAGES; i++)
 	{
-		printf("thresh[%d] = %d\n",i,thresh_volts[i]);
+		printf("thresh[%d] = %d\n",i,thresh_volts.raw[i]);
 
 	}
 
-	err = UpdateThresholdVoltages(thresh_volts);
+	err = UpdateThresholdVoltages(&thresh_volts);
 	if(0 != err){
 		printf("error in 'UpdateThresholdVoltages' = %d\n",err);
 		return TRUE;
 	}
 
-	err = GetThresholdVoltages(thresh_volts);
+	err = GetThresholdVoltages(&thresh_volts);
 	if(0 != err){
 		printf("error in 'GetThresholdVoltages' = %d\n",err);
 		return TRUE;
@@ -107,7 +107,7 @@ Boolean TestUpdateThreshVoltages()
 
 	for(int i = 0; i <NUMBER_OF_THRESHOLD_VOLTAGES; i ++)
 	{
-		printf("threshVolt[%d] = %d\n",i,thresh_volts[i]);
+		printf("threshVolt[%d] = %d\n",i,thresh_volts.raw[i]);
 	}
 	return TRUE;
 }
@@ -115,16 +115,16 @@ Boolean TestUpdateThreshVoltages()
 Boolean TestGetThreshVoltages()
 {
 	printf("Get threshold voltages value\n");
-	voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES];
+	EpsThreshVolt_t thresh_volts;
 
-	int err = GetThresholdVoltages(thresh_volts);
+	int err = GetThresholdVoltages(&thresh_volts);
 	if(0 != err){
 		printf("error in 'GetThresholdVoltages' = %d\n",err);
 		return TRUE;
 	}
 	for(int i = 0; i <NUMBER_OF_THRESHOLD_VOLTAGES; i ++)
 	{
-		printf("threshVolt[%d] = %d\n",i,thresh_volts[i]);
+		printf("threshVolt[%d] = %d\n",i,thresh_volts.raw[i]);
 	}
 	return TRUE;
 }
@@ -191,16 +191,16 @@ Boolean TestRestoreDefaultAlpha()
 Boolean TestRestoreDefaultThresholdVoltages()
 {
 	printf("Restoring default threshold voltages value\n");
-	voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES];
+	EpsThreshVolt_t thresh_volts;
 
-	int err = GetThresholdVoltages(thresh_volts);
+	int err = GetThresholdVoltages(&thresh_volts);
 	if(0 != err){
 		printf("error in 'GetThresholdVoltages' = %d\n",err);
 		return TRUE;
 	}
 	for(int i = 0; i <NUMBER_OF_THRESHOLD_VOLTAGES; i ++)
 	{
-		printf("threshVolt[%d] = %d\n",i,thresh_volts[i]);
+		printf("threshVolt[%d] = %d\n",i,thresh_volts.raw[i]);
 	}
 
 	err = RestoreDefaultThresholdVoltages();
@@ -208,7 +208,7 @@ Boolean TestRestoreDefaultThresholdVoltages()
 		printf("error in 'RestoreDefaultThresholdVoltages' = %d\n",err);
 	}
 
-	err = GetThresholdVoltages(thresh_volts);
+	err = GetThresholdVoltages(&thresh_volts);
 	if(0 != err){
 		printf("error in 'GetThresholdVoltages' = %d\n",err);
 		return TRUE;
@@ -216,7 +216,7 @@ Boolean TestRestoreDefaultThresholdVoltages()
 
 	for(int i = 0; i <NUMBER_OF_THRESHOLD_VOLTAGES; i ++)
 	{
-		printf("threshVolt[%d] = %d\n",i,thresh_volts[i]);
+		printf("threshVolt[%d] = %d\n",i,thresh_volts.raw[i]);
 	}
 	return TRUE;
 }

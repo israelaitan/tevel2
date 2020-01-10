@@ -1,3 +1,8 @@
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+
 #include "CommandsTestingDemo.h"
 
 #include "SubSystemModules/Communication/TRXVU.h"
@@ -26,7 +31,7 @@ Boolean TestActUponCommand()
 	{
 		curr_time = xTaskGetTickCount();
 		err = GetOnlineCommand(&cmd);
-		if(command_found == err){
+		if(cmd_command_found == err){
 			printf("Online Command Found!!\n");
 			err = ActUponCommand(&cmd);
 			if(0 != err){
@@ -48,7 +53,7 @@ Boolean TestAssmbleCommand()
 	unsigned int id = 0x12345678;
 
 	sat_packet_t cmd = {0};
-	int err = AssmbleCommand(data,length,type,subtype,id,&cmd);
+	int err = AssembleCommand(data,length,type,subtype,id,&cmd);
 	if(0 != err){
 		printf("error in 'AssmbleCommand' = %d\n",err);
 		return TRUE;
@@ -71,7 +76,7 @@ Boolean TestGetDelayedCommand()
 {
 	sat_packet_t cmd = {0};
 	int err = GetDelayedCommand(&cmd);
-	if(err == command_found)
+	if(err == cmd_command_found)
 	{
 		printf("command found:\n");
 		for(unsigned int i = 0; i < sizeof(sat_packet_t);i++){
@@ -113,7 +118,7 @@ Boolean TestGetOnlineCommand()
 	sat_packet_t cmd = {0};
 	int err = 0;
 	err = GetOnlineCommand(&cmd);
-	if(command_found != err){
+	if(cmd_command_found != err){
 		printf("error in 'GetOnlineCommand' = %d",err);
 		return TRUE;
 	}

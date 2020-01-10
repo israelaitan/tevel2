@@ -12,7 +12,7 @@
  	 	 	 	  ______
 			  ___|		|___
  	 	 	 |				|
- 	 	 	 |	FULL MODE	|
+ 	 	 	 |	 FULL MODE	|
  	 	 	 |- - - - - - -	|	-> FULL UP = 7400
  	 	 	 |- - - - - - - |	-> FULL DOWN = 7300
  	 	 	 |				|
@@ -20,11 +20,11 @@
  	 	 	 |- - - - - - -	|	-> CRUISE UP = 7200
  	 	 	 |- - - - - - - |	-> CRUISE DOWN = 7100
  	 	 	 |				|
- 	 	 	 |	SAFE MODE	|
+ 	 	 	 |	 SAFE MODE	|
  	 	 	 |- - - - - - -	| 	-> SAFE UP = 6600
  	 	 	 |- - - - - - - |	-> SAFE DOWN = 6500
  	 	 	 |				|
- 	 	 	 |	CRITICAL	|
+ 	 	 	 |	 CRITICAL	|
  	 	 	 |______________|
  */
 #define DEFAULT_ALPHA_VALUE 0.95
@@ -33,19 +33,35 @@
 #define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6500, (voltage_t)7100, (voltage_t)7300,	 \
 										  (voltage_t)6600, (voltage_t)7200, (voltage_t)7400}
 
-#define INDEX_UP_FULL		5
-#define INDEX_UP_CRUISE		4
-#define INDEX_UP_SAFE		3
-#define INDEX_DOWN_FULL		2
-#define INDEX_DOWN_CRUISE	1
-#define INDEX_DOWN_SAFE		0
-#define NUMBER_OF_EPS		1
+typedef enum __attribute__ ((__packed__)){
+	INDEX_DOWN_SAFE,
+	INDEX_DOWN_CRUISE,
+	INDEX_DOWN_FULL,
+	INDEX_UP_SAFE,
+	INDEX_UP_CRUISE,
+	INDEX_UP_FULL
+}EpsThresholdsIndex;
 
-#define NUMBER_OF_HISTORY_READINGS 3
+typedef union __attribute__ ((__packed__)){
+	voltage_t raw[NUMBER_OF_THRESHOLD_VOLTAGES];
+	struct {
+		voltage_t Vdown_safe;
+		voltage_t Vdown_cruise;
+		voltage_t Vdown_full;
+		voltage_t Vup_safe;
+		voltage_t Vup_cruise;
+		voltage_t Vup_full;
+	}fields;
+}EpsThreshVolt_t;
+
 /*!
  * @brief initializes the EPS subsystem.
  * @return	0 on success
- * 			-1 on failure of init
+ * 			-1 on EPS init error
+ * 			-2 on Solar Panel init error
+ * 			-3 on EPS threshold FRAM read error
+ * 			-4 on EPS alpha FRAM read error
+ * @note if FRAM read error than use default values of 'alpha' and 'eps_threshold_voltages'
  */
 int EPS_Init();
 
@@ -53,7 +69,7 @@ int EPS_Init();
  * @brief EPS logic. controls the state machine of which subsystem
  * is on or off, as a function of only the battery voltage
  * @return	0 on success
- * 			-1 on failure setting state of channels
+ *  		Error code according to <hal/errors.h>
  */
 int EPS_Conditioning();
 
@@ -73,7 +89,7 @@ int GetBatteryVoltage(voltage_t *vbat);
  * 			-2 on invalid thresholds
  * 			ERR according to <hal/errors.h>
  */
-int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]);
+int UpdateThresholdVoltages(EpsThreshVolt_t *thresh_volts);
 
 /*!
  * @brief getting the EPS logic threshold  voltages on the FRAM.
@@ -82,7 +98,7 @@ int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]
  * 			-1 on NULL input array
  * 			-2 on FRAM read errors
  */
-int GetThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]);
+int GetThresholdVoltages(EpsThreshVolt_t *thresh_volts);
 
 /*!
  * @brief getting the smoothing factor (alpha) from the FRAM.

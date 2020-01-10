@@ -13,73 +13,158 @@
 
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Communication/TRXVU.h"
+#include "SubSystemModules/Communication/SatDataTx.h"
 #include "TLM_management.h"
 #include "Maintenance.h"
 
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
+	time_unix curr = 0;
+	int err = Time_getUnixEpoch(&curr);
+	if(0 != err){
+		return FALSE;
+	}
+
+	if(curr - prev_time >= period){
+		return TRUE;
+	}
 	return FALSE;
+
 }
 
 Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
 {
-	return FALSE;
+	int err = 0;
+	time_unix prev_exec_time = 0;
+	err = FRAM_read((unsigned char*)&prev_exec_time,fram_time_addr,sizeof(prev_exec_time));
+	if(0 != err){
+		return FALSE;
+	}
+	return CheckExecutionTime(prev_exec_time,period);
 }
 
 void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
 {
+	time_unix current_time = 0;
+	Time_getUnixEpoch(&current_time);
+
+	FRAM_write((unsigned char*) &current_time, time_addr, time_size);
 }
 
 Boolean IsFS_Corrupted()
 {
+	FN_SPACE space;
+	int drivenum = f_getdrive();
+
+	f_getfreespace(drivenum, &space);
+
+	if (space.bad > 0) {
+		return TRUE;
+	}
 	return FALSE;
 }
 
 int WakeupFromResetCMD()
 {
+	int err = 0;
+	unsigned char reset_flag = 0;
+	unsigned int num_of_resets = 0;
+	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+
+	if (reset_flag) {
+		time_unix curr_time = 0;
+		Time_getUnixEpoch(&curr_time);
+
+		err = SendAckPacket(ACK_RESET_WAKEUP, NULL, (unsigned char*) &curr_time,
+				sizeof(time_unix));
+
+		reset_flag = FALSE_8BIT;
+		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+
+		FRAM_read((unsigned char*) &num_of_resets,
+		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		num_of_resets++;
+
+		FRAM_write((unsigned char*) &num_of_resets,
+		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		if (0 != err) {
+			return err;
+		}
+	}
+
 	return 0;
 }
 
 void ResetGroundCommWDT()
 {
-	unsigned int now = 0;
-	int err = Time_getUnixEpoch(&now);
-
-	err = FRAM_read((unsigned char *)&now, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+	SaveSatTimeInFRAM(LAST_COMM_TIME_ADDR,
+			LAST_COMM_TIME_SIZE);
 }
 
 // check if last communication with the ground station has passed WDT kick time
 // and return a boolean describing it.
 Boolean IsGroundCommunicationWDTKick()
 {
-	unsigned int now = 0;
-	int err = Time_getUnixEpoch(&now);
+	time_unix current_time = 0;
+	Time_getUnixEpoch(&current_time);
 
-	unsigned char noCommPeriod[NO_COMM_WDT_KICK_TIME_SIZE];
-	err = FRAM_read(noCommPeriod, NO_COMM_WDT_KICK_TIME_ADDR, NO_COMM_WDT_KICK_TIME_SIZE);
+	time_unix last_comm_time = 0;
+	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR,
+	LAST_COMM_TIME_SIZE);
 
-	unsigned char lastComm[LAST_COMM_TIME_SIZE];
-	err = FRAM_read(lastComm, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
-	if (( *(int *)lastComm + *(int *)noCommPeriod) <= now)
+	//TODO: if current_time - last_comm_time < 0
+	if (current_time - last_comm_time >= wdt_kick_thresh) {
 		return TRUE;
-	else
-		return FALSE;
+	}
+	return FALSE;
 }
 
 //TODO: add to command dictionary
 int SetGsWdtKickTime(time_unix new_gs_wdt_kick_time)
 {
-	return 0;
+	int err = FRAM_write((unsigned char*)&new_gs_wdt_kick_time, NO_COMM_WDT_KICK_TIME_ADDR,
+		NO_COMM_WDT_KICK_TIME_SIZE);
+	return err;
 }
 
 time_unix GetGsWdtKickTime()
 {
 	time_unix no_comm_thresh = 0;
+	FRAM_read((unsigned char*)&no_comm_thresh, NO_COMM_WDT_KICK_TIME_ADDR,
+	NO_COMM_WDT_KICK_TIME_SIZE);
 	return no_comm_thresh;
-
 }
 
 void Maintenance()
 {
+	SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR,
+	MOST_UPDATED_SAT_TIME_SIZE);
+
+	//TODO: do error log file
+	WakeupFromResetCMD();
+
+	if (IsFS_Corrupted()) {
+		//TODO: something
+#ifdef TESTING
+		printf("FS is corrupted\n");
+#endif
+	}
+
+	if (IsGroundCommunicationWDTKick()) {
+#ifdef TESTING
+		printf("GS was kicked. now restarting...\n");
+		vTaskDelay(5000);
+#endif
+		restart();
+	}
+
+	if(CheckForMuteEnd()){
+		UnMuteTRXVU();
+#ifdef TESTING
+		printf("unmuted\n");
+#endif
+	}
+	//TODO: if(current_time < FRAM_sat_time) maybe update 'sat_time' to be 'first_wakeup_'
 }

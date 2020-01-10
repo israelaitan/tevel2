@@ -4,158 +4,211 @@
 #include <hal/Drivers/I2C.h>
 #include <hal/Drivers/SPI.h>
 #include <hal/Timing/Time.h>
-#include <hal/errors.h>
-#include <satellite-subsystems/IsisAntS.h>
 #include <at91/utility/exithandler.h>
 #include <string.h>
 #include "GlobalStandards.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "InitSystem.h"
 #include "TLM_management.h"
-#include <hal/Storage/FRAM.h>
 
 #ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
+#include <satellite-subsystems/GomEPS.h>
 #endif
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+#include <satellite-subsystems/IsisEPS.h>
 #endif
+
 #define I2c_SPEED_Hz 100000
 #define I2c_Timeout 10
-#define I2c_TimeoutTest portMAX_DELAY
-#define TIME_Sync_Interval 0
-#define TIME_SATELLITE_LAUNCH_TIME {\
-		.seconds = 0,\
-		.minutes = 35,\
-		.hours = 13,\
-		.day = 4,\
-		.date = 1,\
-		.month = 8,\
-		.year = 19,\
-		.secondsOfYear = 0 }
-#define ANTS_SATELLITE_ADDR {\
-		.addressSideA = ANTS_I2C_ADDR_SIDE_A,\
-		.addressSideB = ANTS_I2C_ADDR_SIDE_B }
-#define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
-#define Deployment_Time 10
-#define DEPLOYMENT_TOTAL_WAIT_TIME_MINUTE 30
-#define N_MAX_DEPLOY_ATTEMPT 3
-#define N_ANTS_PER_SIDE 2
 
-Boolean isFirstActivation()//not good what about error?
+Boolean isFirstActivation()
 {
-	int activated;
-	int err = FRAM_read(&activated, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE);
-	if (!err && activated == 1)
-		return TRUE;
-	return FALSE;
+	Boolean flag = FALSE;
+	FRAM_read((unsigned char*) &flag, FIRST_ACTIVATION_FLAG_ADDR,
+	FIRST_ACTIVATION_FLAG_SIZE);
+	return flag;
 }
 
 void firstActivationProcedure()
 {
-	//deploy ants
-	ISISantsI2Caddress antsAddr = ANTS_SATELLITE_ADDR;
-	int err = IsisAntS_initialize(&antsAddr, N_ANTS_PER_SIDE);
-	//in practice it will continue until ground says its ok
-	for (int i = 0; i < N_MAX_DEPLOY_ATTEMPT; i++) {
-		IsisAntS_autoDeployment(isisants_antenna1, isisants_sideA, Deployment_Time);
-		IsisAntS_autoDeployment(isisants_antenna2, isisants_sideA, Deployment_Time);
-		IsisAntS_autoDeployment(isisants_antenna1, isisants_sideB, Deployment_Time);
-		IsisAntS_autoDeployment(isisants_antenna2, isisants_sideB, Deployment_Time);
+#ifdef ISISEPS
+	ieps_statcmd_t eps_cmd;
+#endif
+
+	int err = 0;
+
+	time_unix seconds_since_deploy = 0;
+	err = FRAM_read((unsigned char*) seconds_since_deploy,
+			SECONDS_SINCE_DEPLOY_ADDR,
+			SECONDS_SINCE_DEPLOY_SIZE);
+	if (0 != err) {
+		seconds_since_deploy = MINUTES_TO_SECONDS(30);	// deploy immediately. No mercy
 	}
 
-	//fram write deploy time
-	unsigned int epochTime;
-	err = Time_getUnixEpoch(&epochTime);
-	if (err)
-		PRINT_IF_ERR(Time_getUnixEpoch);
-	err = FRAM_write(&epochTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
-	if (err)
-		PRINT_IF_ERR(FRAM_write);
-	int firstActivation = 0;
-	err = FRAM_write(&firstActivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE);
-	if (err)
-		PRINT_IF_ERR(FRAM_write);
+	while (seconds_since_deploy < MINUTES_TO_SECONDS(30)) {
+		vTaskDelay(SECONDS_TO_TICKS(10));
+
+		FRAM_write((unsigned char*)&seconds_since_deploy, SECONDS_SINCE_DEPLOY_ADDR,
+				SECONDS_SINCE_DEPLOY_SIZE);
+		if (0 != err) {
+			break;
+		}
+		TelemetryCollectorLogic();
+
+		seconds_since_deploy += 10;
+
+		//TODO: add more to this...
+#ifdef ISISEPS
+		IsisEPS_resetWDT(EPS_I2C_BUS_INDEX, &eps_cmd);
+#endif
+#ifdef GOMEPS
+		GomEpsResetWDT(EPS_I2C_BUS_INDEX);
+
+#endif
+	}
+
+#ifndef TESTING
+	IsisAntS_autoDeployment(0, isisants_sideA, 10);
+	IsisAntS_autoDeployment(0, isisants_sideB, 10);
+#endif
+	//TODO: log
 }
 
 void WriteDefaultValuesToFRAM()
 {
+	//TODO: write to FRAM all default values (like threshold voltages...)
+
+	time_unix default_no_comm_thresh = DEFAULT_NO_COMM_WDT_KICK_TIME;
+	FRAM_write((unsigned char*) &default_no_comm_thresh,
+			NO_COMM_WDT_KICK_TIME_ADDR,
+			NO_COMM_WDT_KICK_TIME_SIZE);
+
+	EpsThreshVolt_t def_thresh_volt = { .raw = DEFAULT_EPS_THRESHOLD_VOLTAGES};
+	FRAM_write((unsigned char*)def_thresh_volt.raw, EPS_THRESH_VOLTAGES_ADDR,
+	EPS_THRESH_VOLTAGES_SIZE);
+
+	float def_alpha = DEFAULT_ALPHA_VALUE;
+	FRAM_write((unsigned char*) &def_alpha, EPS_ALPHA_FILTER_VALUE_ADDR,
+	EPS_ALPHA_FILTER_VALUE_SIZE);
+
+	time_unix tlm_save_period = 0;
+	tlm_save_period = DEFAULT_EPS_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, EPS_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_TRXVU_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, TRXVU_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_ANT_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, ANT_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_SOLAR_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, SOLAR_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	tlm_save_period = DEFAULT_WOD_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*) &tlm_save_period, WOD_SAVE_TLM_PERIOD_ADDR,
+			sizeof(tlm_save_period));
+
+	time_unix beacon_interval = 0;
+	beacon_interval = DEFAULT_BEACON_INTERVAL_TIME;
+	FRAM_write((unsigned char*) &beacon_interval, BEACON_INTERVAL_TIME_ADDR,
+			BEACON_INTERVAL_TIME_SIZE);
 
 }
 
 int StartFRAM()
 {
-	int err = FRAM_start();
-	PRINT_IF_ERR(StartFRAM);
-	return err;
+	int error = FRAM_start();
+	return error;
 }
 
 int StartI2C()
 {
-	int err = I2C_start(I2c_SPEED_Hz, I2c_Timeout);
-	PRINT_IF_ERR(StartI2C);
-	return err;
+	int error = I2C_start(I2c_SPEED_Hz, I2c_Timeout);
+	return error;
 }
 
 int StartSPI()
 {
-	int err = SPI_start(bus1_spi, slave1_spi);
-	PRINT_IF_ERR(StartSPI);
-	return err;
+	int error = SPI_start(bus1_spi, slave1_spi);
+	return error;
 }
 
 int StartTIME()
 {
-	Time curr_time = TIME_SATELLITE_LAUNCH_TIME;
-	int err = Time_start(&curr_time, TIME_Sync_Interval);
-	PRINT_IF_ERR(StartTIME);
-	if (!err && !isFirstActivation()) {
-		time_unix time_before_restart = 0;
-		err = FRAM_read(&time_before_restart, MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
-		if (!err)
-			err = Time_setUnixEpoch(time_before_restart);
+	int error = 0;
+	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
+	error = Time_start(&expected_deploy_time, 0);
+	if (0 != error) {
+		return error;
 	}
-	return err;
+	time_unix time_before_wakeup = 0;
+	if (!isFirstActivation()) {
+		FRAM_read((unsigned char*) &time_before_wakeup,
+		MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+
+		Time_setUnixEpoch(time_before_wakeup);
+	}
+	return 0;
 }
 
 int DeploySystem()
 {
-	if (!isFirstActivation())
-		return 0;
-	// collect telemetry also every 30 sec app
-	const portTickType xDelay = 1000 * 60 / portTICK_RATE_MS;
-	unsigned int alreadyAwaitedTime = 0;
-	int err = FRAM_read(&alreadyAwaitedTime, TOTAL_AWAITED_TIME_ADDR, TOTAL_AWAITED_TIME_SIZE);
-	PRINT_IF_ERR(err);
-	if (!err)
-		return err;//maybe we should deploy anyway without waiting
-	while (alreadyAwaitedTime < DEPLOYMENT_TOTAL_WAIT_TIME_MINUTE) {
-		vTaskDelay( xDelay );
-		alreadyAwaitedTime++;
-		err = FRAM_write(&alreadyAwaitedTime, TOTAL_AWAITED_TIME_ADDR, TOTAL_AWAITED_TIME_SIZE);
-		PRINT_IF_ERR(err);
-		if (!err)
-			return err;//maybe we should deploy anyway without waiting
+	Boolean first_activation = isFirstActivation();
+
+	if (first_activation) {
+
+		firstActivationProcedure();
+
+		time_unix deploy_time = 0;
+		Time_getUnixEpoch(&deploy_time);
+		FRAM_write((unsigned char*) deploy_time, DEPLOYMENT_TIME_ADDR,
+		DEPLOYMENT_TIME_SIZE);
+
+		first_activation = FALSE; //TODO: set 'first_activation' to TRUE before launch
+		FRAM_write((unsigned char*) &first_activation,
+		FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE);
+
+		WriteDefaultValuesToFRAM();
 	}
-	firstActivationProcedure();
 	return 0;
 }
 
+#define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 int InitSubsystems()
 {
-	if (StartFRAM())
-		return -1;
-	WriteDefaultValuesToFRAM();
-	if (StartTIME())
-			return -1;
-	if (StartSPI())
-			return -1;
-	if (StartI2C())
-			return -1;
-	if (isFirstActivation())
-		DeploySystem();
+	//TODO: check for return value errors
+	int err = 0;
+
+	err = StartI2C();
+	PRINT_IF_ERR(StartI2C)
+
+	err = StartSPI();
+	PRINT_IF_ERR(StartSPI)
+
+	err = StartFRAM();
+	PRINT_IF_ERR(StartFRAM)
+
+	err = StartTIME();
+	PRINT_IF_ERR(StartTIME)
+
+	err = InitializeFS(isFirstActivation());
+	PRINT_IF_ERR(InitializeFS)
+
+	err = EPS_Init();
+	PRINT_IF_ERR(EPS_Init)
+
+	err = InitTrxvu();
+	PRINT_IF_ERR(InitTrxvu)
+
+	err = DeploySystem();
+	PRINT_IF_ERR(DeploySystem)
 	return 0;
 }
 
