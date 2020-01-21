@@ -40,6 +40,8 @@ src/InitSystem.d: ../src/InitSystem.c \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
+ ../src/SubSystemModules/Housekepping/Dump.h \
+ C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
  ../src/InitSystem.h ../src/TLM_management.h \
  C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisEPS.h
 
@@ -126,6 +128,10 @@ C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//satellite-subs
 C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h:
+
+../src/SubSystemModules/Housekepping/Dump.h:
+
+C:\Users\USER\Documents\GitHub\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
 
 ../src/InitSystem.h:
 

@@ -68,7 +68,7 @@ void BeaconLogic()
 
 	sat_packet_t cmd = { 0 };
 	err = AssembleCommand((unsigned char*) &wod, sizeof(wod), trxvu_cmd_type,
-			BEACON_SUBTYPE, 0xFFFFFFFF, &cmd);
+			BEACON_SUBTYPE, 0xFFFFFFFF, 0, &cmd);
 	if (0 != err) {
 		return;
 	}

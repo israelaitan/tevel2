@@ -77,11 +77,11 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 		}
 	offset += sizeof(data_length);
 
-	return AssembleCommand(data+offset,data_length,type,subtype,id,cmd);
+	return AssembleCommand(data+offset, data_length, type,subtype, id, 0, cmd);
 }
 
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,
-		char subtype, unsigned int id, sat_packet_t *cmd)
+		char subtype, unsigned int id, unsigned int ord, sat_packet_t *cmd)
 {
 	if (NULL == cmd) {
 		return cmd_null_pointer_error;
@@ -90,6 +90,7 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length,
 	cmd->cmd_type = type;
 	cmd->cmd_subtype = subtype;
 	cmd->length = 0;
+	cmd->ordinal = ord;
 
 	if (NULL != data) {
 		unsigned int size =(data_length > MAX_COMMAND_DATA_LENGTH) ?

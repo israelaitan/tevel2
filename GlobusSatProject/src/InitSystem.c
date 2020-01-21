@@ -11,6 +11,7 @@
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Housekepping/Dump.h"
 #include "InitSystem.h"
 #include "TLM_management.h"
 
@@ -167,7 +168,7 @@ int DeploySystem()
 		firstActivationProcedure();
 
 		time_unix deploy_time = 0;
-		Time_getUnixEpoch(&deploy_time);
+		Time_getUnixEpoch((unsigned int*)&deploy_time);
 		FRAM_write((unsigned char*) deploy_time, DEPLOYMENT_TIME_ADDR,
 		DEPLOYMENT_TIME_SIZE);
 
@@ -206,6 +207,9 @@ int InitSubsystems()
 
 	err = InitTrxvu();
 	PRINT_IF_ERR(InitTrxvu)
+
+	err = InitDump();
+	PRINT_IF_ERR(InitDump)
 
 	err = DeploySystem();
 	PRINT_IF_ERR(DeploySystem)

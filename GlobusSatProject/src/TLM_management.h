@@ -87,8 +87,8 @@ FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
  * @param to_time time of last element, LAST_ELEMENT_IN_C_FILE to last element.
  * @return num of elements.
  */
-int c_fileGetNumOfElements(char* c_file_name,time_unix from_time
-		,time_unix to_time);
+FileSystemResult c_fileGetNumOfElements(char* c_file_name, time_unix from_time, time_unix to_time,
+		int* read, time_unix* last_read_time, unsigned int* size_of_element);
 
 /*!
  * Read elements from c_file to buffer

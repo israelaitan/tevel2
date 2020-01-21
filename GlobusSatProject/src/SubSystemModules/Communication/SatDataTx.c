@@ -94,9 +94,9 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data,
 	sat_packet_t packet = { 0 };
 	if (NULL != cmd) {
 		err = AssembleCommand(data, length, cmd->cmd_type, cmd->cmd_subtype,
-				cmd->ID, &packet);
+				cmd->ID, 0, &packet);
 	} else {
-		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFFFFFF, &packet); //TODO: figure out what should be the 'FF'
+		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFFFFFF, 0, &packet); //TODO: figure out what should be the 'FF'
 	}
 	if (err != 0) {
 		return err;

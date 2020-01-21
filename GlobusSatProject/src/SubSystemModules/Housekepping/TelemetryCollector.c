@@ -1,5 +1,4 @@
 #include <hcc/api_fat.h>
-
 #include "GlobalStandards.h"
 
 #ifdef ISISEPS
@@ -32,6 +31,8 @@ typedef enum{
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
+
+
 
 int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_SIZE])
 {
@@ -84,6 +85,7 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 
 void TelemetryCollectorLogic()
 {
+
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
 		Time_getUnixEpoch(tlm_last_save_time[eps_tlm]);
