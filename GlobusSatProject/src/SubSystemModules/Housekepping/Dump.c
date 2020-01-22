@@ -119,7 +119,6 @@ void DumpTask(void *args) {
 	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
 	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
 	buffer = malloc(buffer_size);
-	//TODO: length of index (100 or 99) not handled in file name 7+3+4
 	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
 	num_of_packets = buffer_size / MAX_COMMAND_DATA_LENGTH;
 	if (!(buffer_size % MAX_COMMAND_DATA_LENGTH))
