@@ -27,6 +27,7 @@
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Housekepping/Dump.h"
 
 Boolean TestInitTrxvu()
 {
@@ -160,7 +161,7 @@ Boolean TestTransmitSplPacket()
 		while(UTIL_DbguGetIntegerMinMax((unsigned int*)&minutes,0,20) == 0);
 
 		time_unix curr_time = 0;
-		Time_getUnixEpoch(&curr_time);
+		Time_getUnixEpoch((unsigned int *)&curr_time);
 
 		time_unix end_time = MINUTES_TO_SECONDS(minutes) + curr_time;
 		ISIStrxvuTxTelemetry tlm;
@@ -171,7 +172,7 @@ Boolean TestTransmitSplPacket()
 			if(tlm.fields.board_temp >=60)
 				break;
 			printf("board temperature: %d\n",tlm.fields.board_temp);
-			Time_getUnixEpoch(&curr_time);
+			Time_getUnixEpoch((unsigned int *)&curr_time);
 
 			TransmitSplPacket(&packet,NULL);
 
@@ -274,13 +275,13 @@ Boolean TestBeaconLogic()
 	while(UTIL_DbguGetIntegerMinMax((unsigned int*)&minutes,0,20) == 0);
 
 	time_unix curr_time = 0;
-	Time_getUnixEpoch(&curr_time);
+	Time_getUnixEpoch((unsigned int *)&curr_time);
 
 	time_unix end_time = MINUTES_TO_SECONDS(minutes) + curr_time;
 
 	while(end_time > curr_time)
 	{
-		Time_getUnixEpoch(&curr_time);
+		Time_getUnixEpoch((unsigned int *)&curr_time);
 
 		BeaconLogic();
 
@@ -306,7 +307,7 @@ Boolean TestMuteTrxvu()
 	}
 
 	time_unix curr = 0;
-	Time_getUnixEpoch(&curr);
+	Time_getUnixEpoch((unsigned int *)&curr);
 
 #ifdef ISISEPS
 	ieps_statcmd_t cmd;

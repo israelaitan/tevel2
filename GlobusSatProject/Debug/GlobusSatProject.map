@@ -4101,149 +4101,149 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
  .debug_frame   0x000072fc       0x2c c:/isis/application/toolchain/bin/../lib/gcc/arm-none-eabi/4.7.4/../../../../arm-none-eabi/lib\libc_s.a(lib_a-lseekr.o)
  .debug_frame   0x00007328       0x2c c:/isis/application/toolchain/bin/../lib/gcc/arm-none-eabi/4.7.4/../../../../arm-none-eabi/lib\libc_s.a(lib_a-readr.o)
 
-.debug_info     0x00000000    0x24c13
+.debug_info     0x00000000    0x24baf
  .debug_info    0x00000000      0x4cb ./src/TestingDemos/CommandsTestingDemo.o
  .debug_info    0x000004cb      0x448 ./src/TestingDemos/EpsTestingDemo.o
  .debug_info    0x00000913       0x71 ./src/TestingDemos/FileSystemTestingDemo.o
  .debug_info    0x00000984       0xf1 ./src/TestingDemos/MainTest.o
  .debug_info    0x00000a75      0x2ca ./src/TestingDemos/MaintenanceTestingDemo.o
  .debug_info    0x00000d3f       0x71 ./src/TestingDemos/TelemetryTestingDemo.o
- .debug_info    0x00000db0      0x99b ./src/TestingDemos/TrxvuTestingDemo.o
- .debug_info    0x0000174b      0x6d6 ./src/SubSystemModules/PowerManagment/EPS.o
- .debug_info    0x00001e21      0x395 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
- .debug_info    0x000021b6      0x460 ./src/SubSystemModules/Maintenance/Maintenance.o
- .debug_info    0x00002616      0x636 ./src/SubSystemModules/Housekepping/Dump.o
- .debug_info    0x00002c4c     0x1515 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
- .debug_info    0x00004161      0x71b ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
- .debug_info    0x0000487c      0x880 ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
- .debug_info    0x000050fc      0x332 ./src/SubSystemModules/Communication/AckHandler.o
- .debug_info    0x0000542e      0x24e ./src/SubSystemModules/Communication/ActUponCommand.o
- .debug_info    0x0000567c      0x424 ./src/SubSystemModules/Communication/Beacon.o
- .debug_info    0x00005aa0      0x42d ./src/SubSystemModules/Communication/CommandDictionary.o
- .debug_info    0x00005ecd      0x604 ./src/SubSystemModules/Communication/SatCommandHandler.o
- .debug_info    0x000064d1      0x47b ./src/SubSystemModules/Communication/SatDataTx.o
- .debug_info    0x0000694c      0x382 ./src/SubSystemModules/Communication/TRXVU.o
- .debug_info    0x00006cce      0x4bc ./src/InitSystem.o
- .debug_info    0x0000718a      0xf39 ./src/TLM_management.o
- .debug_info    0x000080c3      0x3cd ./src/main.o
- .debug_info    0x00008490     0x106f C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
- .debug_info    0x000094ff      0xdf5 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
- .debug_info    0x0000a2f4      0x832 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
- .debug_info    0x0000ab26      0x5cf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
- .debug_info    0x0000b0f5      0x3f1 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
- .debug_info    0x0000b4e6      0x1ab C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
- .debug_info    0x0000b691      0x2b4 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(util.o)
- .debug_info    0x0000b945      0x506 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
- .debug_info    0x0000be4b      0x654 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
- .debug_info    0x0000c49f      0x185 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
- .debug_info    0x0000c624     0x4751 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
- .debug_info    0x00010d75     0x19f9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
- .debug_info    0x0001276e     0x2750 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
- .debug_info    0x00014ebe      0xd43 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
- .debug_info    0x00015c01      0x1aa C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
- .debug_info    0x00015dab       0xb0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
- .debug_info    0x00015e5b      0x4c6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
- .debug_info    0x00016321      0x1ba C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
- .debug_info    0x000164db      0xd35 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
- .debug_info    0x00017210     0x28dd C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
- .debug_info    0x00019aed      0x1ad C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
- .debug_info    0x00019c9a      0xa44 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisAntS.o)
- .debug_info    0x0001a6de     0x1eca C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisEPS.o)
- .debug_info    0x0001c5a8      0xbd2 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
- .debug_info    0x0001d17a     0x105a C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXVU.o)
- .debug_info    0x0001e1d4      0x72c C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXCommon.o)
- .debug_info    0x0001e900      0xadf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
- .debug_info    0x0001f3df      0xede C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
- .debug_info    0x000202bd       0xde C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
- .debug_info    0x0002039b      0x110 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
- .debug_info    0x000204ab      0x330 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
- .debug_info    0x000207db      0x2aa C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
- .debug_info    0x00020a85      0x628 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(syscalls.o)
- .debug_info    0x000210ad      0x287 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
- .debug_info    0x00021334      0x1f7 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
- .debug_info    0x0002152b      0xc6e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
- .debug_info    0x00022199      0x734 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
- .debug_info    0x000228cd      0x1ae C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
- .debug_info    0x00022a7b      0x2fd C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
- .debug_info    0x00022d78      0x576 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
- .debug_info    0x000232ee      0x63d C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
- .debug_info    0x0002392b      0x22e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
- .debug_info    0x00023b59       0x92 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
- .debug_info    0x00023beb       0x81 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
- .debug_info    0x00023c6c      0x651 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
- .debug_info    0x000242bd      0x956 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
+ .debug_info    0x00000db0      0x964 ./src/TestingDemos/TrxvuTestingDemo.o
+ .debug_info    0x00001714      0x6d6 ./src/SubSystemModules/PowerManagment/EPS.o
+ .debug_info    0x00001dea      0x395 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
+ .debug_info    0x0000217f      0x460 ./src/SubSystemModules/Maintenance/Maintenance.o
+ .debug_info    0x000025df      0x636 ./src/SubSystemModules/Housekepping/Dump.o
+ .debug_info    0x00002c15     0x1515 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
+ .debug_info    0x0000412a      0x71b ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
+ .debug_info    0x00004845      0x853 ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
+ .debug_info    0x00005098      0x332 ./src/SubSystemModules/Communication/AckHandler.o
+ .debug_info    0x000053ca      0x24e ./src/SubSystemModules/Communication/ActUponCommand.o
+ .debug_info    0x00005618      0x424 ./src/SubSystemModules/Communication/Beacon.o
+ .debug_info    0x00005a3c      0x42d ./src/SubSystemModules/Communication/CommandDictionary.o
+ .debug_info    0x00005e69      0x604 ./src/SubSystemModules/Communication/SatCommandHandler.o
+ .debug_info    0x0000646d      0x47b ./src/SubSystemModules/Communication/SatDataTx.o
+ .debug_info    0x000068e8      0x382 ./src/SubSystemModules/Communication/TRXVU.o
+ .debug_info    0x00006c6a      0x4bc ./src/InitSystem.o
+ .debug_info    0x00007126      0xf39 ./src/TLM_management.o
+ .debug_info    0x0000805f      0x3cd ./src/main.o
+ .debug_info    0x0000842c     0x106f C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
+ .debug_info    0x0000949b      0xdf5 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
+ .debug_info    0x0000a290      0x832 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
+ .debug_info    0x0000aac2      0x5cf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
+ .debug_info    0x0000b091      0x3f1 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
+ .debug_info    0x0000b482      0x1ab C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
+ .debug_info    0x0000b62d      0x2b4 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(util.o)
+ .debug_info    0x0000b8e1      0x506 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
+ .debug_info    0x0000bde7      0x654 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
+ .debug_info    0x0000c43b      0x185 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
+ .debug_info    0x0000c5c0     0x4751 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
+ .debug_info    0x00010d11     0x19f9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
+ .debug_info    0x0001270a     0x2750 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
+ .debug_info    0x00014e5a      0xd43 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
+ .debug_info    0x00015b9d      0x1aa C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
+ .debug_info    0x00015d47       0xb0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
+ .debug_info    0x00015df7      0x4c6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
+ .debug_info    0x000162bd      0x1ba C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
+ .debug_info    0x00016477      0xd35 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
+ .debug_info    0x000171ac     0x28dd C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
+ .debug_info    0x00019a89      0x1ad C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
+ .debug_info    0x00019c36      0xa44 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisAntS.o)
+ .debug_info    0x0001a67a     0x1eca C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisEPS.o)
+ .debug_info    0x0001c544      0xbd2 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
+ .debug_info    0x0001d116     0x105a C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXVU.o)
+ .debug_info    0x0001e170      0x72c C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXCommon.o)
+ .debug_info    0x0001e89c      0xadf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
+ .debug_info    0x0001f37b      0xede C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
+ .debug_info    0x00020259       0xde C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
+ .debug_info    0x00020337      0x110 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
+ .debug_info    0x00020447      0x330 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
+ .debug_info    0x00020777      0x2aa C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
+ .debug_info    0x00020a21      0x628 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(syscalls.o)
+ .debug_info    0x00021049      0x287 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
+ .debug_info    0x000212d0      0x1f7 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
+ .debug_info    0x000214c7      0xc6e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
+ .debug_info    0x00022135      0x734 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
+ .debug_info    0x00022869      0x1ae C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
+ .debug_info    0x00022a17      0x2fd C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
+ .debug_info    0x00022d14      0x576 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
+ .debug_info    0x0002328a      0x63d C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
+ .debug_info    0x000238c7      0x22e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
+ .debug_info    0x00023af5       0x92 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
+ .debug_info    0x00023b87       0x81 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
+ .debug_info    0x00023c08      0x651 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
+ .debug_info    0x00024259      0x956 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
-.debug_abbrev   0x00000000     0x5d21
+.debug_abbrev   0x00000000     0x5d0d
  .debug_abbrev  0x00000000      0x103 ./src/TestingDemos/CommandsTestingDemo.o
  .debug_abbrev  0x00000103      0x117 ./src/TestingDemos/EpsTestingDemo.o
  .debug_abbrev  0x0000021a       0x46 ./src/TestingDemos/FileSystemTestingDemo.o
  .debug_abbrev  0x00000260       0x78 ./src/TestingDemos/MainTest.o
  .debug_abbrev  0x000002d8       0xdc ./src/TestingDemos/MaintenanceTestingDemo.o
  .debug_abbrev  0x000003b4       0x46 ./src/TestingDemos/TelemetryTestingDemo.o
- .debug_abbrev  0x000003fa      0x1af ./src/TestingDemos/TrxvuTestingDemo.o
- .debug_abbrev  0x000005a9      0x1ae ./src/SubSystemModules/PowerManagment/EPS.o
- .debug_abbrev  0x00000757      0x176 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
- .debug_abbrev  0x000008cd      0x125 ./src/SubSystemModules/Maintenance/Maintenance.o
- .debug_abbrev  0x000009f2      0x19d ./src/SubSystemModules/Housekepping/Dump.o
- .debug_abbrev  0x00000b8f      0x259 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
- .debug_abbrev  0x00000de8      0x174 ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
- .debug_abbrev  0x00000f5c      0x15d ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
- .debug_abbrev  0x000010b9      0x114 ./src/SubSystemModules/Communication/AckHandler.o
- .debug_abbrev  0x000011cd       0xd3 ./src/SubSystemModules/Communication/ActUponCommand.o
- .debug_abbrev  0x000012a0      0x123 ./src/SubSystemModules/Communication/Beacon.o
- .debug_abbrev  0x000013c3       0xfc ./src/SubSystemModules/Communication/CommandDictionary.o
- .debug_abbrev  0x000014bf      0x151 ./src/SubSystemModules/Communication/SatCommandHandler.o
- .debug_abbrev  0x00001610      0x1b2 ./src/SubSystemModules/Communication/SatDataTx.o
- .debug_abbrev  0x000017c2       0xe0 ./src/SubSystemModules/Communication/TRXVU.o
- .debug_abbrev  0x000018a2      0x16e ./src/InitSystem.o
- .debug_abbrev  0x00001a10      0x272 ./src/TLM_management.o
- .debug_abbrev  0x00001c82       0xfe ./src/main.o
- .debug_abbrev  0x00001d80      0x2e0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
- .debug_abbrev  0x00002060      0x242 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
- .debug_abbrev  0x000022a2      0x257 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
- .debug_abbrev  0x000024f9      0x1ed C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
- .debug_abbrev  0x000026e6       0xf6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
- .debug_abbrev  0x000027dc       0xd3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
- .debug_abbrev  0x000028af       0xd9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(util.o)
- .debug_abbrev  0x00002988      0x163 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
- .debug_abbrev  0x00002aeb      0x180 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
- .debug_abbrev  0x00002c6b       0xf6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
- .debug_abbrev  0x00002d61      0x2c0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
- .debug_abbrev  0x00003021      0x1c9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
- .debug_abbrev  0x000031ea      0x265 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
- .debug_abbrev  0x0000344f      0x22f C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
- .debug_abbrev  0x0000367e       0xb3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
- .debug_abbrev  0x00003731       0x5a C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
- .debug_abbrev  0x0000378b      0x13e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
- .debug_abbrev  0x000038c9       0xb4 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
- .debug_abbrev  0x0000397d      0x1fb C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
- .debug_abbrev  0x00003b78      0x2ce C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
- .debug_abbrev  0x00003e46       0xb3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
- .debug_abbrev  0x00003ef9      0x1b8 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisAntS.o)
- .debug_abbrev  0x000040b1      0x21d C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisEPS.o)
- .debug_abbrev  0x000042ce      0x22b C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
- .debug_abbrev  0x000044f9      0x19e C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXVU.o)
- .debug_abbrev  0x00004697      0x16d C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXCommon.o)
- .debug_abbrev  0x00004804      0x1af C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
- .debug_abbrev  0x000049b3      0x1e9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
- .debug_abbrev  0x00004b9c       0x8a C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
- .debug_abbrev  0x00004c26       0xc6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
- .debug_abbrev  0x00004cec      0x1dc C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
- .debug_abbrev  0x00004ec8       0xc0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
- .debug_abbrev  0x00004f88      0x152 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(syscalls.o)
- .debug_abbrev  0x000050da       0xc3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
- .debug_abbrev  0x0000519d       0x89 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
- .debug_abbrev  0x00005226      0x1f7 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
- .debug_abbrev  0x0000541d      0x185 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
- .debug_abbrev  0x000055a2       0xd3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
- .debug_abbrev  0x00005675      0x115 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
- .debug_abbrev  0x0000578a       0xff C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
- .debug_abbrev  0x00005889      0x180 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
- .debug_abbrev  0x00005a09       0xbf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
- .debug_abbrev  0x00005ac8       0x12 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
- .debug_abbrev  0x00005ada       0x14 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
- .debug_abbrev  0x00005aee       0xea C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
- .debug_abbrev  0x00005bd8      0x149 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
+ .debug_abbrev  0x000003fa      0x1b1 ./src/TestingDemos/TrxvuTestingDemo.o
+ .debug_abbrev  0x000005ab      0x1ae ./src/SubSystemModules/PowerManagment/EPS.o
+ .debug_abbrev  0x00000759      0x176 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
+ .debug_abbrev  0x000008cf      0x125 ./src/SubSystemModules/Maintenance/Maintenance.o
+ .debug_abbrev  0x000009f4      0x19d ./src/SubSystemModules/Housekepping/Dump.o
+ .debug_abbrev  0x00000b91      0x259 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
+ .debug_abbrev  0x00000dea      0x174 ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
+ .debug_abbrev  0x00000f5e      0x147 ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
+ .debug_abbrev  0x000010a5      0x114 ./src/SubSystemModules/Communication/AckHandler.o
+ .debug_abbrev  0x000011b9       0xd3 ./src/SubSystemModules/Communication/ActUponCommand.o
+ .debug_abbrev  0x0000128c      0x123 ./src/SubSystemModules/Communication/Beacon.o
+ .debug_abbrev  0x000013af       0xfc ./src/SubSystemModules/Communication/CommandDictionary.o
+ .debug_abbrev  0x000014ab      0x151 ./src/SubSystemModules/Communication/SatCommandHandler.o
+ .debug_abbrev  0x000015fc      0x1b2 ./src/SubSystemModules/Communication/SatDataTx.o
+ .debug_abbrev  0x000017ae       0xe0 ./src/SubSystemModules/Communication/TRXVU.o
+ .debug_abbrev  0x0000188e      0x16e ./src/InitSystem.o
+ .debug_abbrev  0x000019fc      0x272 ./src/TLM_management.o
+ .debug_abbrev  0x00001c6e       0xfe ./src/main.o
+ .debug_abbrev  0x00001d6c      0x2e0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
+ .debug_abbrev  0x0000204c      0x242 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
+ .debug_abbrev  0x0000228e      0x257 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
+ .debug_abbrev  0x000024e5      0x1ed C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
+ .debug_abbrev  0x000026d2       0xf6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
+ .debug_abbrev  0x000027c8       0xd3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
+ .debug_abbrev  0x0000289b       0xd9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(util.o)
+ .debug_abbrev  0x00002974      0x163 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
+ .debug_abbrev  0x00002ad7      0x180 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
+ .debug_abbrev  0x00002c57       0xf6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
+ .debug_abbrev  0x00002d4d      0x2c0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
+ .debug_abbrev  0x0000300d      0x1c9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
+ .debug_abbrev  0x000031d6      0x265 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
+ .debug_abbrev  0x0000343b      0x22f C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
+ .debug_abbrev  0x0000366a       0xb3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
+ .debug_abbrev  0x0000371d       0x5a C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
+ .debug_abbrev  0x00003777      0x13e C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
+ .debug_abbrev  0x000038b5       0xb4 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
+ .debug_abbrev  0x00003969      0x1fb C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
+ .debug_abbrev  0x00003b64      0x2ce C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
+ .debug_abbrev  0x00003e32       0xb3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
+ .debug_abbrev  0x00003ee5      0x1b8 C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisAntS.o)
+ .debug_abbrev  0x0000409d      0x21d C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisEPS.o)
+ .debug_abbrev  0x000042ba      0x22b C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
+ .debug_abbrev  0x000044e5      0x19e C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXVU.o)
+ .debug_abbrev  0x00004683      0x16d C:/ISIS/workspace/satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisTRXCommon.o)
+ .debug_abbrev  0x000047f0      0x1af C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
+ .debug_abbrev  0x0000499f      0x1e9 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
+ .debug_abbrev  0x00004b88       0x8a C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
+ .debug_abbrev  0x00004c12       0xc6 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
+ .debug_abbrev  0x00004cd8      0x1dc C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
+ .debug_abbrev  0x00004eb4       0xc0 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
+ .debug_abbrev  0x00004f74      0x152 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(syscalls.o)
+ .debug_abbrev  0x000050c6       0xc3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
+ .debug_abbrev  0x00005189       0x89 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
+ .debug_abbrev  0x00005212      0x1f7 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
+ .debug_abbrev  0x00005409      0x185 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
+ .debug_abbrev  0x0000558e       0xd3 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
+ .debug_abbrev  0x00005661      0x115 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
+ .debug_abbrev  0x00005776       0xff C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
+ .debug_abbrev  0x00005875      0x180 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
+ .debug_abbrev  0x000059f5       0xbf C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
+ .debug_abbrev  0x00005ab4       0x12 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
+ .debug_abbrev  0x00005ac6       0x14 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
+ .debug_abbrev  0x00005ada       0xea C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
+ .debug_abbrev  0x00005bc4      0x149 C:/Users/USER/Documents/GitHub/Base-Aug-2019/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
 .debug_loc      0x00000000     0x99e0
  .debug_loc     0x00000000      0x1b8 ./src/TestingDemos/CommandsTestingDemo.o
@@ -4613,22 +4613,22 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
                                 0x2de (size before relaxing)
  .debug_str     0x0000065f       0x42 ./src/TestingDemos/TelemetryTestingDemo.o
                                 0x121 (size before relaxing)
- .debug_str     0x000006a1      0x662 ./src/TestingDemos/TrxvuTestingDemo.o
-                                0x907 (size before relaxing)
- .debug_str     0x00000d03      0x314 ./src/SubSystemModules/PowerManagment/EPS.o
+ .debug_str     0x000006a1      0x658 ./src/TestingDemos/TrxvuTestingDemo.o
+                                0x8da (size before relaxing)
+ .debug_str     0x00000cf9      0x314 ./src/SubSystemModules/PowerManagment/EPS.o
                                 0x59e (size before relaxing)
- .debug_str     0x00001017      0x16c ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
+ .debug_str     0x0000100d      0x16c ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
                                 0x300 (size before relaxing)
- .debug_str     0x00001183      0x11a ./src/SubSystemModules/Maintenance/Maintenance.o
+ .debug_str     0x00001179      0x11a ./src/SubSystemModules/Maintenance/Maintenance.o
                                 0x549 (size before relaxing)
- .debug_str     0x0000129d      0x3cd ./src/SubSystemModules/Housekepping/Dump.o
+ .debug_str     0x00001293      0x3d7 ./src/SubSystemModules/Housekepping/Dump.o
                                 0x7da (size before relaxing)
  .debug_str     0x0000166a      0x9c0 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
                                 0xff7 (size before relaxing)
  .debug_str     0x0000202a      0x278 ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
                                 0x6ba (size before relaxing)
  .debug_str     0x000022a2      0x206 ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
-                                0x614 (size before relaxing)
+                                0x5e7 (size before relaxing)
  .debug_str     0x000024a8       0xf4 ./src/SubSystemModules/Communication/AckHandler.o
                                 0x471 (size before relaxing)
  .debug_str     0x0000259c       0x48 ./src/SubSystemModules/Communication/ActUponCommand.o

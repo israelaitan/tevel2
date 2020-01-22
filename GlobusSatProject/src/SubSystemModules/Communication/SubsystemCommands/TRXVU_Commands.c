@@ -6,6 +6,7 @@
 #include "GlobalStandards.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Housekepping/Dump.h"
 #include "TRXVU_Commands.h"
 
 int CMD_StartDump(sat_packet_t *cmd)

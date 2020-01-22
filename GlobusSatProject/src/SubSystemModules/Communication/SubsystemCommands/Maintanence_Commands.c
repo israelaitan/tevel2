@@ -141,7 +141,7 @@ int CMD_GetSatTime(sat_packet_t *cmd)
 {
 	int err = 0;
 	time_unix curr_time = 0;
-	err = Time_getUnixEpoch(&curr_time);
+	err = Time_getUnixEpoch((unsigned int *)&curr_time);
 	if (err != 0)
 	{
 		return err;

@@ -73,7 +73,7 @@ void BeaconLogic()
 		return;
 	}
 
-	Time_getUnixEpoch(&g_prev_beacon_time);
+	Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
 	BeaconSetBitrate();
 
