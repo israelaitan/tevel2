@@ -384,7 +384,7 @@ FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 
 	return FS_SUCCSESS;
 }
-
+//TODO: dont use this function unless you add int error = f_enterFS() etc.
 FileSystemResult fileReadDataSize(char* c_file_name,
 		time_unix from_time, time_unix to_time, int* read, int element_size)
 {
@@ -445,8 +445,11 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		(void)error;
 		//check_int("c_fileWrite, f_enterFS", error);
 		current_file = f_open(curr_file_name, "r");
-		if (current_file == NULL)
+		if (current_file == NULL) {
+			free(element);
+			f_releaseFS();
 			return FS_NOT_EXIST;
+		}
 		unsigned int length = f_filelength(curr_file_name)/(size_elementWithTimeStamp);//number of elements in currnet_file
 		int err_fread=0;
 		(void)err_fread;
@@ -465,6 +468,7 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 			if( (unsigned int)buffer_index > (unsigned int)size_of_buffer )
 			{
 				free(element);
+				f_releaseFS();
 				return FS_BUFFER_OVERFLOW;
 			}
 			(*read)++;
@@ -474,7 +478,6 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		f_close(current_file);
 		f_releaseFS();
 	}
-
 	free(element);
 	return FS_SUCCSESS;
 }
@@ -506,8 +509,11 @@ FileSystemResult c_fileGetNumOfElements(char* c_file_name, time_unix from_time, 
 		(void)error;
 		//check_int("c_fileWrite, f_enterFS", error);
 		current_file = f_open(curr_file_name, "r");
-		if (current_file == NULL)
+		if (current_file == NULL) {
+			free(element);
+			f_releaseFS();
 			return FS_NOT_EXIST;
+		}
 		unsigned int length = f_filelength(curr_file_name)/(size_elementWithTimeStamp);//number of elements in currnet_file
 		int err_fread=0;
 		(void)err_fread;
