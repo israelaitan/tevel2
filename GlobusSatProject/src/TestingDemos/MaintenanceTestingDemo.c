@@ -46,7 +46,7 @@ Boolean TestResetGroundCommWDT()
 
 	ResetGroundCommWDT();
 
-	Time_getUnixEpoch(&current_time);
+	Time_getUnixEpoch((unsigned int *)&current_time);
 	printf("Current Time according to 'Time_getUnixEpoch': %lu\n",current_time);
 
 	FRAM_read((unsigned char*) &current_time, LAST_COMM_TIME_ADDR,LAST_COMM_TIME_SIZE);

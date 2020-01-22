@@ -11,16 +11,15 @@
 
 #include "GlobalStandards.h"
 #include "DUMP.h"
+#include "TLM_management.h"
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Communication/ActUponCommand.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
-#include "TLM_management.h"
-
-#include "SubSystemModules/PowerManagment/EPS.h"
+#include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
-#include "SubSystemModules/Communication/SatCommandHandler.h"
-#include "SubSystemModules/Communication/SatDataTx.h"
+
 
 typedef struct __attribute__ ((__packed__))
 {
@@ -104,6 +103,7 @@ void DumpTask(void *args) {
 	int availFrames = 0;
 	unsigned int num_of_packets = 0;
 	unsigned int size_of_element = 0;
+	time_unix last_time_read = 0;
 	unsigned char *buffer = NULL;
 	int size_of_buffer = 0;
 	int num_of_tlm_elements_read = 0;
@@ -116,11 +116,11 @@ void DumpTask(void *args) {
 		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 		return;
 	}
-	num_of_tlm_elements_read = c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &size_of_element);
+	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
 	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
 	buffer = malloc(buffer_size);
 	//TODO: length of index (100 or 99) not handled in file name 7+3+4
-	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, size_of_element);
+	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
 	num_of_packets = buffer_size / MAX_COMMAND_DATA_LENGTH;
 	if (!(buffer_size % MAX_COMMAND_DATA_LENGTH))
 			num_of_packets++;
@@ -132,9 +132,8 @@ void DumpTask(void *args) {
 	unsigned int i = 0;
 	while (i < num_of_packets) {
 
-		if (CheckDumpAbort() || CheckTransmitionAllowed()) {
-			FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
-		}
+		if (CheckDumpAbort() || CheckTransmitionAllowed())
+			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
 
@@ -144,13 +143,14 @@ void DumpTask(void *args) {
 
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
 		if (err)
-			continue;
-		//TODO: make sure that if availFrame=0 no error probably blocking until frame freed
-		if (0 == availFrames)
+			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
+		if (availFrames != NO_TX_FRAME_AVAILABLE) {
+			i++;
+			totalDataLeft -= currPacketSize;
+			buffer += currPacketSize;
+		}
+		if (availFrames == 0 || availFrames == NO_TX_FRAME_AVAILABLE)
 			vTaskDelay(10);
-		i++;
-		totalDataLeft -= currPacketSize;
-		buffer += currPacketSize;
 	}
 	FinishDump(task_args, buffer, ACK_DUMP_FINISHED, NULL, 0);
 }

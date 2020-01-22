@@ -88,27 +88,27 @@ void TelemetryCollectorLogic()
 
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
-		Time_getUnixEpoch(tlm_last_save_time[eps_tlm]);
+		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[eps_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){
 		TelemetrySaveTRXVU();
-		Time_getUnixEpoch(tlm_last_save_time[trxvu_tlm]);
+		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[trxvu_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[ant_tlm],tlm_save_periods[ant_tlm])){
 		TelemetrySaveANT();
-		Time_getUnixEpoch(tlm_last_save_time[ant_tlm]);
+		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[ant_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm],tlm_save_periods[solar_panel_tlm])){
 		TelemetrySaveSolarPanels();
-		Time_getUnixEpoch(tlm_last_save_time[solar_panel_tlm]);
+		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[solar_panel_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[wod_tlm],tlm_save_periods[wod_tlm])){
 		TelemetrySaveWOD();
-		Time_getUnixEpoch(tlm_last_save_time[wod_tlm]);
+		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[wod_tlm]));
 	}
 
 }
@@ -303,7 +303,7 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 		wod->corrupt_bytes = space.bad;
 	}
 	time_unix current_time = 0;
-	Time_getUnixEpoch(&current_time);
+	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
 #ifdef ISISEPS
 	ieps_statcmd_t cmd;

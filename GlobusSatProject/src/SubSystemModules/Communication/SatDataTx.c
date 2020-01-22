@@ -27,7 +27,7 @@ int muteTRXVU(time_unix duration) {
 		return -2;
 	}
 	time_unix curr_tick_time = 0;
-	Time_getUnixEpoch(&curr_tick_time);
+	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
@@ -46,7 +46,7 @@ Boolean GetMuteFlag() {
 
 Boolean CheckForMuteEnd() {
 	time_unix curr_tick_time = 0;
-	Time_getUnixEpoch(&curr_tick_time);
+	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
 	return (curr_tick_time > g_mute_end_time);
 }
 

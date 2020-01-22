@@ -20,7 +20,7 @@
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
 	time_unix curr = 0;
-	int err = Time_getUnixEpoch(&curr);
+	int err = Time_getUnixEpoch((unsigned int *)&curr);
 	if(0 != err){
 		return FALSE;
 	}
@@ -46,7 +46,7 @@ Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
 void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
 {
 	time_unix current_time = 0;
-	Time_getUnixEpoch(&current_time);
+	Time_getUnixEpoch((unsigned int *)&current_time);
 
 	FRAM_write((unsigned char*) &current_time, time_addr, time_size);
 }
@@ -73,7 +73,7 @@ int WakeupFromResetCMD()
 
 	if (reset_flag) {
 		time_unix curr_time = 0;
-		Time_getUnixEpoch(&curr_time);
+		Time_getUnixEpoch((unsigned int *)&curr_time);
 
 		err = SendAckPacket(ACK_RESET_WAKEUP, NULL, (unsigned char*) &curr_time,
 				sizeof(time_unix));
@@ -106,7 +106,7 @@ void ResetGroundCommWDT()
 Boolean IsGroundCommunicationWDTKick()
 {
 	time_unix current_time = 0;
-	Time_getUnixEpoch(&current_time);
+	Time_getUnixEpoch((unsigned int *)&current_time);
 
 	time_unix last_comm_time = 0;
 	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR,

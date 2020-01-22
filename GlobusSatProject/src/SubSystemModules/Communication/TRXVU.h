@@ -9,7 +9,7 @@
 
 #define SIZE_RXFRAME	200		///< max size of data field in uplink
 #define SIZE_TXFRAME	235		///< max size of data field in downlink
-
+#define NO_TX_FRAME_AVAILABLE	255		///<indication that the send buffer is full
 /*!
  * @brief initializes the TRXVU subsystem
  * @return	0 on successful init

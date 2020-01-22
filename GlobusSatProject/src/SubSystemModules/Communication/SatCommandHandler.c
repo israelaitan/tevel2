@@ -114,7 +114,7 @@ Boolean isDelayedCommandDue(time_unix cmd_time, Boolean *expired)
 {
 	int err = 0;
 	time_unix present_time = 0;
-	err = Time_getUnixEpoch(&present_time);
+	err = Time_getUnixEpoch((unsigned int *)&present_time);
 	if (0 != err) {
 		return FALSE;
 	}
