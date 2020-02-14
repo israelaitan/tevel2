@@ -18,7 +18,7 @@
 #include <hcc/api_fat.h>
 
 #include "InitSystem.h"
-
+#include "SubSystemModules/PowerManagment/EPS.h"
 
 Boolean selectAndExecuteTest()
 {
@@ -92,12 +92,16 @@ Boolean selectAndExecuteTest()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-
-
 	InitSubsystems();
-
+	voltage_t curr_voltage = 0;
+	int i = 0;
 	while (1) {
-		selectAndExecuteTest();
+		//selectAndExecuteTest();
+		GetBatteryVoltage(&curr_voltage);
+		printf("eps tele vbat: %d\n",  curr_voltage);
+		printf("still alive %d\n",i++);
+		TRX_Logic();
+		TelemetryCollectorLogic();
 		vTaskDelay(100);
 	}
 }

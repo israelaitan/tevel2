@@ -35,11 +35,14 @@ int EPS_Init()
 	if (rv != E_NO_SS_ERR) {
 		return -1;
 	}
+
+#ifdef SOLAR_PANELS_ASSEMBELED
 	rv = IsisSolarPanelv2_initialize(slave0_spi);
 	if (rv != 0) {
 		return -2;
 	}
 	IsisSolarPanelv2_sleep();
+#endif
 
 	rv = GetThresholdVoltages(&eps_threshold_voltages);
 	if (0 != rv) {
@@ -103,11 +106,17 @@ int GetBatteryVoltage(voltage_t *vbatt)
 {
 	int err = 0;
 #ifdef ISISEPS
-	ieps_enghk_data_cdb_t hk_tlm;
 	ieps_statcmd_t cmd;
 	ieps_board_t board = ieps_board_cdb1;
+#ifdef BATTERY_ATTACHED
+	ieps_enghk_data_cdb_t hk_tlm;
 	err = IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, board, &hk_tlm, &cmd);
 	*vbatt = hk_tlm.fields.bat_voltage;
+#else
+	ieps_enghk_data_mb_t hk_tlm;
+	err = IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, board, &hk_tlm, &cmd);
+	*vbatt = hk_tlm.fields.chrg_bus_volt;
+#endif
 #endif
 #ifdef GOMEPS
 	gom_eps_hk_t hk_tlm;
