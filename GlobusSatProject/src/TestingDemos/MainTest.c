@@ -98,7 +98,7 @@ void taskTesting()
 	while (1) {
 		//selectAndExecuteTest();
 		GetBatteryVoltage(&curr_voltage);
-		printf("eps tele vbat: %d\n",  curr_voltage);
+		printf("Assaf Change - eps tele vbat: %d\n",  curr_voltage);
 		printf("still alive %d\n",i++);
 		TRX_Logic();
 		TelemetryCollectorLogic();
