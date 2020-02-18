@@ -1,5 +1,7 @@
 #ifndef BEACON_H_
 #define BEACON_H_
+#define NUMBEACON 5
+#define AWATEDTIME 20000
 
 /*!
  *	@brief initializes the relevant parameters for
@@ -32,6 +34,10 @@ int UpdateBeaconBaudCycle(unsigned char cycle);
  * @note updates in the FRAM as well as the private global variable.
  */
 int UpdateBeaconInterval(time_unix intrvl);
+
+
+//Send BEACON every 20 seconds - with the latest satellite telemetry.
+void TestBeacon();
 
 
 #endif /* BEACON_H_*/
