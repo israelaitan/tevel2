@@ -43,6 +43,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd);
  * @param[in] type command type
  * @param[in] subtype command subtype
  * @param[in] id the id of the specific command
+ * @param[in] ord the order of the specific command
  * @param[out] cmd pointer to parsed command buffer
  * @return	errors according to CommandHandlerErr
  * @note helpful when assembling assembling a cmd for downlink. assemble
