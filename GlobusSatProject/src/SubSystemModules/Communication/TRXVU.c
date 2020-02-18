@@ -29,8 +29,6 @@ int				g_idle_period = 300 ;				// idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
-xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
-
 
 int InitTrxvu()
 {
