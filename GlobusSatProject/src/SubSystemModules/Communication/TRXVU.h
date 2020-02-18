@@ -9,7 +9,10 @@
 
 #define SIZE_RXFRAME	200		///< max size of data field in uplink
 #define SIZE_TXFRAME	235		///< max size of data field in downlink
-#define NO_TX_FRAME_AVAILABLE	255		///<indication that the send buffer is full
+#define NO_TX_FRAME_AVAILABLE 255 //indication that the send buffer is full
+
+
+
 /*!
  * @brief initializes the TRXVU subsystem
  * @return	0 on successful init
@@ -19,11 +22,10 @@ int InitTrxvu();
 
 /*!
  * @brief The TRXVU logic according to the sub-system flowchart
- * @return	command_succsess on success
- * 			errors according to CommandHandlerErr enumeration
- * @see "SatCommandHandler.h"
+ * @return	int indicating the error 
  */
 CommandHandlerErr TRX_Logic();
+
 
 
 #endif
