@@ -39,6 +39,10 @@ int trxvu_command_router(sat_packet_t *cmd)
 		err = CMD_UnMuteTRXVU(cmd);
 		break;
 
+	case TRXVU_IDLE:
+		err = CMD_SetIdleOn();
+		break;
+
 	case GET_BAUD_RATE:
 		err = CMD_GetBaudRate(cmd);
 		break;
