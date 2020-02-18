@@ -10,7 +10,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-
 #include "GlobalStandards.h"
 #include "TRXVU.h"
 #include "AckHandler.h"
@@ -26,77 +25,146 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Housekepping/Dump.h"
 
+int				g_idle_period = 300 ;				// idle time default = 5 min
+Boolean 		g_idle_flag = FALSE;
+time_unix 		g_idle_start_time = 0;
+
+xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
 
 
-int InitTrxvu() {
+int InitTrxvu()
+{
+	ISIStrxvuI2CAddress i2cAdress;
+	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
+	i2cAdress.addressVu_tc=I2C_TRXVU_TC_ADDR;
 
-	ISIStrxvuI2CAddress myTRXVUAddress;
-	ISIStrxvuFrameLengths myTRXVUBuffers;
+	ISIStrxvuFrameLengths framelengths;
 
-	int retValInt = 0;
+	framelengths.maxAX25frameLengthRX=SIZE_RXFRAME;
+	framelengths.maxAX25frameLengthTX=SIZE_TXFRAME;
+	ISIStrxvuBitrate default_bitrates;
+	default_bitrates=trxvu_bitrate_9600;
 
-	//Buffer definition
-	myTRXVUBuffers.maxAX25frameLengthTX = SIZE_TXFRAME;//SIZE_TXFRAME;
-	myTRXVUBuffers.maxAX25frameLengthRX = SIZE_RXFRAME;
-
-	//I2C addresses defined
-	myTRXVUAddress.addressVu_rc = I2C_TRXVU_RC_ADDR;
-	myTRXVUAddress.addressVu_tc = I2C_TRXVU_TC_ADDR;
-
-
-	//Bitrate definition
-	ISIStrxvuBitrate myTRXVUBitrates;
-	myTRXVUBitrates = trxvu_bitrate_9600;
-	retValInt = IsisTrxvu_initialize(&myTRXVUAddress, &myTRXVUBuffers,
-			&myTRXVUBitrates, 1);
-	if (retValInt != 0) {
-		return retValInt;
+	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
+	if(err!=0)
+	{
+		printf("there is error in the initialization");
+		return err;
 	}
+
+
+	//sleep 0.1 sec and set birate to 9600 bps
+	vTaskDelay(100);
+	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
 	vTaskDelay(100);
 
-	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX,myTRXVUBitrates);
-	vTaskDelay(100);
-
-	ISISantsI2Caddress myAntennaAddress;
-	myAntennaAddress.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-	myAntennaAddress.addressSideB = ANTS_I2C_SIDE_B_ADDR;
-
-	//Initialize the AntS system
-	retValInt = IsisAntS_initialize(&myAntennaAddress, 1);
-	if (retValInt != 0) {
-		return retValInt;
+	//initialize Antenas system
+	ISISantsI2Caddress adress;
+	adress.addressSideA = ANTS_I2C_SIDE_A_ADDR;
+	adress.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+	err=IsisAntS_initialize(&adress,1);
+	if(err!=0)
+	{
+		printf("there is error in the initialization of the Antenas");
+		//TODO: add return to stop the execution of this method
+		return err;
 	}
 
 	InitTxModule();
 	InitBeaconParams();
 
-	return 0;
+	return err;
 }
 
-CommandHandlerErr TRX_Logic() {
-	int err = 0;
-	int frame_count = GetNumberOfFramesInBuffer();
-	sat_packet_t cmd = { 0 };
 
-	if (frame_count > 0) {
-		err = GetOnlineCommand(&cmd);
-		ResetGroundCommWDT();
-		SendAckPacket(ACK_RECEIVE_COMM, &cmd, NULL, 0);
+ CommandHandlerErr TRX_Logic()
+{
+	sat_packet_t cmd={0};
+	int onCmdCount, offBufferCount;
+	unsigned char* data = NULL;
+	unsigned int length=0;
+	CommandHandlerErr  res;
+	int result = 0;
 
-	} else if (GetDelayedCommandBufferCount() > 0) {
-		err = GetDelayedCommand(&cmd);
+	//check if we have online command
+	onCmdCount = GetNumberOfFramesInBuffer();
+
+	if(onCmdCount>0)
+	{
+		res = GetOnlineCommand(&cmd);//ask the teacher
+		if(res!=0)
+		{
+			printf("there was an error in getting the online command ");
+		}
+		else
+		{
+			ResetGroundCommWDT();
+			SendAckPacket(ACK_RECEIVE_COMM, &cmd, &data, length);
+		}
 	}
-	if (cmd_command_found == err) {
-		err = ActUponCommand(&cmd);
-		//TODO: log error
-		//TODO: send message to ground when a delayed command was not executed-> add to log
+	else
+	{
+		offBufferCount=GetDelayedCommandBufferCount();
+		if(offBufferCount> 0)
+		{
+			//TODO: This is not the correct method to call. You need the Delayed commands not the Online commands
+			res=GetDelayedCommand(&cmd);
+			if(res!=0)
+			{
+				//TODO: change the message to be more specific on where was the failure
+				printf("there was error in getting delayed command");
+			}
+		}
 	}
+
+	if((onCmdCount>0 || offBufferCount>0) && res == 0)
+	{
+		result = ActUponCommand(&cmd);
+	}
+
+	//check idle timer
+	HandleIdleTime ();
+
 	BeaconLogic();
 
-	if (cmd_command_found != err)
-		return err;
+	return result+res;
 
-	return cmd_command_succsess;
 }
 
 
+int CMD_SetIdleOn()
+{
+	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
+	if(err!=0)
+	{
+		printf("failed in setting trxvy idle on - %d", err);
+	}
+	else
+	{
+		Time_getUnixEpoch(&g_idle_start_time);
+		g_idle_flag=TRUE;
+	}
+	return err;
+}
+
+int SetIdleOff()
+{
+	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
+	if(err!=0)
+	{
+		printf("failed in setting trxvu idle off - %d", err);
+	}
+	return err;
+}
+
+void HandleIdleTime()
+{
+	if(g_idle_flag==TRUE)
+	{
+		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
+		{
+			SetIdleOff();
+			g_idle_flag=FALSE;
+		}
+	}
+}
