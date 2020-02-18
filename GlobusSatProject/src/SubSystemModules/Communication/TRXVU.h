@@ -26,6 +26,10 @@ int InitTrxvu();
  */
 CommandHandlerErr TRX_Logic();
 
-
+/*!
+ * @brief The TRXVU command to set TRXVU into idle
+ * @return	int indicating the error
+ */
+int CMD_SetIdleOn();
 
 #endif
