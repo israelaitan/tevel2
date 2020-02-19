@@ -27,25 +27,37 @@
 #ifdef TESTING
 	#include "TestingDemos/MainTest.h"
 #else
-void taskMain()
-{
-	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
-	InitSubsystems();
+	void taskMain()
+	{
+		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
-	while (TRUE) {
-		EPS_Conditioning();
+		int res= InitSubsystems();//deploy ants
+		if(res!=0)
+		{
+			printf("error in InitSubsystems: "+res)
+		}
 
-		TRX_Logic();
+		while(TRUE)//main loop
+		{
+			res=EPS_Conditioning();
+			if(res!=0)
+			{
+				printf("error in EPS_Conditioning: "+res)
+			}
 
-		TelemetryCollectorLogic();
+			res=TRX_Logic();
+			if(res!=0)
+			{
+				printf("error in TRX_Logic: "+res)
+			}
 
-		Maintenance();
-
-		// Payload_Logic();
+			TelemetryCollectorLogic();
+			Maintenance();
+		}
 	}
-}
 #endif //! TESTING
+
 
 // main operation function. will be called upon software boot.
 int main()
