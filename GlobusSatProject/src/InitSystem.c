@@ -31,11 +31,7 @@ Boolean isFirstActivation()
 {
 	unsigned char FirstActivation=0;
 	int res=0;
-#ifdef TESTING
-	printf("IsFirstActivation here");
-#else
 	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-#endif
 	 if (res==-2)
 	 {
 		 printf(" specified address and size are out of range of the FRAM space");
@@ -61,12 +57,7 @@ void firstActivationProcedure()
 	int err = 0;
 	const int TotalWaitTime = 1000 * 60 * 30 / portTICK_RATE_MS;
 	int AwaitedTime = 0;
-
-#ifdef TESTING
-	printf("FirstActivationProcedure here");
-#else
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
-#endif
 	if (!err)
 	{
 		while (TotalWaitTime>AwaitedTime)
@@ -74,12 +65,8 @@ void firstActivationProcedure()
 
 			vTaskDelay(1000*10);
 			AwaitedTime += 1000*10;
-#ifdef TESTING
-	printf("inside while after: %d milliseconds\n", AwaitedTime);
-#else
 			FRAM_write(&AwaitedTime , MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE);
 			TelemetryCollectorLogic();
-#endif
 		}
 	}
 }
@@ -87,9 +74,6 @@ void firstActivationProcedure()
 	//שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
 {
-#ifdef TESTING
-	printf("WriteDefaultValuesToFRAM here");
-#else
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write(&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 	int NumberVoltages=NUMBER_OF_THRESHOLD_VOLTAGES;
@@ -107,18 +91,13 @@ void WriteDefaultValuesToFRAM()
 	int wod=DEFAULT_WOD_SAVE_TLM_TIME;
 	FRAM_write(&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
 	//TODO:FRAM_write(add beacon);
-#endif
 }
 
 	//אתחול ה FRAM
 int StartFRAM()
 {
 	int result=0;
-#ifdef TESTING
-	printf("start time here");
-#else
 	result=FRAM_start();
-#endif
 	if(-1==result)
 	{
 		printf("failed to creaT semaforeS");}
@@ -134,12 +113,7 @@ int StartFRAM()
 int StartI2C()
 {
 	int result=0;
-#ifdef TESTING
-	printf("start i2c here");
-#else
-
 	result=I2C_start(I2c_Timeout,I2c_Timeout);
-#endif
 	if(result==-3)
 	{
 		printf("the driver uses a timeout of 1");
@@ -164,13 +138,7 @@ int StartSPI()
 {
 
 	int result= 0;
-
-#ifdef TESTING
-	printf("start spI here");
-#else
-
 	result = SPI_start(bus1_spi, slave1_spi);
-#endif
 
 	if(result==0)
 	{
@@ -186,9 +154,6 @@ int StartSPI()
 	//אתחול השעון של הלווין
 int StartTIME()
 {
-#ifdef TESTING
-	printf("start time here");
-#else
 	int err = 0;
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
 	err = Time_start(&expected_deploy_time, 0);
@@ -204,7 +169,6 @@ int StartTIME()
 				MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 		Time_setUnixEpoch(time_before_wakeup);
 	}
-#endif
 	return 0;
 }
 
