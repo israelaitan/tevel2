@@ -26,7 +26,7 @@ src/InitSystem.d: ../src/InitSystem.c \
  C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/errors.h \
  ../src/FRAM_FlightParameters.h \
  C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Storage/FRAM.h \
- ../src/SysI2CAddr.h ../src/TestingConfigurations.h \
+ ../src/SysI2CAddr.h ../src/TestingConfigurations.h ../src/InitSystem.h \
  ../src/SubSystemModules/PowerManagment/EPS.h \
  C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/GlobalStandards.h \
  ../src/SubSystemModules/PowerManagment/EPSOperationModes.h \
@@ -40,9 +40,8 @@ src/InitSystem.d: ../src/InitSystem.c \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
- ../src/SubSystemModules/Housekepping/Dump.h \
- C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
- ../src/InitSystem.h ../src/TLM_management.h \
+ C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisAntS.h \
+ ../src/TLM_management.h \
  C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisEPS.h
 
 C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
@@ -103,6 +102,8 @@ C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Storage/FR
 
 ../src/TestingConfigurations.h:
 
+../src/InitSystem.h:
+
 ../src/SubSystemModules/PowerManagment/EPS.h:
 
 C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/GlobalStandards.h:
@@ -129,11 +130,7 @@ C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
 C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h:
 
-../src/SubSystemModules/Housekepping/Dump.h:
-
-C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
-
-../src/InitSystem.h:
+C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisAntS.h:
 
 ../src/TLM_management.h:
 
