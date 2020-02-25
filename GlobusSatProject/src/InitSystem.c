@@ -187,8 +187,8 @@ int DeploySystem()
 		FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
 
 		ISISantsI2Caddress addressab;
-		addressab.addressSideA=0;//TODO: which number
-		addressab.addressSideB=0;//TODO: which number
+		addressab.addressSideA=0;//TODO: take from SysI2CAddr.h
+		addressab.addressSideB=0;//TODO: take from SysI2CAddr.h
 		int res=IsisAntS_initialize( &addressab, 1);//לוודא שיש מערכת 1
 
 		if(res==0)
