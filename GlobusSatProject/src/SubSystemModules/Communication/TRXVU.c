@@ -63,8 +63,7 @@ int InitTrxvu()
 	err=IsisAntS_initialize(&adress,1);
 	if(err!=0)
 	{
-		printf("there is error in the initialization of the Antenas");
-		//TODO: add return to stop the execution of this method
+		printf("there is error in the initialization of the Antennas");
 		return err;
 	}
 
@@ -105,11 +104,9 @@ int InitTrxvu()
 		offBufferCount=GetDelayedCommandBufferCount();
 		if(offBufferCount> 0)
 		{
-			//TODO: This is not the correct method to call. You need the Delayed commands not the Online commands
 			res=GetDelayedCommand(&cmd);
 			if(res!=0)
 			{
-				//TODO: change the message to be more specific on where was the failure
 				printf("there was error in getting delayed command");
 			}
 		}
@@ -139,7 +136,7 @@ int CMD_SetIdleOn()
 	}
 	else
 	{
-		Time_getUnixEpoch(&g_idle_start_time);
+		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
 	}
 	return err;
