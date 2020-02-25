@@ -56,7 +56,7 @@ void BeaconLogic()
 {
 	sat_packet_t cmd;
 	WOD_Telemetry_t wod = { 0 };
-	unsigned int id=  0xFFFFFFFF;//TODO find id for assemble command
+	unsigned int id=  0xFFFFFFFF;
 	if(CheckTransmitionAllowed())
 	{
 		if(CheckExecutionTime(g_prev_beacon_time, g_beacon_interval_time))
