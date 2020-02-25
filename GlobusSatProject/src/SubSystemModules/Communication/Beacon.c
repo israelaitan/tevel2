@@ -52,6 +52,7 @@ int BeaconSetBitrate()
 	return err;
 }
 
+//Beacon logic code
 void BeaconLogic()
 {
 	sat_packet_t cmd;
