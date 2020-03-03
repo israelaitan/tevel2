@@ -106,6 +106,6 @@ void taskTesting()
 		BeaconLogic();
 		//TRX_Logic();
 		TelemetryCollectorLogic();
-
+		TestDumpTelemetry();
 	}
 }
