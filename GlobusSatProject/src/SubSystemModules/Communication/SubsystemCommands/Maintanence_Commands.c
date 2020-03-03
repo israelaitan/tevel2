@@ -9,7 +9,7 @@
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #ifdef GOMEPS
 	#include <satellite-subsystems/GomEPS.h>
@@ -241,8 +241,10 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 		vTaskDelay(10);
 #ifdef ISISEPS
-		ieps_statcmd_t ieps_cmd;
-		err = IsisEPS_hardReset(EPS_I2C_BUS_INDEX, &ieps_cmd);
+		isis_eps__reset__to_t params;//TODO: what params?
+		isis_eps__reset__from_t response;//TODO: what to do with response?
+		err = isis_eps__reset__tmtc( EPS_I2C_BUS_INDEX, &params , &response );
+
 #endif
 #ifdef GOMEPS
 	//TODO:

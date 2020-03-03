@@ -19,7 +19,7 @@
 	#include <satellite-subsystems/GomEPS.h>
 #endif
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #define I2c_SPEED_Hz 100000
 #define I2c_Timeout 10

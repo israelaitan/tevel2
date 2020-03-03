@@ -3,7 +3,7 @@
 #include "GlobalStandards.h"
 
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #ifdef GOMEPS
 	#include <satellite-subsystems/GomEPS.h>
@@ -60,7 +60,8 @@ int SetEPS_Channels(channel_t channel)
 {
 	(void)channel;
 #ifdef ISISEPS
-	ieps_statcmd_t code;
+	//TODO:adjust code to new driver
+	/*ieps_statcmd_t code;
 	ieps_obus_channel_t chnl;
 	chnl.raw = g_system_state;
 	int err = IsisEPS_outputBusGroupOn(EPS_I2C_BUS_INDEX, chnl, chnl, &code);
@@ -73,7 +74,7 @@ int SetEPS_Channels(channel_t channel)
 	err = IsisEPS_outputBusGroupOff(EPS_I2C_BUS_INDEX, chnl, chnl, &code);
 	if (err != 0){
 		return err;
-	}
+	}*/
 	return 0;
 #endif
 #ifdef GOMEPS

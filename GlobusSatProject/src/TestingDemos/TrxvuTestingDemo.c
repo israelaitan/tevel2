@@ -11,7 +11,7 @@
 #include <hal/Timing/Time.h>
 
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #ifdef GOMEPS
 	#include <satellite-subsystems/GomEPS.h>
@@ -198,16 +198,23 @@ Boolean TestDumpTelemetry()
 	printf("Starting Dump. Please Insert Dump Parameter:\n");
 
 	printf("Please Insert Command Type:\n");
-	while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
-	cmd.cmd_type = temp;
+	//while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
+	//cmd.cmd_type = temp;
+	cmd.cmd_type = trxvu_cmd_type;
 
 	printf("Please Insert Command Subtype:\n");
-	while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
-	cmd.cmd_subtype = temp;
+	//while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
+	//cmd.cmd_subtype = temp;
+	cmd.cmd_subtype = DUMP_SUBTYPE;
 
 	printf("Please Insert Command ID:\n");
 	while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
 	cmd.ID = temp;
+
+	unsigned int from = UNIX_TIME_AT_Y2K, to;
+	Time_getUnixEpoch(&to);
+	memcpy(cmd.data, from, sizeof(unsigned int));
+	memcpy(cmd.data + sizeof(unsigned int), from, sizeof(unsigned int));
 
 	DumpTelemetry(&cmd);
 	return TRUE;
@@ -310,14 +317,14 @@ Boolean TestMuteTrxvu()
 	Time_getUnixEpoch((unsigned int *)&curr);
 
 #ifdef ISISEPS
-	ieps_statcmd_t cmd;
+	isis_eps__watchdog__from_t response;
 #endif
 	while(!CheckForMuteEnd()){
 
 		printf("current tick = %d\n",(int)xTaskGetTickCount());
 
 #ifdef ISISEPS
-		IsisEPS_resetWDT(EPS_I2C_BUS_INDEX,&cmd);
+		isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &response );
 #endif
 #ifdef GOMEPS
 		GomEpsResetWDT(EPS_I2C_BUS_INDEX);

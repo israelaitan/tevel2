@@ -2,7 +2,7 @@
 #include "GlobalStandards.h"
 
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #ifdef GOMEPS
 	#include <satellite-subsystems/GomEPS.h>
@@ -121,16 +121,16 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	FRAM_read((unsigned char*)tlm_save_periods,TLM_SAVE_PERIOD_START_ADDR,NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
 
 	// -- EPS files
-	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(ieps_rawhk_data_mb_t));
+	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isis_eps__gethousekeepingraw__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb)
 
-	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(ieps_enghk_data_mb_t));
+	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isis_eps__gethousekeepingeng__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
-	res = c_fileCreate(FILENAME_EPS_RAW_CDB_TLM,sizeof(ieps_rawhk_data_cdb_t));
+	res = c_fileCreate(FILENAME_EPS_RAW_CDB_TLM,sizeof(isis_eps__gethousekeepingrawincdb__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_cdb);
 
-	res = c_fileCreate(FILENAME_EPS_ENG_CDB_TLM,sizeof(ieps_enghk_data_cdb_t));
+	res = c_fileCreate(FILENAME_EPS_ENG_CDB_TLM,sizeof(isis_eps__gethousekeepingengincdb__tm));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_cdb);
 
 	// -- TRXVU files
@@ -158,32 +158,30 @@ void TelemetrySaveEPS()
 {
 #ifdef ISISEPS
 	int err = 0;
-	ieps_statcmd_t cmd;
-	ieps_board_t brd = ieps_board_cdb1;
 
-	ieps_rawhk_data_mb_t tlm_mb_raw;
-	err = IsisEPS_getRawHKDataMB(EPS_I2C_BUS_INDEX, &tlm_mb_raw, &cmd);
+	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
+	err = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
 	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
 	}
 
-	ieps_enghk_data_mb_t tlm_mb_eng;
-	err = IsisEPS_getEngHKDataMB(EPS_I2C_BUS_INDEX, &tlm_mb_eng, &cmd);
+	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
 	}
 
-	ieps_rawhk_data_cdb_t tlm_cdb_raw;
-	err = IsisEPS_getRawHKDataCDB(EPS_I2C_BUS_INDEX, brd, &tlm_cdb_raw, &cmd);
+	isis_eps__gethousekeepingrawincdb__from_t tlm_cdb_raw;
+	err = isis_eps__gethousekeepingrawincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_raw);
 	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_CDB_TLM, &tlm_cdb_raw);
 	}
 
-	ieps_enghk_data_cdb_t tlm_cdb_eng;
-	err = IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, brd, &tlm_cdb_eng, &cmd);
+	isis_eps__gethousekeepingengincdb__from_t tlm_cdb_eng;
+	err = isis_eps__gethousekeepingengincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_eng);
 	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);
@@ -306,22 +304,22 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
 #ifdef ISISEPS
-	ieps_statcmd_t cmd;
-	ieps_enghk_data_mb_t hk_tlm;
-	ieps_enghk_data_cdb_t hk_tlm_cdb;
-	ieps_board_t board = ieps_board_cdb1;
 
-	err =  IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, board, &hk_tlm_cdb, &cmd);
-	err += IsisEPS_getRAEngHKDataMB(EPS_I2C_BUS_INDEX, &hk_tlm, &cmd);
+	isis_eps__gethousekeepingrawincdb__from_t hk_tlm;
+	isis_eps__gethousekeepingeng__from_t hk_tlm_cdb;
+
+	err = isis_eps__gethousekeepingrawincdb__tm( EPS_I2C_BUS_INDEX, &hk_tlm );
+	err += isis_eps__gethousekeepingeng__tm( EPS_I2C_BUS_INDEX, &hk_tlm_cdb );
 
 	if(err == 0){
-		wod->vbat = hk_tlm_cdb.fields.bat_voltage;
-		wod->current_3V3 = hk_tlm.fields.obus3V3_curr;
-		wod->current_5V = hk_tlm.fields.obus5V_curr;
-		wod->volt_3V3 = hk_tlm.fields.obus3V3_volt;
-		wod->volt_5V = hk_tlm.fields.obus5V_volt;
-		wod->charging_power = hk_tlm.fields.pwr_generating;
-		wod->consumed_power = hk_tlm.fields.pwr_delivering;
+		//TODO: map correct values
+		wod->vbat = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->current_3V3 = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->current_5V = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->volt_3V3 = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->volt_5V = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->consumed_power = hk_tlm_cdb.fields.batt_input.fields.volt;
 	}
 #endif
 #ifdef GOMEPS

@@ -9,7 +9,7 @@
 
 #include "EPS.h"
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
+	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #ifdef GOMEPS
 	#include <satellite-subsystems/GomEPS.h>
@@ -23,10 +23,12 @@ EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES}
 
 int EPS_Init()
 {
-	unsigned char i2c_address = EPS_I2C_ADDR;
 	int rv;
 #ifdef ISISEPS
-	rv = IsisEPS_initialize(&i2c_address, 1);
+	ISIS_EPS_t isis_eps = {EPS_I2C_ADDR};
+
+	rv =ISIS_EPS_Init( &isis_eps, 1 );
+
 #endif
 #ifdef GOMEPS
 	rv = GomEpsInitialize(&i2c_address, 1);
@@ -106,16 +108,15 @@ int GetBatteryVoltage(voltage_t *vbatt)
 {
 	int err = 0;
 #ifdef ISISEPS
-	ieps_statcmd_t cmd;
-	ieps_board_t board = ieps_board_cdb1;
+
 #ifdef BATTERY_ATTACHED
-	ieps_enghk_data_cdb_t hk_tlm;
-	err = IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, board, &hk_tlm, &cmd);
-	*vbatt = hk_tlm.fields.bat_voltage;
+	isis_eps__gethousekeepingraw__from_t hk_tlm;
+	err = isis_eps__gethousekeepingraw__tm( EPS_I2C_BUS_INDEX,  &hk_tlm );
+	*vbatt = hk_tlm.fields.batt_input.fields.volt;
 #else
-	ieps_enghk_data_mb_t hk_tlm;
-	err = IsisEPS_getEngHKDataCDB(EPS_I2C_BUS_INDEX, board, &hk_tlm, &cmd);
-	*vbatt = hk_tlm.fields.chrg_bus_volt;
+	isis_eps__gethousekeepingraw__from_t hk_tlm;
+	err = isis_eps__gethousekeepingraw__tm( EPS_I2C_BUS_INDEX,  &hk_tlm );
+	*vbatt = hk_tlm.fields.dist_input.fields.volt;//TODO:change to charging
 #endif
 #endif
 #ifdef GOMEPS
