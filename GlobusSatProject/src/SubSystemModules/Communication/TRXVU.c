@@ -76,7 +76,12 @@ int InitTrxvu()
 
 	//sleep 0.1 sec and set birate to 9600 bps
 	vTaskDelay(100);
-	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
+	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
+	if(err!=0)
+	{
+		printf("there is error in the IsisTrxvu_tcSetAx25Bitrate");
+		return err;
+	}
 	vTaskDelay(100);
 
 	//initialize Antenas system
@@ -141,7 +146,7 @@ int InitTrxvu()
 	}
 
 	//check idle timer
-	HandleIdleTime ();
+	HandleIdleTime();
 
 	BeaconLogic();
 
