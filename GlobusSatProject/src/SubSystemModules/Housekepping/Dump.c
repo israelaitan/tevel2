@@ -24,7 +24,7 @@
 typedef struct __attribute__ ((__packed__))
 {
 	sat_packet_t *cmd;
-	unsigned char dump_type;
+	unsigned short dump_type;
 	time_unix t_start;
 	time_unix t_end;
 } dump_arguments_t;
@@ -172,9 +172,9 @@ int DumpTelemetry(sat_packet_t *cmd) {
 
 	memcpy(&dmp_pckt->t_end, cmd->data + offset, sizeof(dmp_pckt->t_end));
 
-	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
-		return E_GET_SEMAPHORE_FAILED;
-	}
+	//if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
+	//	return E_GET_SEMAPHORE_FAILED;
+	//}
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
 			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);
 

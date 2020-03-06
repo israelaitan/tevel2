@@ -23,6 +23,14 @@ typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 	unsigned short number_of_resets;///< counts the number of resets the satellite has gone through [#]
 } WOD_Telemetry_t;
 
+typedef enum{
+	eps_tlm,
+	trxvu_tlm,
+	ant_tlm,
+	solar_panel_tlm,
+	wod_tlm
+}subsystem_tlm;
+
 #define NUMBER_OF_TELEMETRIES 10	///< number of telemetries the satellite saves
 #define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5			///<
 /*!

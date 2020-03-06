@@ -23,7 +23,7 @@ typedef struct __attribute__ ((__packed__)) sat_packet_t
 	unsigned int ordinal;						///< ord number of packet in sequence
 	char cmd_type;								///< type of the command. according to SPL protocol
 	char cmd_subtype;							///< sub-type of the command. according to SPL protocol
-	unsigned int length;						///< length of the received data.
+	unsigned short length;						///< length of the received data.
 	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
 
 }sat_packet_t;

@@ -27,7 +27,10 @@ src/TLM_management.d: ../src/TLM_management.c \
  ../src/FRAM_FlightParameters.h ../src/SysI2CAddr.h \
  ../src/TestingConfigurations.h ../src/TLM_management.h \
  C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
- C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/GlobalStandards.h
+ C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/GlobalStandards.h \
+ ../src/SubSystemModules/Housekepping/TelemetryCollector.h \
+ ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
+ C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h
 
 C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_mdriver_atmel_mcipdc.h:
 
@@ -90,3 +93,9 @@ C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/at91/include/at91/utility/
 C:/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h:
 
 C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/GlobalStandards.h:
+
+../src/SubSystemModules/Housekepping/TelemetryCollector.h:
+
+../src/SubSystemModules/Housekepping/TelemetryFiles.h:
+
+C:\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:

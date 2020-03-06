@@ -236,7 +236,7 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	err=InitializeFS();
+	err=InitializeFS(TRUE);//TODO:set first time properly
 	if (err!=0)
 		return err;
 

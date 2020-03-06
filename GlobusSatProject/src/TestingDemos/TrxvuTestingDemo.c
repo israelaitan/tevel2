@@ -3,6 +3,7 @@
 #include <freertos/task.h>
 
 #include "TrxvuTestingDemo.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -208,13 +209,14 @@ Boolean TestDumpTelemetry()
 	cmd.cmd_subtype = DUMP_SUBTYPE;
 
 	printf("Please Insert Command ID:\n");
-	while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
-	cmd.ID = temp;
-
-	unsigned int from = UNIX_TIME_AT_Y2K, to;
+	//while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
+	cmd.ID = 5;
+	unsigned short tlmType = tlm_eps_eng_cdb;
+	memcpy(cmd.data, &tlmType, sizeof(tlmType));
+	unsigned int from = UNIX_TIME_AT_Y2K, to;//TODO:not good params
 	Time_getUnixEpoch(&to);
-	memcpy(cmd.data, from, sizeof(unsigned int));
-	memcpy(cmd.data + sizeof(unsigned int), from, sizeof(unsigned int));
+	memcpy(cmd.data + sizeof(tlmType), &from, sizeof(unsigned int));
+	memcpy(cmd.data + sizeof(tlmType) + sizeof(unsigned int), &to, sizeof(unsigned int));
 
 	DumpTelemetry(&cmd);
 	return TRUE;

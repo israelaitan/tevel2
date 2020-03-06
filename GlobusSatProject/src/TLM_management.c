@@ -14,6 +14,7 @@
 #include "GlobalStandards.h"
 
 #include "TLM_management.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
 
 #define SKIP_FILE_TIME_SEC 1000000
 #define _SD_CARD 0
@@ -117,25 +118,22 @@ FileSystemResult InitializeFS(Boolean first_time)
 		delete_allTMFilesFromSD();
 		FS fs = {0};
 		if(FRAM_write((unsigned char*)&fs,FSFRAM,sizeof(FS))!=0)
-		{
 			return FS_FAT_API_FAIL;
-		}
-	}
-
-	F_SPACE space;
-	/* get free space on current drive */
-	ret = f_getfreespace(f_getdrive(),&space);
-	if(!ret)
-	{
-	printf("There are %lu bytes total, %lu bytes free, \
+		Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES];
+		for (int i = 0; i < NUMBER_OF_TELEMETRIES; i++)
+			tlms_created[i] = TRUE_8BIT;
+		TelemetryCreateFiles(tlms_created);
+		F_SPACE space;
+		/* get free space on current drive */
+		ret = f_getfreespace(f_getdrive(),&space);
+		if(!ret) {
+			printf("There are %lu bytes total, %lu bytes free, \
 	%lu bytes used, %lu bytes bad.",
-	space.total, space.free, space.used, space.bad);
+			space.total, space.free, space.used, space.bad);
+		}
+		else
+			printf("\nError %d reading drive\n", ret);
 	}
-	else
-	{
-	printf("\nError %d reading drive\n", ret);
-	}
-
 	return FS_SUCCSESS;
 }
 

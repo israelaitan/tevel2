@@ -21,14 +21,6 @@
 #include "SubSystemModules/Maintenance/Maintenance.h"
 
 
-typedef enum{
-	eps_tlm,
-	trxvu_tlm,
-	ant_tlm,
-	solar_panel_tlm,
-	wod_tlm
-}subsystem_tlm;
-
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 
