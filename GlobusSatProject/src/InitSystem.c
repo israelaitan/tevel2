@@ -55,7 +55,7 @@ Boolean isFirstActivation()
 void firstActivationProcedure()
 {
 	int err = 0;
-	const int TotalWaitTime = 1000 * 60 * 30 / portTICK_RATE_MS;
+	const int TotalWaitTime = 1000 * 60 * 30 / portTICK_RATE_MS; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
