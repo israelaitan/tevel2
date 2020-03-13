@@ -212,7 +212,7 @@ int DeploySystem()
 	//אתחול כלל המערכות
 int InitSubsystems()
 {
-
+	//TODO: not sure we should stop if something fails
 	int err;
 	err = StartSPI();
 	if (err!=0)
@@ -225,7 +225,7 @@ int InitSubsystems()
 	err = StartFRAM();
 	if (err!=0)
 		return err;
-
+	//TODO: not always only before flight
 	WriteDefaultValuesToFRAM();
 
 	err = StartTIME();
@@ -237,6 +237,10 @@ int InitSubsystems()
 		return err;
 
 	err=InitializeFS(TRUE);//TODO:set first time properly
+	if (err!=0)
+		return err;
+
+	err=InitDump();
 	if (err!=0)
 		return err;
 

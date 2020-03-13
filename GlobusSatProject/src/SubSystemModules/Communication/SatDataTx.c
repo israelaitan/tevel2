@@ -123,7 +123,7 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 		return E_GET_SEMAPHORE_FAILED;
 	}
 	err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX,
-			(unsigned char*) packet, data_length, (unsigned char*) &avalFrames);
+			(unsigned char*) packet, data_length, (unsigned char*) avalFrames);
 
 	xSemaphoreGive(xIsTransmitting);
 

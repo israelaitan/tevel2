@@ -22,12 +22,12 @@
 #define NO_COMM_WDT_KICK_TIME_ADDR  	0x24		///< number of seconds of no communications before GS WDT kick
 #define NO_COMM_WDT_KICK_TIME_SIZE		4
 #define TLM_SAVE_PERIOD_START_ADDR		0x28		//<! start of the save periods in the FRAM
-#define EPS_SAVE_TLM_PERIOD_ADDR		0x3B		//<! address where the save tlm period will be
-#define TRXVU_SAVE_TLM_PERIOD_ADDR		0x3F		//<! address where the save tlm period will be
-#define ANT_SAVE_TLM_PERIOD_ADDR		0x40		//<! address where the save tlm period will be
-#define SOLAR_SAVE_TLM_PERIOD_ADDR		0x44		//<! address where the save tlm period will be
-#define WOD_SAVE_TLM_PERIOD_ADDR		0x48		//<! address where the save tlm period will be
-#define LAST_WAKEUP_TIME_ADDR			0X5B		//<! saves the first time after satellites wakeup from reset
+#define EPS_SAVE_TLM_PERIOD_ADDR		0x28		//<! address where the save tlm period will be
+#define TRXVU_SAVE_TLM_PERIOD_ADDR		0x2c		//<! address where the save tlm period will be
+#define ANT_SAVE_TLM_PERIOD_ADDR		0x30		//<! address where the save tlm period will be
+#define SOLAR_SAVE_TLM_PERIOD_ADDR		0x34		//<! address where the save tlm period will be
+#define WOD_SAVE_TLM_PERIOD_ADDR		0x38		//<! address where the save tlm period will be
+#define LAST_WAKEUP_TIME_ADDR			0X3B		//<! saves the first time after satellites wakeup from reset
 #define LAST_WAKEUP_TIME_SIZE			4			//<! size of the parameter in bytes
 
 #define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag

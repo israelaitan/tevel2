@@ -123,6 +123,7 @@ FileSystemResult InitializeFS(Boolean first_time)
 		for (int i = 0; i < NUMBER_OF_TELEMETRIES; i++)
 			tlms_created[i] = TRUE_8BIT;
 		TelemetryCreateFiles(tlms_created);
+		//TODO:do something with the result
 		F_SPACE space;
 		/* get free space on current drive */
 		ret = f_getfreespace(f_getdrive(),&space);
