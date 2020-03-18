@@ -25,7 +25,7 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Housekepping/Dump.h"
 
-int				g_idle_period = 300 ;				// idle time default = 5 min
+int				g_idle_period = 301 ;				// idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
