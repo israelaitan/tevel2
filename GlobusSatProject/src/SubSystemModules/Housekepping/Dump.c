@@ -121,7 +121,7 @@ void DumpTask(void *args) {
 	buffer = malloc(buffer_size);
 	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
 	num_of_packets = buffer_size / MAX_COMMAND_DATA_LENGTH;
-	if (!(buffer_size % MAX_COMMAND_DATA_LENGTH))
+	if (buffer_size % MAX_COMMAND_DATA_LENGTH)
 			num_of_packets++;
 	SendAckPacket(ACK_DUMP_START, task_args->cmd,
 			(unsigned char*) &num_of_packets, sizeof(num_of_packets));
@@ -131,7 +131,7 @@ void DumpTask(void *args) {
 	unsigned int i = 0;
 	while (i < num_of_packets) {
 
-		if (CheckDumpAbort() || CheckTransmitionAllowed())
+		if (CheckDumpAbort() || !CheckTransmitionAllowed())
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
