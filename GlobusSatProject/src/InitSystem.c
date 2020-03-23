@@ -113,6 +113,8 @@ int StartFRAM()
 int StartI2C()
 {
 	int result=0;
+	//TODO: remove after finish testing
+	printf("Inside StartI2C() - calling I2C_start driver");
 	result=I2C_start(I2c_Timeout,I2c_Timeout);
 	if(result==-3)
 	{
@@ -129,8 +131,10 @@ int StartI2C()
 
 	if(result==0)
 	{
-		printf("success");}
-		return result;
+		printf(" success");
+	}
+
+	return result;
 }
 
 	//spI אתחול ה
@@ -225,6 +229,7 @@ int InitSubsystems()
 	err = StartFRAM();
 	if (err!=0)
 		return err;
+
 	//TODO: not always only before flight
 	WriteDefaultValuesToFRAM();
 
