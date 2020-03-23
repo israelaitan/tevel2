@@ -32,6 +32,8 @@ time_unix 		g_idle_start_time = 0;
 //setting trxvu idle off
 int SetIdleOff()
 {
+	//TODO: remove print after testing complete
+	print("inside SetIdleOff()");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
 	if(err!=0)
 	{
@@ -42,6 +44,8 @@ int SetIdleOff()
 
 void HandleIdleTime()
 {
+	//TODO: remove print after testing complete
+	print("inside HandleIdleTime()");
 	if(g_idle_flag==TRUE)
 	{
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
@@ -49,12 +53,25 @@ void HandleIdleTime()
 			SetIdleOff();
 			g_idle_flag=FALSE;
 		}
+		else
+		{
+			//TODO: remove print after testing complete
+			print("idle end period not reached");
+		}
+	}
+	else
+	{
+		//TODO: remove print after testing complete
+		print("not in idle period");
 	}
 }
 
 
 int InitTrxvu()
 {
+	//TODO: remove print after testing complete
+	print("inside InitTrxvu()");
+
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
 	i2cAdress.addressVu_tc=I2C_TRXVU_TC_ADDR;
@@ -72,6 +89,11 @@ int InitTrxvu()
 		printf("there is error in the initialization");
 		return err;
 	}
+	else
+	{
+		//TODO: remove print after testing complete
+		print("initialization succeeded");
+	}
 
 
 	//sleep 0.1 sec and set birate to 9600 bps
@@ -81,6 +103,11 @@ int InitTrxvu()
 	{
 		printf("there is error in the IsisTrxvu_tcSetAx25Bitrate");
 		return err;
+	}
+	else
+	{
+		//TODO: remove print after testing complete
+		print("IsisTrxvu_tcSetAx25Bitrate succeeded");
 	}
 	vTaskDelay(100);
 
@@ -94,6 +121,11 @@ int InitTrxvu()
 		printf("there is error in the initialization of the Antennas");
 		return err;
 	}
+	else
+	{
+		//TODO: remove print after testing complete
+		print("initialization of the Antennas succeeded");
+	}
 
 	InitTxModule();
 	InitBeaconParams();
@@ -104,6 +136,8 @@ int InitTrxvu()
 
  CommandHandlerErr TRX_Logic()
 {
+	 //TODO: remove print after testing complete
+	print("inside TRX_Logic()");
 	sat_packet_t cmd={0};
 	int onCmdCount, offBufferCount;
 	unsigned char* data = NULL;
@@ -123,6 +157,8 @@ int InitTrxvu()
 		}
 		else
 		{
+			 //TODO: remove print after testing complete
+			print("getting the online command success");
 			ResetGroundCommWDT();
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 		}
@@ -136,6 +172,11 @@ int InitTrxvu()
 			if(res!=0)
 			{
 				printf("there was error in getting delayed command");
+			}
+			else
+			{
+				 //TODO: remove print after testing complete
+				print("getting delayed command success");
 			}
 		}
 	}
@@ -157,6 +198,8 @@ int InitTrxvu()
 
 int CMD_SetIdleOn()
 {
+	//TODO: remove print after testing complete
+	print("inside CMD_SetIdleOn()");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
