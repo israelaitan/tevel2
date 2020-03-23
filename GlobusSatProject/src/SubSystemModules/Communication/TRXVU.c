@@ -33,7 +33,7 @@ time_unix 		g_idle_start_time = 0;
 int SetIdleOff()
 {
 	//TODO: remove print after testing complete
-	print("inside SetIdleOff()");
+	printf("inside SetIdleOff()");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
 	if(err!=0)
 	{
@@ -45,7 +45,7 @@ int SetIdleOff()
 void HandleIdleTime()
 {
 	//TODO: remove print after testing complete
-	print("inside HandleIdleTime()");
+	printf("inside HandleIdleTime()");
 	if(g_idle_flag==TRUE)
 	{
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
@@ -56,13 +56,13 @@ void HandleIdleTime()
 		else
 		{
 			//TODO: remove print after testing complete
-			print("idle end period not reached");
+			printf("idle end period not reached");
 		}
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		print("not in idle period");
+		printf("not in idle period");
 	}
 }
 
@@ -70,7 +70,7 @@ void HandleIdleTime()
 int InitTrxvu()
 {
 	//TODO: remove print after testing complete
-	print("inside InitTrxvu()");
+	printf("inside InitTrxvu()");
 
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
@@ -92,7 +92,7 @@ int InitTrxvu()
 	else
 	{
 		//TODO: remove print after testing complete
-		print("initialization succeeded");
+		printf("initialization succeeded");
 	}
 
 
@@ -107,7 +107,7 @@ int InitTrxvu()
 	else
 	{
 		//TODO: remove print after testing complete
-		print("IsisTrxvu_tcSetAx25Bitrate succeeded");
+		printf("IsisTrxvu_tcSetAx25Bitrate succeeded");
 	}
 	vTaskDelay(100);
 
@@ -124,7 +124,7 @@ int InitTrxvu()
 	else
 	{
 		//TODO: remove print after testing complete
-		print("initialization of the Antennas succeeded");
+		printf("initialization of the Antennas succeeded");
 	}
 
 	InitTxModule();
@@ -137,7 +137,7 @@ int InitTrxvu()
  CommandHandlerErr TRX_Logic()
 {
 	 //TODO: remove print after testing complete
-	print("inside TRX_Logic()");
+	printf("inside TRX_Logic()");
 	sat_packet_t cmd={0};
 	int onCmdCount, offBufferCount;
 	unsigned char* data = NULL;
@@ -175,8 +175,8 @@ int InitTrxvu()
 			}
 			else
 			{
-				 //TODO: remove print after testing complete
-				print("getting delayed command success");
+				//TODO: remove print after testing complete
+				printf("getting delayed command success");
 			}
 		}
 	}
@@ -199,7 +199,7 @@ int InitTrxvu()
 int CMD_SetIdleOn()
 {
 	//TODO: remove print after testing complete
-	print("inside CMD_SetIdleOn()");
+	printf("inside CMD_SetIdleOn()");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
