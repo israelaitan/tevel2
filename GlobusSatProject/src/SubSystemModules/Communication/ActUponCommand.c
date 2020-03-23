@@ -8,6 +8,8 @@
 
 int ActUponCommand(sat_packet_t *cmd)
 {
+	//TODO: remove print after testing complete
+	print("inside ActUponCommand() command type: %c, command subtype: %c " , cmd->cmd_type, cmd->cmd_subtype);
 	int err = 0;
 
 
@@ -42,7 +44,10 @@ int ActUponCommand(sat_packet_t *cmd)
 		SendAckPacket(ACK_PING, cmd, data, length);
 	}
 
+	//TODO: remove print after testing complete
+	print("finished command with error: %d" , err);
 	return err;
+
 }
 
 
