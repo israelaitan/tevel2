@@ -28,7 +28,7 @@ unsigned char g_beacon_change_baud_period;
 void InitBeaconParams()
 {
 	//TODO: remove print after testing complete
-	print("Inside InitBeaconParams()");
+	printf("Inside InitBeaconParams()");
 
 	g_beacon_change_baud_period=DEFALUT_BEACON_BITRATE_CYCLE;
 	FRAM_read((unsigned char*)&g_beacon_change_baud_period, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE );
@@ -36,7 +36,7 @@ void InitBeaconParams()
 	FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
 
 	//TODO: remove print after testing complete
-	print("InitBeaconParams() - setting bitrate to 9600");
+	printf("InitBeaconParams() - setting bitrate to 9600");
 
 	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_bitrate_9600);
 
@@ -66,7 +66,7 @@ int BeaconSetBitrate()
 void BeaconLogic()
 {
 	//TODO: remove print after testing complete
-	print("Inside BeaconLogic()");
+	printf("Inside BeaconLogic()");
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
 	unsigned int id=  0xFFFFFFFF;
@@ -79,19 +79,19 @@ void BeaconLogic()
 			TransmitSplPacket(&packet, NULL);
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 			//TODO: remove after testing complete
-			print("beacon sent - id: %d data: %s",packet.ID, packet.data );
+			printf("beacon sent - id: %d data: %s",packet.ID, packet.data );
 		}
 		else
 		{
 			//TODO: remove after testing complete
-			print("beacon time did not arrive");
+			printf("beacon time did not arrive");
 		}
 
 	}
 	else
 	{
 		//TODO: remove after testing complete
-		print("beacon not allowed");
+		printf("beacon not allowed");
 	}
 
 }
@@ -99,20 +99,20 @@ void BeaconLogic()
 int UpdateBeaconBaudCycle(unsigned char cycle)
 {
 	//TODO: remove print after testing complete
-	print("Inside UpdateBeaconBaudCycle() %c, %c" , cycle, DEFALUT_BEACON_BITRATE_CYCLE);
+	printf("Inside UpdateBeaconBaudCycle() %c, %c" , cycle, DEFALUT_BEACON_BITRATE_CYCLE);
 
 	if (cycle < DEFALUT_BEACON_BITRATE_CYCLE)
 		return E_PARAM_OUTOFBOUNDS;
 	int err = FRAM_write(&cycle, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE );
 	if (err!=0)
 	{
-		print("cycle update to FRAM failed");
+		printf("cycle update to FRAM failed");
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		print("cycle was updated to FRAM successfully");
+		printf("cycle was updated to FRAM successfully");
 	}
 
 	g_beacon_change_baud_period = cycle;
@@ -130,13 +130,13 @@ int UpdateBeaconInterval(time_unix intrvl)
 	int err = FRAM_write((unsigned char *)&intrvl, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
 	if (err!=0)
 	{
-		print("interval update to FRAM failed");
+		printf("interval update to FRAM failed");
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		print("interval was updated to FRAM successfully");
+		printf("interval was updated to FRAM successfully");
 	}
 
 	g_beacon_interval_time = intrvl;
