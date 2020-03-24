@@ -12,6 +12,7 @@
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Housekepping/DUMP.h"
 #include <satellite-subsystems/IsisAntS.h>
 #include "TLM_management.h"
 
@@ -65,7 +66,7 @@ void firstActivationProcedure()
 
 			vTaskDelay(1000*10);
 			AwaitedTime += 1000*10;
-			FRAM_write(&AwaitedTime , MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE);
+			FRAM_write((unsigned char*)&AwaitedTime , MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE);
 			TelemetryCollectorLogic();
 		}
 	}
@@ -75,21 +76,21 @@ void firstActivationProcedure()
 void WriteDefaultValuesToFRAM()
 {
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
-	FRAM_write(&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
+	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 	int NumberVoltages=NUMBER_OF_THRESHOLD_VOLTAGES;
-	FRAM_write(&NumberVoltages,EPS_THRESH_VOLTAGES_ADDR,EPS_THRESH_VOLTAGES_SIZE);
+	FRAM_write((unsigned char*)&NumberVoltages,EPS_THRESH_VOLTAGES_ADDR,EPS_THRESH_VOLTAGES_SIZE);
 	int alpha=DEFAULT_ALPHA_VALUE;
-	FRAM_write(&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE);
+	FRAM_write((unsigned char*)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE);
 	int eps= DEFAULT_EPS_SAVE_TLM_TIME;
-	FRAM_write(&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
+	FRAM_write((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
 	int trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
-	FRAM_write(&trxvu,TRXVU_SAVE_TLM_PERIOD_ADDR,sizeof(trxvu));
+	FRAM_write((unsigned char*)&trxvu,TRXVU_SAVE_TLM_PERIOD_ADDR,sizeof(trxvu));
 	int ant=DEFAULT_ANT_SAVE_TLM_TIME;
-	FRAM_write(&ant, ANT_SAVE_TLM_PERIOD_ADDR,sizeof(ant));
+	FRAM_write((unsigned char*)&ant, ANT_SAVE_TLM_PERIOD_ADDR,sizeof(ant));
 	int solar=DEFAULT_SOLAR_SAVE_TLM_TIME;
-	FRAM_write(&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
+	FRAM_write((unsigned char*)&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
 	int wod=DEFAULT_WOD_SAVE_TLM_TIME;
-	FRAM_write(&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
 	//TODO:FRAM_write(add beacon);
 }
 
@@ -191,8 +192,8 @@ int DeploySystem()
 		FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
 
 		ISISantsI2Caddress addressab;
-		addressab.addressSideA=0;//TODO: take from SysI2CAddr.h
-		addressab.addressSideB=0;//TODO: take from SysI2CAddr.h
+		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
+		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
 		int res=IsisAntS_initialize( &addressab, 1);//לוודא שיש מערכת 1
 
 		if(res==0)
