@@ -23,6 +23,8 @@
 	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
 #define I2c_SPEED_Hz 100000
+//TODO change it after testing to 30.
+#define ANT_AWAITED_TIME_SECONDS 1
 #define I2c_Timeout 10
 #define I2c_TimeoutTest portMAX_DELAY
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
@@ -32,42 +34,55 @@ Boolean isFirstActivation()
 {
 	unsigned char FirstActivation=0;
 	int res=0;
-	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-	 if (res==-2)
-	 {
-		 printf(" specified address and size are out of range of the FRAM space");
-	 }
-	 if  (res==-1)
-	 {
-		 printf(" obtaining lock for FRAM access fails");
-	 }
 
-	 if (FirstActivation==1)
-	 {
-		 return TRUE;
-	 }
-	 else
-	 {
-		 return FALSE;
-	 }
+	//TODO: remove print after testing
+	printf("Inside isFirstActivation()");
+
+	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+	if (res==-2)
+	{
+		printf(" specified address and size are out of range of the FRAM space");
+	}
+	if  (res==-1)
+	{
+		printf(" obtaining lock for FRAM access fails");
+	}
+
+	if (FirstActivation==1)
+	{
+		//TODO: remove print after testing
+		printf("Inside isFirstActivation() return TRUE");
+		return TRUE;
+	}
+	else
+	{
+		//TODO: remove print after testing
+		printf("Inside isFirstActivation() return FAlSE");
+		return FALSE;
+	}
 }
 
 //בדיקה שעברו 30 דק מהשיגור. טיפול במקרה שיש אתחול חוזר של המערכת
 void firstActivationProcedure()
 {
 	int err = 0;
-	const int TotalWaitTime = 1000 * 60 * 30 / portTICK_RATE_MS; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
+	//TODO: remove print after testing
+			printf("Inside firstActivationProcedure()");
+	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_SECONDS; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
 	{
 		while (TotalWaitTime>AwaitedTime)
 		{
-
+			//TODO: remove print after testing
+						printf("waited ");
 			vTaskDelay(1000*10);
+
 			AwaitedTime += 1000*10;
 			FRAM_write((unsigned char*)&AwaitedTime , MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE);
 			TelemetryCollectorLogic();
+
 		}
 	}
 }
@@ -75,6 +90,8 @@ void firstActivationProcedure()
 	//שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
 {
+	//TODO: remove print after testing
+				printf("Inside WriteDefaultValuesToFRAM()");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 	int NumberVoltages=NUMBER_OF_THRESHOLD_VOLTAGES;
@@ -98,14 +115,22 @@ void WriteDefaultValuesToFRAM()
 int StartFRAM()
 {
 	int result=0;
+	//TODO: remove print after testing
+					printf("Inside StartFRAM()");
 	result=FRAM_start();
 	if(-1==result)
 	{
-		printf("failed to creaT semaforeS");}
-
+		printf("failed to creaT semaforeS");
+	}
 	else if(-2==result)
-
+	{
 		printf("failed to initializing SPI");
+	}
+	else
+	{
+		//TODO: remove print after testing
+		printf("FRAM_start was successful");
+	}
 
 	return result;
 }
@@ -114,8 +139,10 @@ int StartFRAM()
 int StartI2C()
 {
 	int result=0;
+
 	//TODO: remove after finish testing
 	printf("Inside StartI2C() - calling I2C_start driver");
+
 	result=I2C_start(I2c_Timeout,I2c_Timeout);
 	if(result==-3)
 	{
@@ -141,8 +168,9 @@ int StartI2C()
 	//spI אתחול ה
 int StartSPI()
 {
-
 	int result= 0;
+	//TODO: remove print after testing
+						printf("Inside StartSPI()");
 	result = SPI_start(bus1_spi, slave1_spi);
 
 	if(result==0)
@@ -160,6 +188,8 @@ int StartSPI()
 int StartTIME()
 {
 	int err = 0;
+	//TODO: remove print after testing
+							printf("Inside StartTIME()");
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
 	err = Time_start(&expected_deploy_time, 0);
 	if (0 != err)
@@ -170,6 +200,7 @@ int StartTIME()
 	time_unix time_before_wakeup = 0;
 	if (!isFirstActivation())
 	{
+		printf("reset clock ");
 		FRAM_read((unsigned char*) &time_before_wakeup,
 				MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 		Time_setUnixEpoch(time_before_wakeup);
@@ -180,9 +211,9 @@ int StartTIME()
 	// פריסת אנטנות לאחר 30 דק שקט
 int DeploySystem()
 {
-#ifdef TESTING
-		printf(" DeploySystem here");
-#endif
+	//TODO: remove print after testing
+	printf(" DeploySystem() here");
+
 	if(isFirstActivation())
 	{
 		firstActivationProcedure();
@@ -217,6 +248,9 @@ int DeploySystem()
 	//אתחול כלל המערכות
 int InitSubsystems()
 {
+	//TODO: remove print after testing
+		printf("InitSubsystems()  here");
+
 	//TODO: not sure we should stop if something fails
 	int err;
 	err = StartSPI();
@@ -242,7 +276,7 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	err=InitializeFS(TRUE);//TODO:set first time properly
+	err=InitializeFS(TRUE);
 	if (err!=0)
 		return err;
 
