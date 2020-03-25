@@ -123,7 +123,7 @@ int UpdateBeaconBaudCycle(unsigned char cycle)
 int UpdateBeaconInterval(time_unix intrvl)
 {
 	//TODO: remove print after testing complete
-	print("Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
+	printf("Inside UpdateBeaconInterval() interval: %ld, max: %d, min: %d" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
 	if(intrvl>MAX_BEACON_INTERVAL|| intrvl<MIN_BEACON_INTERVAL)
 		return E_PARAM_OUTOFBOUNDS;
 
