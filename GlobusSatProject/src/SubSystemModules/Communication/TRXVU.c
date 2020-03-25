@@ -158,7 +158,7 @@ int InitTrxvu()
 		else
 		{
 			 //TODO: remove print after testing complete
-			print("getting the online command success");
+			printf("getting the online command success");
 			ResetGroundCommWDT();
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 		}
