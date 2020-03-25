@@ -153,6 +153,8 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
+	printf("isis_eps__gethousekeepingraw__tm() return status: %d", err);
+
 	//TODO:find out why returns 1. bypassing for testing
 	//if (err == 0)
 	{
@@ -161,6 +163,8 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+	printf("isis_eps__gethousekeepingeng__tm() return status: %d", err);
+
 	//if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
@@ -168,6 +172,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingrawincdb__from_t tlm_cdb_raw;
 	err = isis_eps__gethousekeepingrawincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_raw);
+	printf("isis_eps__gethousekeepingrawincdb__tm() return status: %d", err);
 	//if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_CDB_TLM, &tlm_cdb_raw);
@@ -175,6 +180,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingengincdb__from_t tlm_cdb_eng;
 	err = isis_eps__gethousekeepingengincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_eng);
+	printf("isis_eps__gethousekeepingengincdb__tm() return status: %d", err);
 	//if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);
