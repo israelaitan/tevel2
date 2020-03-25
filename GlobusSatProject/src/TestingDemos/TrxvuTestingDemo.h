@@ -5,5 +5,6 @@
 #include "GlobalStandards.h"
 
 Boolean MainTrxvuTestBench();
+Boolean TestDumpTelemetry();
 
 #endif /* TRXVUTESTINGDEMO_H_ */
