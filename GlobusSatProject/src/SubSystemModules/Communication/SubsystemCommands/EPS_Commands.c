@@ -301,7 +301,7 @@ int CMD_SetEpsParemeter(sat_packet_t *cmd)
 
 	int err = 0;
 #ifdef ISISEPS
-	unsigned short int id = 0;
+	//unsigned short int id = 0;
 	isis_eps__setparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
 
@@ -343,7 +343,7 @@ int CMD_ResetParameter(sat_packet_t *cmd)
 	int err = 0;
 
 #ifdef ISISEPS
-	unsigned short int id = 0;
+	//unsigned short int id = 0;
 	isis_eps__resetparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
 
