@@ -21,6 +21,7 @@
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/HouseKepping/TelemetryCollector.h"
+#include "TrxvuTestingDemo.h"
 
 Boolean selectAndExecuteTest()
 {
