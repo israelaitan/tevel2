@@ -122,8 +122,8 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_EPS_RAW_CDB_TLM,sizeof(isis_eps__gethousekeepingrawincdb__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_cdb);
 
-	res = c_fileCreate(FILENAME_EPS_ENG_CDB_TLM,sizeof(isis_eps__gethousekeepingengincdb__tm));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_cdb);
+	res = c_fileCreate(FILENAME_EPS_ENG_CDB_TLM,sizeof(isis_eps__gethousekeepingengincdb__from_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_cdb);
 
 	// -- TRXVU files
 	res = c_fileCreate(FILENAME_TX_TLM,sizeof(ISIStrxvuTxTelemetry));

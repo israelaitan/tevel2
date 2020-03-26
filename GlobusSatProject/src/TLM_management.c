@@ -17,7 +17,7 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 
 #define SKIP_FILE_TIME_SEC 1000000
-#define _SD_CARD 0
+#define _SD_CARD 1
 #define FIRST_TIME -1
 #define FILE_NAME_WITH_INDEX_SIZE MAX_F_FILE_NAME_SIZE+sizeof(int)*2
 
@@ -498,7 +498,7 @@ FileSystemResult c_fileGetNumOfElements(char* c_file_name, time_unix from_time, 
 	F_FILE* current_file;
 	int index_from = getFileIndex(c_file.creation_time, from_time);
 	int index_to = getFileIndex(c_file.creation_time, to_time);
-	get_file_name_by_index(c_file_name, index_from, curr_file_name);
+	//get_file_name_by_index(c_file_name, index_from, curr_file_name);
 	unsigned int size_elementWithTimeStamp = c_file.size_of_element+sizeof(unsigned int);
 	element = malloc(size_elementWithTimeStamp);
 
