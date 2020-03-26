@@ -68,9 +68,9 @@ void firstActivationProcedure()
 	int err = 0;
 	//TODO: remove print after testing
 			printf("Inside firstActivationProcedure()");
-	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_SECONDS; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
+	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_SECONDS;
 	int AwaitedTime = 0;
-	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
+	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 ); //TODO: fix bug - using wrong variable. SECONDS_SINCE_DEPLOY should be used
 	if (!err)
 	{
 		while (TotalWaitTime>AwaitedTime)
@@ -108,7 +108,7 @@ void WriteDefaultValuesToFRAM()
 	FRAM_write((unsigned char*)&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
 	int wod=DEFAULT_WOD_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
-	//TODO:FRAM_write(add beacon);
+	//TODO:FRAM_write for  BEACON_INTERVAL_TIME
 }
 
 	//אתחול ה FRAM
