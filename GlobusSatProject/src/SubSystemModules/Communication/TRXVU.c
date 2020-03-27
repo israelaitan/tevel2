@@ -33,11 +33,11 @@ time_unix 		g_idle_start_time = 0;
 int SetIdleOff()
 {
 	//TODO: remove print after testing complete
-	printf("inside SetIdleOff()");
+	printf("inside SetIdleOff()\n");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
 	if(err!=0)
 	{
-		printf("failed in setting trxvu idle off - %d", err);
+		printf("failed in setting trxvu idle off - %d\n", err);
 	}
 	return err;
 }
@@ -45,7 +45,7 @@ int SetIdleOff()
 void HandleIdleTime()
 {
 	//TODO: remove print after testing complete
-	printf("inside HandleIdleTime()");
+	printf("inside HandleIdleTime()\n");
 	if(g_idle_flag==TRUE)
 	{
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
@@ -56,13 +56,13 @@ void HandleIdleTime()
 		else
 		{
 			//TODO: remove print after testing complete
-			printf("idle end period not reached");
+			printf("idle end period not reached\n");
 		}
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("not in idle period");
+		printf("not in idle period\n");
 	}
 }
 
@@ -70,7 +70,7 @@ void HandleIdleTime()
 int InitTrxvu()
 {
 	//TODO: remove print after testing complete
-	printf("inside InitTrxvu()");
+	printf("inside InitTrxvu()\n");
 
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
@@ -86,13 +86,13 @@ int InitTrxvu()
 	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
 	if(err!=0)
 	{
-		printf("there is error in the initialization");
+		printf("there is error in the initialization\n");
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("initialization succeeded");
+		printf("initialization succeeded\n");
 	}
 
 
@@ -101,13 +101,13 @@ int InitTrxvu()
 	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
 	if(err!=0)
 	{
-		printf("there is error in the IsisTrxvu_tcSetAx25Bitrate");
+		printf("there is error in the IsisTrxvu_tcSetAx25Bitrate\n");
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("IsisTrxvu_tcSetAx25Bitrate succeeded");
+		printf("IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 	}
 	vTaskDelay(100);
 
@@ -118,13 +118,13 @@ int InitTrxvu()
 	err=IsisAntS_initialize(&adress,1);
 	if(err!=0)
 	{
-		printf("there is error in the initialization of the Antennas");
+		printf("there is error in the initialization of the Antennas\n");
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("initialization of the Antennas succeeded");
+		printf("initialization of the Antennas succeeded\n");
 	}
 
 	InitTxModule();
@@ -137,7 +137,7 @@ int InitTrxvu()
  CommandHandlerErr TRX_Logic()
 {
 	 //TODO: remove print after testing complete
-	printf("inside TRX_Logic()");
+	printf("inside TRX_Logic()\n");
 	sat_packet_t cmd={0};
 	int onCmdCount, offBufferCount;
 	unsigned char* data = NULL;
@@ -153,12 +153,12 @@ int InitTrxvu()
 		res = GetOnlineCommand(&cmd);//ask the teacher
 		if(res!=0)
 		{
-			printf("there was an error in getting the online command ");
+			printf("there was an error in getting the online command\n ");
 		}
 		else
 		{
 			 //TODO: remove print after testing complete
-			printf("getting the online command success");
+			printf("getting the online command success\n");
 			ResetGroundCommWDT();
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 		}
@@ -171,12 +171,12 @@ int InitTrxvu()
 			res=GetDelayedCommand(&cmd);
 			if(res!=0)
 			{
-				printf("there was error in getting delayed command");
+				printf("there was error in getting delayed command\n");
 			}
 			else
 			{
 				//TODO: remove print after testing complete
-				printf("getting delayed command success");
+				printf("getting delayed command success\n");
 			}
 		}
 	}
@@ -199,11 +199,11 @@ int InitTrxvu()
 int CMD_SetIdleOn()
 {
 	//TODO: remove print after testing complete
-	printf("inside CMD_SetIdleOn()");
+	printf("inside CMD_SetIdleOn()\n");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
-		printf("failed in setting trxvy idle on - %d", err);
+		printf("failed in setting trxvy idle on - %d\n", err);
 	}
 	else
 	{
