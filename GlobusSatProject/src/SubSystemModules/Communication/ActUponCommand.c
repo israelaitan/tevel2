@@ -10,7 +10,7 @@
 int ActUponCommand(sat_packet_t *cmd)
 {
 	//TODO: remove print after testing complete
-	printf("inside ActUponCommand() command type: %c, command sub-type: %c", cmd->cmd_type, cmd->cmd_subtype);
+	printf("inside ActUponCommand() command type: %c, command sub-type: %c\n", cmd->cmd_type, cmd->cmd_subtype);
 
 	int err = 0;
 
@@ -47,7 +47,7 @@ int ActUponCommand(sat_packet_t *cmd)
 	}
 
 	//TODO: remove print after testing complete
-	printf("finished command with error: %d" , err);
+	printf("finished command with error: %d\n" , err);
 	return err;
 
 }
