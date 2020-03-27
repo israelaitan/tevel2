@@ -21,11 +21,15 @@ Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
 	time_unix curr = 0;
 	int err = Time_getUnixEpoch((unsigned int *)&curr);
-	if(0 != err){
+	if(0 != err)
+	{
+		printf("Time_getUnixEpoch failed\n");
 		return FALSE;
 	}
 
-	if(curr - prev_time >= period){
+	printf("current time: %ld, current-prev: %ld\n", curr, curr-prev_time );
+	if(curr - prev_time >= period)
+	{
 		return TRUE;
 	}
 	return FALSE;
