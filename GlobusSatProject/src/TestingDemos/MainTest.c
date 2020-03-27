@@ -21,6 +21,7 @@
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/HouseKepping/TelemetryCollector.h"
+#include "TrxvuTestingDemo.h"
 
 Boolean selectAndExecuteTest()
 {
@@ -102,11 +103,11 @@ void taskTesting()
 		//selectAndExecuteTest();
 		GetBatteryVoltage(&curr_voltage);
 		printf("gvs group : %d\n",  curr_voltage);
-		printf("still alive %d, \n",i++);
+		printf("still alive %d, \n",i);
 		BeaconLogic();
 		//TRX_Logic();
 		TelemetryCollectorLogic();
-		if (i == 10)
+		if ( i%10 == 0)
 			TestDumpTelemetry();
 		i++;
 	}

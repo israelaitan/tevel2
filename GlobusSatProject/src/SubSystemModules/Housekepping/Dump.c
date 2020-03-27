@@ -135,7 +135,6 @@ void DumpTask(void *args) {
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
-
 		AssembleCommand(buffer, currPacketSize,
 				(char) DUMP_SUBTYPE, (char) (task_args->dump_type),
 				task_args->cmd->ID, i,  &dump_tlm);
@@ -172,9 +171,9 @@ int DumpTelemetry(sat_packet_t *cmd) {
 
 	memcpy(&dmp_pckt->t_end, cmd->data + offset, sizeof(dmp_pckt->t_end));
 
-	//if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
-	//	return E_GET_SEMAPHORE_FAILED;
-	//}
+	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
+		return E_GET_SEMAPHORE_FAILED;
+	}
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
 			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);
 

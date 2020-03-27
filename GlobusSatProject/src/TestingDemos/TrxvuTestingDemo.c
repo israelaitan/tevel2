@@ -195,7 +195,7 @@ Boolean TestExitDump()
 Boolean TestDumpTelemetry()
 {
 	sat_packet_t cmd = {0};
-	unsigned int temp = 0;
+	//unsigned int temp = 0;
 	printf("Starting Dump. Please Insert Dump Parameter:\n");
 
 	printf("Please Insert Command Type:\n");
