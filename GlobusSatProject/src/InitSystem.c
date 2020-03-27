@@ -24,7 +24,7 @@
 #endif
 #define I2c_SPEED_Hz 100000
 //TODO change it after testing to 30.
-#define ANT_AWAITED_TIME_SECONDS 1
+#define ANT_AWAITED_TIME_MIN 1
 #define I2c_Timeout 10
 #define I2c_TimeoutTest portMAX_DELAY
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
@@ -36,28 +36,28 @@ Boolean isFirstActivation()
 	int res=0;
 
 	//TODO: remove print after testing
-	printf("Inside isFirstActivation()");
+	printf("Inside isFirstActivation()\n");
 
 	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 	if (res==-2)
 	{
-		printf(" specified address and size are out of range of the FRAM space");
+		printf(" specified address and size are out of range of the FRAM space\n");
 	}
 	if  (res==-1)
 	{
-		printf(" obtaining lock for FRAM access fails");
+		printf(" obtaining lock for FRAM access fails\n");
 	}
 
 	if (FirstActivation==1)
 	{
 		//TODO: remove print after testing
-		printf("Inside isFirstActivation() return TRUE");
+		printf("Inside isFirstActivation() return TRUE\n");
 		return TRUE;
 	}
 	else
 	{
 		//TODO: remove print after testing
-		printf("Inside isFirstActivation() return FAlSE");
+		printf("Inside isFirstActivation() return FAlSE\n");
 		return FALSE;
 	}
 }
@@ -67,8 +67,8 @@ void firstActivationProcedure()
 {
 	int err = 0;
 	//TODO: remove print after testing
-			printf("Inside firstActivationProcedure()");
-	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_SECONDS; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
+	printf("Inside firstActivationProcedure()\n");
+	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
@@ -76,7 +76,7 @@ void firstActivationProcedure()
 		while (TotalWaitTime>AwaitedTime)
 		{
 			//TODO: remove print after testing
-						printf("waited ");
+			printf("waited 10 seconds\n");
 			vTaskDelay(1000*10);
 
 			AwaitedTime += 1000*10;
@@ -91,7 +91,7 @@ void firstActivationProcedure()
 void WriteDefaultValuesToFRAM()
 {
 	//TODO: remove print after testing
-				printf("Inside WriteDefaultValuesToFRAM()");
+	printf("Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 	int NumberVoltages=NUMBER_OF_THRESHOLD_VOLTAGES;
@@ -108,7 +108,8 @@ void WriteDefaultValuesToFRAM()
 	FRAM_write((unsigned char*)&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
 	int wod=DEFAULT_WOD_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
-	//TODO:FRAM_write(add beacon);
+	int beacon=DEFAULT_BEACON_INTERVAL_TIME;
+	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
 }
 
 	//אתחול ה FRAM
@@ -116,20 +117,20 @@ int StartFRAM()
 {
 	int result=0;
 	//TODO: remove print after testing
-					printf("Inside StartFRAM()");
+	printf("Inside StartFRAM()\n");
 	result=FRAM_start();
 	if(-1==result)
 	{
-		printf("failed to creaT semaforeS");
+		printf("failed to creaT semaforeS\n");
 	}
 	else if(-2==result)
 	{
-		printf("failed to initializing SPI");
+		printf("failed to initializing SPI\n");
 	}
 	else
 	{
 		//TODO: remove print after testing
-		printf("FRAM_start was successful");
+		printf("FRAM_start was successful\n");
 	}
 
 	return result;
@@ -141,25 +142,25 @@ int StartI2C()
 	int result=0;
 
 	//TODO: remove after finish testing
-	printf("Inside StartI2C() - calling I2C_start driver");
+	printf("Inside StartI2C() - calling I2C_start driver\n");
 
 	result=I2C_start(I2c_Timeout,I2c_Timeout);
 	if(result==-3)
 	{
-		printf("the driver uses a timeout of 1");
+		printf("the driver uses a timeout of 1\n");
 	}
 	else if(result==-2)
 	{
-		printf("TWI peripheral fails");
+		printf("TWI peripheral fails\n");
 	}
 	else if(result==-1)
 	{
-		printf("creating the task that consumes I2C transfer requests failed");
+		printf("creating the task that consumes I2C transfer requests failed\n");
 	}
 
 	if(result==0)
 	{
-		printf(" success");
+		printf(" success\n");
 	}
 
 	return result;
@@ -170,16 +171,16 @@ int StartSPI()
 {
 	int result= 0;
 	//TODO: remove print after testing
-						printf("Inside StartSPI()");
+	printf("Inside StartSPI()\n");
 	result = SPI_start(bus1_spi, slave1_spi);
 
 	if(result==0)
 	{
-		printf("success");
+		printf("success\n");
 	}
 	else if(result==-1)
 	{
-		printf("error");
+		printf("error\n");
 	}
 	return result;
 }
@@ -189,7 +190,7 @@ int StartTIME()
 {
 	int err = 0;
 	//TODO: remove print after testing
-							printf("Inside StartTIME()");
+	printf("Inside StartTIME()\n");
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
 	err = Time_start(&expected_deploy_time, 0);
 	if (0 != err)
@@ -200,9 +201,9 @@ int StartTIME()
 	time_unix time_before_wakeup = 0;
 	if (!isFirstActivation())
 	{
-		printf("reset clock ");
-		FRAM_read((unsigned char*) &time_before_wakeup,
-				MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+		//TODO: remove print after testing
+		printf("reset clock\n");
+		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 		Time_setUnixEpoch(time_before_wakeup);
 	}
 	return 0;
@@ -212,7 +213,7 @@ int StartTIME()
 int DeploySystem()
 {
 	//TODO: remove print after testing
-	printf(" DeploySystem() here");
+	printf(" DeploySystem() here\n");
 
 	if(isFirstActivation())
 	{
@@ -225,16 +226,17 @@ int DeploySystem()
 		ISISantsI2Caddress addressab;
 		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
 		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
-		int res=IsisAntS_initialize( &addressab, 1);//לוודא שיש מערכת 1
+		int res=IsisAntS_initialize( &addressab, 1);//TODO: check in the seker that there is one system
 
 		if(res==0)
 		{
-			res=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);//TODO: define interval
+			res=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
 		}
 
 		if(res==0)
-			res = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);//TODO: define interval
-
+		{
+			res = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
+		}
 		if(res==0)
 		{
 			Boolean firstactivation= FALSE;
@@ -249,7 +251,7 @@ int DeploySystem()
 int InitSubsystems()
 {
 	//TODO: remove print after testing
-		printf("InitSubsystems()  here");
+	printf("InitSubsystems()  here\n");
 
 	//TODO: not sure we should stop if something fails
 	int err;
