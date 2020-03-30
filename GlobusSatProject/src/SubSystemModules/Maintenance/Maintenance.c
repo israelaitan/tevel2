@@ -33,7 +33,6 @@ Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 		return TRUE;
 	}
 	return FALSE;
-
 }
 
 Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
