@@ -68,7 +68,7 @@ void firstActivationProcedure()
 	int err = 0;
 	//TODO: remove print after testing
 	printf("Inside firstActivationProcedure()\n");
-	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
+	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
