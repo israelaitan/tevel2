@@ -42,14 +42,17 @@ int SetIdleOff()
 	return err;
 }
 
+// Checking if in idel state and if need to return back to regular state
 void HandleIdleTime()
 {
 	//TODO: remove print after testing complete
 	printf("inside HandleIdleTime()\n");
 	if(g_idle_flag==TRUE)
 	{
+		//if idle period has passed
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
 		{
+			//return to regular state - turn idle off
 			SetIdleOff();
 			g_idle_flag=FALSE;
 		}
@@ -62,7 +65,7 @@ void HandleIdleTime()
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("not in idle period\n");
+		printf("not in idle state\n");
 	}
 }
 
@@ -72,17 +75,21 @@ int InitTrxvu()
 	//TODO: remove print after testing complete
 	printf("inside InitTrxvu()\n");
 
+	//set I2C addresses
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
 	i2cAdress.addressVu_tc=I2C_TRXVU_TC_ADDR;
 
+	//set frame length
 	ISIStrxvuFrameLengths framelengths;
-
 	framelengths.maxAX25frameLengthRX=SIZE_RXFRAME;
 	framelengths.maxAX25frameLengthTX=SIZE_TXFRAME;
+
+	//set bitrate
 	ISIStrxvuBitrate default_bitrates;
 	default_bitrates=trxvu_bitrate_9600;
 
+	//Initialize TRXVU driver
 	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
 	if(err!=0)
 	{
@@ -109,6 +116,7 @@ int InitTrxvu()
 		//TODO: remove print after testing complete
 		printf("IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 	}
+
 	vTaskDelay(100);
 
 	//initialize Antenas system
