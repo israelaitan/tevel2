@@ -66,11 +66,11 @@
 #define LAST_COMM_TIME_ADDR 			0X9485		//<! saves the last unix time at which communication has occured
 #define LAST_COMM_TIME_SIZE				4			//<! size of last communication time in bytes
 
-#define DEFAULT_EPS_SAVE_TLM_TIME		20			//<! save EPS TLM every 20 seconds
-#define DEFAULT_TRXVU_SAVE_TLM_TIME		20			//<! save TRXVU TLM every 20 seconds
-#define DEFAULT_ANT_SAVE_TLM_TIME		20			//<! save antenna TLM every 20 seconds
-#define DEFAULT_SOLAR_SAVE_TLM_TIME		20			//<! save solar panel TLM every 20 seconds
-#define DEFAULT_WOD_SAVE_TLM_TIME		20			//<! save WOD TLM every 20 seconds
+#define DEFAULT_EPS_SAVE_TLM_TIME		5			//<! save EPS TLM every 20 seconds
+#define DEFAULT_TRXVU_SAVE_TLM_TIME		5		//<! save TRXVU TLM every 20 seconds
+#define DEFAULT_ANT_SAVE_TLM_TIME		5			//<! save antenna TLM every 20 seconds
+#define DEFAULT_SOLAR_SAVE_TLM_TIME		5			//<! save solar panel TLM every 20 seconds
+#define DEFAULT_WOD_SAVE_TLM_TIME		5			//<! save WOD TLM every 20 seconds
 #define DEFAULT_NO_COMM_WDT_KICK_TIME  (15*24*60*60)	//<! number of seconds in 15 days
 #define DEFALUT_BEACON_BITRATE_CYCLE	3			//<! default value
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
