@@ -23,23 +23,16 @@ time_unix g_beacon_interval_time = 0;
 // marks the current beacon cycle(how many were transmitted before change in baud)
 unsigned char g_current_beacon_period;
 // every 'g_beacon_change_baud_period' beacon will be in 1200Bps and not 9600Bps
-unsigned char g_beacon_change_baud_period;
+//unsigned char g_beacon_change_baud_period;
 
 void InitBeaconParams()
 {
 	//TODO: remove print after testing complete
 	printf("Inside InitBeaconParams()\n");
 
-	g_beacon_change_baud_period=DEFALUT_BEACON_BITRATE_CYCLE;
-	FRAM_read((unsigned char*)&g_beacon_change_baud_period, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE );
+	//TODO: Fix code to initialize to default after FRAM read
 	g_beacon_interval_time= DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
-
-	//TODO: remove print after testing complete
-	printf("InitBeaconParams() - setting bitrate to 9600\n");
-
-	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_bitrate_9600);
-
 
 }
 
@@ -70,14 +63,25 @@ void BeaconLogic()
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
 	unsigned int id=  0xFFFFFFFF;
+
+	//check if not on mute and EPS has enough power
 	if(CheckTransmitionAllowed())
 	{
+		//check if time to send beacon based on beacon interval
 		if(CheckExecutionTime(g_prev_beacon_time, g_beacon_interval_time))
 		{
+			//get current Whole Orbit Data
 			GetCurrentWODTelemetry(&wod);
+
+			//create from WOD a packet to send to earth
 			AssembleCommand((unsigned char *)&wod, sizeof(wod), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, &packet);
+
+			// transmit packet to earth
 			TransmitSplPacket(&packet, NULL);
+
+			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
+
 			//TODO: remove after testing complete
 			printf("beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 		}
@@ -95,7 +99,7 @@ void BeaconLogic()
 	}
 
 }
-
+/*
 int UpdateBeaconBaudCycle(unsigned char cycle)
 {
 	//TODO: remove print after testing complete
@@ -118,12 +122,13 @@ int UpdateBeaconBaudCycle(unsigned char cycle)
 	g_beacon_change_baud_period = cycle;
 	return E_NO_SS_ERR;
 }
-
+*/
 
 int UpdateBeaconInterval(time_unix intrvl)
 {
 	//TODO: remove print after testing complete
 	printf("Inside UpdateBeaconInterval() interval: %ld, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
+
 	if(intrvl>MAX_BEACON_INTERVAL|| intrvl<MIN_BEACON_INTERVAL)
 		return E_PARAM_OUTOFBOUNDS;
 
