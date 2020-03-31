@@ -70,7 +70,7 @@ void firstActivationProcedure()
 	printf("Inside firstActivationProcedure()\n");
 	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
 	int AwaitedTime = 0;
-	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
 	{
 		while (TotalWaitTime>AwaitedTime)
@@ -80,7 +80,7 @@ void firstActivationProcedure()
 			vTaskDelay(1000*10);
 
 			AwaitedTime += 1000*10;
-			FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+			FRAM_write((unsigned char*)&AwaitedTime , MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE);
 			TelemetryCollectorLogic();
 
 		}
