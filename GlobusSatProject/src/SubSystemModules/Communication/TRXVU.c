@@ -1,10 +1,8 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <freertos/task.h>
-
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
-
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
 
@@ -25,7 +23,8 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Housekepping/Dump.h"
 
-int				g_idle_period = 301 ;				// idle time default = 5 min
+//idle global variables
+int				g_idle_period = 300 ;				// idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
@@ -37,17 +36,19 @@ int SetIdleOff()
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
 	if(err!=0)
 	{
+		//TODO: handle failure in setting idle sttate off
 		printf("failed in setting trxvu idle off - %d\n", err);
 	}
 	return err;
 }
 
+// Checking if in idle state and if need to return back to regular state
 void HandleIdleTime()
 {
-	//TODO: remove print after testing complete
-	//printf("inside HandleIdleTime()\n");
+	//if in idle state
 	if(g_idle_flag==TRUE)
 	{
+		//if idle period has passed
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
 		{
 			SetIdleOff();
@@ -59,49 +60,49 @@ void HandleIdleTime()
 			printf("idle end period not reached\n");
 		}
 	}
-	else
-	{
-		//TODO: remove print after testing complete
-		//printf("not in idle period\n");
-	}
 }
 
 
+// Initialize TRXVU component
 int InitTrxvu()
 {
 	//TODO: remove print after testing complete
 	printf("inside InitTrxvu()\n");
 
+	//set I2C addresses
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
 	i2cAdress.addressVu_tc=I2C_TRXVU_TC_ADDR;
 
+	//set max frame lengths
 	ISIStrxvuFrameLengths framelengths;
-
 	framelengths.maxAX25frameLengthRX=SIZE_RXFRAME;
 	framelengths.maxAX25frameLengthTX=SIZE_TXFRAME;
+
+	//set bitrate
 	ISIStrxvuBitrate default_bitrates;
 	default_bitrates=trxvu_bitrate_9600;
 
+	//Initialize TRXVU driver
 	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
 	if(err!=0)
 	{
-		printf("there is error in the initialization\n");
+		printf("Error in the initialization: %d\n", err);
 		return err;
 	}
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("initialization succeeded\n");
+		printf("IsisTrxvu_initialize succeeded\n");
 	}
 
 
-	//sleep 0.1 sec and set birate to 9600 bps
+	//TODO: check if required as bitrate already provided in init
 	vTaskDelay(100);
 	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
 	if(err!=0)
 	{
-		printf("there is error in the IsisTrxvu_tcSetAx25Bitrate\n");
+		printf("Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
 		return err;
 	}
 	else
@@ -111,14 +112,16 @@ int InitTrxvu()
 	}
 	vTaskDelay(100);
 
+	//Set Antenas addresses for both sides
+	ISISantsI2Caddress address;
+	address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
+	address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+
 	//initialize Antenas system
-	ISISantsI2Caddress adress;
-	adress.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-	adress.addressSideB = ANTS_I2C_SIDE_B_ADDR;
-	err=IsisAntS_initialize(&adress,1);
+	err=IsisAntS_initialize(&address,1);
 	if(err!=0)
 	{
-		printf("there is error in the initialization of the Antennas\n");
+		printf("Error in the initialization of the Antennas: %d\n", err);
 		return err;
 	}
 	else
@@ -127,13 +130,17 @@ int InitTrxvu()
 		printf("initialization of the Antennas succeeded\n");
 	}
 
+	//Initialize TRXVU transmit lock
 	InitTxModule();
+
+	//Initialize beacon parameters
 	InitBeaconParams();
 
 	return err;
 }
 
 
+//TRX VU main logic
  CommandHandlerErr TRX_Logic()
 {
 	#ifdef TESTING
@@ -146,18 +153,22 @@ int InitTrxvu()
 	CommandHandlerErr  res;
 	int result = 0;
 
-	//check if we have online command
+	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
 
 	if(onCmdCount>0) {
+		//get the online command
 		res = GetOnlineCommand(&cmd);
 		if(res!=0)
-			printf("there was an error in getting the online command\n ");
+			printf("Error in getting the online command: %d\n", res);
 		else {
 			#ifdef TESTING
-				printf("getting the online command success\n");
+				printf("Getting the online command success\n");
 			#endif
+
+			//Reset WD communication with earth by saving current time as last communication time in FRAM
 			ResetGroundCommWDT();
+			//Send Acknowledge to earth
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 		}
 	}
@@ -165,12 +176,16 @@ int InitTrxvu()
 	if(onCmdCount>0 && res == 0)
 		result = ActUponCommand(&cmd);
 
+	//check idle timer
 	HandleIdleTime();
+
+	//handle beacon
 	BeaconLogic();
+
 	return result+res;
 }
 
-
+// Command to set idle state to on
 int CMD_SetIdleOn()
 {
 	//TODO: remove print after testing complete
@@ -178,10 +193,11 @@ int CMD_SetIdleOn()
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
-		printf("failed in setting trxvy idle on - %d\n", err);
+		printf("Failed in setting trxvy idle on - %d\n", err);
 	}
 	else
 	{
+		//get time of start idle period & set idle state flag to true
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
 	}
