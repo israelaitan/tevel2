@@ -151,6 +151,7 @@ int InitTrxvu()
 	unsigned char* data = NULL;
 	unsigned int length=0;
 	CommandHandlerErr  res;
+	int result = 0;
 
 	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
@@ -167,15 +168,13 @@ int InitTrxvu()
 
 			//Reset WD communication with earth by saving current time as last communication time in FRAM
 			ResetGroundCommWDT();
-
 			//Send Acknowledge to earth
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
-
-			//run command
-			res = ActUponCommand(&cmd);
-
 		}
 	}
+
+	if(onCmdCount>0 && res == 0)
+		result = ActUponCommand(&cmd);
 
 	//check idle timer
 	HandleIdleTime();
@@ -183,7 +182,7 @@ int InitTrxvu()
 	//handle beacon
 	BeaconLogic();
 
-	return res;
+	return result+res;
 }
 
 // Command to set idle state to on
