@@ -22,6 +22,7 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/HouseKepping/TelemetryCollector.h"
 #include "TrxvuTestingDemo.h"
+#include "SubSystemModules/Communication/Trxvu.h"
 
 Boolean selectAndExecuteTest()
 {
@@ -96,16 +97,19 @@ void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 	InitSubsystems();
-	voltage_t curr_voltage = 0;
+	//voltage_t curr_voltage = 0;
 	int i = 0;
 	while (1)
 	{
-		vTaskDelay(100);
-		GetBatteryVoltage(&curr_voltage);
-		printf("GivatShmuel:main loop: i= : %d\n",  i);
+		//GetBatteryVoltage(&curr_voltage);
+		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
 		//BeaconLogic();
 		TRX_Logic();
+		printf("GivatShmuel:main testing loop after TRX_Logic: i= : %d\n",  i);
 		TelemetryCollectorLogic();
+		printf("GivatShmuel:main testing loop after Telemetry Logic: i= : %d\n",  i);
+		vTaskDelay(100);
+		printf("GivatShmuel:main testing loop after delay: i= : %d\n",  i);
 		i++;
 	}
 	TestDumpTelemetry();

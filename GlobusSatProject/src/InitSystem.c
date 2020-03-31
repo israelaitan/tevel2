@@ -267,7 +267,7 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	//TODO: not always only before flight
+	//TODO: not to use every restart.
 	WriteDefaultValuesToFRAM();
 
 	err = StartTIME();
@@ -278,7 +278,7 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	err=InitializeFS(TRUE);
+	err=InitializeFS(TRUE);//TODO: make sure sure it will happens ones.
 	if (err!=0)
 		return err;
 

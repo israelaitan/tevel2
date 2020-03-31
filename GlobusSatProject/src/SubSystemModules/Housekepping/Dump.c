@@ -47,6 +47,9 @@ void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t
 		unsigned char *err, unsigned int size) {
 
 	SendAckPacket(acktype, task_args->cmd, err, size);
+#ifdef TESTING
+	printf("finish dump:ack packet sent\n");
+#endif
 	if (NULL != task_args) {
 		free(task_args);
 	}
@@ -59,6 +62,9 @@ void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t
 	if(NULL != buffer){
 		free(buffer);
 	}
+#ifdef TESTING
+	printf("finish dump:ended successfully\n");
+#endif
 }
 
 void AbortDump()
@@ -93,11 +99,19 @@ Boolean CheckDumpAbort() {
 }
 
 void DumpTask(void *args) {
+#ifdef TESTING
+	printf("Starting DumpTask\n");
+#endif
 	if (NULL == args) {
 		FinishDump(NULL, NULL, ACK_DUMP_ABORT, NULL, 0);
 		return;
 	}
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
+#ifdef TESTING
+	printf("dump: type: %d \n",task_args->dump_type);
+	printf("dump: start time: %d \n",task_args->t_start);
+	printf("dump: end time: %d \n",task_args->t_end);
+#endif
 	sat_packet_t dump_tlm = { 0 };
 	int err = 0;
 	int availFrames = 0;
@@ -117,6 +131,9 @@ void DumpTask(void *args) {
 		return;
 	}
 	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
+#ifdef TESTING
+	printf("dump: number of elements: %d \n",num_of_tlm_elements_read);
+#endif
 	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
 	buffer = malloc(buffer_size);
 	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
@@ -125,33 +142,58 @@ void DumpTask(void *args) {
 			num_of_packets++;
 	SendAckPacket(ACK_DUMP_START, task_args->cmd,
 			(unsigned char*) &num_of_packets, sizeof(num_of_packets));
-
+#ifdef TESTING
+	printf("dump: ack packet sent with number of packets=: %d \n",num_of_packets);
+#endif
 	unsigned int currPacketSize;
 	unsigned int totalDataLeft = buffer_size;
 	unsigned int i = 0;
 	while (i < num_of_packets) {
 
-		if (CheckDumpAbort() || !CheckTransmitionAllowed())
+		if (CheckDumpAbort() || !CheckTransmitionAllowed()){
+#ifdef TESTING
+			printf("dump: did not finish successfully\n");
+#endif
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
+		}
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
 		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i,  &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
-		if (err)
+#ifdef TESTING
+		printf("dump: packet sent id=: %d \n",i);
+#endif
+		if (err) {
+#ifdef TESTING
+			printf("dump: did not finish successfully: error transmit=%d\n", err);
+#endif
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
+		}
 		if (availFrames != NO_TX_FRAME_AVAILABLE) {
 			i++;
 			totalDataLeft -= currPacketSize;
 			buffer += currPacketSize;
 		}
-		if (availFrames == NO_TX_FRAME_AVAILABLE)
+		else {
+#ifdef TESTING
+			printf("dump: no available frames\n");
+#endif
 			vTaskDelay(10);
+		}
 	}
 	FinishDump(task_args, buffer, ACK_DUMP_FINISHED, NULL, 0);
+#ifdef TESTING
+	printf("dump: finish successfully\n");
+#endif
 }
 
-int DumpTelemetry(sat_packet_t *cmd) {
-	if (NULL == cmd) {
+int DumpTelemetry(sat_packet_t *cmd)
+{
+#ifdef TESTING
+	printf("Starting DumpTelemetry\n");
+#endif
+	if (NULL == cmd) 
+	{
 		return -1;
 	}
 
