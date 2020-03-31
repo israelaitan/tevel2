@@ -68,7 +68,7 @@ void firstActivationProcedure()
 	int err = 0;
 	//TODO: remove print after testing
 	printf("Inside firstActivationProcedure()\n");
-	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN; //TODO: change 30 to be a define. TODO: check total awaited time value after this line. There is a bug!
+	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,MOST_UPDATED_SAT_TIME_ADDR , MOST_UPDATED_SAT_TIME_SIZE	 );
 	if (!err)
@@ -76,7 +76,7 @@ void firstActivationProcedure()
 		while (TotalWaitTime>AwaitedTime)
 		{
 			//TODO: remove print after testing
-			printf("waited 10 seconds\n");
+			printf("waiting 10 seconds\n");
 			vTaskDelay(1000*10);
 
 			AwaitedTime += 1000*10;
@@ -87,7 +87,7 @@ void firstActivationProcedure()
 	}
 }
 
-	//שמירת ערכי ברירת מחדל בזיכרון.
+//שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
 {
 	//TODO: remove print after testing
@@ -112,7 +112,7 @@ void WriteDefaultValuesToFRAM()
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
 }
 
-	//אתחול ה FRAM
+//אתחול ה FRAM
 int StartFRAM()
 {
 	int result=0;
@@ -121,7 +121,7 @@ int StartFRAM()
 	result=FRAM_start();
 	if(-1==result)
 	{
-		printf("failed to creaT semaforeS\n");
+		printf("failed to create semaforeS\n");
 	}
 	else if(-2==result)
 	{
@@ -136,7 +136,7 @@ int StartFRAM()
 	return result;
 }
 
-	// i2c אתחול ה
+// i2c אתחול ה
 int StartI2C()
 {
 	int result=0;
@@ -185,7 +185,7 @@ int StartSPI()
 	return result;
 }
 
-	//אתחול השעון של הלווין
+//אתחול השעון של הלווין
 int StartTIME()
 {
 	int err = 0;
@@ -209,36 +209,45 @@ int StartTIME()
 	return 0;
 }
 
-	// פריסת אנטנות לאחר 30 דק שקט
+// פריסת אנטנות לאחר 30 דק שקט
 int DeploySystem()
 {
 	//TODO: remove print after testing
 	printf(" DeploySystem() here\n");
 
+	//check if first activation
 	if(isFirstActivation())
 	{
+		// waiting for 30 min (collect telemetry every 10 sec)-
 		firstActivationProcedure();
 
+		//set deploment time in FRAM
 		unsigned int deployTime;
 		Time_getUnixEpoch(&deployTime);
 		FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
 
+		//Initialize the Antenas
 		ISISantsI2Caddress addressab;
 		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
 		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
 		int res=IsisAntS_initialize( &addressab, 1);//TODO: check in the seker that there is one system
 
+		//TODO: what happens if auto deploy fails?
+		// antenata auto deploy - sides A
 		if(res==0)
 		{
 			res=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
 		}
 
+		// antenata auto deploy - sides B
 		if(res==0)
 		{
 			res = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
 		}
+
 		if(res==0)
 		{
+			//update first activation flad to false
 			Boolean firstactivation= FALSE;
 			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 		}
@@ -247,7 +256,7 @@ int DeploySystem()
 	return 0;
 }
 
-	//אתחול כלל המערכות
+//אתחול כלל המערכות
 int InitSubsystems()
 {
 	//TODO: remove print after testing
@@ -259,38 +268,46 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
+	// start the I2C component
 	err = StartI2C();
 	if (err!=0)
 		return err;
 
+	// start the FRAM
 	err = StartFRAM();
 	if (err!=0)
 		return err;
 
-	//TODO: not always only before flight
+	//TODO: Should we call it here?
 	WriteDefaultValuesToFRAM();
 
+	// Start the clock
 	err = StartTIME();
 	if (err!=0)
 		return err;
 
+	// initialize TRXVU (communication) component
 	err=InitTrxvu();
 	if (err!=0)
 		return err;
 
+	//TODO: Need to call only once
+	// Initalize the file system
 	err=InitializeFS(TRUE);
 	if (err!=0)
 		return err;
 
+	//Initialize the dump thread (queue and lock)
 	err=InitDump();
 	if (err!=0)
 		return err;
 
+	// Initialize EPS
 	err=EPS_Init();
 	if (err!=0)
-
 		return err;
 
+	// Deploy system - open Antetnas
 	err = DeploySystem();
 	if (err!=0)
 		return err;
