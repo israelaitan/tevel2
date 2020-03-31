@@ -9,47 +9,33 @@
 
 int ActUponCommand(sat_packet_t *cmd)
 {
-	//TODO: remove print after testing complete
-	printf("inside ActUponCommand() command type: %c, command sub-type: %c\n", cmd->cmd_type, cmd->cmd_subtype);
+	#ifdef TESTING
+		printf("inside ActUponCommand() command type: %c, command sub-type: %c\n", cmd->cmd_type, cmd->cmd_subtype);
+	#endif
 
 	int err = 0;
-
-
-	if(cmd==NULL)
-	{
-		err=-1;
-	}
-	else if(cmd->cmd_type==trxvu_cmd_type)
-	{
-		err=trxvu_command_router(cmd);
-	}
-	else if(cmd->cmd_type==eps_cmd_type)
-	{
-		err=eps_command_router(cmd);
-	}
-	else if(cmd->cmd_type==telemetry_cmd_type)
-	{
-		err=telemetry_command_router(cmd);
-	}
-	else if(cmd->cmd_type==filesystem_cmd_type)
-	{
-		 err=filesystem_command_router(cmd);
-	}
-	else if(cmd->cmd_type==managment_cmd_type)
-	{
-		 err=managment_command_router(cmd);
-	}
-	else if(cmd->cmd_type==ack_type)
-	{
+	if( cmd == NULL )
+		err = -1;
+	else if( cmd->cmd_type == trxvu_cmd_type )
+		err = trxvu_command_router( cmd );
+	else if( cmd->cmd_type == eps_cmd_type )
+		err = eps_command_router( cmd );
+	else if( cmd->cmd_type == telemetry_cmd_type )
+		err = telemetry_command_router( cmd );
+	else if( cmd->cmd_type == filesystem_cmd_type )
+		 err = filesystem_command_router( cmd );
+	else if( cmd->cmd_type == managment_cmd_type )
+		 err = managment_command_router( cmd );
+	else if( cmd->cmd_type == ack_type ) {
 		unsigned char* data = NULL;
-		unsigned int length=0;
+		unsigned int length = 0;
 		SendAckPacket(ACK_PING, cmd, data, length);
 	}
 
-	//TODO: remove print after testing complete
-	printf("finished command with error: %d\n" , err);
+	#ifdef TESTING
+		printf("finished command with error: %d\n" , err);
+	#endif
 	return err;
-
 }
 
 

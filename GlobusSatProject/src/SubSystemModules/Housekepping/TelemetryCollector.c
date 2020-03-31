@@ -77,29 +77,46 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 
 void TelemetryCollectorLogic()
 {
-
+	#ifdef TESTING
+	 	 printf("Inside TelemetryCollectorLogic()\n");
+	#endif
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
+		#ifdef TESTING
+	 	 	 printf("TelemetrySaveEPS\n");
+		#endif
 		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[eps_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){
 		TelemetrySaveTRXVU();
+		#ifdef TESTING
+	 	 	 printf("TelemetrySaveTRXVU\n");
+		#endif
 		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[trxvu_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[ant_tlm],tlm_save_periods[ant_tlm])){
 		TelemetrySaveANT();
+		#ifdef TESTING
+	 	 	 printf("TelemetrySaveANT\n");
+		#endif
 		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[ant_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm],tlm_save_periods[solar_panel_tlm])){
 		TelemetrySaveSolarPanels();
+		#ifdef TESTING
+			 printf("TelemetrySaveSolarPanels\n");
+		#endif
 		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[solar_panel_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[wod_tlm],tlm_save_periods[wod_tlm])){
 		TelemetrySaveWOD();
+		#ifdef TESTING
+			 printf("TelemetrySaveWOD\n");
+		#endif
 		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[wod_tlm]));
 	}
 
@@ -153,8 +170,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
-	printf("isis_eps__gethousekeepingraw__tm() return status: %d", err);
-
+	//printf("isis_eps__gethousekeepingraw__tm() return status: %d", err);
 	//TODO:find out why returns 1. bypassing for testing
 	//if (err == 0)
 	{
@@ -163,7 +179,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
-	printf("isis_eps__gethousekeepingeng__tm() return status: %d", err);
+	//printf("isis_eps__gethousekeepingeng__tm() return status: %d", err);
 
 	//if (err == 0)
 	{
@@ -172,7 +188,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingrawincdb__from_t tlm_cdb_raw;
 	err = isis_eps__gethousekeepingrawincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_raw);
-	printf("isis_eps__gethousekeepingrawincdb__tm() return status: %d", err);
+	//printf("isis_eps__gethousekeepingrawincdb__tm() return status: %d", err);
 	//if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_CDB_TLM, &tlm_cdb_raw);
@@ -180,7 +196,7 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingengincdb__from_t tlm_cdb_eng;
 	err = isis_eps__gethousekeepingengincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_eng);
-	printf("isis_eps__gethousekeepingengincdb__tm() return status: %d", err);
+	//printf("isis_eps__gethousekeepingengincdb__tm() return status: %d", err);
 	//if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);

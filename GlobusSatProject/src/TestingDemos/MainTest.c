@@ -97,22 +97,16 @@ void taskTesting()
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 	InitSubsystems();
 	voltage_t curr_voltage = 0;
-	while(1)
+	int i = 0;
+	while (1)
 	{
-		int i = 0;
-		while (i<600)
-		{
-			vTaskDelay(100);
-			//selectAndExecuteTest();
-			GetBatteryVoltage(&curr_voltage);
-			printf("gvs group : %d\n",  curr_voltage);
-			printf("still alive %d, \n",i);
-			BeaconLogic();
-			//TRX_Logic();
-			TelemetryCollectorLogic();
-			i++;
-		}
-		TestDumpTelemetry();
+		vTaskDelay(100);
+		GetBatteryVoltage(&curr_voltage);
+		printf("GivatShmuel:main loop: i= : %d\n",  i);
+		//BeaconLogic();
+		TRX_Logic();
+		TelemetryCollectorLogic();
+		i++;
 	}
-
+	TestDumpTelemetry();
 }

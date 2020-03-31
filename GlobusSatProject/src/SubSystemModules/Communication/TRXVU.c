@@ -45,7 +45,7 @@ int SetIdleOff()
 void HandleIdleTime()
 {
 	//TODO: remove print after testing complete
-	printf("inside HandleIdleTime()\n");
+	//printf("inside HandleIdleTime()\n");
 	if(g_idle_flag==TRUE)
 	{
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
@@ -62,7 +62,7 @@ void HandleIdleTime()
 	else
 	{
 		//TODO: remove print after testing complete
-		printf("not in idle period\n");
+		//printf("not in idle period\n");
 	}
 }
 
@@ -136,10 +136,11 @@ int InitTrxvu()
 
  CommandHandlerErr TRX_Logic()
 {
-	 //TODO: remove print after testing complete
-	printf("inside TRX_Logic()\n");
+	#ifdef TESTING
+	 	 printf("Inside TRX_Logic()\n");
+	#endif
 	sat_packet_t cmd={0};
-	int onCmdCount, offBufferCount;
+	int onCmdCount;
 	unsigned char* data = NULL;
 	unsigned int length=0;
 	CommandHandlerErr  res;
@@ -148,51 +149,25 @@ int InitTrxvu()
 	//check if we have online command
 	onCmdCount = GetNumberOfFramesInBuffer();
 
-	if(onCmdCount>0)
-	{
-		res = GetOnlineCommand(&cmd);//ask the teacher
+	if(onCmdCount>0) {
+		res = GetOnlineCommand(&cmd);
 		if(res!=0)
-		{
 			printf("there was an error in getting the online command\n ");
-		}
-		else
-		{
-			 //TODO: remove print after testing complete
-			printf("getting the online command success\n");
+		else {
+			#ifdef TESTING
+				printf("getting the online command success\n");
+			#endif
 			ResetGroundCommWDT();
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 		}
 	}
-	else
-	{
-		offBufferCount=GetDelayedCommandBufferCount();
-		if(offBufferCount> 0)
-		{
-			res=GetDelayedCommand(&cmd);
-			if(res!=0)
-			{
-				printf("there was error in getting delayed command\n");
-			}
-			else
-			{
-				//TODO: remove print after testing complete
-				printf("getting delayed command success\n");
-			}
-		}
-	}
 
-	if((onCmdCount>0 || offBufferCount>0) && res == 0)
-	{
+	if(onCmdCount>0 && res == 0)
 		result = ActUponCommand(&cmd);
-	}
 
-	//check idle timer
 	HandleIdleTime();
-
 	BeaconLogic();
-
 	return result+res;
-
 }
 
 

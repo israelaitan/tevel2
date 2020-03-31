@@ -135,10 +135,7 @@ void DumpTask(void *args) {
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
-		AssembleCommand(buffer, currPacketSize,
-				(char) DUMP_SUBTYPE, (char) (task_args->dump_type),
-				task_args->cmd->ID, i,  &dump_tlm);
-
+		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i,  &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
 		if (err)
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
@@ -147,7 +144,7 @@ void DumpTask(void *args) {
 			totalDataLeft -= currPacketSize;
 			buffer += currPacketSize;
 		}
-		if (availFrames == 0 || availFrames == NO_TX_FRAME_AVAILABLE)
+		if (availFrames == NO_TX_FRAME_AVAILABLE)
 			vTaskDelay(10);
 	}
 	FinishDump(task_args, buffer, ACK_DUMP_FINISHED, NULL, 0);

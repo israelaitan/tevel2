@@ -27,20 +27,18 @@ unsigned char g_beacon_change_baud_period;
 
 void InitBeaconParams()
 {
-	//TODO: remove print after testing complete
-	printf("Inside InitBeaconParams()\n");
-
-	g_beacon_change_baud_period=DEFALUT_BEACON_BITRATE_CYCLE;
+	#ifdef TESTING
+		printf("Inside InitBeaconParams()\n");
+	#endif
+	g_beacon_change_baud_period = DEFALUT_BEACON_BITRATE_CYCLE;
+	//TODO: check framread result and handle accordingly
 	FRAM_read((unsigned char*)&g_beacon_change_baud_period, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE );
-	g_beacon_interval_time= DEFAULT_BEACON_INTERVAL_TIME;
+	g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
-
-	//TODO: remove print after testing complete
-	printf("InitBeaconParams() - setting bitrate to 9600\n");
-
+	#ifdef TESTING
+		printf("InitBeaconParams() - setting bitrate to 9600\n");
+	#endif
 	IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_bitrate_9600);
-
-
 }
 
 /*//Sets the bitrate to 1200 every third beacon and to 9600 otherwise
@@ -65,8 +63,9 @@ int BeaconSetBitrate()
 //Beacon logic code
 void BeaconLogic()
 {
-	//TODO: remove print after testing complete
-	printf("Inside BeaconLogic()\n");
+	#ifdef TESTING
+		printf("Inside BeaconLogic()\n");
+	#endif
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
 	unsigned int id=  0xFFFFFFFF;
@@ -78,21 +77,20 @@ void BeaconLogic()
 			AssembleCommand((unsigned char *)&wod, sizeof(wod), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, &packet);
 			TransmitSplPacket(&packet, NULL);
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
-			//TODO: remove after testing complete
-			printf("beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			#ifdef TESTING
+				printf("beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			#endif
 		}
-		else
-		{
-			//TODO: remove after testing complete
-			printf("beacon time did not arrive\n");
-		}
+		#ifdef TESTING
+			else
+				printf("beacon time did not arrive\n");
+		#endif
 
 	}
-	else
-	{
-		//TODO: remove after testing complete
-		printf("beacon not allowed\n");
-	}
+	#ifdef TESTING
+		else
+			printf("beacon not allowed\n");
+	#endif
 
 }
 
