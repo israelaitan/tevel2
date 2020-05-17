@@ -71,20 +71,25 @@ void firstActivationProcedure()
 	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-	if (!err)
+	if (err!=0)
 	{
-		printf("could not read SECONDS_SINCE_DEPLOY from Fram");
+		printf("could not read SECONDS_SINCE_DEPLOY from FRAM\n");
 	}
+	else //TODO: remove after seker
+	{
+		printf("Total time: %d, Awaited time: %d\n", TotalWaitTime, AwaitedTime);
+	}
+
+	int i = 1; //TODO: remove after seker
 	while (TotalWaitTime>AwaitedTime)
 	{
 		//TODO: remove print after testing
-		printf("waiting 10 seconds\n");
+		printf("%d) Waiting 10 seconds - awaited time is: %d\n", i++, AwaitedTime );
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;
 		FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 		TelemetryCollectorLogic();
-
 	}
 }
 
