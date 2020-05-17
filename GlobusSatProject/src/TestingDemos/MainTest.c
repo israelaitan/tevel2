@@ -92,6 +92,21 @@ Boolean selectAndExecuteTest()
 	return offerMoreTests;
 }
 
+//Test for firstActivationProcedure Logic
+void TestFirstActivionProc()
+{
+	printf("i am starting\n");
+	int err;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
+	int a = 0;
+	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	err = StartTIME();
+
+	firstActivationProcedure();
+	printf("i am done\n");
+}
 
 void taskTesting()
 {
@@ -113,4 +128,7 @@ void taskTesting()
 		i++;
 	}
 	TestDumpTelemetry();
+	//TestFirstActivionProc();
 }
+
+
