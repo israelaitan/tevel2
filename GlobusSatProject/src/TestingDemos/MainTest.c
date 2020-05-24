@@ -111,7 +111,41 @@ void TestFirstActivionProc()
 	printf("i am done\n");
 }
 
+void TestisFirstActivation()
+{
+	printf("i am starting\n");
+	int err;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
 
+	printf("Setting isFirstActivation with FALSE\n");
+	TestIsFirst(FALSE);
+
+	printf("Setting isFirstActivation with TRUE\n");
+	TestIsFirst(TRUE);
+}
+
+void TestIsFirst(Boolean status)
+{
+	Boolean St;
+	Boolean a = FALSE;
+
+	//set flag status in FRAM
+	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+
+	// call isFirstActivation check
+	St=isFirstActivation();
+	if(St==TRUE)
+	{
+		printf("isFirstActivation()=TRUE\n");
+	}
+	else
+	{
+		printf("isFirstActivation()=FLASE\n");
+	}
+	printf("i am done\n");
+}
 
 void taskTesting()
 {
