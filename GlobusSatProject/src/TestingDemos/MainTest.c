@@ -104,9 +104,14 @@ void TestFirstActivionProc()
 	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 	err = StartTIME();
 
+	//added to allow Telemetry collector to work
+	err = InitializeFS(TRUE);
+
 	firstActivationProcedure();
 	printf("i am done\n");
 }
+
+
 
 void taskTesting()
 {
