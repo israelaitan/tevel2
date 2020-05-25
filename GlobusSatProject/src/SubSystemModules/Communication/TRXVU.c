@@ -28,16 +28,27 @@ int				g_idle_period = 300 ;				// idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
+
+
 //setting trxvu idle off
 int SetIdleOff()
 {
 	//TODO: remove print after testing complete
 	printf("inside SetIdleOff()\n");
-	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
-	if(err!=0)
+	int err = 0;
+
+	if(g_idle_flag==TRUE)
 	{
-		//TODO: handle failure in setting idle sttate off
-		printf("failed in setting trxvu idle off - %d\n", err);
+		err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
+		if(err==0)
+		{
+			g_idle_flag=FALSE;
+		}
+		else
+		{
+			//TODO: handle failure in setting idle sttate off
+			printf("failed in setting trxvu idle off - %d\n", err);
+		}
 	}
 	return err;
 }
@@ -52,7 +63,6 @@ void HandleIdleTime()
 		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
 		{
 			SetIdleOff();
-			g_idle_flag=FALSE;
 		}
 		else
 		{
@@ -150,7 +160,7 @@ int InitTrxvu()
 	int onCmdCount;
 	unsigned char* data = NULL;
 	unsigned int length=0;
-	CommandHandlerErr  res;
+	CommandHandlerErr  res =0;
 
 	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
@@ -185,6 +195,11 @@ int InitTrxvu()
 	return res;
 }
 
+ /*
+  * TRXVU Online Commands
+  *
+  */
+
 // Command to set idle state to on
 int CMD_SetIdleOn()
 {
@@ -205,4 +220,11 @@ int CMD_SetIdleOn()
 }
 
 
+// Command to set idle state to off
+int CMD_SetIdleOff()
+{
+	//TODO: remove print after testing complete
+	printf("inside CMD_SetIdleOff()\n");
+	return SetIdleOff();
+}
 
