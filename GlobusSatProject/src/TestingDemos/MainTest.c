@@ -147,11 +147,31 @@ void TestIsFirst(Boolean status)
 	printf("i am done\n");
 }
 
+void TestUpdateBeaconInterval()
+{
+	printf("i am starting\n");
+
+	int s;
+	s=UpdateBeaconInterval(80);
+	if(s==E_PARAM_OUTOFBOUNDS)
+	{
+		printf("test succeeded - update interval failed\n");
+	}
+	else
+	{
+		printf("test failed - update interval succeeded\n");
+	}
+
+	printf("i am done\n");
+}
+
+
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 	InitSubsystems();
-	//voltage_t curr_voltage = 0;
+	//TestUpdateBeaconInterval();
+
 	int i = 0;
 	while (1)
 	{
@@ -165,6 +185,17 @@ void taskTesting()
 		vTaskDelay(100);
 		printf("GivatShmuel:main testing loop after delay: i= : %d\n",  i);
 		i++;
+
+		if(i == 40)
+		{
+			UpdateBeaconInterval(60);
+			printf("********************************************************************** Update Beacon intervals to 60");
+		}
+		else if (i==150)
+		{
+			UpdateBeaconInterval(20);
+			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
+		}
 	}
 	TestDumpTelemetry();
 	//TestFirstActivionProc();
