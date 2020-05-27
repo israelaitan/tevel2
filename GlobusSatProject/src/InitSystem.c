@@ -218,6 +218,8 @@ int StartTIME()
 	// פריסת אנטנות לאחר 30 דק שקט
 int DeploySystem()
 {
+	int res=0, resA=0, resB=0;
+
 	//TODO: remove print after testing
 	printf(" DeploySystem() here\n");
 
@@ -235,87 +237,103 @@ int DeploySystem()
 		ISISantsI2Caddress addressab;
 		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
 		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
-		int res=IsisAntS_initialize( &addressab, 1);//TODO: check in the seker that there is one system
+
+		res=IsisAntS_initialize( &addressab, 1);//TODO: check in the seker that there is one system
 
 		//TODO: what happens if auto deploy fails?
 		// antenata auto deploy - sides A
-		if(res==0)
+		if (res == 0)
 		{
-			res=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
-		}
+			int count = 1;
+			resA = 1; //to get into the loop and try at least once to auto deploy
+			//loop until Antena's auto deploy side A successful or 10 tries
+			while(resA!=0 && count <10)
+			{
+				printf("Try: %d Side A", count);
+				resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
+				count++;
 
-		// antenata auto deploy - sides B
-		if(res==0)
-		{
-			res = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
-		}
+			}
 
-		if(res==0)
-		{
-			//update first activation flad to false
-			Boolean firstactivation= FALSE;
-			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+			// antenata auto deploy - sides B
+			count = 1;
+			resB = 1; //to get into the loop and try at least once to auto deploy
+			//loop until Antena's auto deploy side B successful or 10 tries
+			while(resB!=0 && count <10)
+			{
+				printf("Try: %d Side B", count);
+				resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
+				count++;
+			}
+
+			if(resB==0 && resA ==0)
+			{
+				//update first activation flag to false
+				Boolean firstactivation= FALSE;
+				FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+				printf("*****First Activation Completed******");
+			}
 		}
 	}
 
-	return 0;
+	return res + resB + resA;
 }
 
-	//אתחול כלל המערכות
+//אתחול כלל המערכות
 int InitSubsystems()
 {
 	//TODO: remove print after testing
-		printf("InitSubsystems()  here\n");
+	printf("InitSubsystems()  here\n");
 
-		//TODO: not sure we should stop if something fails
-		int err;
-		err = StartSPI();
-		if (err!=0)
-			return err;
+	//TODO: not sure we should stop if something fails
+	int err;
+	err = StartSPI();
+	if (err!=0)
+		return err;
 
-		// start the I2C component
-		err = StartI2C();
-		if (err!=0)
-			return err;
+	// start the I2C component
+	err = StartI2C();
+	if (err!=0)
+		return err;
 
-		// start the FRAM
-		err = StartFRAM();
-		if (err!=0)
-			return err;
+	// start the FRAM
+	err = StartFRAM();
+	if (err!=0)
+		return err;
 
-		//TODO: Should we call it here?
-		WriteDefaultValuesToFRAM();
+	//TODO: Should we call it here?
+	WriteDefaultValuesToFRAM();
 
-		// Start the clock
-		err = StartTIME();
-		if (err!=0)
-			return err;
+	// Start the clock
+	err = StartTIME();
+	if (err!=0)
+		return err;
 
-		// initialize TRXVU (communication) component
-		err=InitTrxvu();
-		if (err!=0)
-			return err;
+	// initialize TRXVU (communication) component
+	err=InitTrxvu();
+	if (err!=0)
+		return err;
 
-		//TODO: Need to call only once
-		// Initalize the file system
-		err=InitializeFS(TRUE);
-		if (err!=0)
-			return err;
+	//TODO: Need to call only once
+	// Initalize the file system
+	err=InitializeFS(TRUE);
+	if (err!=0)
+		return err;
 
-		//Initialize the dump thread (queue and lock)
-		err=InitDump();
-		if (err!=0)
-			return err;
+	//Initialize the dump thread (queue and lock)
+	err=InitDump();
+	if (err!=0)
+		return err;
 
-		// Initialize EPS
-		err=EPS_Init();
-		if (err!=0)
-			return err;
+	// Initialize EPS
+	err=EPS_Init();
+	if (err!=0)
+		return err;
 
-		// Deploy system - open Antetnas
-		err = DeploySystem();
-		if (err!=0)
-			return err;
+	// Deploy system - open Antetnas
+	err = DeploySystem();
+	if (err!=0)
+		return err;
 
-		return 0;
+	return 0;
 }
