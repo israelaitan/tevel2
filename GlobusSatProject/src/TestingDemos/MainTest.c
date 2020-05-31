@@ -166,10 +166,10 @@ void TestUpdateBeaconInterval()
 }
 
 //Test restart after deployment not performing deployment again
-void TestInitSubSystem()
+void TestRestartSkipDeployment()
 {
 	printf("i am starting\n");
-	int err;
+	int err = 0;
 	err = StartSPI();
 	err = StartI2C();
 	err = StartFRAM();
@@ -177,6 +177,8 @@ void TestInitSubSystem()
 	TestIsFirst(TRUE); //set first activation flag to true
 	InitSubsystems(); // run  init
 	InitSubsystems(); // check that deployment is skipped
+
+	printf("i am done\n");
 }
 
 //Main testing task
@@ -184,7 +186,7 @@ void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
-	TestInitSubSystem();
+	TestRestartSkipDeployment();
 
 	/*InitSubsystems();
 
