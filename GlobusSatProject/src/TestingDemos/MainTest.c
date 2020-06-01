@@ -92,6 +92,32 @@ Boolean selectAndExecuteTest()
 	return offerMoreTests;
 }
 
+//Mute Test
+void testsMute()
+{
+	InitSubsystems();
+	int i = 0;
+	while (i<120)
+	{
+		//GetBatteryVoltage(&curr_voltage);
+		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
+		BeaconLogic();
+		vTaskDelay(1000);
+		i++;
+
+		if(i == 30)
+		{
+			muteTRXVU(60);
+			printf("********************************************************************** set mute");
+		}
+		/*else if (i==150)
+		{
+			UpdateBeaconInterval(20);
+			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
+		}*/
+	}
+}
+
 //Test for firstActivationProcedure Logic
 void TestFirstActivionProc()
 {
@@ -185,8 +211,9 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
+	testsMute();
 
-	TestRestartSkipDeployment();
+	//TestRestartSkipDeployment();
 
 	/*InitSubsystems();
 
