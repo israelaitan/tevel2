@@ -54,7 +54,7 @@ int SetIdleOff()
 }
 
 // Checking if in idle state and if need to return back to regular state
-void HandleIdleTime()
+void HandleIdleAndMuteTime()
 {
 	//if in idle state
 	if(g_idle_flag==TRUE)
@@ -68,6 +68,15 @@ void HandleIdleTime()
 		{
 			//TODO: remove print after testing complete
 			printf("idle end period not reached\n");
+		}
+	}
+
+	//if mute on
+	if(GetMuteFlag())
+	{
+		if(CheckForMuteEnd())
+		{
+			UnMuteTRXVU();
 		}
 	}
 }
@@ -186,8 +195,8 @@ int InitTrxvu()
 		}
 	}
 
-	//check idle timer
-	HandleIdleTime();
+	//check idle timer and mute timer
+	HandleIdleAndMuteTime();
 
 	//handle beacon
 	BeaconLogic();
