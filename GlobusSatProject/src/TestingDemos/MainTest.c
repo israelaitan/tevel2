@@ -146,16 +146,15 @@ void TestisFirstActivation()
 	err = StartFRAM();
 
 	printf("Setting isFirstActivation with FALSE\n");
-	TestIsFirst(FALSE);
+	TestIsFirst(0);
 
 	printf("Setting isFirstActivation with TRUE\n");
-	TestIsFirst(TRUE);
+	TestIsFirst(1);
 }
 
-void TestIsFirst(Boolean status)
+void TestIsFirst(char status)
 {
 	Boolean St;
-	Boolean a = FALSE;
 
 	//set flag status in FRAM
 	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
@@ -200,7 +199,10 @@ void TestRestartSkipDeployment()
 	err = StartI2C();
 	err = StartFRAM();
 
-	TestIsFirst(TRUE); //set first activation flag to true
+	TestIsFirst(1); //set first activation flag to true
+	int a = 0;
+	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+
 	InitSubsystems(); // run  init
 	InitSubsystems(); // check that deployment is skipped
 
@@ -211,9 +213,9 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-	testsMute();
-
-	//TestRestartSkipDeployment();
+	//testsMute();
+	//TestisFirstActivation();
+	TestRestartSkipDeployment();
 
 	/*InitSubsystems();
 

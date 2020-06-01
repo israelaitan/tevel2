@@ -57,7 +57,7 @@ Boolean isFirstActivation()
 	else
 	{
 		//TODO: remove print after testing
-		printf("Inside isFirstActivation() return FAlSE\n");
+		printf("Inside isFirstActivation() - %c return FAlSE\n", FirstActivation);
 		return FALSE;
 	}
 }
@@ -269,10 +269,17 @@ int DeploySystem()
 			if(resB==0 && resA ==0)
 			{
 				//update first activation flag to false
-				Boolean firstactivation= FALSE;
+				char firstactivation= 0;
 				FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 				printf("*****First Activation Completed******");
 			}
+		}
+		else
+		{
+			//update first activation flag to false if antenas not deployed
+			char firstactivation= 0;
+			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+			printf("*****First Activation without Antenas not deployed******");
 		}
 	}
 
