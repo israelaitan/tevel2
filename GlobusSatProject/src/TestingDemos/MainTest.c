@@ -204,7 +204,7 @@ void TestRestartSkipDeployment()
 	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 
 	InitSubsystems(); // run  init
-	InitSubsystems(); // check that deployment is skipped
+	DeploySystem(); // check that deployment is skipped
 
 	printf("i am done\n");
 }
