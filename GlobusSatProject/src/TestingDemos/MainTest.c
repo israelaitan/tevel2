@@ -97,24 +97,24 @@ void testsMute()
 {
 	InitSubsystems();
 	int i = 0;
-	while (i<120)
+	while (i<60)
 	{
 		//GetBatteryVoltage(&curr_voltage);
 		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
-		BeaconLogic();
+		TRX_Logic();
 		vTaskDelay(1000);
 		i++;
 
-		if(i == 30)
+		if(i == 25)
 		{
-			muteTRXVU(60);
-			printf("********************************************************************** set mute");
+			muteTRXVU(30);
+			printf("********************************************************************** set mute\n");
 		}
-		/*else if (i==150)
+		else if (i==42)
 		{
-			UpdateBeaconInterval(20);
-			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
-		}*/
+			UnMuteTRXVU();
+			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv set unmute");
+		}
 	}
 }
 
@@ -213,9 +213,9 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-	//testsMute();
+	testsMute();
 	//TestisFirstActivation();
-	TestRestartSkipDeployment();
+	//TestRestartSkipDeployment();
 
 	/*InitSubsystems();
 
