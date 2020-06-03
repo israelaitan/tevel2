@@ -31,13 +31,15 @@ int muteTRXVU(time_unix duration) {
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
-
+	printf("************************inside muteTRXVU: %d\n", g_mute_end_time);
 	return 0;
 }
+
 
 void UnMuteTRXVU() {
 	g_mute_end_time = 0;
 	g_mute_flag = MUTE_OFF;
+	printf("*********************Setting Mute to OFF\n");
 }
 
 Boolean GetMuteFlag() {
@@ -47,7 +49,17 @@ Boolean GetMuteFlag() {
 Boolean CheckForMuteEnd() {
 	time_unix curr_tick_time = 0;
 	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
-	return (curr_tick_time > g_mute_end_time);
+	if (curr_tick_time > g_mute_end_time)
+	{
+		printf("Mute End time reached\n");
+		return TRUE;
+	}
+	else
+	{
+		printf("Mute End time NOT reached\n");
+		return FALSE;
+	}
+
 }
 
 int GetNumberOfFramesInBuffer() {
@@ -65,12 +77,19 @@ Boolean CheckTransmitionAllowed() {
 	low_voltage_flag = EpsGetLowVoltageFlag();
 
 	if (g_mute_flag == MUTE_OFF && low_voltage_flag == FALSE) {
+		printf("TRASMITION ALLOWED\n");
 		return TRUE;
 	}
-	if(pdTRUE == xSemaphoreTake(xIsTransmitting,0)){
+	else
+	{
+		printf("MUTE ON - TRASMITION NOT ALLOWED\n");
+	}
+	//TODO:check if code below is required
+	/*if(pdTRUE == xSemaphoreTake(xIsTransmitting,0)){
 		xSemaphoreGive(xIsTransmitting);
+		printf("Is Transmitting is ON\n");
 		return TRUE;
-	}
+	}*/
 	return FALSE;
 }
 
