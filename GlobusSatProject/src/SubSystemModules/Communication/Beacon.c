@@ -64,7 +64,7 @@ void BeaconLogic()
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
 			#ifdef TESTING
-				printf("beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+				printf("++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 			#endif
 		}
 		#ifdef TESTING
@@ -75,7 +75,7 @@ void BeaconLogic()
 	}
 	#ifdef TESTING
 		else
-			printf("beacon not allowed\n");
+			printf("____________________---__________-beacon not allowed\n");
 	#endif
 
 }
