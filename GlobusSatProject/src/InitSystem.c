@@ -249,7 +249,7 @@ int DeploySystem()
 			//loop until Antena's auto deploy side A successful or 10 tries
 			while(resA!=0 && count <10)
 			{
-				printf("Try: %d Side A", count);
+				printf("Try: %d Side A\n", count);
 				resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
 				count++;
 
@@ -261,7 +261,7 @@ int DeploySystem()
 			//loop until Antena's auto deploy side B successful or 10 tries
 			while(resB!=0 && count <10)
 			{
-				printf("Try: %d Side B", count);
+				printf("Try: %d Side B\n", count);
 				resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
 				count++;
 			}
@@ -271,7 +271,7 @@ int DeploySystem()
 				//update first activation flag to false
 				char firstactivation= 0;
 				FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-				printf("*****First Activation Completed******");
+				printf("*****First Activation Completed******\n");
 			}
 		}
 		else
@@ -279,7 +279,7 @@ int DeploySystem()
 			//update first activation flag to false if antenas not deployed
 			char firstactivation= 0;
 			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-			printf("*****First Activation without Antenas not deployed******");
+			printf("*****First Activation without Antenas deployed******\n");
 		}
 	}
 

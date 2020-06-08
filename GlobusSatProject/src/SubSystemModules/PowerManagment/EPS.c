@@ -172,6 +172,7 @@ int GetThresholdVoltages(EpsThreshVolt_t *thresh_volts)
 	if (NULL == thresh_volts) {
 		return E_INPUT_POINTER_NULL;
 	}
+	//TODO: handle fram read error
 	int err = FRAM_read((unsigned char*) thresh_volts, EPS_THRESH_VOLTAGES_ADDR,
 			EPS_THRESH_VOLTAGES_SIZE);
 	return err;

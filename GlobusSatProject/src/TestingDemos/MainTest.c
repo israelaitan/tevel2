@@ -123,11 +123,7 @@ void TestFirstActivionProc()
 {
 	printf("i am starting\n");
 	int err;
-	err = StartSPI();
-	err = StartI2C();
-	err = StartFRAM();
-	int a = 0;
-	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	IntializeFRAM();
 	err = StartTIME();
 
 	//added to allow Telemetry collector to work
@@ -190,19 +186,24 @@ void TestUpdateBeaconInterval()
 	printf("i am done\n");
 }
 
+//Initialize method to set FRAM to initial phase before first Init of satelite
+ void IntializeFRAM()
+ {
+		int err = 0;
+		err = StartSPI();
+		err = StartI2C();
+		err = StartFRAM();
+
+		TestIsFirst(1); //set first activation flag to true
+		int a = 0;
+		FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+ }
+
 //Test restart after deployment not performing deployment again
 void TestRestartSkipDeployment()
 {
 	printf("i am starting\n");
-	int err = 0;
-	err = StartSPI();
-	err = StartI2C();
-	err = StartFRAM();
-
-	TestIsFirst(1); //set first activation flag to true
-	int a = 0;
-	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-
+	IntializeFRAM() ;
 	InitSubsystems(); // run  init
 	DeploySystem(); // check that deployment is skipped
 
@@ -213,21 +214,24 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-	testsMute();
+	//testsMute();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
 
-	/*InitSubsystems();
+	//InitSubsystems();
 
+	//testsMute();
 	//TestUpdateBeaconInterval();
+	//TestisFirstActivation();
+	//TestRestartSkipDeployment();
 
+	IntializeFRAM();
+	InitSubsystems();
 
 	int i = 0;
 	while (1)
 	{
-		//GetBatteryVoltage(&curr_voltage);
 		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
-		//BeaconLogic();
 		TRX_Logic();
 		printf("GivatShmuel:main testing loop after TRX_Logic: i= : %d\n",  i);
 		TelemetryCollectorLogic();
@@ -246,9 +250,11 @@ void taskTesting()
 			UpdateBeaconInterval(20);
 			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
 		}
+		if (i == 10)
+			TestDumpTelemetry();
 	}
 	TestDumpTelemetry();
-	//TestFirstActivionProc();*/
+	//TestFirstActivionProc();
 }
 
 
