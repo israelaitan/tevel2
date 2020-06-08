@@ -170,34 +170,33 @@ void TelemetrySaveEPS()
 
 	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
-	//printf("isis_eps__gethousekeepingraw__tm() return status: %d", err);
-	//TODO:find out why returns 1. bypassing for testing
-	//if (err == 0)
+	printf("isis_eps__gethousekeepingraw__tm() return status: %d", err);
+	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
 	}
 
 	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
-	//printf("isis_eps__gethousekeepingeng__tm() return status: %d", err);
+	printf("isis_eps__gethousekeepingeng__tm() return status: %d", err);
 
-	//if (err == 0)
+	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
 	}
 
 	isis_eps__gethousekeepingrawincdb__from_t tlm_cdb_raw;
 	err = isis_eps__gethousekeepingrawincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_raw);
-	//printf("isis_eps__gethousekeepingrawincdb__tm() return status: %d", err);
-	//if (err == 0)
+	printf("isis_eps__gethousekeepingrawincdb__tm() return status: %d", err);
+	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_RAW_CDB_TLM, &tlm_cdb_raw);
 	}
 
 	isis_eps__gethousekeepingengincdb__from_t tlm_cdb_eng;
 	err = isis_eps__gethousekeepingengincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_eng);
-	//printf("isis_eps__gethousekeepingengincdb__tm() return status: %d", err);
-	//if (err == 0)
+	printf("isis_eps__gethousekeepingengincdb__tm() return status: %d", err);
+	if (err == 0)
 	{
 		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);
 	}
@@ -248,11 +247,14 @@ void TelemetrySaveANT()
 	ISISantsTelemetry ant_tlmA, ant_tlmB;
 	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA,
 			&ant_tlmA);
-	err += IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB,
-			&ant_tlmB);
 	if (err == 0)
 	{
 		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmA);
+	}
+	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB,
+			&ant_tlmB);
+	if (err == 0)
+	{
 		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmB);
 	}
 
@@ -260,6 +262,7 @@ void TelemetrySaveANT()
 
 void TelemetrySaveSolarPanels()
 {
+	//TODO: when wake the soler panels?
 	int err = 0;
 	int32_t t[ISIS_SOLAR_PANEL_COUNT];
 	uint8_t fault;
@@ -307,9 +310,10 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	memset(wod,0,sizeof(*wod));
 	int err = 0;
 
-	FN_SPACE space = { 0 };
+	F_SPACE space = { 0 };
 	int drivenum = f_getdrive();
-
+	err = f_getlasterror();
+	//TODO:check drivenum=-1 error = 37?
 	err = f_getfreespace(drivenum, &space);
 	if (err == F_NO_ERROR){
 		wod->free_memory = space.free;
@@ -328,19 +332,18 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 
 	if(err == 0){
 		//TODO: map correct values
-		wod->vbat = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->vbat = hk_tlm_cdb.fields.dist_input.fields.volt;
 		wod->current_3V3 = hk_tlm_cdb.fields.batt_input.fields.volt;
 		wod->current_5V = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->volt_3V3 = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->volt_5V = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->consumed_power = hk_tlm_cdb.fields.batt_input.fields.volt;
+		wod->volt_3V3 = hk_tlm_cdb.fields.volt_vd2;
+		wod->volt_5V = hk_tlm_cdb.fields.volt_vd1;
+		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.power;
+		wod->consumed_power = hk_tlm_cdb.fields.dist_input.fields.power;
 	}
 #endif
 #ifdef GOMEPS
 	//TODO: get GomEpsWod TLM
 #endif
-	FRAM_read((unsigned char*)&wod->number_of_resets,
-	NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 }
 
