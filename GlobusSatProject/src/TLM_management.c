@@ -126,7 +126,8 @@ FileSystemResult InitializeFS(Boolean first_time)
 		//TODO:do something with the result
 		F_SPACE space;
 		/* get free space on current drive */
-		ret = f_getfreespace(f_getdrive(),&space);
+		int drv = f_getdrive();
+		ret = f_getfreespace(drv, &space);
 		if(!ret) {
 			printf("There are %lu bytes total, %lu bytes free, \
 	%lu bytes used, %lu bytes bad.",
@@ -256,8 +257,8 @@ FileSystemResult c_fileWrite(char* c_file_name, void* element)
 		return FS_NOT_EXIST;
 	int index_current = getFileIndex(c_file.creation_time, curr_time);
 	get_file_name_by_index(c_file_name,index_current, curr_file_name);
-	int error = f_enterFS();
-	(void)error;
+	//int error = f_enterFS();
+	//(void)error;
 	//check_int("c_fileWrite, f_enterFS", error);
 	file = f_open(curr_file_name,"a+");
 	writewithEpochtime(file,element,c_file.size_of_element,curr_time);
@@ -267,7 +268,7 @@ FileSystemResult c_fileWrite(char* c_file_name, void* element)
 		return FS_FRAM_FAIL;
 	}
 	f_close(file);
-	f_releaseFS();
+	//f_releaseFS();
 	return FS_SUCCSESS;
 }
 
@@ -440,13 +441,13 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 
 	while( index_from <= index_to ) {
 		get_file_name_by_index( c_file_name, index_from++, curr_file_name );
-		int error = f_enterFS();
-		(void)error;
+		//int error = f_enterFS();
+		//(void)error;
 		//check_int("c_fileWrite, f_enterFS", error);
 		current_file = f_open(curr_file_name, "r");
 		if (current_file == NULL) {
 			free(element);
-			f_releaseFS();
+			//f_releaseFS();
 			return FS_NOT_EXIST;
 		}
 		unsigned int length = f_filelength(curr_file_name)/(size_elementWithTimeStamp);//number of elements in currnet_file
@@ -467,7 +468,7 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 			if( (unsigned int)buffer_index > (unsigned int)size_of_buffer )
 			{
 				free(element);
-				f_releaseFS();
+				//f_releaseFS();
 				return FS_BUFFER_OVERFLOW;
 			}
 			(*read)++;
@@ -475,7 +476,7 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 			buffer_index += size_elementWithTimeStamp;
 		}
 		f_close(current_file);
-		f_releaseFS();
+		//f_releaseFS();
 	}
 	free(element);
 	return FS_SUCCSESS;
@@ -504,13 +505,13 @@ FileSystemResult c_fileGetNumOfElements(char* c_file_name, time_unix from_time, 
 
 	while( index_from <= index_to ) {
 		get_file_name_by_index( c_file_name, index_from++, curr_file_name );
-		int error = f_enterFS();
-		(void)error;
+		//int error = f_enterFS();
+		//(void)error;
 		//check_int("c_fileWrite, f_enterFS", error);
 		current_file = f_open(curr_file_name, "r");
 		if (current_file == NULL) {
 			free(element);
-			f_releaseFS();
+			//f_releaseFS();
 			return FS_NOT_EXIST;
 		}
 		unsigned int length = f_filelength(curr_file_name)/(size_elementWithTimeStamp);//number of elements in currnet_file
@@ -531,7 +532,7 @@ FileSystemResult c_fileGetNumOfElements(char* c_file_name, time_unix from_time, 
 			(*read)++;
 		}
 		f_close(current_file);
-		f_releaseFS();
+		//f_releaseFS();
 	}
 
 	free(element);
