@@ -5,7 +5,7 @@
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
 
-
+#include <hcc/api_fat.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -106,6 +106,8 @@ void DumpTask(void *args) {
 		FinishDump(NULL, NULL, ACK_DUMP_ABORT, NULL, 0);
 		return;
 	}
+	f_enterFS();
+	//todo: release fs
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
 #ifdef TESTING
 	printf("dump: type: %d \n",task_args->dump_type);
@@ -118,7 +120,7 @@ void DumpTask(void *args) {
 	unsigned int num_of_packets = 0;
 	unsigned int size_of_element = 0;
 	time_unix last_time_read = 0;
-	unsigned char *buffer = NULL;
+	unsigned char * buffer = NULL ;//add size
 	int size_of_buffer = 0;
 	int num_of_tlm_elements_read = 0;
 	char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
@@ -148,7 +150,8 @@ void DumpTask(void *args) {
 	unsigned int currPacketSize;
 	unsigned int totalDataLeft = buffer_size;
 	unsigned int i = 0;
-	while (i < num_of_packets) {
+	while (i < num_of_packets)
+	{
 
 		if (CheckDumpAbort() || !CheckTransmitionAllowed()){
 #ifdef TESTING
@@ -199,7 +202,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 
 	dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
 	unsigned int offset = 0;
-
+	char dump[200];
 	dmp_pckt->cmd = cmd;
 
 	memcpy(&dmp_pckt->dump_type, cmd->data, sizeof(dmp_pckt->dump_type));
@@ -213,6 +216,9 @@ int DumpTelemetry(sat_packet_t *cmd)
 	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
 		return E_GET_SEMAPHORE_FAILED;
 	}
+	memcpy(&dump, dmp_pckt, sizeof(char)*200);
+	printf("sending dump: %s", dump);
+
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
 			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);
 
