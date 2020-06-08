@@ -22,10 +22,11 @@
 #ifdef ISISEPS
 	#include <satellite-subsystems/isis_eps_driver.h>
 #endif
-#define I2c_SPEED_Hz 100000
+
 //TODO change it after testing to 30.
 #define ANT_AWAITED_TIME_MIN 1
 #define I2c_Timeout 10
+#define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 
@@ -150,7 +151,7 @@ int StartI2C()
 	//TODO: remove after finish testing
 	printf("Inside StartI2C() - calling I2C_start driver\n");
 
-	result=I2C_start(I2c_Timeout,I2c_Timeout);
+	result=I2C_start(I2c_SPEED_Hz, I2c_Timeout);
 	if(result==-3)
 	{
 		printf("the driver uses a timeout of 1\n");
