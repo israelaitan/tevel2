@@ -92,6 +92,32 @@ Boolean selectAndExecuteTest()
 	return offerMoreTests;
 }
 
+//Idle Test
+void testsIdle()
+{
+	InitSubsystems();
+	int i = 0;
+	while (i<60)
+	{
+		//GetBatteryVoltage(&curr_voltage);
+		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
+		TRX_Logic();
+		vTaskDelay(1000);
+		i++;
+
+		if(i == 5)
+		{
+			CMD_SetIdleOn();
+			printf("********************************************************************** set idle\n");
+		}
+		else if (i==42)
+		{
+			CMD_SetIdleOff();
+			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv set idle off\n");
+		}
+	}
+}
+
 //Mute Test
 void testsMute()
 {
@@ -214,6 +240,7 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
+	testsIdle();
 	//testsMute();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
@@ -225,7 +252,7 @@ void taskTesting()
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
 
-	IntializeFRAM();
+	/*IntializeFRAM();
 	InitSubsystems();
 
 	int i = 0;
@@ -253,7 +280,7 @@ void taskTesting()
 		if (i == 10)
 			TestDumpTelemetry();
 	}
-	TestDumpTelemetry();
+	TestDumpTelemetry();*/
 	//TestFirstActivionProc();
 }
 
