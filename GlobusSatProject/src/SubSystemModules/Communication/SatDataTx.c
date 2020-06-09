@@ -76,10 +76,16 @@ Boolean CheckTransmitionAllowed() {
 
 	low_voltage_flag = EpsGetLowVoltageFlag();
 
-	if (g_mute_flag == MUTE_OFF && low_voltage_flag == FALSE) {
-		printf("TRASMITION ALLOWED\n");
-		return TRUE;
+	if (g_mute_flag == MUTE_OFF && low_voltage_flag == FALSE)
+	{
+		if(pdTRUE == xSemaphoreTake(xIsTransmitting,0))
+		{
+			xSemaphoreGive(xIsTransmitting);
+			printf("Is Transmitting is ON\n");
+			return TRUE;
+		}
 	}
+<<<<<<< HEAD
 
 	printf("MUTE ON - TRASMITION NOT ALLOWED\n");
 
@@ -89,6 +95,14 @@ Boolean CheckTransmitionAllowed() {
 		printf("Is Transmitting is ON\n");
 		return TRUE;
 	}*/
+=======
+	else
+	{
+		printf("MUTE ON - TRASMITION NOT ALLOWED\n");
+	}
+
+
+>>>>>>> 7d3e6d126df8bd23586c33d23cfd094e6852f737
 	return FALSE;
 }
 
