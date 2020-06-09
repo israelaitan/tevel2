@@ -89,7 +89,7 @@ Boolean TestGetDelayedCommand()
 Boolean TestAddDelayedCommand()
 {
 	sat_packet_t cmd = {0};
-	cmd.ID = 0x12345678;
+	cmd.ID = 0x1234;
 	cmd.cmd_type = 0x42;
 	cmd.cmd_subtype = 0x43;
 	unsigned char data[] ={1,2,3,4,5,6,7,8,9,10};

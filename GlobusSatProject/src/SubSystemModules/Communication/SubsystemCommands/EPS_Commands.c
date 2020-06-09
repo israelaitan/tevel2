@@ -1,13 +1,5 @@
 #include "GlobalStandards.h"
-
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
-
-
+#include <satellite-subsystems/isis_eps_driver.h>
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <stdlib.h>
 #include <string.h>
@@ -132,14 +124,9 @@ int CMD_EPS_NOP(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-#ifdef ISISEPS
 	isis_eps__nop__from_t ieps_cmd;
 	err = isis_eps__nop__tm( EPS_I2C_BUS_INDEX, &ieps_cmd );
 
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 	return err;
 }
 
@@ -147,35 +134,8 @@ int CMD_EPS_ResetWDT(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-#ifdef ISISEPS
 	isis_eps__watchdog__from_t ieps_cmd;
 	err = isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &ieps_cmd );
-
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
-
-	return err;
-}
-
-int CMD_EPS_SetChannels(sat_packet_t *cmd)
-{
-	if (NULL == cmd->data || NULL == cmd){
-		return E_INPUT_POINTER_NULL;
-	}
-	int err = 0;
-#ifdef ISISEPS
-
-	isis_eps__outputbusgroupstate__to_t chmask;
-	isis_eps__outputbusgroupstate__from_t ieps_cmd;
-	memcpy(&chmask, cmd->data, sizeof(chmask));
-	err =  isis_eps__outputbusgroupstate__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
-
-#endif
-#ifdef GOMEPS
-	//TODO: set Gomeps channels
-#endif
 	return err;
 }
 
@@ -185,16 +145,10 @@ int CMD_SetChannels3V3_On(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 	int err = 0;
-#ifdef ISISEPS
+
 	isis_eps__outputbusgroupon__from_t ieps_cmd;
-	isis_eps__outputbusgroupon__to_t chmask = {0};
+	isis_eps__outputbusgroupon__to_t chmask = {{0}};
 	err = isis_eps__outputbusgroupon__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
-
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
-
 	return err;
 }
 
@@ -205,34 +159,21 @@ int CMD_SetChannels3V3_Off(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 	int err = 0;
-#ifdef ISISEPS
-	isis_eps__outputbusgroupoff__from_t ieps_cmd;
-	isis_eps__outputbusgroupoff__to_t chmask = {0};
-	err = isis_eps__outputbusgroupoff__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
 
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
+	isis_eps__outputbusgroupoff__from_t ieps_cmd;
+	isis_eps__outputbusgroupoff__to_t chmask = {{0}};
+	err = isis_eps__outputbusgroupoff__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
 
 	return err;
 }
 
 int CMD_SetChannels5V_On(sat_packet_t *cmd)
 {
-	if (NULL == cmd->data || cmd == NULL){
+	if (NULL == cmd->data || cmd == NULL)
 		return E_INPUT_POINTER_NULL;
-	}
 	int err = 0;
-#ifdef ISISEPS
 	//ieps_statcmd_t ieps_cmd;
-
 	//err = IsisEPS_outputBus5vOn(EPS_I2C_BUS_INDEX, 0, &ieps_cmd);
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
-
 	return err;
 }
 
@@ -242,15 +183,8 @@ int CMD_SetChannels5V_Off(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 	int err = 0;
-
-#ifdef ISISEPS
 	//ieps_statcmd_t ieps_cmd;
-
 	//err = IsisEPS_outputBus5vOff(EPS_I2C_BUS_INDEX, 0, &ieps_cmd);
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 	return err;
 }
 
@@ -262,7 +196,6 @@ int CMD_GetEpsParameter(sat_packet_t *cmd)
 	}
 
 	int err = 0;
-#ifdef ISISEPS
 	unsigned short int id = 0;
 	isis_eps__getparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(id));
@@ -285,10 +218,6 @@ int CMD_GetEpsParameter(sat_packet_t *cmd)
 	if (err == E_NO_SS_ERR){
 		TransmitDataAsSPL_Packet(cmd, (unsigned char *)&rsp_cmd, sizeof(rsp_cmd));
 	}
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 
 	return err;
 }
@@ -300,7 +229,6 @@ int CMD_SetEpsParemeter(sat_packet_t *cmd)
 	}
 
 	int err = 0;
-#ifdef ISISEPS
 	//unsigned short int id = 0;
 	isis_eps__setparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
@@ -327,10 +255,6 @@ int CMD_SetEpsParemeter(sat_packet_t *cmd)
 	}
 	//free(parameter);
 	//free(out_param);
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 
 	return err;
 }
@@ -342,7 +266,6 @@ int CMD_ResetParameter(sat_packet_t *cmd)
 	}
 	int err = 0;
 
-#ifdef ISISEPS
 	//unsigned short int id = 0;
 	isis_eps__resetparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
@@ -362,13 +285,9 @@ int CMD_ResetParameter(sat_packet_t *cmd)
 	isis_eps__resetparameter__from_t rsp_cmd;
 	err = isis_eps__resetparameter__tmtc( ISIS_TRXVU_I2C_BUS_INDEX, &parameter , &rsp_cmd );
 
-	if (err == E_NO_SS_ERR){
+	if (err == E_NO_SS_ERR)
 		TransmitDataAsSPL_Packet(cmd, (unsigned char *)&rsp_cmd, sizeof(rsp_cmd));
-	}
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
+
 	return err;
 }
 
@@ -376,15 +295,10 @@ int CMD_ResetConfig(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-#ifdef ISISEPS
 	isis_eps__resetall__from_t rsp_cmd;
-	isis_eps__resetall__to_t  params = {0};
+	isis_eps__resetall__to_t  params = {{0}};
 	isis_eps__resetall__tmtc( ISIS_TRXVU_I2C_BUS_INDEX,  &params , &rsp_cmd );
 
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 	return err;
 }
 
@@ -393,16 +307,10 @@ int CMD_LoadConfig(sat_packet_t *cmd)
 	(void)cmd;
 	int err = 0;
 
-#ifdef ISISEPS
-
 	isis_eps__loadall__from_t rsp_cmd;
-	isis_eps__loadall__to_t params = {0};
+	isis_eps__loadall__to_t params = {{0}};
 	err = isis_eps__loadall__tmtc( ISIS_TRXVU_I2C_BUS_INDEX, &params , &rsp_cmd );
 
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 	return err;
 }
 

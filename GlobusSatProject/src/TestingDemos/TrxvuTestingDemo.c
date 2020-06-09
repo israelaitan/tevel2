@@ -127,7 +127,7 @@ Boolean TestSendDumpAbortRequest()
 Boolean TestTransmitDummySplPacket()
 {
 	sat_packet_t packet = {0};
-	packet.ID = 0x12345678;
+	packet.ID = 0x1234;
 	packet.cmd_type = 0x42;
 	packet.cmd_subtype = 0x43;
 
@@ -146,7 +146,7 @@ Boolean TestTransmitDummySplPacket()
 Boolean TestTransmitSplPacket()
 {
 	sat_packet_t packet = {0};
-	packet.ID = 0x12345678;
+	packet.ID = 0x1234;
 	packet.cmd_type = 0x42;
 	packet.cmd_subtype = 0x43;
 
@@ -211,6 +211,7 @@ Boolean TestDumpTelemetry()
 	printf("Please Insert Command ID:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
 	cmd.ID = 5;
+	cmd.ordinal = 0;
 	unsigned short tlmType = tlm_eps_eng_cdb;
 	memcpy(cmd.data, &tlmType, sizeof(tlmType));
 	unsigned int from = UNIX_TIME_AT_Y2K, to;//TODO:not good params
@@ -318,19 +319,10 @@ Boolean TestMuteTrxvu()
 	time_unix curr = 0;
 	Time_getUnixEpoch((unsigned int *)&curr);
 
-#ifdef ISISEPS
 	isis_eps__watchdog__from_t response;
-#endif
 	while(!CheckForMuteEnd()){
-
 		printf("current tick = %d\n",(int)xTaskGetTickCount());
-
-#ifdef ISISEPS
 		isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &response );
-#endif
-#ifdef GOMEPS
-		GomEpsResetWDT(EPS_I2C_BUS_INDEX);
-#endif
 		printf("sending ACK(if transmission was heard then error :/ )\n");
 		SendAckPacket(ACK_MUTE,NULL,NULL,0);
 		vTaskDelay(1000);

@@ -107,12 +107,11 @@ void DumpTask(void *args) {
 		return;
 	}
 	f_enterFS();
-	//todo: release fs
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
 #ifdef TESTING
 	printf("dump: type: %d \n",task_args->dump_type);
-	printf("dump: start time: %d \n",task_args->t_start);
-	printf("dump: end time: %d \n",task_args->t_end);
+	printf("dump: start time: %lu \n", (long unsigned int)task_args->t_start);
+	printf("dump: end time: %lu \n", (long unsigned int)task_args->t_end);
 #endif
 	sat_packet_t dump_tlm = { 0 };
 	int err = 0;
@@ -130,6 +129,7 @@ void DumpTask(void *args) {
 	if(err)
 	{
 		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
+		f_releaseFS();
 		return;
 	}
 	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
@@ -149,7 +149,7 @@ void DumpTask(void *args) {
 #endif
 	unsigned int currPacketSize;
 	unsigned int totalDataLeft = buffer_size;
-	unsigned int i = 0;
+	unsigned short i = 0;
 	while (i < num_of_packets)
 	{
 
@@ -157,6 +157,7 @@ void DumpTask(void *args) {
 #ifdef TESTING
 			printf("dump: did not finish successfully\n");
 #endif
+			f_releaseFS();
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 		}
 
@@ -170,6 +171,7 @@ void DumpTask(void *args) {
 #ifdef TESTING
 			printf("dump: did not finish successfully: error transmit=%d\n", err);
 #endif
+			f_releaseFS();
 			return FinishDump(task_args, buffer, ACK_DUMP_ABORT, NULL, 0);
 		}
 		if (availFrames != NO_TX_FRAME_AVAILABLE) {
@@ -184,6 +186,7 @@ void DumpTask(void *args) {
 			vTaskDelay(10);
 		}
 	}
+	f_releaseFS();
 	FinishDump(task_args, buffer, ACK_DUMP_FINISHED, NULL, 0);
 #ifdef TESTING
 	printf("dump: finish successfully\n");

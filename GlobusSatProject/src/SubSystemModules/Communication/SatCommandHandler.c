@@ -80,7 +80,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 }
 
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,
-		char subtype, unsigned int id, unsigned int ord, sat_packet_t *cmd)
+		char subtype, unsigned short id, unsigned short ord, sat_packet_t *cmd)
 {
 	if (NULL == cmd) {
 		return cmd_null_pointer_error;

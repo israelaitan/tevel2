@@ -2,13 +2,7 @@
 #include "EPSOperationModes.h"
 #include "GlobalStandards.h"
 
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
-
+#include <satellite-subsystems/isis_eps_driver.h>
 
 //TODO: update functions to only the relevant channels
 channel_t g_system_state;
@@ -59,7 +53,6 @@ int EnterCriticalMode()
 int SetEPS_Channels(channel_t channel)
 {
 	(void)channel;
-#ifdef ISISEPS
 	//TODO:adjust code to new driver
 	/*ieps_statcmd_t code;
 	ieps_obus_channel_t chnl;
@@ -75,20 +68,6 @@ int SetEPS_Channels(channel_t channel)
 	if (err != 0){
 		return err;
 	}*/
-	return 0;
-#endif
-#ifdef GOMEPS
-#ifdef SET_EPS_CHANNELS
-	gom_eps_channelstates_t st = {0};
-	st.raw = channel;
-	int err = GomEpsSetOutput(EPS_I2C_BUS_INDEX,st);
-	if(0 != err){
-		return err;
-	}
-	g_system_state = channel;
-	return err;
-#endif
-#endif
 	return 0;
 }
 

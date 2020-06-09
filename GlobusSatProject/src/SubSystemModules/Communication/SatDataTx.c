@@ -31,7 +31,7 @@ int muteTRXVU(time_unix duration) {
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
-	printf("************************inside muteTRXVU: %d\n", g_mute_end_time);
+	printf("************************inside muteTRXVU: %lu\n", (long unsigned int)g_mute_end_time);
 	return 0;
 }
 
@@ -113,9 +113,9 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data,
 	sat_packet_t packet = { 0 };
 	if (NULL != cmd) {
 		err = AssembleCommand(data, length, cmd->cmd_type, cmd->cmd_subtype,
-				cmd->ID, 0, &packet);
+				cmd->ID, cmd->ordinal, &packet);
 	} else {
-		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFFFFFF, 0, &packet); //TODO: figure out what should be the 'FF'
+		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFF, 0, &packet); //TODO: figure out what should be the 'FF'
 	}
 	if (err != 0) {
 		return err;
@@ -136,7 +136,7 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 	int err = 0;
 	unsigned int data_length = packet->length + sizeof(packet->length)
 			+ sizeof(packet->cmd_subtype) + sizeof(packet->cmd_type)
-			+ sizeof(packet->ID);
+			+ sizeof(packet->ID) + sizeof(packet->ordinal);
 
 	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE) {
 		return E_GET_SEMAPHORE_FAILED;

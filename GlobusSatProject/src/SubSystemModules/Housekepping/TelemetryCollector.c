@@ -1,12 +1,6 @@
 #include <hcc/api_fat.h>
 #include "GlobalStandards.h"
-
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
+#include <satellite-subsystems/isis_eps_driver.h>
 
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
@@ -165,7 +159,6 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 
 void TelemetrySaveEPS()
 {
-#ifdef ISISEPS
 	int err = 0;
 
 	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
@@ -200,10 +193,6 @@ void TelemetrySaveEPS()
 	{
 		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);
 	}
-#endif
-#ifdef GOMEPS
-	//TODO: Collect GomEPS TLM
-#endif
 }
 
 void TelemetrySaveTRXVU()
@@ -322,7 +311,6 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	time_unix current_time = 0;
 	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
-#ifdef ISISEPS
 
 	isis_eps__gethousekeepingrawincdb__from_t hk_tlm;
 	isis_eps__gethousekeepingeng__from_t hk_tlm_cdb;
@@ -340,10 +328,7 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.power;
 		wod->consumed_power = hk_tlm_cdb.fields.dist_input.fields.power;
 	}
-#endif
-#ifdef GOMEPS
-	//TODO: get GomEpsWod TLM
-#endif
+    //TODO: number of resets is not managed
 	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 }
 

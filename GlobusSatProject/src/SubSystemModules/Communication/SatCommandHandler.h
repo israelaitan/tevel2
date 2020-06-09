@@ -7,7 +7,6 @@
 //<! how many command can be saved in the buffer
 #define MAX_NUM_OF_DELAYED_CMD (100)
 
-
 typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 	cmd_command_succsess = 0,				///< a successful operation. no errors
 	cmd_command_found = 0,					///< a command was found
@@ -19,8 +18,8 @@ typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 
 typedef struct __attribute__ ((__packed__)) sat_packet_t
 {
-	unsigned int ID;							///< ID of the received/transmitted command
-	unsigned int ordinal;						///< ord number of packet in sequence
+	unsigned short ID;							///< ID of the received/transmitted command
+	unsigned short ordinal;						///< ord number of packet in sequence
 	char cmd_type;								///< type of the command. according to SPL protocol
 	char cmd_subtype;							///< sub-type of the command. according to SPL protocol
 	unsigned short length;						///< length of the received data.
@@ -49,7 +48,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd);
  * @note helpful when assembling assembling a cmd for downlink. assemble
  */
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,
-		char subtype,unsigned int id, unsigned int ord, sat_packet_t *cmd);
+		char subtype,unsigned short id, unsigned short ord, sat_packet_t *cmd);
 
 /*!
  * @brief returns a command to be executed if there is one in the delayed command buffer

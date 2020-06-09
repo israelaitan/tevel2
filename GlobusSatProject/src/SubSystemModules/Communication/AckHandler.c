@@ -15,14 +15,15 @@ int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd,
 {
 	int err = 0;
 	sat_packet_t ack = { 0 };
-	unsigned int id = 0;
-	id = 0xFFFFFFFF; //default ID. system ACK. not a response to any command
+	unsigned short id = 0xFFFF; //default ID. system ACK. not a response to any command
+	unsigned short ord = 0xFFFF; //default ord.system ACK. not a response to any command
 
 	if (NULL != cmd) {
 		id = cmd->ID;
+		ord = cmd->ordinal;
 	}
 
-	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, 0, &ack);
+	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, &ack);
 
 	err = TransmitSplPacket(&ack,NULL);
 	vTaskDelay(10);
