@@ -49,25 +49,29 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 
 	unsigned int offset = 0;
 
-	unsigned int id = 0;
+	unsigned short id = 0;
 	err = memcpy(&id,data,sizeof(id));
-	if (NULL == err) {
+	if (NULL == err)
 		return cmd_execution_error;
-	}
 	offset += sizeof(id);
+
+	unsigned short ord = 0;
+	err = memcpy(&ord,data + offset,sizeof(ord));
+	if (NULL == err)
+		return cmd_execution_error;
+	offset += sizeof(ord);
 
 	char type;
 	err = memcpy(&type,data+offset,sizeof(type));
-	if (NULL == err) {
+	if (NULL == err)
 		return cmd_execution_error;
-	}
+
 	offset += sizeof(type);
 
 	char subtype;
 	err = memcpy(&subtype, data + offset,sizeof(subtype));
-	if (NULL == err) {
+	if (NULL == err)
 		return cmd_execution_error;
-	}
 	offset += sizeof(subtype);
 
 	unsigned short data_length = 0;
@@ -76,7 +80,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 		return cmd_execution_error;
 	offset += sizeof(data_length);
 
-	return AssembleCommand(data+offset, data_length, type,subtype, id, 0, cmd);
+	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, cmd);
 }
 
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,

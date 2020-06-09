@@ -11,13 +11,7 @@
 #include <hal/Utility/util.h>
 #include <hal/Timing/Time.h>
 
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
-
+#include <satellite-subsystems/isis_eps_driver.h>
 #include "SubSystemModules/PowerManagment/EPS.h"	// for EPS_Conditioning
 
 #include "SubSystemModules/Communication/TRXVU.h"
@@ -194,32 +188,31 @@ Boolean TestExitDump()
 
 Boolean TestDumpTelemetry()
 {
-	sat_packet_t cmd = {0};
-	//unsigned int temp = 0;
-	printf("Starting Dump. Please Insert Dump Parameter:\n");
+	sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
+	//printf("Starting Dump. Please Insert Dump Parameter:\n");
 
-	printf("Please Insert Command Type:\n");
+	//printf("Please Insert Command Type:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
 	//cmd.cmd_type = temp;
-	cmd.cmd_type = trxvu_cmd_type;
+	cmd->cmd_type = trxvu_cmd_type;
 
-	printf("Please Insert Command Subtype:\n");
+	//printf("Please Insert Command Subtype:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
 	//cmd.cmd_subtype = temp;
-	cmd.cmd_subtype = DUMP_SUBTYPE;
+	cmd->cmd_subtype = DUMP_SUBTYPE;
 
-	printf("Please Insert Command ID:\n");
+	//printf("Please Insert Command ID:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
-	cmd.ID = 5;
-	cmd.ordinal = 0;
+	cmd->ID = 5;
+	cmd->ordinal = 0;
 	unsigned short tlmType = tlm_eps_eng_cdb;
-	memcpy(cmd.data, &tlmType, sizeof(tlmType));
+	memcpy(cmd->data, &tlmType, sizeof(tlmType));
 	unsigned int from = UNIX_TIME_AT_Y2K, to;//TODO:not good params
 	Time_getUnixEpoch(&to);
-	memcpy(cmd.data + sizeof(tlmType), &from, sizeof(unsigned int));
-	memcpy(cmd.data + sizeof(tlmType) + sizeof(unsigned int), &to, sizeof(unsigned int));
+	memcpy(cmd->data + sizeof(tlmType), &from, sizeof(unsigned int));
+	memcpy(cmd->data + sizeof(tlmType) + sizeof(unsigned int), &to, sizeof(unsigned int));
 
-	DumpTelemetry(&cmd);
+	DumpTelemetry(cmd);
 	return TRUE;
 }
 

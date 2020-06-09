@@ -165,7 +165,7 @@ int InitTrxvu()
 	#ifdef TESTING
 	 	 printf("Inside TRX_Logic()\n");
 	#endif
-	sat_packet_t cmd={0};
+	sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
 	int onCmdCount;
 	unsigned char* data = NULL;
 	unsigned int length=0;
@@ -176,7 +176,7 @@ int InitTrxvu()
 
 	if(onCmdCount>0) {
 		//get the online command
-		res = GetOnlineCommand(&cmd);
+		res = GetOnlineCommand(cmd);
 		if(res!=0)
 			printf("Error in getting the online command: %d\n", res);
 		else {
@@ -191,7 +191,7 @@ int InitTrxvu()
 			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
 
 			//run command
-			res = ActUponCommand(&cmd);
+			res = ActUponCommand(cmd);
 		}
 	}
 

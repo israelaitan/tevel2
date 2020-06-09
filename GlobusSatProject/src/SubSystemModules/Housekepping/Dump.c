@@ -51,6 +51,8 @@ void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t
 	printf("finish dump:ack packet sent\n");
 #endif
 	if (NULL != task_args) {
+		if (NULL != task_args->cmd)
+			free(task_args->cmd);
 		free(task_args);
 	}
 	if (NULL != xDumpLock) {
@@ -109,7 +111,7 @@ void DumpTask(void *args) {
 	f_enterFS();
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
 #ifdef TESTING
-	printf("dump: type: %d \n",task_args->dump_type);
+	printf("dump: type: %u \n",task_args->dump_type);
 	printf("dump: start time: %lu \n", (long unsigned int)task_args->t_start);
 	printf("dump: end time: %lu \n", (long unsigned int)task_args->t_end);
 #endif
@@ -165,7 +167,7 @@ void DumpTask(void *args) {
 		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i,  &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
 #ifdef TESTING
-		printf("dump: packet sent id=: %d \n",i);
+		printf("dump: packet sent id = %u  ord = %u availFrames = %d \n", task_args->cmd->ID, i, availFrames);
 #endif
 		if (err) {
 #ifdef TESTING
@@ -219,8 +221,8 @@ int DumpTelemetry(sat_packet_t *cmd)
 	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
 		return E_GET_SEMAPHORE_FAILED;
 	}
-	memcpy(&dump, dmp_pckt, sizeof(char)*200);
-	printf("sending dump: %s", dump);
+	//memcpy(&dump, dmp_pckt, sizeof(char)*200);
+	//printf("sending dump: %s", dump);
 
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
 			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);

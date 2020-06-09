@@ -101,9 +101,9 @@ void WriteDefaultValuesToFRAM()
 	printf("Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
-	int NumberVoltages=NUMBER_OF_THRESHOLD_VOLTAGES;
-	FRAM_write((unsigned char*)&NumberVoltages,EPS_THRESH_VOLTAGES_ADDR,EPS_THRESH_VOLTAGES_SIZE);
-	int alpha=DEFAULT_ALPHA_VALUE;
+	EpsThreshVolt_t thresh_volts = { DEFAULT_EPS_THRESHOLD_VOLTAGES };
+	FRAM_write((unsigned char*)&thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+	float alpha = DEFAULT_ALPHA_VALUE;
 	FRAM_write((unsigned char*)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE);
 	int eps= DEFAULT_EPS_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));

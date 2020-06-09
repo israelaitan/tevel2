@@ -5,80 +5,52 @@
 #include <satellite-subsystems/isis_eps_driver.h>
 
 //TODO: update functions to only the relevant channels
-channel_t g_system_state;
 EpsState_t state;
 Boolean g_low_volt_flag = FALSE; // set to true if in low voltage
 
 int EnterFullMode()
 {
+	printf("EPS enter FullMode\n");
 	if(state == FullMode)
 		return 0;
-	int err = SetEPS_Channels((channel_t) CHANNELS_OFF);
 	state = FullMode;
 	EpsSetLowVoltageFlag(FALSE);
-	return err;
+	return 0;
 }
 
 int EnterCruiseMode()
 {
+	printf("EPS enter CruiseMode\n");
 	if(state == CruiseMode)
 		return 0;
-	int err = SetEPS_Channels((channel_t) CHANNELS_OFF);
 	state = CruiseMode;
 	EpsSetLowVoltageFlag(FALSE);
-	return err;
+	return 0;
 }
 
 int EnterSafeMode()
 {
+	printf("EPS enter SafeMode\n");
 	if(state == SafeMode)
 		return 0;
-	int err = SetEPS_Channels((channel_t) CHANNELS_OFF);
 	state = SafeMode;
 	EpsSetLowVoltageFlag(FALSE);
-	return err;
+	return 0;
 }
 
 int EnterCriticalMode()
 {
+	printf("EPS enter CriticalMode\n");
 	if(state == CriticalMode)
 		return 0;
-	int err = SetEPS_Channels((channel_t) CHANNELS_OFF);
 	state = CriticalMode;
-
 	EpsSetLowVoltageFlag(TRUE);
-	return err;
-}
-
-int SetEPS_Channels(channel_t channel)
-{
-	(void)channel;
-	//TODO:adjust code to new driver
-	/*ieps_statcmd_t code;
-	ieps_obus_channel_t chnl;
-	chnl.raw = g_system_state;
-	int err = IsisEPS_outputBusGroupOn(EPS_I2C_BUS_INDEX, chnl, chnl, &code);
-	if (err != 0){
-		return err;
-	}
-	g_system_state = channel;
-
-	chnl.raw = ~g_system_state;	//flip all bits in 'system_state'
-	err = IsisEPS_outputBusGroupOff(EPS_I2C_BUS_INDEX, chnl, chnl, &code);
-	if (err != 0){
-		return err;
-	}*/
 	return 0;
 }
 
 EpsState_t GetSystemState()
 {
 	return state;
-}
-
-channel_t GetSystemChannelState()
-{
-	return g_system_state;
 }
 
 Boolean EpsGetLowVoltageFlag()

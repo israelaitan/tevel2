@@ -240,25 +240,26 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-	testsIdle();
+	//testsIdle();
 	//testsMute();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
-
-	//InitSubsystems();
-
 	//testsMute();
 	//TestUpdateBeaconInterval();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
+	//IntializeFRAM();
 
-	/*IntializeFRAM();
 	InitSubsystems();
-
 	int i = 0;
 	while (1)
 	{
 		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
+
+		int res=EPS_Conditioning();
+		if(res!=0)
+			printf("error in EPS_Conditioning: "+res);
+
 		TRX_Logic();
 		printf("GivatShmuel:main testing loop after TRX_Logic: i= : %d\n",  i);
 		TelemetryCollectorLogic();
@@ -269,18 +270,18 @@ void taskTesting()
 
 		if(i == 40)
 		{
-			UpdateBeaconInterval(60);
+			//UpdateBeaconInterval(60);
 			printf("********************************************************************** Update Beacon intervals to 60");
 		}
 		else if (i==150)
 		{
-			UpdateBeaconInterval(20);
+			//UpdateBeaconInterval(20);
 			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
 		}
-		if (i == 10)
-			TestDumpTelemetry();
+		//if (i == 10)
+		//	TestDumpTelemetry();
 	}
-	TestDumpTelemetry();*/
+	//TestDumpTelemetry();
 	//TestFirstActivionProc();
 }
 

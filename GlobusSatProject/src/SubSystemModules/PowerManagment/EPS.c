@@ -77,13 +77,13 @@ int EPS_Conditioning()
 	// charging
 	else if (filtered_voltage > prev_filtered_voltage) {
 
-		if (filtered_voltage > eps_threshold_voltages.fields.Vup_full) {
+		if (filtered_voltage > eps_threshold_voltages.fields.Vup_cruise) {
 			EnterFullMode();
 		}
-		else if (filtered_voltage > eps_threshold_voltages.fields.Vup_cruise) {
+		else if (filtered_voltage > eps_threshold_voltages.fields.Vup_safe) {
 			EnterCruiseMode();
 		}
-		else if (filtered_voltage > eps_threshold_voltages.fields.Vup_safe) {
+		else if (filtered_voltage > eps_threshold_voltages.fields.Vdown_safe) {
 			EnterSafeMode();
 		}
 	}

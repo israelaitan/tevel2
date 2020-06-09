@@ -58,7 +58,8 @@ void BeaconLogic()
 			AssembleCommand((unsigned char *)&wod, sizeof(wod), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, &packet);
 
 			// transmit packet to earth
-			TransmitSplPacket(&packet, NULL);
+			int availableFrames = 0;
+			TransmitSplPacket(&packet, &availableFrames);
 
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
