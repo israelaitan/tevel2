@@ -319,7 +319,7 @@ Boolean TestMuteTrxvu()
 	time_unix curr = 0;
 	Time_getUnixEpoch((unsigned int *)&curr);
 
-	isis_eps__watchdog__from_t response;
+	/*isis_eps__watchdog__from_t response;
 	while(!CheckForMuteEnd()){
 		printf("current tick = %d\n",(int)xTaskGetTickCount());
 		isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &response );
@@ -327,6 +327,7 @@ Boolean TestMuteTrxvu()
 		SendAckPacket(ACK_MUTE,NULL,NULL,0);
 		vTaskDelay(1000);
 	}
+	*/
 	UnMuteTRXVU();
 	Boolean mute_flag = GetMuteFlag();
 	SendAckPacket(ACK_MUTE,NULL,(unsigned char*)&mute_flag,sizeof(mute_flag));

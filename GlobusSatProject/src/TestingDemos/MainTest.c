@@ -215,14 +215,14 @@ void TestUpdateBeaconInterval()
 //Initialize method to set FRAM to initial phase before first Init of satelite
  void IntializeFRAM()
  {
-		int err = 0;
-		err = StartSPI();
-		err = StartI2C();
-		err = StartFRAM();
+	int err = 0;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
 
-		TestIsFirst(1); //set first activation flag to true
-		int a = 0;
-		FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	TestIsFirst(1); //set first activation flag to true
+	int a = 0;
+	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
  }
 
 //Test restart after deployment not performing deployment again

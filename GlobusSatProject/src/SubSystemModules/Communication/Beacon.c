@@ -29,9 +29,14 @@ void InitBeaconParams()
 		printf("Inside InitBeaconParams()\n");
 	#endif
 
-	//TODO: Fix code to initialize to default after FRAM read
-	g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
-	FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
+	//get interval from RAM
+	int status = FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
+
+	//if failed to read from FRAM
+	if(status != 0)
+	{
+		g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
+	}
 }
 
 
@@ -83,9 +88,9 @@ void BeaconLogic()
 //Update beacon intervals - allows changing this interval from earth
 int UpdateBeaconInterval(time_unix intrvl)
 {
-	//TODO: remove print after testing complete
+#ifdef TESTING
 	printf("Inside UpdateBeaconInterval() interval: %ld, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
-
+#endif
 	//check if interval is in allowed range
 	if(intrvl>MAX_BEACON_INTERVAL|| intrvl<MIN_BEACON_INTERVAL)
 		return E_PARAM_OUTOFBOUNDS;
@@ -99,8 +104,9 @@ int UpdateBeaconInterval(time_unix intrvl)
 	}
 	else
 	{
-		//TODO: remove print after testing complete
+#ifdef TESTING
 		printf("interval was updated to FRAM successfully\n");
+#endif
 	}
 
 	//set new interval value
