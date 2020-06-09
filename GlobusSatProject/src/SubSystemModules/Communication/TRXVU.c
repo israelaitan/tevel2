@@ -33,9 +33,8 @@ time_unix 		g_idle_start_time = 0;
 //setting trxvu idle off
 int SetIdleOff()
 {
-#ifdef TESTING
+	//TODO: remove print after testing complete
 	printf("inside SetIdleOff()\n");
-#endif
 	int err = 0;
 
 	if(g_idle_flag==TRUE)
@@ -47,7 +46,7 @@ int SetIdleOff()
 		}
 		else
 		{
-			//TODO: handle failure in setting idle state off
+			//TODO: handle failure in setting idle sttate off
 			printf("failed in setting trxvu idle off - %d\n", err);
 		}
 	}
@@ -65,12 +64,11 @@ void HandleIdleAndMuteTime()
 		{
 			SetIdleOff();
 		}
-#ifdef TESTING
 		else
 		{
+			//TODO: remove print after testing complete
 			printf("idle end period not reached\n");
 		}
-#endif
 	}
 
 	//if mute on
@@ -87,9 +85,8 @@ void HandleIdleAndMuteTime()
 // Initialize TRXVU component
 int InitTrxvu()
 {
-#ifdef TESTING
+	//TODO: remove print after testing complete
 	printf("inside InitTrxvu()\n");
-#endif
 
 	//set I2C addresses
 	ISIStrxvuI2CAddress i2cAdress;
@@ -114,9 +111,8 @@ int InitTrxvu()
 	}
 	else
 	{
-#ifdef TESTING
+		//TODO: remove print after testing complete
 		printf("IsisTrxvu_initialize succeeded\n");
-#endif
 	}
 
 
@@ -130,9 +126,8 @@ int InitTrxvu()
 	}
 	else
 	{
-#ifdef TESTING
+		//TODO: remove print after testing complete
 		printf("IsisTrxvu_tcSetAx25Bitrate succeeded\n");
-#endif
 	}
 	vTaskDelay(100);
 
@@ -148,12 +143,11 @@ int InitTrxvu()
 		printf("Error in the initialization of the Antennas: %d\n", err);
 		return err;
 	}
-#ifdef TESTING
 	else
 	{
+		//TODO: remove print after testing complete
 		printf("initialization of the Antennas succeeded\n");
 	}
-#endif
 
 	//Initialize TRXVU transmit lock
 	InitTxModule();
@@ -218,9 +212,8 @@ int InitTrxvu()
 // Command to set idle state to on
 int CMD_SetIdleOn()
 {
-#ifdef TESTING
+	//TODO: remove print after testing complete
 	printf("inside CMD_SetIdleOn()\n");
-#endif
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
@@ -239,9 +232,8 @@ int CMD_SetIdleOn()
 // Command to set idle state to off
 int CMD_SetIdleOff()
 {
-#ifdef TESTING
+	//TODO: remove print after testing complete
 	printf("inside CMD_SetIdleOff()\n");
-#endif
 	return SetIdleOff();
 }
 
