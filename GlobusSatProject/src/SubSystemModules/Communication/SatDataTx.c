@@ -81,16 +81,15 @@ Boolean CheckTransmitionAllowed() {
 		if(pdTRUE == xSemaphoreTake(xIsTransmitting,0))
 		{
 			xSemaphoreGive(xIsTransmitting);
+#ifdef TESTING
 			printf("TRASMITION ALLOWED\n");
+#endif
 			return TRUE;
 		}
 	}
-	else
-	{
-		printf("MUTE ON - TRASMITION NOT ALLOWED\n");
-	}
-
-
+#ifdef TESTING
+	printf("TRASMITION NOT ALLOWED\n");
+#endif
 	return FALSE;
 }
 
