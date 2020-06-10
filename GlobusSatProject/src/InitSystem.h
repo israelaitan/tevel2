@@ -31,6 +31,8 @@ int StartI2C();
  * @brief	Starts the SPI using drivers, and checks for errors
  * @see	SPI.h
  */
+int StartSPI();
+
 
 /*!
  * @brief	Starts the Time module using drivers, and checks for errors.
