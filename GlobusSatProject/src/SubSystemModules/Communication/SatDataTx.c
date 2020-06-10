@@ -71,6 +71,14 @@ int GetNumberOfFramesInBuffer() {
 	return frameCounter;
 }
 
+Boolean IsTransmitting() {
+	if(pdTRUE == xSemaphoreTake(xIsTransmitting,0)){
+		xSemaphoreGive(xIsTransmitting);
+		return FALSE;
+	}
+	return TRUE;
+}
+
 Boolean CheckTransmitionAllowed() {
 	Boolean low_voltage_flag = TRUE;
 

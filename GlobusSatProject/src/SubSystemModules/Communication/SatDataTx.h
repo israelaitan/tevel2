@@ -2,7 +2,9 @@
 #ifndef SATDATATX_H_
 #define SATDATATX_H_
 
-#define MAX_MUTE_TIME 	(5400) 	///< max mute duration will be 90 minutes = 60 *90 [sec]
+
+#define GS_MODE_TIME 	(120)	///< how long does the satellite is in GS mode since last received command
+#define MAX_MUTE_TIME 	(5400) 	///< max mute duration will be 90 minutes = 60 * 90 [sec]
 #define MUTE_ON 		TRUE	///< mute is on flag
 #define MUTE_OFF 		FALSE	///< mute is off flag
 
@@ -21,6 +23,13 @@ void InitTxModule();
  * 			FALSE if transmission is denied
  */
 Boolean CheckTransmitionAllowed();
+
+/*!
+ * @brief checks if currently transmissiting
+ * @return	TRUE if transmistting
+ * 			FALSE if NOT transmission
+ */
+Boolean IsTransmitting();
 
 
 /*!
@@ -46,7 +55,7 @@ Boolean GetMuteFlag();
 /*!
  * @brief checks if the Trxvu mute time has terminated
  * @return	TRUE if the termination time has arrived
- * 			FALSE else
+ * 			FALSE if mute has yet to end.
  */
 Boolean CheckForMuteEnd();
 
