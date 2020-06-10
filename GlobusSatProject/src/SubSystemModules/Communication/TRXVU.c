@@ -1,13 +1,16 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <freertos/task.h>
+
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
+
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
 
 #include <stdlib.h>
 #include <string.h>
+
 #include "GlobalStandards.h"
 #include "TRXVU.h"
 #include "AckHandler.h"
