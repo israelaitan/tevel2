@@ -24,7 +24,7 @@
 #endif
 
 //TODO change it after testing to 30.
-#define ANT_AWAITED_TIME_MIN 1
+#define ANT_AWAITED_TIME_MIN 4
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
@@ -78,14 +78,14 @@ void firstActivationProcedure()
 	}
 	else //TODO: remove after seker
 	{
-		printf("Total time: %d, Awaited time: %d\n", TotalWaitTime, AwaitedTime);
+		printf("Total time: %d, Awaited time: %d\n", TotalWaitTime/1000, AwaitedTime/1000);
 	}
 
 	int i = 1; //TODO: remove after seker
 	while (TotalWaitTime>AwaitedTime)
 	{
 		//TODO: remove print after testing
-		printf("%d) Waiting 10 seconds - awaited time is: %d\n", i++, AwaitedTime );
+		printf("%d) Waiting 10 seconds - awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;
