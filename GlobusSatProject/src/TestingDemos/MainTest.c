@@ -248,7 +248,7 @@ void taskTesting()
 	//TestUpdateBeaconInterval();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
-	//IntializeFRAM();
+	IntializeFRAM();
 
 	InitSubsystems();
 	int i = 0;
@@ -280,6 +280,7 @@ void taskTesting()
 		}
 		//if (i == 10)
 		//	TestDumpTelemetry();
+		//5 0 0 0 0 105 10 0 4 0 128 67 109 56 20 225 11 94
 	}
 	//TestDumpTelemetry();
 	//TestFirstActivionProc();
