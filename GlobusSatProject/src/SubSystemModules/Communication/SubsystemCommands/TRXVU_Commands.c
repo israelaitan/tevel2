@@ -128,16 +128,6 @@ int CMD_GetRxUptime(sat_packet_t *cmd)
 	return err;
 }
 
-int CMD_GetNumOfDelayedCommands(sat_packet_t *cmd)
-{
-	int err = 0;
-	unsigned char temp = 0;
-	temp = GetDelayedCommandBufferCount();
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &temp, sizeof(temp));
-
-	return err;
-}
-
 int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd)
 {
 	int err = 0;
@@ -145,23 +135,6 @@ int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd)
 	err = IsisTrxvu_rcGetFrameCount(ISIS_TRXVU_I2C_BUS_INDEX, &temp);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &temp, sizeof(temp));
 
-	return err;
-}
-
-int CMD_DeleteDelyedCmdByID(sat_packet_t *cmd)
-{
-	int err = 0;
-	unsigned int index = 0;
-	memcpy(&index,cmd->data,sizeof(index));
-	err = DeleteDelayedCommandByIndex(index);
-	return err;
-}
-
-int CMD_DeleteAllDelyedBuffer(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = DeleteDelayedBuffer();
 	return err;
 }
 
