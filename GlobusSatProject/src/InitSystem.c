@@ -253,7 +253,7 @@ int DeploySystem()
 			while(resA!=0 && count <10)
 			{
 				printf("Try: %d Side A\n", count);
-				resA=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, 10);
+				resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
 				count++;
 
 			}
@@ -265,7 +265,7 @@ int DeploySystem()
 			while(resB!=0 && count <10)
 			{
 				printf("Try: %d Side B\n", count);
-				resB = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, 10);
+				resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
 				count++;
 			}
 
