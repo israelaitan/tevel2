@@ -22,6 +22,7 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/HouseKepping/TelemetryCollector.h"
 #include "TrxvuTestingDemo.h"
+#include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Trxvu.h"
 
 Boolean selectAndExecuteTest()
@@ -92,6 +93,7 @@ Boolean selectAndExecuteTest()
 	return offerMoreTests;
 }
 
+
 //Idle Test
 void testsIdle()
 {
@@ -144,6 +146,27 @@ void testsMute()
 	}
 }
 
+//Initialize method to set FRAM to initial phase before first Init of satelite
+ void IntializeFRAM()
+ {
+	int err = 0;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
+
+	if(!err)
+	{
+		 //set first activation flag to true
+		int status = 1;
+		FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+
+		 //set seconds since deploy to 0
+		int a = 0;
+		FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	}
+ }
+
+
 //Test for firstActivationProcedure Logic
 void TestFirstActivionProc()
 {
@@ -155,26 +178,14 @@ void TestFirstActivionProc()
 	//added to allow Telemetry collector to work
 	err = InitializeFS(TRUE);
 
-	firstActivationProcedure();
+	if(!err)
+	{
+		firstActivationProcedure();
+	}
 	printf("i am done\n");
 }
 
-void TestisFirstActivation()
-{
-	printf("i am starting\n");
-	int err;
-	err = StartSPI();
-	err = StartI2C();
-	err = StartFRAM();
-
-	printf("Setting isFirstActivation with FALSE\n");
-	TestIsFirst(0);
-
-	printf("Setting isFirstActivation with TRUE\n");
-	TestIsFirst(1);
-}
-
-void TestIsFirst(char status)
+void TestIsFirstAct(char status)
 {
 	Boolean St;
 
@@ -194,12 +205,36 @@ void TestIsFirst(char status)
 	printf("i am done\n");
 }
 
+
+void TestisFirstActivation()
+{
+	printf("i am starting\n");
+	int err;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
+
+	if(!err)
+	{
+		printf("Setting isFirstActivation with FALSE\n");
+		TestIsFirstAct(0);
+
+		printf("Setting isFirstActivation with TRUE\n");
+		TestIsFirstAct(1);
+	}
+}
+
+
+
 void TestUpdateBeaconInterval()
 {
 	printf("i am starting\n");
 
+	sat_packet_t cmd;
+	cmd.data[0] = 120;
+
 	int s;
-	s=UpdateBeaconInterval(80);
+	s=UpdateBeaconInterval(&cmd);
 	if(s==E_PARAM_OUTOFBOUNDS)
 	{
 		printf("test succeeded - update interval failed\n");
@@ -212,18 +247,6 @@ void TestUpdateBeaconInterval()
 	printf("i am done\n");
 }
 
-//Initialize method to set FRAM to initial phase before first Init of satelite
- void IntializeFRAM()
- {
-	int err = 0;
-	err = StartSPI();
-	err = StartI2C();
-	err = StartFRAM();
-
-	TestIsFirst(1); //set first activation flag to true
-	int a = 0;
-	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
- }
 
 //Test restart after deployment not performing deployment again
 void TestRestartSkipDeployment()
@@ -245,10 +268,11 @@ void taskTesting()
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
 	//testsMute();
-	//TestUpdateBeaconInterval();
+	TestUpdateBeaconInterval();
 	//TestisFirstActivation();
 	//TestRestartSkipDeployment();
-	IntializeFRAM();
+
+	/*IntializeFRAM();
 
 	InitSubsystems();
 	int i = 0;
@@ -267,23 +291,14 @@ void taskTesting()
 		vTaskDelay(100);
 		printf("GivatShmuel:main testing loop after delay: i= : %d\n",  i);
 		i++;
-
-		if(i == 40)
-		{
-			//UpdateBeaconInterval(60);
-			printf("********************************************************************** Update Beacon intervals to 60");
-		}
-		else if (i==150)
-		{
-			//UpdateBeaconInterval(20);
-			printf("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv Update Beacon intervals to 20");
-		}
 		//if (i == 10)
 		//	TestDumpTelemetry();
 		//5 0 0 0 0 105 10 0 4 0 128 67 109 56 20 225 11 94
 	}
 	//TestDumpTelemetry();
 	//TestFirstActivionProc();
+	 * */
+
 }
 
 
