@@ -31,6 +31,7 @@ int ActUponCommand(sat_packet_t *cmd)
 		unsigned int length = 0;
 		SendAckPacket(ACK_PING, cmd, data, length);
 	}
+	//Todo: add else in case cmd_typ is unknown
 
 	#ifdef TESTING
 		printf("finished command with error: %d\n" , err);
