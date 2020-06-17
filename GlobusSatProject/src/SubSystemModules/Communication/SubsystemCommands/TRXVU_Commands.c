@@ -47,28 +47,6 @@ int CMD_UnMuteTRXVU(sat_packet_t *cmd)
 	return 0;
 }
 
-int CMD_GetBaudRate(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrateStatus bitrate;
-	err = GetTrxvuBitrate(&bitrate);
-	TransmitDataAsSPL_Packet(cmd, &bitrate, sizeof(bitrate));
-
-	return err;
-}
-
-
-int CMD_SetBeaconCycleTime(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrate bitrate = 0;
-
-	err =  FRAM_write(cmd->data, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE);
-	err += FRAM_read(&bitrate, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE);
-	TransmitDataAsSPL_Packet(cmd,(unsigned char*)&bitrate, sizeof(bitrate));
-
-	return err;
-}
 
 int CMD_GetBeaconInterval(sat_packet_t *cmd)
 {
@@ -95,15 +73,6 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd)
 			BEACON_INTERVAL_TIME_SIZE);
 
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &interval,sizeof(interval));
-	return err;
-}
-
-int CMD_SetBaudRate(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrateStatus bitrate;
-	bitrate = (ISIStrxvuBitrateStatus) cmd->data[0];
-	err = IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, bitrate);
 	return err;
 }
 

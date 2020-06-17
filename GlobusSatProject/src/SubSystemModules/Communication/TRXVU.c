@@ -194,7 +194,7 @@ int InitTrxvu()
 			ResetGroundCommWDT();
 
 			//Send Acknowledge to earth
-			SendAckPacket(ACK_RECEIVE_COMM, &cmd, data, length);
+			SendAckPacket(ACK_RECEIVE_COMM, cmd, data, length);
 
 			//run command
 			res = ActUponCommand(cmd);
