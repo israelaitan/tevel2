@@ -31,6 +31,7 @@ int StartI2C();
  * @brief	Starts the SPI using drivers, and checks for errors
  * @see	SPI.h
  */
+int StartSPI();
 
 /*!
  * @brief	Starts the Time module using drivers, and checks for errors.
@@ -52,5 +53,17 @@ int InitSubsystems();
  * 			-1 failed to deploy
  */
 int DeploySystem();
+
+/*!
+ * @brief	check if first activation procedure
+ * @return	false or true
+ */
+Boolean isFirstActivation();
+
+/*!
+ * @brief	perform the procedure of waiting for xx minutes before deployment of antenas
+ * @return	void
+ */
+void firstActivationProcedure();
 
 #endif /* INITSYSTEM_H_ */
