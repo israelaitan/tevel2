@@ -1,6 +1,7 @@
 
 #include "EPSOperationModes.h"
 #include "GlobalStandards.h"
+#include <stdio.h>
 
 #include <satellite-subsystems/isis_eps_driver.h>
 

@@ -32,4 +32,10 @@ CommandHandlerErr TRX_Logic();
  */
 int CMD_SetIdleOn();
 
+/*!
+ * @brief The TRXVU command to set TRXVU out of idle
+ * @return	int indicating the error
+ */
+int CMD_SetIdleOff();
+
 #endif

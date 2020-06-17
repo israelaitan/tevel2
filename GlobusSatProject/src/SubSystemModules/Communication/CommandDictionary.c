@@ -11,12 +11,12 @@
 #include "TLM_management.h"
 #include <stdio.h>
 #include "CommandDictionary.h"
+#include "Beacon.h"
 
 int trxvu_command_router(sat_packet_t *cmd)
 {
 	int err = 0;
-	sat_packet_t delayed_cmd = {0};
-	//TODO: finish 'trxvu_command_router'
+
 	switch (cmd->cmd_subtype)
 	{
 	case DUMP_SUBTYPE:
@@ -47,26 +47,14 @@ int trxvu_command_router(sat_packet_t *cmd)
 			err = CMD_SetIdleOff();
 			break;
 
-	case GET_BAUD_RATE:
-		err = CMD_GetBaudRate(cmd);
-		break;
-
 	case GET_BEACON_INTERVAL:
 		err = CMD_GetBeaconInterval(cmd);
 		break;
 
 	case SET_BEACON_INTERVAL:
-		err = CMD_SetBeaconInterval(cmd);
+		//err = CMD_SetBeaconInterval(cmd);
+		err=UpdateBeaconInterval(cmd);
 		break;
-
-	case SET_BAUD_RATE:
-		err = CMD_SetBaudRate(cmd);
-		break;
-
-	case SET_BEACON_CYCLE_TIME:
-		err = CMD_SetBeaconCycleTime(cmd);
-		break;
-
 	case GET_TX_UPTIME:
 		err = CMD_GetTxUptime(cmd);
 		break;
@@ -75,23 +63,8 @@ int trxvu_command_router(sat_packet_t *cmd)
 		err = CMD_GetRxUptime(cmd);
 		break;
 
-	case GET_NUM_OF_DELAYED_CMD:
-		err = CMD_GetNumOfDelayedCommands(cmd);
-		break;
-
 	case GET_NUM_OF_ONLINE_CMD:
 		err = CMD_GetNumOfOnlineCommands(cmd);
-		break;
-	case ADD_DELAYED_COMMAND_CMD:
-		ParseDataToCommand(cmd->data,&delayed_cmd);
-		err = AddDelayedCommand(&delayed_cmd);
-		break;
-	case DELETE_DELAYED_CMD:
-		err = CMD_DeleteDelyedCmdByID(cmd);
-		break;
-
-	case DELETE_ALL_DELAYED_CMD:
-		err = CMD_DeleteAllDelyedBuffer(cmd);
 		break;
 
 	case ANT_SET_ARM_STATUS:

@@ -87,13 +87,18 @@ void BeaconLogic()
 }
 
 //Update beacon intervals - allows changing this interval from earth
-int UpdateBeaconInterval(time_unix intrvl)
+int UpdateBeaconInterval(sat_packet_t *cmd)
 {
+	time_unix intrvl = cmd->data[0];
+
 #ifdef TESTING
 	printf("Inside UpdateBeaconInterval() interval: %ld, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
 #endif
+
+
+
 	//check if interval is in allowed range
-	if(intrvl>MAX_BEACON_INTERVAL|| intrvl<MIN_BEACON_INTERVAL)
+	if(intrvl > MAX_BEACON_INTERVAL|| intrvl < MIN_BEACON_INTERVAL)
 		return E_PARAM_OUTOFBOUNDS;
 
 	//update new interval in FRAM

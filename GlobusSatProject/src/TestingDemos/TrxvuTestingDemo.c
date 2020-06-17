@@ -211,7 +211,7 @@ Boolean TestDumpTelemetry()
 	Time_getUnixEpoch(&to);
 	memcpy(cmd->data + sizeof(tlmType), &from, sizeof(unsigned int));
 	memcpy(cmd->data + sizeof(tlmType) + sizeof(unsigned int), &to, sizeof(unsigned int));
-
+	cmd->length = sizeof(tlmType) + sizeof(unsigned int) + sizeof(unsigned int);
 	DumpTelemetry(cmd);
 	return TRUE;
 }
@@ -225,22 +225,13 @@ Boolean TestRestoreDefaultBeaconParameters()
 	BEACON_INTERVAL_TIME_SIZE);
 	printf("Value of interval before: %lu\n",beacon_interval_time);
 
-	UpdateBeaconInterval(DEFAULT_BEACON_INTERVAL_TIME);
+	sat_packet_t cmd;
+	cmd.data[0] = DEFAULT_BEACON_INTERVAL_TIME;
+	UpdateBeaconInterval(&cmd);
 
 	FRAM_read((unsigned char*)&beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
 	BEACON_INTERVAL_TIME_SIZE);
 	printf("Value of interval after: %lu\n",beacon_interval_time);
-
-	unsigned char cycle = 0;
-	FRAM_read((unsigned char*) &cycle, BEACON_BITRATE_CYCLE_ADDR,
-	BEACON_BITRATE_CYCLE_SIZE);
-	printf("Value of beacon cycle before: %d\n",cycle);
-
-	UpdateBeaconBaudCycle(DEFALUT_BEACON_BITRATE_CYCLE);
-
-	FRAM_read((unsigned char*) &cycle, BEACON_BITRATE_CYCLE_ADDR,
-	BEACON_BITRATE_CYCLE_SIZE);
-	printf("Value of beacon cycle after: %d\n",cycle);
 
 	return TRUE;
 }

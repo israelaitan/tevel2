@@ -13,4 +13,6 @@ Boolean selectAndExecuteTest();
 
 void taskTesting();
 
+void IntializeFRAM();
+
 #endif /* MAINTEST_H_ */

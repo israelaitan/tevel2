@@ -47,28 +47,6 @@ int CMD_UnMuteTRXVU(sat_packet_t *cmd)
 	return 0;
 }
 
-int CMD_GetBaudRate(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrateStatus bitrate;
-	err = GetTrxvuBitrate(&bitrate);
-	TransmitDataAsSPL_Packet(cmd, &bitrate, sizeof(bitrate));
-
-	return err;
-}
-
-
-int CMD_SetBeaconCycleTime(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrate bitrate = 0;
-
-	err =  FRAM_write(cmd->data, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE);
-	err += FRAM_read(&bitrate, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE);
-	TransmitDataAsSPL_Packet(cmd,(unsigned char*)&bitrate, sizeof(bitrate));
-
-	return err;
-}
 
 int CMD_GetBeaconInterval(sat_packet_t *cmd)
 {
@@ -98,15 +76,6 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd)
 	return err;
 }
 
-int CMD_SetBaudRate(sat_packet_t *cmd)
-{
-	int err = 0;
-	ISIStrxvuBitrateStatus bitrate;
-	bitrate = (ISIStrxvuBitrateStatus) cmd->data[0];
-	err = IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, bitrate);
-	return err;
-}
-
 
 int CMD_GetTxUptime(sat_packet_t *cmd)
 {
@@ -128,16 +97,6 @@ int CMD_GetRxUptime(sat_packet_t *cmd)
 	return err;
 }
 
-int CMD_GetNumOfDelayedCommands(sat_packet_t *cmd)
-{
-	int err = 0;
-	unsigned char temp = 0;
-	temp = GetDelayedCommandBufferCount();
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &temp, sizeof(temp));
-
-	return err;
-}
-
 int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd)
 {
 	int err = 0;
@@ -145,23 +104,6 @@ int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd)
 	err = IsisTrxvu_rcGetFrameCount(ISIS_TRXVU_I2C_BUS_INDEX, &temp);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &temp, sizeof(temp));
 
-	return err;
-}
-
-int CMD_DeleteDelyedCmdByID(sat_packet_t *cmd)
-{
-	int err = 0;
-	unsigned int index = 0;
-	memcpy(&index,cmd->data,sizeof(index));
-	err = DeleteDelayedCommandByIndex(index);
-	return err;
-}
-
-int CMD_DeleteAllDelyedBuffer(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = DeleteDelayedBuffer();
 	return err;
 }
 

@@ -207,7 +207,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 
 	dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
 	unsigned int offset = 0;
-	char dump[200];
+	//char dump[200];
 	dmp_pckt->cmd = cmd;
 
 	memcpy(&dmp_pckt->dump_type, cmd->data, sizeof(dmp_pckt->dump_type));
