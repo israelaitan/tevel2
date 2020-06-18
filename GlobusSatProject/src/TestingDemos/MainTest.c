@@ -263,41 +263,44 @@ void TestRestartSkipDeployment()
 void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
-	//testsIdle();
-	//testsMute();
+
+
 	//TestisFirstActivation();
-	//TestRestartSkipDeployment();
-	//testsMute();
-	TestUpdateBeaconInterval();
-	//TestisFirstActivation();
+	//TestFirstActivionProc();
 	//TestRestartSkipDeployment();
 
-	/*IntializeFRAM();
+	//testsIdle();
+	//testsMute();
+	//TestUpdateBeaconInterval();
+	//TestDumpTelemetry();
+
+
+	//IntializeFRAM();
 
 	InitSubsystems();
 	int i = 0;
 	while (1)
 	{
-		printf("GivatShmuel:main testing loop: i= : %d\n",  i);
+		printf("--------------------Main loop: i= : %d  ------------\n",  i);
 
 		int res=EPS_Conditioning();
+		printf("Main:EPS_Conditioning\n");
 		if(res!=0)
-			printf("error in EPS_Conditioning: "+res);
+			printf("Error in EPS_Conditioning: %d\n", res);
 
 		TRX_Logic();
-		printf("GivatShmuel:main testing loop after TRX_Logic: i= : %d\n",  i);
+		printf("Main:TRX_Logic\n");
+
 		TelemetryCollectorLogic();
-		printf("GivatShmuel:main testing loop after Telemetry Logic: i= : %d\n",  i);
+		printf("Main:TelemetryCollectorLogic\n");
+
 		vTaskDelay(100);
-		printf("GivatShmuel:main testing loop after delay: i= : %d\n",  i);
+
 		i++;
 		//if (i == 10)
 		//	TestDumpTelemetry();
 		//5 0 0 0 0 105 10 0 4 0 128 67 109 56 20 225 11 94
 	}
-	//TestDumpTelemetry();
-	//TestFirstActivionProc();
-	 * */
 
 }
 
