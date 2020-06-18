@@ -27,7 +27,7 @@
 #include "SubSystemModules/Housekepping/Dump.h"
 
 //idle global variables
-int				g_idle_period = 300 ;				// idle time default = 5 min
+int				g_idle_period = 120 ;	//TODO: For seker changed to 2 min	// idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
