@@ -249,7 +249,7 @@ int DeploySystem()
 		if (res == 0)
 		{
 			// antenata auto deploy - sides A
-			resA = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
+			resA = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
 
 			if(resA!=0)
 			{
@@ -263,13 +263,13 @@ int DeploySystem()
 				while(resA!=0 && count <10)
 				{
 					printf("Deploying: %d Side A\n", count);
-					resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+					resA=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
 					count++;
 				}
 			}
 
 			// antenata auto deploy - sides B
-			resB = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
+			resB = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
 			if(resB!=0)
 			{
 				printf("Failed Arming Side B\n");
@@ -282,7 +282,7 @@ int DeploySystem()
 				while(resB!=0 && count <10)
 				{
 					printf("Deploying: %d Side B\n", count);
-					resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+					resB = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
 					count++;
 				}
 			}
