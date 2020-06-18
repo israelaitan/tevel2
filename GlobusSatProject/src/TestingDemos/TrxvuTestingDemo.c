@@ -173,7 +173,7 @@ Boolean TestTransmitSplPacket()
 
 			EPS_Conditioning();
 
-			printf("seconds t'ill end: %lu\n",end_time - curr_time);
+			printf("seconds t'ill end: %d\n",end_time - curr_time);
 			vTaskDelay(1000);
 		}
 
@@ -223,7 +223,7 @@ Boolean TestRestoreDefaultBeaconParameters()
 	time_unix beacon_interval_time = 0;
 	FRAM_read((unsigned char*) &beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
 	BEACON_INTERVAL_TIME_SIZE);
-	printf("Value of interval before: %lu\n",beacon_interval_time);
+	printf("Value of interval before: %d\n",beacon_interval_time);
 
 	sat_packet_t cmd;
 	cmd.data[0] = DEFAULT_BEACON_INTERVAL_TIME;
@@ -231,7 +231,7 @@ Boolean TestRestoreDefaultBeaconParameters()
 
 	FRAM_read((unsigned char*)&beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
 	BEACON_INTERVAL_TIME_SIZE);
-	printf("Value of interval after: %lu\n",beacon_interval_time);
+	printf("Value of interval after: %d\n",beacon_interval_time);
 
 	return TRUE;
 }
@@ -248,7 +248,7 @@ Boolean TestChooseDefaultBeaconCycle()
 	time_unix beacon_interval_time = 0;
 	FRAM_read((unsigned char*) &beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
 	BEACON_INTERVAL_TIME_SIZE);
-	printf("Value before: %lu\n",beacon_interval_time);
+	printf("Value before: %d\n",beacon_interval_time);
 
 	beacon_interval_time = seconds;
 	FRAM_write((unsigned char*) &beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
@@ -256,7 +256,7 @@ Boolean TestChooseDefaultBeaconCycle()
 
 	FRAM_read((unsigned char*) &beacon_interval_time, BEACON_INTERVAL_TIME_ADDR,
 	BEACON_INTERVAL_TIME_SIZE);
-	printf("Value after: %lu\n",beacon_interval_time);
+	printf("Value after: %d\n",beacon_interval_time);
 
 	return TRUE;
 }
@@ -281,7 +281,7 @@ Boolean TestBeaconLogic()
 
 		EPS_Conditioning();
 
-		printf("seconds t'ill end: %lu\n",end_time - curr_time);
+		printf("seconds t'ill end: %d\n",end_time - curr_time);
 		vTaskDelay(1000);
 	}
 	return TRUE;

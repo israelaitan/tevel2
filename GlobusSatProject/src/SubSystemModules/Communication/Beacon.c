@@ -92,7 +92,7 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 	time_unix intrvl = cmd->data[0];
 
 #ifdef TESTING
-	printf("Inside UpdateBeaconInterval() interval: %ld, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
+	printf("Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
 #endif
 
 

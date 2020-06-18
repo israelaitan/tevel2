@@ -42,15 +42,15 @@ Boolean TestResetGroundCommWDT()
 	time_unix current_time = 0;
 
 	FRAM_read((unsigned char*) &current_time, LAST_COMM_TIME_ADDR,LAST_COMM_TIME_SIZE);
-	printf("Saved time on the FRAM: %lu\n",current_time);
+	printf("Saved time on the FRAM: %d\n",current_time);
 
 	ResetGroundCommWDT();
 
 	Time_getUnixEpoch((unsigned int *)&current_time);
-	printf("Current Time according to 'Time_getUnixEpoch': %lu\n",current_time);
+	printf("Current Time according to 'Time_getUnixEpoch': %d\n",current_time);
 
 	FRAM_read((unsigned char*) &current_time, LAST_COMM_TIME_ADDR,LAST_COMM_TIME_SIZE);
-	printf("Saved time on FRAM after reset: %lu\n",current_time);
+	printf("Saved time on FRAM after reset: %d\n",current_time);
 
 
 	return TRUE;
