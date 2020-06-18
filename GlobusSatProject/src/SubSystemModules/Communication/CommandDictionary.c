@@ -44,8 +44,8 @@ int trxvu_command_router(sat_packet_t *cmd)
 		break;
 
 	case TRXVU_IDLE_OFF:
-			err = CMD_SetIdleOff();
-			break;
+		err = CMD_SetIdleOff();
+		break;
 
 	case GET_BEACON_INTERVAL:
 		err = CMD_GetBeaconInterval(cmd);
