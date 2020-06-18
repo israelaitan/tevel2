@@ -75,6 +75,6 @@
 #define DEFALUT_BEACON_BITRATE_CYCLE	3			//<! default value
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
-#define MIN_BEACON_INTERVAL				10			// beacon every 10 secinds
+#define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
 
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */
