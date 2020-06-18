@@ -1,3 +1,4 @@
+#include <string.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <freertos/task.h>
@@ -89,7 +90,9 @@ void BeaconLogic()
 //Update beacon intervals - allows changing this interval from earth
 int UpdateBeaconInterval(sat_packet_t *cmd)
 {
-	time_unix intrvl = cmd->data[0];
+
+	time_unix intrvl = 0;
+	memcpy(&intrvl,cmd->data,sizeof(intrvl));
 
 #ifdef TESTING
 	printf("Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
