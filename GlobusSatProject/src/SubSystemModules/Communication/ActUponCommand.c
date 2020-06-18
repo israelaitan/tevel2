@@ -10,7 +10,7 @@
 int ActUponCommand(sat_packet_t *cmd)
 {
 	#ifdef TESTING
-		printf("inside ActUponCommand() command type: %c, command sub-type: %c\n", cmd->cmd_type, cmd->cmd_subtype);
+		printf("XXXXXXXXXXXXXXX Inside ActUponCommand() command type: %d, command sub-type: %d\n", cmd->cmd_type, cmd->cmd_subtype);
 	#endif
 
 	int err = 0;
