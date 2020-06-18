@@ -1,5 +1,5 @@
 #include <string.h>
-
+#include <stdio.h>
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
 
@@ -33,6 +33,7 @@ int CMD_ForceDumpAbort(sat_packet_t *cmd)
 
 int CMD_MuteTRXVU(sat_packet_t *cmd)
 {
+
 	int err = 0;
 	time_unix mute_duaration = 0;
 	memcpy(&mute_duaration,cmd->data,sizeof(mute_duaration));
@@ -55,8 +56,11 @@ int CMD_GetBeaconInterval(sat_packet_t *cmd)
 	err = FRAM_read((unsigned char*) &beacon_interval,
 			BEACON_INTERVAL_TIME_ADDR,
 			BEACON_INTERVAL_TIME_SIZE);
+
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &beacon_interval,
 			sizeof(beacon_interval));
+
+	printf("Beacon Interval is: %d", beacon_interval);
 	return err;
 }
 
