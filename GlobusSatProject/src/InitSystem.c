@@ -28,6 +28,7 @@
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
+#define ANTENNA_DEPLOYMENT_TIMEOUT 10 //<! in seconds
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 
 //האם זו האינטרקציה הראשונה
@@ -228,6 +229,8 @@ int DeploySystem()
 
 	if(isFirstActivation())
 	{
+		int count;
+
 		// waiting for 30 min (collect telemetry every 10 sec)-
 		firstActivationProcedure();
 
@@ -241,32 +244,47 @@ int DeploySystem()
 		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
 		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
 
-		res=IsisAntS_initialize( &addressab, 1);//TODO: check in the seker that there is one system
+		res=IsisAntS_initialize( &addressab, 1);
 
-		//TODO: what happens if auto deploy fails?
-		// antenata auto deploy - sides A
 		if (res == 0)
 		{
-			int count = 1;
-			resA = 1; //to get into the loop and try at least once to auto deploy
-			//loop until Antena's auto deploy side A successful or 10 tries
-			while(resA!=0 && count <10)
-			{
-				printf("Try: %d Side A\n", count);
-				resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, 10);
-				count++;
+			// antenata auto deploy - sides A
+			resA = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
 
+			if(resA!=0)
+			{
+				printf("Failed Arming Side A\n");
+			}
+			else
+			{
+				count = 1;
+				resA = 1; //to get into the loop and try at least once to auto deploy
+				//loop until Antena's auto deploy side A successful or 10 tries
+				while(resA!=0 && count <10)
+				{
+					printf("Deploying: %d Side A\n", count);
+					resA=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+					count++;
+				}
 			}
 
 			// antenata auto deploy - sides B
-			count = 1;
-			resB = 1; //to get into the loop and try at least once to auto deploy
-			//loop until Antena's auto deploy side B successful or 10 tries
-			while(resB!=0 && count <10)
+			resB = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
+			if(resB!=0)
 			{
-				printf("Try: %d Side B\n", count);
-				resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, 10);
-				count++;
+				printf("Failed Arming Side B\n");
+			}
+			else
+			{
+				count = 1;
+				resB = 1; //to get into the loop and try at least once to auto deploy
+				//loop until Antena's auto deploy side B successful or 10 tries
+				while(resB!=0 && count <10)
+				{
+					printf("Deploying: %d Side B\n", count);
+					resB = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+					count++;
+				}
 			}
 
 			if(resB==0 && resA ==0)
@@ -277,13 +295,15 @@ int DeploySystem()
 				printf("*****First Activation Completed******\n");
 			}
 		}
+#ifdef TESTING
 		else
 		{
-			//update first activation flag to false if antenas not deployed
+			//update first activation flag to false if antenas are not Connected
 			char firstactivation= 0;
 			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 			printf("*****First Activation without Antenas deployed******\n");
 		}
+#endif
 	}
 
 	return res + resB + resA;
