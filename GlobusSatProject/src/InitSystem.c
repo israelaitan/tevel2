@@ -79,14 +79,14 @@ void firstActivationProcedure()
 	}
 	else //TODO: remove after seker
 	{
-		printf("Total time: %d, Awaited time: %d\n", TotalWaitTime/1000, AwaitedTime/1000);
+		printf("Total Waiting time: %d sec, Awaited time: %d sec\n", TotalWaitTime/1000, AwaitedTime/1000);
 	}
 
 	int i = 1; //TODO: remove after seker
 	while (TotalWaitTime>AwaitedTime)
 	{
 		//TODO: remove print after testing
-		printf("%d) Waiting 10 seconds - awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
+		printf("%d) Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;
