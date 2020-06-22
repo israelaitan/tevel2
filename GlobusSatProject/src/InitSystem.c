@@ -93,6 +93,20 @@ void firstActivationProcedure()
 		FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 		TelemetryCollectorLogic();
 	}
+
+	//write default parms to fram.
+	WriteDefaultValuesToFRAM();
+
+	//set deploment time in FRAM
+	unsigned int deployTime;
+	Time_getUnixEpoch(&deployTime);
+	FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
+
+	//update first activation flag to false if antenas are not Connected
+	char firstactivation= 0;
+	FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+	printf("*****First Activation without Antenas deployed******\n");
+
 }
 
 //שמירת ערכי ברירת מחדל בזיכרון.
@@ -222,22 +236,17 @@ int StartTIME()
 	// פריסת אנטנות לאחר 30 דק שקט
 int DeploySystem()
 {
-	int res=0, resA=0, resB=0;
+	int res=0;
 
 	//TODO: remove print after testing
 	printf(" DeploySystem() here\n");
 
 	if(isFirstActivation())
 	{
-		int count;
 
 		// waiting for 30 min (collect telemetry every 10 sec)-
 		firstActivationProcedure();
 
-		//set deploment time in FRAM
-		unsigned int deployTime;
-		Time_getUnixEpoch(&deployTime);
-		FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
 
 		//Initialize the Antenas
 		ISISantsI2Caddress addressab;
@@ -249,65 +258,34 @@ int DeploySystem()
 		if (res == 0)
 		{
 			// antenata auto deploy - sides A
-			resA = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
+			res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
 
-			if(resA!=0)
+			if(res==0)
+			{
+				printf("Deploying: Side A\n");
+				res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+			}
+			else
 			{
 				printf("Failed Arming Side A\n");
 			}
-			else
-			{
-				count = 1;
-				resA = 1; //to get into the loop and try at least once to auto deploy
-				//loop until Antena's auto deploy side A successful or 10 tries
-				while(resA!=0 && count <10)
-				{
-					printf("Deploying: %d Side A\n", count);
-					resA=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
-					count++;
-				}
-			}
 
 			// antenata auto deploy - sides B
-			resB = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
-			if(resB!=0)
+			res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
+			if(res==0)
+			{
+				printf("Deploying: Side B\n");
+				res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+			}
+			else
 			{
 				printf("Failed Arming Side B\n");
 			}
-			else
-			{
-				count = 1;
-				resB = 1; //to get into the loop and try at least once to auto deploy
-				//loop until Antena's auto deploy side B successful or 10 tries
-				while(resB!=0 && count <10)
-				{
-					printf("Deploying: %d Side B\n", count);
-					resB = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
-					count++;
-				}
-			}
-
-			if(resB==0 && resA ==0)
-			{
-				//update first activation flag to false
-				char firstactivation= 0;
-				FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-				printf("*****First Activation Completed******\n");
-			}
 		}
-#ifdef TESTING
-		else
-		{
-			//update first activation flag to false if antenas are not Connected
-			char firstactivation= 0;
-			FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-			printf("*****First Activation without Antenas deployed******\n");
-		}
-#endif
 	}
-
-	return res + resB + resA;
+	return res;
 }
+
 
 //אתחול כלל המערכות
 int InitSubsystems()
@@ -331,9 +309,6 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	//TODO: Should we call it here?
-	WriteDefaultValuesToFRAM();
-
 	// Start the clock
 	err = StartTIME();
 	if (err!=0)
@@ -344,9 +319,9 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
-	//TODO: Need to call only once
 	// Initalize the file system
-	err=InitializeFS(TRUE);
+	Boolean firstActivation= isFirstActivation();
+	err=InitializeFS(firstActivation);
 	if (err!=0)
 		return err;
 
