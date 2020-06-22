@@ -164,7 +164,7 @@ void DumpTask(void *args) {
 		}
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
-		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i,  &dump_tlm);
+		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i, 8, &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
 #ifdef TESTING
 		printf("dump: packet sent id = %u  ord = %u availFrames = %d \n", task_args->cmd->ID, i, availFrames);
