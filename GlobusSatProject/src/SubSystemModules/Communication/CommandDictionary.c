@@ -40,7 +40,7 @@ int trxvu_command_router(sat_packet_t *cmd)
 		break;
 
 	case TRXVU_IDLE_ON:
-		err = CMD_SetIdleOn();
+		err = CMD_SetIdleOn(cmd);
 		break;
 
 	case TRXVU_IDLE_OFF:
