@@ -27,7 +27,7 @@
 #include "SubSystemModules/Housekepping/Dump.h"
 
 //idle global variables
-int				g_idle_period = 120 ;	//TODO: For seker changed to 2 min	// idle time default = 5 min
+int				g_idle_period = 300 ; // idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
@@ -183,12 +183,12 @@ int InitTrxvu()
 	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
 
-	if(onCmdCount>0) {
+	if(onCmdCount>0)
+	{
 		//get the online command
 		res = GetOnlineCommand(cmd);
-		if(res!=0)
-			printf("Error in getting the online command: %d\n", res);
-		else {
+		if(res==cmd_command_found)
+		{
 			#ifdef TESTING
 				printf("Getting the online command success\n");
 			#endif
@@ -201,6 +201,10 @@ int InitTrxvu()
 
 			//run command
 			res = ActUponCommand(cmd);
+		}
+		else
+		{
+			printf("Status: %d in getting the online command. \n", res);
 		}
 	}
 
@@ -219,7 +223,7 @@ int InitTrxvu()
   */
 
 // Command to set idle state to on
-int CMD_SetIdleOn()
+int CMD_SetIdleOn(sat_packet_t *cmd)
 {
 #ifdef TESTING
 	printf("inside CMD_SetIdleOn()\n");
@@ -231,9 +235,11 @@ int CMD_SetIdleOn()
 	}
 	else
 	{
-		//get time of start idle period & set idle state flag to true
+		//get time of start idle period & set idle state flag to true and set idle period
+		memcpy(&g_idle_period,cmd->data,sizeof(g_idle_period));
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
+		printf("Set idle state for %d seconds. \n", g_idle_period);
 	}
 	return err;
 }
