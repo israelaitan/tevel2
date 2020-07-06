@@ -68,8 +68,6 @@ Boolean isFirstActivation()
 void firstActivationProcedure()
 {
 	int err = 0;
-	//TODO: remove print after testing
-	printf("Inside firstActivationProcedure()\n");
 	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
@@ -77,15 +75,10 @@ void firstActivationProcedure()
 	{
 		printf("could not read SECONDS_SINCE_DEPLOY from FRAM\n");
 	}
-	else //TODO: remove after seker
-	{
-		printf("Total Waiting time: %d sec, Awaited time: %d sec\n", TotalWaitTime/1000, AwaitedTime/1000);
-	}
 
-	int i = 1; //TODO: remove after seker
+	int i = 1;
 	while (TotalWaitTime>AwaitedTime)
 	{
-		//TODO: remove print after testing
 		printf("%d) Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
 		vTaskDelay(1000*10);
 
@@ -233,6 +226,37 @@ int StartTIME()
 	return 0;
 }
 
+// antena auto deploy both sides
+int autoDeploy()
+{
+	int res=0;
+	// antena auto deploy - sides A
+	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
+
+	if(res==0)
+	{
+		printf("Deploying: Side A\n");
+		res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+	}
+	else
+	{
+		printf("Failed Arming Side A\n");
+	}
+
+	// antenata auto deploy - sides B
+	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
+	if(res==0)
+	{
+		printf("Deploying: Side B\n");
+		res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+	}
+	else
+	{
+		printf("Failed Arming Side B\n");
+	}
+	return res;
+}
+
 	// פריסת אנטנות לאחר 30 דק שקט
 int DeploySystem()
 {
@@ -248,40 +272,8 @@ int DeploySystem()
 		firstActivationProcedure();
 
 
-		//Initialize the Antenas
-		ISISantsI2Caddress addressab;
-		addressab.addressSideA=ANTS_I2C_SIDE_A_ADDR;
-		addressab.addressSideB=ANTS_I2C_SIDE_B_ADDR;
-
-		res=IsisAntS_initialize( &addressab, 1);
-
-		if (res == 0)
-		{
-			// antenata auto deploy - sides A
-			res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
-
-			if(res==0)
-			{
-				printf("Deploying: Side A\n");
-				res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
-			}
-			else
-			{
-				printf("Failed Arming Side A\n");
-			}
-
-			// antenata auto deploy - sides B
-			res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
-			if(res==0)
-			{
-				printf("Deploying: Side B\n");
-				res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
-			}
-			else
-			{
-				printf("Failed Arming Side B\n");
-			}
-		}
+		//Initialize the Antenas performed in trx init performing auto deploy
+		res = autoDeploy();
 	}
 	return res;
 }

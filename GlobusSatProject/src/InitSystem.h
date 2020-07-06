@@ -66,4 +66,7 @@ Boolean isFirstActivation();
  */
 void firstActivationProcedure();
 
+// antena auto deploy both sides
+int autoDeploy();
+
 #endif /* INITSYSTEM_H_ */
