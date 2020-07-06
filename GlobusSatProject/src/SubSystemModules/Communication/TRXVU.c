@@ -31,6 +31,9 @@ int				g_idle_period = 300 ; // idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
+//ant open global variables
+char g_antOpen= 0;
+
 
 
 //setting trxvu idle off
@@ -139,24 +142,34 @@ int InitTrxvu()
 	}
 	vTaskDelay(100);
 
-	//Set Antenas addresses for both sides
-	ISISantsI2Caddress address;
-	address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-	address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
-
-	//initialize Antenas system
-	err=IsisAntS_initialize(&address,1);
+	// get ant open flag from fram
+	err=FRAM_read((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
 	if(err!=0)
 	{
-		printf("Error in the initialization of the Antennas: %d\n", err);
-		return err;
+		g_antOpen=0;
 	}
-#ifdef TESTING
-	else
+
+	if(g_antOpen==0)
 	{
-		printf("initialization of the Antennas succeeded\n");
+		//Set Antenas addresses for both sides
+		ISISantsI2Caddress address;
+		address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
+		address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+
+		//initialize Antenas system
+		err=IsisAntS_initialize(&address,1);
+		if(err!=0)
+		{
+			printf("Error in the initialization of the Antennas: %d\n", err);
+			return err;
+		}
+	#ifdef TESTING
+		else
+		{
+			printf("initialization of the Antennas succeeded\n");
+		}
+	#endif
 	}
-#endif
 
 	//Initialize TRXVU transmit lock
 	InitTxModule();
@@ -206,6 +219,15 @@ int InitTrxvu()
 		{
 			printf("Status: %d in getting the online command. \n", res);
 		}
+
+		if(g_antOpen==0)
+		{
+			//update ant open to true
+			g_antOpen=1;
+			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
+			printf("*****First Activation without Antenas deployed******\n");
+		}
+
 	}
 
 	//check idle timer and mute timer

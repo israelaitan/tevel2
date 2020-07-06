@@ -33,6 +33,10 @@
 #define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag
 #define FIRST_ACTIVATION_FLAG_SIZE		4			//<! length in bytes of FIRST_ACTIVATION_FLAG
 
+#define ANT_OPEN_FLAG_ADDR				0X4587		//<! is the ants open flag
+#define ANT_OPEN_FLAG_SIZE				4			//<! length of ants open flag
+
+
 #define MOST_UPDATED_SAT_TIME_ADDR		0x60		//<! this parameters saves the sat time to be read after resets
 #define MOST_UPDATED_SAT_TIME_SIZE		4			//<! size of the parameter in bytes
 
@@ -54,14 +58,10 @@
 #define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
 #define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
 
-#define BEACON_BITRATE_CYCLE_ADDR		0X4587		//<! saves the number of beacons with period of 3
-#define BEACON_BITRATE_CYCLE_SIZE		1			//<! length in bytes of BEACON_PERIOD
 
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes
 
-#define DELAYED_CMD_BUFFER_ADDR			0x8000		//<! starting address of the delayed command buffer
-#define DELAYED_CMD_BUFFER_LENGTH		50			//<! number of commands the buffer is capable of saving(self defined, can be changed)
 
 #define LAST_COMM_TIME_ADDR 			0X9485		//<! saves the last unix time at which communication has occured
 #define LAST_COMM_TIME_SIZE				4			//<! size of last communication time in bytes
