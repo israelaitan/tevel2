@@ -2,7 +2,7 @@
 #include <hal/Timing/Time.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 #include "GlobalStandards.h"
 #include "SatCommandHandler.h"
 
