@@ -36,6 +36,8 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_UPDATE_EPS_HEATER_VALUES = 0x16,
 	ACK_UPDATE_EPS_ALPHA = 0x17,
 
+	ACK_IDLE_ON = 0x18, //TODO: check the number
+	ACK_IDLE_OFF = 0x19, //TODO: check the number
 	ACK_MUTE = 0x8D,
 	ACK_UNMUTE = 0x8E,
 	ACK_ALLOW_TRANSPONDER = 0x8F,
@@ -47,7 +49,7 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_GENERIC_I2C_CMD = 0x93,
 	ACK_ARM_DISARM = 0x94,					//after changing arm state of the ants
 	ACK_REDEPLOY = 0x95,
-	ACK_RESET_DELAYED_CMD = 0x9E,
+	ACK_ANT_CANCEL_DEP = 0x9E,
 	ACK_FRAM_RESET = 0xA0,
 
 	ACK_PING = 0xAA,
@@ -63,7 +65,7 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	UNMUTE_TRXVU = 			0x88,	//0b10001000
 	TRXVU_IDLE_ON = 		0x87,	//TODO: change to correct address
 	TRXVU_IDLE_OFF = 		0x86,	//TODO: change to correct address
-	DUMP_SUBTYPE =			0x69,	//0b01101001
+	START_DUMP_SUBTYPE =    0x69,	//0b01101001
 	ABORT_DUMP_SUBTYPE= 	0x22,	//0b00100010
 	GET_BAUD_RATE = 		0x13,	//0b00010011
 	GET_BEACON_INTERVAL = 	0x23,	//0b00100011
