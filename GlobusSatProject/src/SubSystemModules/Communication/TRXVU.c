@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "GlobalStandards.h"
+#include "InitSystem.h"
 #include "TRXVU.h"
 #include "AckHandler.h"
 #include "ActUponCommand.h"
@@ -33,7 +34,8 @@ time_unix 		g_idle_start_time = 0;
 
 //ant open global variables
 char g_antOpen= 0;
-
+time_unix 		g_ants_last_dep_time = 0;
+int				g_ants_dep_period =30*60 ; //30 min
 
 
 //setting trxvu idle off
@@ -58,6 +60,25 @@ int SetIdleOff()
 		}
 	}
 	return err;
+}
+
+void HandleOpenAnts()
+{
+	if(g_antOpen == 0)
+	{
+		//if ants open period has passed
+		if (CheckExecutionTime(g_ants_last_dep_time, g_ants_dep_period)==TRUE)
+		{
+			// ants auto deploy
+			autoDeploy(&g_ants_last_dep_time);
+		}
+#ifdef TESTING
+		else
+		{
+			printf("ants end period not reached\n");
+		}
+#endif
+	}
 }
 
 // Checking if in idle state and if need to return back to regular state
@@ -232,6 +253,9 @@ int InitTrxvu()
 
 	//check idle timer and mute timer
 	HandleIdleAndMuteTime();
+
+	// open ant if not open
+    HandleOpenAnts();
 
 	//handle beacon
 	BeaconLogic();
