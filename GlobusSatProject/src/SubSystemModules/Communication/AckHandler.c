@@ -33,12 +33,16 @@ int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd,
 void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 		sat_packet_t *cmd, int err)
 {
+	ack_subtype_t ack;
+
 	if (err == 0) {
-		SendAckPacket(succ_subt, cmd, (unsigned char*) &err, sizeof(err));
+		ack = succ_subt;
 	}
 	else {
-		SendAckPacket(fail_subt, cmd, (unsigned char*) &err, sizeof(err));
+		ack = fail_subt;
 	}
+
+	SendAckPacket(ack, cmd, (unsigned char*) &err, sizeof(err));
 }
 
 void SendErrorMSG_IfError(ack_subtype_t subtype, sat_packet_t *cmd, int err)
