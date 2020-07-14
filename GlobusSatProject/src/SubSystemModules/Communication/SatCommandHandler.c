@@ -38,7 +38,9 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	char targetSat = 0;
 	err = memcpy(&targetSat,data + offset,sizeof(targetSat));
 	if (NULL == err)
+	{
 		return cmd_execution_error;
+	}
 	else if(targetSat!=8 && targetSat!=0)
 	{
 		printf("The online command is for target satellite: %d\n" , targetSat);
@@ -101,6 +103,7 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length,
 			return cmd_execution_error;
 		}
 	}
+	printf("Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal);
 	return cmd_command_succsess;
 }
 
