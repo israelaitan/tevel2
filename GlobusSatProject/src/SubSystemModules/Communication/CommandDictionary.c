@@ -52,6 +52,7 @@ int trxvu_command_router(sat_packet_t *cmd)
 
 	case GET_BEACON_INTERVAL:
 		err = CMD_GetBeaconInterval(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case SET_BEACON_INTERVAL:
@@ -60,14 +61,17 @@ int trxvu_command_router(sat_packet_t *cmd)
 		break;
 	case GET_TX_UPTIME:
 		err = CMD_GetTxUptime(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case GET_RX_UPTIME:
 		err = CMD_GetRxUptime(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case GET_NUM_OF_ONLINE_CMD:
 		err = CMD_GetNumOfOnlineCommands(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANT_SET_ARM_STATUS:
@@ -77,10 +81,12 @@ int trxvu_command_router(sat_packet_t *cmd)
 
 	case ANT_GET_ARM_STATUS:
 		err = CMD_AntGetArmStatus(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANT_GET_UPTIME:
 		err = CMD_AntGetUptime(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANT_CANCEL_DEPLOY:

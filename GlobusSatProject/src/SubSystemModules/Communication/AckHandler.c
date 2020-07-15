@@ -42,7 +42,10 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 		ack = fail_subt;
 	}
 
-	SendAckPacket(ack, cmd, (unsigned char*) &err, sizeof(err));
+	if (ack != ACK_NO_ACK)
+	{
+		SendAckPacket(ack, cmd, (unsigned char*) &err, sizeof(err));
+	}
 }
 
 void SendErrorMSG_IfError(ack_subtype_t subtype, sat_packet_t *cmd, int err)
