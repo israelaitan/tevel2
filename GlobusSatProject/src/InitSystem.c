@@ -243,6 +243,8 @@ int autoDeploy(time_unix *deploy_time)
 		printf("Failed Arming Side A\n");
 	}
 
+	//TODO: unarm antenas side A
+
 	// antenata auto deploy - sides B
 	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
 	if(res==0)
@@ -255,6 +257,8 @@ int autoDeploy(time_unix *deploy_time)
 		printf("Failed Arming Side B\n");
 	}
 
+	//TODO: unarm antenas side B
+
 	// update last deploy time
 	int err = Time_getUnixEpoch((unsigned int *)deploy_time);
 	if(0 != err)
@@ -263,7 +267,7 @@ int autoDeploy(time_unix *deploy_time)
 	}
 	else
 	{
-		FRAM_write(deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
+		FRAM_write((unsigned char*)deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 	}
 	return res;
 }
