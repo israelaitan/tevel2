@@ -12,6 +12,7 @@
 
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
+#include <hal/Drivers/I2C.h>
 
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
@@ -36,29 +37,33 @@
 
 #define TURN_TRANSPONDER_OFF FALSE
 #define TURN_TRANSPONDER_ON TRUE
+#define DEFAULT_TRANS_RSSI 200
+
+//global variables
+time_unix g_transp_end_time;
+Boolean g_transp_mode;
 
 int set_transonder_mode(Boolean mode)
 {
 	byte data[2];
 	data[0] = 0x38;
 	int err;
-	Boolean transponder_mode_flag;
+
 	if (mode)
 	{
 		printf("Transponder enabled\n");
 		data[1] = 0x02;
-		err = I2C_write(I2C_TRXVU_TC_ADDR, data, 2);
-		transponder_mode_flag = TRUE;
-		FRAM_write((unsigned char*)&transponder_mode_flag ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
 	}
 	else
 	{
 		printf("Transponder disabled\n");
 		data[1] = 0x01;
-		err =  I2C_write(I2C_TRXVU_TC_ADDR, data, 2);
-		transponder_mode_flag = TRUE;
-		FRAM_write((unsigned char*) &transponder_mode_flag ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
 	}
+
+	g_transp_mode = mode;
+	err =  I2C_write(I2C_TRXVU_TC_ADDR, data, 2);
+	FRAM_write((unsigned char*) &g_transp_mode ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+
 	return err;
 }
 
@@ -73,39 +78,80 @@ int set_transponder_RSSI(byte *param)
 	return err;
 }
 
-int transponder_logic(time_unix period)
+int CMD_turnOnTransponder(time_unix duration)
 {
 	int err;
-	time_unix turn_on_time;
 	byte rssiData[2];
-	err = Time_getUnixEpoch(&turn_on_time);
-	if (0 != err)
-	{
-		return err;
-	}
-	FRAM_write((unsigned char*) &turn_on_time ,TRANSPONDER_TURN_ON_TIME_ADRR, TRANSPONDER_TURN_ON_TIME_SIZE);
 
 	Boolean mute = GetMuteFlag();
 	if(!mute)
 	{
+		//turn off idle
+		CMD_SetIdleOff();
+
+		//turn on tarnsponder mode
 		err = set_transonder_mode(TURN_TRANSPONDER_ON);
 		if (0 != err)
 		{
 			return err;
 		}
-		for(;;)
+
+		//set RSSI
+		unsigned short temp = DEFAULT_TRANS_RSSI;
+		memcpy(rssiData, &temp, 2);
+		err = set_transponder_RSSI(rssiData);
+		if (0 != err)
 		{
-			unsigned short temp = DEFAULT_TRANS_RSSI; // TODO: change to 200
-			memcpy(rssiData, &temp, 2);
-			set_transponder_RSSI(rssiData);
-			Boolean stop_transponder = CheckExecutionTime(turn_on_time, period);
-			if (stop_transponder)
-			{
-				break;
-			}
+			CMD_turnOffTransponder();
+			return err;
 		}
-		err = set_transonder_mode(TURN_TRANSPONDER_OFF);
+
+		//Set transponder end time
+		err = Time_getUnixEpoch(&g_transp_end_time);
+		if (0 != err)
+		{
+			return err;
+		}
+
+		//add duration to current time
+		g_transp_end_time += duration;
+
+		FRAM_write((unsigned char*) &g_transp_end_time ,TRANSPONDER_TURN_ON_TIME_ADRR, TRANSPONDER_TURN_ON_TIME_SIZE);
+		printf("*Turned On Transponder until: %lu\n", (long unsigned int)g_transp_end_time);
 	}
+
 	return err;
 }
+
+
+int CMD_turnOffTransponder()
+{
+	g_transp_end_time = 0;
+	int err = set_transonder_mode(TURN_TRANSPONDER_OFF);
+	printf("*********************Setting Transponder to OFF\n");
+	return err;
+}
+
+Boolean getTransponderMode()
+{
+	return g_transp_mode;
+}
+
+Boolean checkEndTransponderMode()
+{
+	time_unix curr_tick_time = 0;
+	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
+	if (curr_tick_time > g_transp_end_time)
+	{
+		printf("Transponder End time reached\n");
+		return TRUE;
+	}
+	else
+	{
+		printf("Transponder End time NOT reached\n");
+		return FALSE;
+	}
+}
+
+
 

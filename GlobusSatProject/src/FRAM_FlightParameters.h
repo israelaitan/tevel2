@@ -47,11 +47,14 @@
 #define RESET_CMD_FLAG_ADDR				0x105		//<! the flag is raised whenever a restart is commissioned
 #define RESET_CMD_FLAG_SIZE				1			//<! size of the parameter in bytes
 
-#define DELAYED_CMD_FRAME_COUNT_ADDR	0X200		//<! Address where amount of frames in delayed buffer is held
-#define DELAYED_CMD_FRAME_COUNT_SIZE	1			//<! number of bytes describing the frame count of delayed buffer
-
 #define TRANS_ABORT_FLAG_ADDR			0x500		//<! transmission abort request flag
 #define TRANS_ABORT_FLAG_SIZE			1			//<! size of mute flag in bytes
+
+#define TRANSPONDER_STATE_ADDR			0x502		//TODO: Add address
+#define TRANSPONDER_STATE_SIZE			4
+
+#define TRANSPONDER_TURN_ON_TIME_ADRR	0x508		//TODO: Add address
+#define TRANSPONDER_TURN_ON_TIME_SIZE	4
 
 #define EPS_ALPHA_FILTER_VALUE_ADDR     0x550			//<! filtering value in the LPF formula
 #define EPS_ALPHA_FILTER_VALUE_SIZE     sizeof(float)	//<! size of double (alpha)
@@ -59,10 +62,8 @@
 #define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
 #define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
 
-
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes
-
 
 #define LAST_COMM_TIME_ADDR 			0X9485		//<! saves the last unix time at which communication has occured
 #define LAST_COMM_TIME_SIZE				4			//<! size of last communication time in bytes
@@ -77,5 +78,6 @@
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
 #define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
+
 
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */
