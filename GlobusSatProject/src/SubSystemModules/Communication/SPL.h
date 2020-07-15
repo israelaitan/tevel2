@@ -66,7 +66,7 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	TRXVU_IDLE_ON = 		0x87,	//TODO: change to correct address
 	TRXVU_IDLE_OFF = 		0x86,	//TODO: change to correct address
 	START_DUMP_SUBTYPE =    0x69,	//0b01101001
-	ABORT_DUMP_SUBTYPE= 	0x22,	//0b00100010
+	STOP_DUMP_SUBTYPE= 		0x22,	//0b00100010
 	GET_BAUD_RATE = 		0x13,	//0b00010011
 	GET_BEACON_INTERVAL = 	0x23,	//0b00100011
 	SET_BEACON_INTERVAL = 	0x24,	//0b00100100

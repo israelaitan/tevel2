@@ -25,13 +25,8 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_DUMP_START;
 		break;
 
-	case ABORT_DUMP_SUBTYPE:
+	case STOP_DUMP_SUBTYPE:
 		err = CMD_SendDumpAbortRequest(cmd);
-		ackType=ACK_DUMP_ABORT;
-		break;
-
-	case FORCE_ABORT_DUMP_SUBTYPE:
-		err = CMD_ForceDumpAbort(cmd);
 		ackType=ACK_DUMP_ABORT;
 		break;
 
@@ -97,6 +92,7 @@ int trxvu_command_router(sat_packet_t *cmd)
 		break;
 	}
 
+	//TODO: Not send ACK if no ack for command
 	//Send Acknowledge to earth that command was executed
 	SendErrorMSG(ACK_ERROR_MSG, ackType, cmd,err);
 	return err;
