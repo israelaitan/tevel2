@@ -35,7 +35,8 @@
 
 #define ANT_OPEN_FLAG_ADDR				0X4587		//<! is the ants open flag
 #define ANT_OPEN_FLAG_SIZE				4			//<! length of ants open flag
-
+#define LAST_ANT_DEP_TIME_ADDR			0X66		//<! saves the first time after satellites wakeup from reset
+#define LAST_ANT_DEP_TIME_SIZE			4			//<! size of the parameter in bytes
 
 #define MOST_UPDATED_SAT_TIME_ADDR		0x60		//<! this parameters saves the sat time to be read after resets
 #define MOST_UPDATED_SAT_TIME_SIZE		4			//<! size of the parameter in bytes
