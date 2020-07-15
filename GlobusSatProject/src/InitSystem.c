@@ -227,7 +227,7 @@ int StartTIME()
 }
 
 // antena auto deploy both sides
-int autoDeploy(time_unix *deploy_time)
+int autoDeploy()
 {
 	int res=0;
 	// antena auto deploy - sides A
@@ -260,14 +260,16 @@ int autoDeploy(time_unix *deploy_time)
 	//TODO: unarm antenas side B
 
 	// update last deploy time
-	int err = Time_getUnixEpoch((unsigned int *)deploy_time);
+	time_unix deploy_time;
+	int err = Time_getUnixEpoch((unsigned int *)&deploy_time);
 	if(0 != err)
 	{
 		printf("Time_getUnixEpoch failed to set ants last deploy time\n");
 	}
 	else
 	{
-		FRAM_write((unsigned char*)deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
+		setLastDeploymentTime(deploy_time);
+		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 	}
 	return res;
 }
@@ -288,8 +290,7 @@ int DeploySystem()
 
 
 		//Initialize the Antenas performed in trx init performing auto deploy
-		time_unix temp; //TODO remove temp
-		res = autoDeploy(&temp);
+		res = autoDeploy();
 	}
 	return res;
 }

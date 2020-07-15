@@ -38,4 +38,10 @@ int CMD_SetIdleOn();
  */
 int CMD_SetIdleOff();
 
+/*!
+ * @brief Set the last Antenas deployment time
+ * @params	time to set the global variable
+ */
+void setLastDeploymentTime(time_unix time);
+
 #endif

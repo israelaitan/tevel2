@@ -37,6 +37,10 @@ char g_antOpen= 0;
 time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period =30*60 ; //30 min
 
+void setLastDeploymentTime(time_unix time)
+{
+	g_ants_last_dep_time = time;
+}
 
 //setting trxvu idle off
 int SetIdleOff()
@@ -70,7 +74,7 @@ void HandleOpenAnts()
 		if (CheckExecutionTime(g_ants_last_dep_time, g_ants_dep_period)==TRUE)
 		{
 			// ants auto deploy
-			autoDeploy(&g_ants_last_dep_time);
+			autoDeploy();
 		}
 #ifdef TESTING
 		else
