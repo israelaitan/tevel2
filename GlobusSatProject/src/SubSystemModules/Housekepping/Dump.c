@@ -225,7 +225,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 	//printf("sending dump: %s", dump);
 
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
-			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);
+			(void* )dmp_pckt, configMAX_PRIORITIES - 2, &xDumpHandle);
 
 	return 0;
 }
