@@ -18,6 +18,7 @@
 #include "ActUponCommand.h"
 #include "SatCommandHandler.h"
 #include "TLM_management.h"
+#include "Transponder.h"
 
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
@@ -114,6 +115,16 @@ void HandleIdleAndMuteTime()
 	}
 }
 
+void HandleTransponderTime()
+{
+	if(getTransponderMode()==TURN_TRANSPONDER_ON)
+	{
+		if(checkEndTransponderMode()==TRUE)
+		{
+			CMD_turnOffTransponder();
+		}
+	}
+}
 
 // Initialize TRXVU component
 int InitTrxvu()
@@ -257,6 +268,9 @@ int InitTrxvu()
 
 	//check idle timer and mute timer
 	HandleIdleAndMuteTime();
+
+	//check transponder timer
+	HandleTransponderTime();
 
 	// open ant if not open
     HandleOpenAnts();
