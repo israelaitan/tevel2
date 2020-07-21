@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "CommandDictionary.h"
 #include "Beacon.h"
+#include "Transponder.h"
 
 int trxvu_command_router(sat_packet_t *cmd)
 {
@@ -92,6 +93,16 @@ int trxvu_command_router(sat_packet_t *cmd)
 	case ANT_CANCEL_DEPLOY:
 		err = CMD_AntCancelDeployment(cmd);
 		ackType=ACK_ANT_CANCEL_DEP;
+		break;
+
+	case TRANSPONDER_ON:
+		err = CMD_turnOnTransponder(cmd);
+		ackType=ACK_TRANSPONDER_ON;
+		break;
+
+	case TRANSPONDER_OFF:
+		err = CMD_turnOffTransponder(cmd);
+		ackType=ACK_TRANSPONDER_OFF;
 		break;
 
 	default:
