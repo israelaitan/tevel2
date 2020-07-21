@@ -35,13 +35,10 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Beacon.h"
 
-#define TURN_TRANSPONDER_OFF FALSE
-#define TURN_TRANSPONDER_ON TRUE
-#define DEFAULT_TRANS_RSSI 200
 
 //global variables
-time_unix g_transp_end_time;
-Boolean g_transp_mode;
+time_unix g_transp_end_time=0;
+Boolean g_transp_mode=TURN_TRANSPONDER_OFF;
 
 int set_transonder_mode(Boolean mode)
 {
@@ -51,7 +48,7 @@ int set_transonder_mode(Boolean mode)
 
 	if (mode)
 	{
-		printf("Transponder enabled\n");
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTransponder enabled\n");
 		data[1] = 0x02;
 	}
 	else
@@ -78,18 +75,22 @@ int set_transponder_RSSI(byte *param)
 	return err;
 }
 
-int CMD_turnOnTransponder(time_unix duration)
+int CMD_turnOnTransponder(sat_packet_t *cmd)
 {
 	int err;
 	byte rssiData[2];
+	time_unix duration;
 
 	Boolean mute = GetMuteFlag();
 	if(!mute)
 	{
+		//getting the duration
+		memcpy(&duration,cmd->data,sizeof(duration));
+
 		//turn off idle
 		CMD_SetIdleOff();
 
-		//turn on tarnsponder mode
+		//turn on transponder mode
 		err = set_transonder_mode(TURN_TRANSPONDER_ON);
 		if (0 != err)
 		{
@@ -128,7 +129,7 @@ int CMD_turnOffTransponder()
 {
 	g_transp_end_time = 0;
 	int err = set_transonder_mode(TURN_TRANSPONDER_OFF);
-	printf("*********************Setting Transponder to OFF\n");
+	printf("------------------------------------------Setting Transponder to OFF\n");
 	return err;
 }
 

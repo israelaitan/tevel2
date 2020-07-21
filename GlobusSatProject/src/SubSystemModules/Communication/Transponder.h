@@ -13,6 +13,10 @@
 #include "AckHandler.h"
 #include "SatCommandHandler.h"
 
+#define TURN_TRANSPONDER_OFF FALSE
+#define TURN_TRANSPONDER_ON TRUE
+#define DEFAULT_TRANS_RSSI 200
+
 
 /**
  * @brief		Set transponder mode using generic I2C command
@@ -33,7 +37,7 @@ int set_transponder_RSSI(byte* param);
  *@param[in]	the duration of ON state
  *@return		int indicating the error. 0 for success
  */
-int CMD_turnOnTransponder(time_unix duration);
+int CMD_turnOnTransponder(sat_packet_t *cmd);
 
 /**
  *@brief		Turn transponder mode OFF
