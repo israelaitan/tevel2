@@ -36,11 +36,12 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_UPDATE_EPS_HEATER_VALUES = 0x16,
 	ACK_UPDATE_EPS_ALPHA = 0x17,
 
-	ACK_IDLE_ON = 0x18, //TODO: check the number
-	ACK_IDLE_OFF = 0x19, //TODO: check the number
+	ACK_IDLE_ON = 0x18,
+	ACK_IDLE_OFF = 0x19,
 	ACK_MUTE = 0x8D,
 	ACK_UNMUTE = 0x8E,
-	ACK_ALLOW_TRANSPONDER = 0x8F,
+	ACK_TRANSPONDER_ON = 0x8F,
+	ACK_TRANSPONDER_OFF = 0x8C,
 
 	ACK_DUMP_START = 0x90,
 	ACK_DUMP_ABORT = 0x91,
@@ -85,8 +86,9 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	ANT_GET_UPTIME =		0xB3,	//0b10110011
 	ANT_CANCEL_DEPLOY = 	0xB7,	//0b10110111
 	FORCE_ABORT_DUMP_SUBTYPE = 0x33,//0b00110011
-	DELETE_DUMP_TASK = 0x44			//0b00100010
-
+	DELETE_DUMP_TASK = 0x44,		//0b00100010
+	TRANSPONDER_ON = 0x45,
+	TRANSPONDER_OFF = 0x46
 }trxvu_subtypes_t;
 
 
