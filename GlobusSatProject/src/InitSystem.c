@@ -343,6 +343,10 @@ int InitSubsystems()
 	if (err!=0)
 		return err;
 
+	err = InitTelemetryCollector();
+	//TODO: log if error
+
+
 	// Initialize EPS
 	err=EPS_Init();
 	if (err!=0)

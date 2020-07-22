@@ -34,6 +34,8 @@ typedef enum{
 #define NUMBER_OF_TELEMETRIES 14	///< number of telemetries the satellite saves
 
 #define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5			///<
+
+int InitTelemetryCollector();
 /*!
  * @brief copies the corresponding filename into a buffer.
  * @return	-1 on NULL input

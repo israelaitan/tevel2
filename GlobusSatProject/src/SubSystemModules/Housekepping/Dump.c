@@ -110,11 +110,9 @@ void DumpTask(void *args) {
 	}
 	f_enterFS();
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
-#ifdef TESTING
-	printf("dump: type: %u \n",task_args->dump_type);
-	printf("dump: start time: %lu \n", (long unsigned int)task_args->t_start);
-	printf("dump: end time: %lu \n", (long unsigned int)task_args->t_end);
-#endif
+	logg(info, "dump: type: %u \n", task_args->dump_type);
+	logg(info, "dump: start time: %lu \n", (long unsigned int)task_args->t_start);
+	logg(info, "dump: end time: %lu \n", (long unsigned int)task_args->t_end);
 	sat_packet_t dump_tlm = { 0 };
 	int err = 0;
 	int availFrames = 0;
