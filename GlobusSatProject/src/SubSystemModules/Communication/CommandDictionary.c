@@ -90,11 +90,6 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
-	case ANT_CANCEL_DEPLOY:
-		err = CMD_AntCancelDeployment(cmd);
-		ackType=ACK_ANT_CANCEL_DEP;
-		break;
-
 	case TRANSPONDER_ON:
 		err = CMD_turnOnTransponder(cmd);
 		ackType=ACK_TRANSPONDER_ON;
@@ -202,6 +197,56 @@ int managment_command_router(sat_packet_t *cmd)
 	case ANTS_SIDE_B_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_ant_SideB);
 		break;
+
+	case ANTS_CANCEL_DEPLOY_SUBTYPE:
+		err = CMD_AntCancelDeployment(cmd);
+		ackType=ACK_ANT_CANCEL_DEP;
+		break;
+
+	case ANTS_AUTO_DEPLOY_SUBTYPE:
+		err = CMD_AntennaDeploy(cmd);
+		ackType=ACK_ANT_AUTO_DEP;
+		break;
+
+	case I2C_GEN_CMD_SUBTYPE:
+		err = CMD_GenericI2C(cmd);
+		ackType=ACK_GENERIC_I2C_CMD;
+		break;
+
+	case FRAM_READ_SUBTYPE:
+		err = CMD_FRAM_ReadAndTransmitt(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case FRAM_WRITE_SUBTYPE:
+			err = CMD_FRAM_WriteAndTransmitt(cmd);
+			ackType=ACK_NO_ACK;
+			break;
+
+	case FRAM_RESTART_SUBTYPE:
+			err = CMD_FRAM_Restart(cmd);
+			ackType=ACK_FRAM_RESET;
+			break;
+
+	case UPDATE_SAT_TIME_SUBTYPE:
+			err = CMD_UpdateSatTime(cmd);
+			ackType=ACK_UPDATE_TIME;
+			break;
+
+	case GET_SAT_TIME_SUBTYPE:
+			err = CMD_GetSatTime(cmd);
+			ackType=ACK_NO_ACK ;
+			break;
+
+	case GET_SAT_UP_TIME_SUBTYPE:
+			err = CMD_GetSatUptime(cmd);
+			ackType=ACK_NO_ACK;
+			break;
+
+	case TLM_SET_COLL_CYCLE_SUBTYPE:
+			err =CMD_SetTLM_CollectionCycle(cmd);
+			ackType=ACK_TLM_SET_COLL_CYCLE;
+			break;
 
 	default:
 		break;
