@@ -44,6 +44,8 @@
 #define NUMBER_OF_RESETS_ADDR			0x64		//<! counts how many restarts did the satellite endure
 #define NUMBER_OF_RESETS_SIZE			2			//<! size of the parameter in bytes
 
+#define NUMBER_OF_CMD_RESETS_ADDR		0x160		//<! counts how many restarts did the satellite endure from ground command
+#define NUMBER_OF_CMD_RESETS_SIZE		4			//<! size of the parameter in bytes
 #define RESET_CMD_FLAG_ADDR				0x105		//<! the flag is raised whenever a restart is commissioned
 #define RESET_CMD_FLAG_SIZE				1			//<! size of the parameter in bytes
 
@@ -78,6 +80,17 @@
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
 #define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
+
+
+
+
+
+#define DEL_OLD_FILES_NUM_DAYS_ADDR		0X210		//<! Address where amount of frames in delayed buffer is held
+#define DEL_OLD_FILES_NUM_DAYS_SIZE		4			//<! number of bytes describing the frame count of delayed buffer
+
+
+
+
 
 
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */

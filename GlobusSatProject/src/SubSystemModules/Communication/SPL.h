@@ -8,14 +8,16 @@ typedef enum __attribute__ ((__packed__)) spl_command_type_t {
 	telemetry_cmd_type,
 	filesystem_cmd_type,
 	managment_cmd_type,
-	ack_type
+	ack_type,// 5
+	dump_type
 }spl_command_type;
 
-//TODO: set all sub-types to be different from one another
+
 
 typedef enum __attribute__ ((__packed__)) ack_subtype_t
 {
 	ACK_RECEIVE_COMM = 		0x00,			// when receive any packet
+	ACK_COMD_EXEC	 = 		0x01,			// when executed any packet / SPL command
 
 	ACK_RESET_WAKEUP = 		0x7F,			// after waking up from reset
 
@@ -50,8 +52,11 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_GENERIC_I2C_CMD = 0x93,
 	ACK_ARM_DISARM = 0x94,					//after changing arm state of the ants
 	ACK_REDEPLOY = 0x95,
+	ACK_RESET_DELAYED_CMD = 0x9E,			//maybe we dont need
 	ACK_ANT_CANCEL_DEP = 0x9E,
 	ACK_FRAM_RESET = 0xA0,
+
+	ACK_DELETE_TLM = 0xC0,					// after deleting TLM file(s)
 
 	ACK_PING = 0xAA,
 	ACK_UNKNOWN_SUBTYPE = 0xBB,				//when the given subtype is unknown
@@ -65,8 +70,8 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	BEACON_SUBTYPE =		0x01,	//0b00000001
 	MUTE_TRXVU = 			0x11,	//0b00010001
 	UNMUTE_TRXVU = 			0x88,	//0b10001000
-	TRXVU_IDLE_ON = 		0x87,	//TODO: change to correct address
-	TRXVU_IDLE_OFF = 		0x86,	//TODO: change to correct address
+	TRXVU_IDLE_ON = 		0x87,	
+	TRXVU_IDLE_OFF = 		0x86,	
 	START_DUMP_SUBTYPE =    0x69,	//0b01101001
 	STOP_DUMP_SUBTYPE= 		0x22,	//0b00100010
 	GET_BAUD_RATE = 		0x13,	//0b00010011
@@ -113,7 +118,14 @@ typedef enum __attribute__ ((__packed__)) management_subtypes_t
 	TRXVU_SOFT_RESET_SUBTYPE =	0xC3,		//0b11000011
 	TRXVU_HARD_RESET_SUBTYPE = 	0x3C,		//0b00111100
 	EPS_RESET_SUBTYPE =			0xBB,		//0b10111011
-	FS_RESET_SUBTYPE =			0xCC		//0b11001100
+	FS_RESET_SUBTYPE =			0xCC,		//0b11001100
+	UPDATE_SAT_TIME =           0xDD,       //0b?11011101?
+	GENERIC_I2C_CMD =           0xDF,       //0b?11011111?
+	RESET_COMPONENT =           0xDE,       //0b?11011110
+	FRAM_WRITE_AND_TRANSMIT =   0xE0,       //0b11100000
+	FRAM_READ_AND_TRANSMIT =    0xE1,
+	FRAM_RESTART =    			0xE2,
+	GET_SAT_UPTIME =    		0xE3
 }management_subtypes_t;
 //-----------------
 

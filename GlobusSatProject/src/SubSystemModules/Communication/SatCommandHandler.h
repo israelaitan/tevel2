@@ -3,9 +3,15 @@
 #define SATCOMMANDS_H_
 
 #define MAX_COMMAND_DATA_LENGTH 200 ///< maximum AX25 data field available for downlink
+#define IMG_CHUNK_SIZE 50 //190 // leave room for chunk number and more
+
+//#define FRAM_MAX_ADDRESS 539216400
 
 //<! how many command can be saved in the buffer
 #define MAX_NUM_OF_DELAYED_CMD (100)
+#define YCUBE_SAT_ID	2
+#define ALL_SAT_ID 		0
+
 
 typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 	cmd_command_succsess = 0,				///< a successful operation. no errors

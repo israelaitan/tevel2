@@ -123,7 +123,7 @@ int eps_command_router(sat_packet_t *cmd)
 	switch (cmd->cmd_subtype)
 	{
 	case 0:
-		err = UpdateAlpha(*(float*)cmd->data);
+		err = UpdateAlpha(cmd);
 		SendErrorMSG(ACK_ERROR_MSG, ACK_UPDATE_EPS_ALPHA,cmd, err);
 		break;
 

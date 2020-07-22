@@ -3,6 +3,14 @@
 
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
+typedef struct __attribute__ ((__packed__))
+{
+	sat_packet_t *cmd;
+	unsigned short dump_type;
+	time_unix t_start;
+	time_unix t_end;
+} dump_arguments_t;
+
 
 int InitDump();
 
