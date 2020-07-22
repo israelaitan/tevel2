@@ -15,6 +15,7 @@
 
 int index = 0;
 char logBuffer[LOG_BUFFER_SIZE];
+char errorMsg[80];
 
 void logg(LogLevel level, char* msg) {
 #ifdef TESTING
@@ -41,7 +42,15 @@ void logg(LogLevel level, char* msg) {
     index += size;
 }
 
+void loggError(char* msg, int error) {
+	sprintf(errorMsg, "ERROR: in %s res=%d\n", msg, error);
+	logg(error, errorMsg);
+}
 
+void loggInfo(char* msg) {
+	sprintf(errorMsg, "INFO: %s\n", msg);
+	logg(info, errorMsg);
+}
 
 
 

@@ -9,7 +9,7 @@
 #define LOG_H_
 
 #define LOG_BUFFER_SIZE 4096
-#define CURR_LOG_LEVEL 5
+#define CURR_LOG_LEVEL 3
 
 typedef enum _LogLevel {
 	all,
@@ -21,9 +21,7 @@ typedef enum _LogLevel {
 	fatal
 } LogLevel;
 
-//LogLevel currLogLevel = error;
-
-void logg(LogLevel level, char* msg);
-
+void loggError(char* msg, int error);
+void loggInfo(char* msg);
 
 #endif /* LOG_H_ */
