@@ -247,6 +247,7 @@ FileSystemResult c_fileReset(char* c_file_name)
 
 FileSystemResult c_fileWrite(char* c_file_name, void* element)
 {
+	//don't logg here to prevent cyclic reading
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	F_FILE *file;
@@ -257,18 +258,14 @@ FileSystemResult c_fileWrite(char* c_file_name, void* element)
 		return FS_NOT_EXIST;
 	int index_current = getFileIndex(c_file.creation_time, curr_time);
 	get_file_name_by_index(c_file_name,index_current, curr_file_name);
-	//int error = f_enterFS();
-	//(void)error;
-	//check_int("c_fileWrite, f_enterFS", error);
 	file = f_open(curr_file_name,"a+");
+	if (!file)
+		return FS_FAIL;
 	writewithEpochtime(file,element,c_file.size_of_element,curr_time);
 	c_file.last_time_modified= curr_time;
 	if(FRAM_write((unsigned char *)&c_file,addr,sizeof(C_FILE))!=0)//update last written
-	{
 		return FS_FRAM_FAIL;
-	}
 	f_close(file);
-	//f_releaseFS();
 	return FS_SUCCSESS;
 }
 

@@ -22,6 +22,7 @@
 
 //	---log
 #define FILENAME_LOG_TLM			    "log"
+#define FILENAME_LOG_BCKP_TLM			"logBckp"
 
 typedef enum {
 	tlm_wod,
@@ -36,6 +37,7 @@ typedef enum {
 	tlm_rx_revc,
 	tlm_rx_frame,
 	tlm_antenna,
-	tlm_log
+	tlm_log,
+	tlm_log_bckp
 }tlm_type;
 #endif /* TELEMETRYFILES_H_ */

@@ -66,6 +66,9 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_log:
 		strcpy(filename,FILENAME_LOG_TLM);
 		break;
+	case tlm_log_bckp:
+		strcpy(filename,FILENAME_LOG_BCKP_TLM);
+		break;
 	default:
 		return -2;
 	}
@@ -81,7 +84,7 @@ void TelemetryCollectorLogic()
 		#ifdef TESTING
 	 	 	 printf("TelemetrySaveEPS\n");
 		#endif
-		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[eps_tlm]));
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[eps_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){
@@ -89,7 +92,7 @@ void TelemetryCollectorLogic()
 		#ifdef TESTING
 	 	 	 printf("TelemetrySaveTRXVU\n");
 		#endif
-		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[trxvu_tlm]));
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[trxvu_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[ant_tlm],tlm_save_periods[ant_tlm])){
@@ -97,7 +100,7 @@ void TelemetryCollectorLogic()
 		#ifdef TESTING
 	 	 	 printf("TelemetrySaveANT\n");
 		#endif
-		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[ant_tlm]));
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[ant_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm],tlm_save_periods[solar_panel_tlm])){
@@ -105,7 +108,7 @@ void TelemetryCollectorLogic()
 		#ifdef TESTING
 			 printf("TelemetrySaveSolarPanels\n");
 		#endif
-		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[solar_panel_tlm]));
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[wod_tlm],tlm_save_periods[wod_tlm])){
@@ -113,7 +116,7 @@ void TelemetryCollectorLogic()
 		#ifdef TESTING
 			 printf("TelemetrySaveWOD\n");
 		#endif
-		Time_getUnixEpoch((unsigned int *)(tlm_last_save_time[wod_tlm]));
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
 
 }
@@ -158,9 +161,11 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 
-	//-- LOG file
+	//-- LOG files
 	res = c_fileCreate(FILENAME_LOG_TLM, LOG_BUFFER_SIZE);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
+	res = c_fileCreate(FILENAME_LOG_BCKP_TLM, LOG_BUFFER_SIZE);
+	SAVE_FLAG_IF_FILE_CREATED(tlm_log_bckp);
 }
 
 void TelemetrySaveEPS()

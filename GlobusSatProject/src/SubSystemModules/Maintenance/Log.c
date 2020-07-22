@@ -14,9 +14,7 @@
 #include "TLM_management.h"
 
 int index = 0;
-char logBuffer[CURR_LOG_LEVEL];
-
-//TODO: consider lowering log level automatically after error
+char logBuffer[LOG_BUFFER_SIZE];
 
 void logg(LogLevel level, char* msg) {
 #ifdef TESTING
@@ -24,12 +22,18 @@ void logg(LogLevel level, char* msg) {
 #endif
 	if (CURR_LOG_LEVEL > level)
 		return;
+	if (index == 0)
+		memset(logBuffer, 0, LOG_BUFFER_SIZE);
 	time_unix time;
 	Time_getUnixEpoch(&time);
     int size = sizeof(time) + strlen(msg);
+    FileSystemResult res = FS_SUCCSESS;
     if ((index + size) < LOG_BUFFER_SIZE ) {
-    	c_fileWrite(FILENAME_LOG_TLM, logBuffer);
+    	res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
+    	if (res == FS_FAIL)//handle write fails due to concurrent dump
+    		c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
     	index = 0;
+    	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     }
     memcpy(logBuffer + index, &time, sizeof(time));
     index += sizeof(time);
