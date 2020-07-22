@@ -19,7 +19,7 @@
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
-
+#include "SubSystemModules/Maintenance/Log.h"
 
 typedef struct __attribute__ ((__packed__))
 {
@@ -166,9 +166,8 @@ void DumpTask(void *args) {
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
 		AssembleCommand(buffer, currPacketSize,(char) START_DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i, 8, &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
-#ifdef TESTING
-		printf("dump: packet sent id = %u  ord = %u availFrames = %d \n", task_args->cmd->ID, i, availFrames);
-#endif
+
+		logg(info, "dump: packet sent id = %u  ord = %u availFrames = %d \n", task_args->cmd->ID, i, availFrames);
 		if (err) {
 #ifdef TESTING
 			printf("dump: did not finish successfully: error transmit=%d\n", err);

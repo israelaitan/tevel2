@@ -22,6 +22,7 @@ typedef enum _LogLevel {
 	fatal
 } LogLevel;
 
+void logg(LogLevel level, char *fmt, ...);
 void loggError(char* msg, int error);
 void loggInfo(char* msg);
 

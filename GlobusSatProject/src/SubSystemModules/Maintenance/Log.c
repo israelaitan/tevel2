@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "Log.h"
 #include <hal/Timing/Time.h>
 #include "SubSystemModules/Housekepping/TelemetryFiles.h"
@@ -15,14 +16,12 @@
 
 int index = 0;
 char logBuffer[LOG_BUFFER_SIZE];
-char errorMsg[80];
+char logMsg[80];
 
-void logg(LogLevel level, char* msg) {
+void _logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif
-	if (CURR_LOG_LEVEL > level)
-		return;
 	if (index == 0)
 		memset(logBuffer, 0, LOG_BUFFER_SIZE);
 	time_unix time;
@@ -42,14 +41,28 @@ void logg(LogLevel level, char* msg) {
     index += size;
 }
 
-void loggError(char* msg, int error) {
-	sprintf(errorMsg, "ERROR: in %s res=%d\n", msg, error);
-	logg(error, errorMsg);
+void logg(LogLevel level, char *fmt, ...) {
+	if (CURR_LOG_LEVEL > level)
+			return;
+	va_list argptr;
+	va_start(argptr, fmt);
+	vsprintf(logMsg, fmt, argptr);
+	va_end(argptr);
+	_logg(logMsg);
+}
+
+void loggError(char* msg, int err) {
+	if (CURR_LOG_LEVEL > error)
+			return;
+	sprintf(logMsg, "ERROR: in %s res=%d\n", msg, err);
+	_logg(logMsg);
 }
 
 void loggInfo(char* msg) {
-	sprintf(errorMsg, "INFO: %s\n", msg);
-	logg(info, errorMsg);
+	if (CURR_LOG_LEVEL > info)
+			return;
+	sprintf(logMsg, "INFO: %s\n", msg);
+	_logg(logMsg);
 }
 
 
