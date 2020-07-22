@@ -159,6 +159,14 @@ int managment_command_router(sat_packet_t *cmd)
 		CMD_ResetComponent(reset_filesystem);
 		break;
 
+	case ANTS_SIDE_A_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_ant_SideA);
+		break;
+
+	case ANTS_SIDE_B_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_ant_SideB);
+		break;
+
 	default:
 		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd,NULL,0);
 		break;
