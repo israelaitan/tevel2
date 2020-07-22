@@ -4,11 +4,14 @@
 #include "GlobalStandards.h"
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
+#include <satellite-subsystems/IsisSolarPanelv2.h>
+#include "SubSystemModules/PowerManagment/EPS.h"
 
-//TODO: finish WOD telemetry according to requirements... TRX TLM...
+#define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5
+
+
 typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 {
-	time_unix sat_time;				///< current Unix time of the satellites clock [sec]
 	voltage_t vbat;					///< the current voltage on the battery [mV]
 	voltage_t volt_5V;				///< the current voltage on the 5V bus [mV]
 	voltage_t volt_3V3;				///< the current voltage on the 3V3 bus [mV]
@@ -17,35 +20,31 @@ typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 	current_t electric_current;		///< the up-to-date electric current of the battery [mA]
 	current_t current_3V3;			///< the up-to-date 3.3 Volt bus current of the battery [mA]
 	current_t current_5V;			///< the up-to-date 5 Volt bus current of the battery [mA]
-
+	temp_t mcu_temp; 				/*!< Measured temperature provided by a sensor internal to the MCU in raw form */
+	temp_t bat_temp; 				/*!< 2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack. */
+	int32_t solar_panels[NUMBER_OF_SOLAR_PANELS]; // temp of each solar panel
+	time_unix sat_time;				///< current Unix time of the satellites clock [sec]
 	unsigned int free_memory;		///< number of bytes free in the satellites SD [byte]
 	unsigned int corrupt_bytes;		///< number of currpted bytes in the memory	[bytes]
-	unsigned short number_of_resets;///< counts the number of resets the satellite has gone through [#]
+	unsigned int number_of_resets;///< counts the number of resets the satellite has gone through [#]
+	unsigned int num_of_cmd_resets;///< counts the number of resets the satellite has gone through [#]
 } WOD_Telemetry_t;
 
-typedef enum{
-	eps_tlm,
-	trxvu_tlm,
-	ant_tlm,
-	solar_panel_tlm,
-	wod_tlm
-}subsystem_tlm;
 
-#define NUMBER_OF_TELEMETRIES 10	///< number of telemetries the satellite saves
-#define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5			///<
-/*!
- * @brief copies the corresponding filename into a buffer.
- * @return	-1 on NULL input
- * 			-2 on unknown  tlm_type
+typedef struct solar_tlm { int32_t values[ISIS_SOLAR_PANEL_COUNT]; } solar_tlm_t;
+
+/**
+ * get all tlm save time periods from FRAM
  */
-int GetTelemetryFilenameByType(tlm_type tlm_type,char filename[MAX_F_FILE_NAME_SIZE]);
+void InitSavePeriodTimes();
 
-
-/*!
- * @brief Creates all telemetry files,
- * @param[out]	tlms_created states whether the files were created successful
+/**
+ * set a new periodTime
  */
-void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES]);
+int CMD_SetTLMPeriodTimes(sat_packet_t *cmd);
+
+
+int CMD_GetTLMPeriodTimes(sat_packet_t *cmd);
 
 /*!
  * @brief saves all telemetries into the appropriate TLM files
@@ -68,7 +67,7 @@ void TelemetrySaveTRXVU();
 void TelemetrySaveANT();
 
 /*!
- *  @brief saves current solar panel telemetry into file
+ *  @brief saves current solar panel telemetry (temparture of each panel) into file
  */
 void TelemetrySaveSolarPanels();
 

@@ -1,11 +1,12 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <freertos/task.h>
+#include <hcc/api_fat.h>
 
 #include <hal/Timing/Time.h>
 
 #include "GlobalStandards.h"
-
+#include "SubSystemModules/HouseKepping/TelemetryFiles.h"
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
 
@@ -16,6 +17,10 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "TLM_management.h"
 #include "Maintenance.h"
+#include "utils.h"
+#include <math.h>
+
+
 
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
@@ -75,6 +80,15 @@ int WakeupFromResetCMD()
 	unsigned int num_of_resets = 0;
 	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
+	// first incfease the number of total resets
+	FRAM_read((unsigned char*) &num_of_resets,
+	NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	num_of_resets++;
+
+	FRAM_write((unsigned char*) &num_of_resets,
+	NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+
+	// if we came back from a reset command we got from ground station, increase the number of cmd resets
 	if (reset_flag) {
 		time_unix curr_time = 0;
 		Time_getUnixEpoch((unsigned int *)&curr_time);
@@ -86,11 +100,11 @@ int WakeupFromResetCMD()
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
 		FRAM_read((unsigned char*) &num_of_resets,
-		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 		num_of_resets++;
 
 		FRAM_write((unsigned char*) &num_of_resets,
-		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 		if (0 != err) {
 			return err;
 		}
@@ -118,7 +132,7 @@ Boolean IsGroundCommunicationWDTKick()
 
 	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
-	//TODO: if current_time - last_comm_time < 0
+
 	if (current_time - last_comm_time >= wdt_kick_thresh) {
 		return TRUE;
 	}
@@ -141,33 +155,68 @@ time_unix GetGsWdtKickTime()
 	return no_comm_thresh;
 }
 
+
+int DeleteOldFiles(int minFreeSpace){
+	// check how much free space we have in the SD
+	FN_SPACE space = { 0 };
+	int drivenum = f_getdrive();
+
+	// get the free space of the SD card
+
+	if (logError(f_getfreespace(drivenum, &space) ,"DeleteOldFiels-f_getfreespace")) return -1;
+
+	// if needed, clean old files
+	if (space.free < minFreeSpace){
+		Time theDay;
+		theDay.year = 20;
+		theDay.date = 1;
+		theDay.month = 1;
+		int numOfDays = 0;
+		//read the last numOfDays from FRAM
+		FRAM_read((unsigned char*) &numOfDays,
+		DEL_OLD_FILES_NUM_DAYS_ADDR, DEL_OLD_FILES_NUM_DAYS_SIZE);
+
+		while (numOfDays < (365*5)){ // just in case that we won't get into endless loop, stop after 5 years
+			int err = deleteTLMFile(tlm_wod,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_antenna,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_eps,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_eps_eng_cdb,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_eps_eng_mb,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_eps_raw_cdb,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_eps_raw_mb,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_log,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_rx,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_rx_frame,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_solar,theDay,numOfDays);
+			err *= deleteTLMFile(tlm_tx,theDay,numOfDays);
+			// if all files were found & deleted -> break
+			// if all files were not found -> don't break, move to next day
+			// if found some but not all -> break
+			if(err != pow(F_ERR_NOTFOUND,12)){
+				break;
+			}
+			numOfDays++;
+		}
+
+		//write the numOfDays into FRAM
+		FRAM_write((unsigned char*) &numOfDays,
+		DEL_OLD_FILES_NUM_DAYS_ADDR, DEL_OLD_FILES_NUM_DAYS_SIZE);
+
+	}
+	
+	return 0;
+}
+
+
 void Maintenance()
 {
 	SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR,
 	MOST_UPDATED_SAT_TIME_SIZE);
 
-	//TODO: do error log file
-	WakeupFromResetCMD();
+	//logError(IsFS_Corrupted());-> we send corrupted bytes over beacon, no need to log in error file all the time
 
-	if (IsFS_Corrupted()) {
-		//TODO: something
-#ifdef TESTING
-		printf("FS is corrupted\n");
-#endif
-	}
+	logError(IsGroundCommunicationWDTKick(),"Maintenance-IsGroundCommunicationWDTKick");
 
-	if (IsGroundCommunicationWDTKick()) {
-#ifdef TESTING
-		printf("GS was kicked. now restarting...\n");
-		vTaskDelay(5000);
-#endif
-		restart();
-	}
+	DeleteOldFiles(MIN_FREE_SPACE);
 
-	//TODO: Add Transponder end Logic:
-	// -Check if in Transponder mode,
-	// - if so, check if transponder mode ended
-	// - if so, turn off transponder
-
-	//TODO: if(current_time < FRAM_sat_time) maybe update 'sat_time' to be 'first_wakeup_'
 }

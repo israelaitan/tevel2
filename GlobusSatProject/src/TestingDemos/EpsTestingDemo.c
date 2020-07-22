@@ -129,7 +129,7 @@ Boolean TestGetThreshVoltages()
 	return TRUE;
 }
 
-Boolean TestUpdateAlpha()
+/*Boolean TestUpdateAlpha()
 {
 	int err = 0;
 	printf("Updating Alpha to be '0.66666'");
@@ -150,7 +150,7 @@ Boolean TestUpdateAlpha()
 		printf("Successfully read Alpha value using 'GetAlpha', alpha = %f",alpha);
 	}
 	return TRUE;
-}
+}*/
 
 Boolean TestGetAlpha()
 {

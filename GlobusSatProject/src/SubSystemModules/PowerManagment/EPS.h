@@ -4,15 +4,19 @@
  * 			the satellite and switching on and off power switches(5V, 3V3)
  * @see		inspect logic flowcharts thoroughly in order to write the code in a clean manner.
  */
+#ifndef EPS_H_
+#define EPS_H_
 
 #include "GlobalStandards.h"
 #include "EPSOperationModes.h"
+#include "SubSystemModules/Communication/SatCommandHandler.h"
+#include <stdint.h>
 
 /*
  	 	 	 	  ______
 			  ___|		|___
  	 	 	 |				|
- 	 	 	 |	 FULL MODE	|
+ 	 	 	 |	FULL MODE	|
  	 	 	 |- - - - - - -	|	-> FULL UP = 7400
  	 	 	 |- - - - - - - |	-> FULL DOWN = 7300
  	 	 	 |				|
@@ -20,15 +24,16 @@
  	 	 	 |- - - - - - -	|	-> CRUISE UP = 7200
  	 	 	 |- - - - - - - |	-> CRUISE DOWN = 7100
  	 	 	 |				|
- 	 	 	 |	 SAFE MODE	|
+ 	 	 	 |	SAFE MODE	|
  	 	 	 |- - - - - - -	| 	-> SAFE UP = 6600
  	 	 	 |- - - - - - - |	-> SAFE DOWN = 6500
  	 	 	 |				|
- 	 	 	 |	 CRITICAL	|
+ 	 	 	 |	CRITICAL	|
  	 	 	 |______________|
  */
-#define DEFAULT_ALPHA_VALUE 0.95
+#define DEFAULT_ALPHA_VALUE 0.3
 
+#define NUMBER_OF_SOLAR_PANELS			6
 #define NUMBER_OF_THRESHOLD_VOLTAGES 	6 		///< first 3 are charging voltages, last 3 are discharging voltages
 #define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6500, (voltage_t)7100, (voltage_t)7300,	 \
 										  (voltage_t)6600, (voltage_t)7200, (voltage_t)7400}
@@ -53,15 +58,20 @@ typedef union __attribute__ ((__packed__)){
 		voltage_t Vup_full;
 	}fields;
 }EpsThreshVolt_t;
-
+typedef union __attribute__ ((__packed__)){
+struct {
+	int16_t H1_MIN;
+	int16_t H1_MAX;
+	int16_t H2_MIN;
+	int16_t H2_MAX;
+	int16_t H3_MIN;
+	int16_t H3_MAX;
+}value;
+}HeaterValues;
 /*!
  * @brief initializes the EPS subsystem.
  * @return	0 on success
- * 			-1 on EPS init error
- * 			-2 on Solar Panel init error
- * 			-3 on EPS threshold FRAM read error
- * 			-4 on EPS alpha FRAM read error
- * @note if FRAM read error than use default values of 'alpha' and 'eps_threshold_voltages'
+ * 			-1 on failure of init
  */
 int EPS_Init();
 
@@ -69,7 +79,7 @@ int EPS_Init();
  * @brief EPS logic. controls the state machine of which subsystem
  * is on or off, as a function of only the battery voltage
  * @return	0 on success
- *  		Error code according to <hal/errors.h>
+ * 			-1 on failure setting state of channels
  */
 int EPS_Conditioning();
 
@@ -98,7 +108,7 @@ int UpdateThresholdVoltages(EpsThreshVolt_t *thresh_volts);
  * 			-1 on NULL input array
  * 			-2 on FRAM read errors
  */
-int GetThresholdVoltages(EpsThreshVolt_t *thresh_volts);
+int GetThresholdVoltages(EpsThreshVolt_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]);
 
 /*!
  * @brief getting the smoothing factor (alpha) from the FRAM.
@@ -118,7 +128,7 @@ int GetAlpha(float *alpha);
  * 			-2 on invalid alpha
  * @see LPF- Low Pass Filter at wikipedia: https://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
  */
-int UpdateAlpha(float new_alpha);
+int UpdateAlpha(sat_packet_t *cmd);
 
 /*!
  * @brief setting the new voltage smoothing factor (alpha) to be the default value.
@@ -136,4 +146,9 @@ int RestoreDefaultAlpha();
  */
 int RestoreDefaultThresholdVoltages();
 
+int CMDGetHeaterValues(sat_packet_t *cmd);
 
+int CMDSetHeaterValues(sat_packet_t *cmd);
+
+
+#endif

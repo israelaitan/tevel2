@@ -8,10 +8,9 @@
 #include <hcc/api_fat.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "TLM_management.h"
 #include "GlobalStandards.h"
 #include "DUMP.h"
-#include "TLM_management.h"
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Communication/ActUponCommand.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
@@ -21,13 +20,6 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 
 
-typedef struct __attribute__ ((__packed__))
-{
-	sat_packet_t *cmd;
-	unsigned short dump_type;
-	time_unix t_start;
-	time_unix t_end;
-} dump_arguments_t;
 
 xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
@@ -124,9 +116,9 @@ void DumpTask(void *args) {
 	unsigned char * buffer = NULL ;//add size
 	int size_of_buffer = 0;
 	int num_of_tlm_elements_read = 0;
-	char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
+	char filename[MAX_FILE_NAME_SIZE] = { 0 };
 
-	err = GetTelemetryFilenameByType((tlm_type) task_args->dump_type,
+	err = GetTelemetryFilenameByType((tlm_type_t) task_args->dump_type,
 				filename);
 	if(err)
 	{
@@ -134,13 +126,18 @@ void DumpTask(void *args) {
 		f_releaseFS();
 		return;
 	}
-	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
+
+	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end);
+
 #ifdef TESTING
 	printf("dump: number of elements: %d \n",num_of_tlm_elements_read);
 #endif
+
 	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
 	buffer = malloc(buffer_size);
+
 	c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
+
 	num_of_packets = buffer_size / MAX_COMMAND_DATA_LENGTH;
 	if (buffer_size % MAX_COMMAND_DATA_LENGTH)
 			num_of_packets++;
