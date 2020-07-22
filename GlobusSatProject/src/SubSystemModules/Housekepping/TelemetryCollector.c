@@ -13,6 +13,7 @@
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
@@ -62,8 +63,11 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_antenna:
 		strcpy(filename,FILENAME_ANTENNA_TLM);
 		break;
-		default:
-			return -2;
+	case tlm_log:
+		strcpy(filename,FILENAME_LOG_TLM);
+		break;
+	default:
+		return -2;
 	}
 	return 0;
 }
@@ -71,9 +75,7 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 
 void TelemetryCollectorLogic()
 {
-	#ifdef TESTING
-	 	 printf("Inside TelemetryCollectorLogic()\n");
-	#endif
+	logg( DEBUG, "Inside TelemetryCollectorLogic()\n" );
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
 		#ifdef TESTING
@@ -155,6 +157,10 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	//-- SOLAR PANEL files
 	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
+
+	//-- LOG file
+	res = c_fileCreate(FILENAME_LOG_TLM, LOG_BUFFER_SIZE);
+	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
 }
 
 void TelemetrySaveEPS()

@@ -20,6 +20,9 @@
 #define FILENAME_RX_FRAME				"rxFrame"
 #define FILENAME_ANTENNA_TLM			"ant"
 
+//	---log
+#define FILENAME_LOG_TLM			    "log"
+
 typedef enum {
 	tlm_wod,
 	tlm_eps_raw_mb,
@@ -33,6 +36,6 @@ typedef enum {
 	tlm_rx_revc,
 	tlm_rx_frame,
 	tlm_antenna,
-
+	tlm_log
 }tlm_type;
 #endif /* TELEMETRYFILES_H_ */
