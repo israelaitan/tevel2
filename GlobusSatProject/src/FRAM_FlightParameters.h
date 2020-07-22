@@ -27,7 +27,8 @@
 #define ANT_SAVE_TLM_PERIOD_ADDR		0x30		//<! address where the save tlm period will be
 #define SOLAR_SAVE_TLM_PERIOD_ADDR		0x34		//<! address where the save tlm period will be
 #define WOD_SAVE_TLM_PERIOD_ADDR		0x38		//<! address where the save tlm period will be
-#define LAST_WAKEUP_TIME_ADDR			0X3B		//<! saves the first time after satellites wakeup from reset
+#define LOG_SAVE_TLM_PERIOD_ADDR		0x3B
+#define LAST_WAKEUP_TIME_ADDR			0X3F		//<! saves the first time after satellites wakeup from reset
 #define LAST_WAKEUP_TIME_SIZE			4			//<! size of the parameter in bytes
 
 #define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag
@@ -73,6 +74,7 @@
 #define DEFAULT_ANT_SAVE_TLM_TIME		5			//<! save antenna TLM every 20 seconds
 #define DEFAULT_SOLAR_SAVE_TLM_TIME		5			//<! save solar panel TLM every 20 seconds
 #define DEFAULT_WOD_SAVE_TLM_TIME		5			//<! save WOD TLM every 20 seconds
+#define DEFAULT_LOG_SAVE_TLM_TIME		5			//
 #define DEFAULT_NO_COMM_WDT_KICK_TIME  (15*24*60*60)	//<! number of seconds in 15 days
 #define DEFALUT_BEACON_BITRATE_CYCLE	3			//<! default value
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
