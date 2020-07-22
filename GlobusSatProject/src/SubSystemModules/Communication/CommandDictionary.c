@@ -195,6 +195,14 @@ int managment_command_router(sat_packet_t *cmd)
 		ackType=ACK_FS_RESET;
 		break;
 
+	case ANTS_SIDE_A_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_ant_SideA);
+		break;
+
+	case ANTS_SIDE_B_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_ant_SideB);
+		break;
+
 	default:
 		break;
 	}

@@ -113,7 +113,9 @@ typedef enum __attribute__ ((__packed__)) management_subtypes_t
 	TRXVU_SOFT_RESET_SUBTYPE =	0xC3,		//0b11000011
 	TRXVU_HARD_RESET_SUBTYPE = 	0x3C,		//0b00111100
 	EPS_RESET_SUBTYPE =			0xBB,		//0b10111011
-	FS_RESET_SUBTYPE =			0xCC		//0b11001100
+	FS_RESET_SUBTYPE =			0xCC,		//0b11001100
+	ANTS_SIDE_A_RESET_SUBTYPE=	0x88,
+	ANTS_SIDE_B_RESET_SUBTYPE=	0x89
 }management_subtypes_t;
 //-----------------
 
