@@ -164,11 +164,10 @@ void Maintenance()
 		restart();
 	}
 
-	if(CheckForMuteEnd()){
-		UnMuteTRXVU();
-#ifdef TESTING
-		printf("unmuted\n");
-#endif
-	}
+	//TODO: Add Transponder end Logic:
+	// -Check if in Transponder mode,
+	// - if so, check if transponder mode ended
+	// - if so, turn off transponder
+
 	//TODO: if(current_time < FRAM_sat_time) maybe update 'sat_time' to be 'first_wakeup_'
 }

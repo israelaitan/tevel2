@@ -36,9 +36,12 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_UPDATE_EPS_HEATER_VALUES = 0x16,
 	ACK_UPDATE_EPS_ALPHA = 0x17,
 
+	ACK_IDLE_ON = 0x18,
+	ACK_IDLE_OFF = 0x19,
 	ACK_MUTE = 0x8D,
 	ACK_UNMUTE = 0x8E,
-	ACK_ALLOW_TRANSPONDER = 0x8F,
+	ACK_TRANSPONDER_ON = 0x8F,
+	ACK_TRANSPONDER_OFF = 0x8C,
 
 	ACK_DUMP_START = 0x90,
 	ACK_DUMP_ABORT = 0x91,
@@ -47,11 +50,12 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_GENERIC_I2C_CMD = 0x93,
 	ACK_ARM_DISARM = 0x94,					//after changing arm state of the ants
 	ACK_REDEPLOY = 0x95,
-	ACK_RESET_DELAYED_CMD = 0x9E,
+	ACK_ANT_CANCEL_DEP = 0x9E,
 	ACK_FRAM_RESET = 0xA0,
 
 	ACK_PING = 0xAA,
 	ACK_UNKNOWN_SUBTYPE = 0xBB,				//when the given subtype is unknown
+	ACK_NO_ACK = 0xCC,						//Do not send ACK
 	ACK_ERROR_MSG = 0XFF 					// send this ACK when error has occurred
 }ack_subtype_t;
 
@@ -63,8 +67,8 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	UNMUTE_TRXVU = 			0x88,	//0b10001000
 	TRXVU_IDLE_ON = 		0x87,	//TODO: change to correct address
 	TRXVU_IDLE_OFF = 		0x86,	//TODO: change to correct address
-	DUMP_SUBTYPE =			0x69,	//0b01101001
-	ABORT_DUMP_SUBTYPE= 	0x22,	//0b00100010
+	START_DUMP_SUBTYPE =    0x69,	//0b01101001
+	STOP_DUMP_SUBTYPE= 		0x22,	//0b00100010
 	GET_BAUD_RATE = 		0x13,	//0b00010011
 	GET_BEACON_INTERVAL = 	0x23,	//0b00100011
 	SET_BEACON_INTERVAL = 	0x24,	//0b00100100
@@ -82,8 +86,9 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	ANT_GET_UPTIME =		0xB3,	//0b10110011
 	ANT_CANCEL_DEPLOY = 	0xB7,	//0b10110111
 	FORCE_ABORT_DUMP_SUBTYPE = 0x33,//0b00110011
-	DELETE_DUMP_TASK = 0x44			//0b00100010
-
+	DELETE_DUMP_TASK = 0x44,		//0b00100010
+	TRANSPONDER_ON = 0x45,
+	TRANSPONDER_OFF = 0x46
 }trxvu_subtypes_t;
 
 

@@ -164,7 +164,7 @@ void DumpTask(void *args) {
 		}
 
 		currPacketSize = totalDataLeft < MAX_COMMAND_DATA_LENGTH ? totalDataLeft : MAX_COMMAND_DATA_LENGTH;
-		AssembleCommand(buffer, currPacketSize,(char) DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i, 8, &dump_tlm);
+		AssembleCommand(buffer, currPacketSize,(char) START_DUMP_SUBTYPE, (char) (task_args->dump_type), task_args->cmd->ID, i, 8, &dump_tlm);
 		err = TransmitSplPacket(&dump_tlm, &availFrames);
 #ifdef TESTING
 		printf("dump: packet sent id = %u  ord = %u availFrames = %d \n", task_args->cmd->ID, i, availFrames);
@@ -225,7 +225,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 	//printf("sending dump: %s", dump);
 
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
-			(void* )dmp_pckt, configMAX_PRIORITIES - 2, xDumpHandle);
+			(void* )dmp_pckt, configMAX_PRIORITIES - 2, &xDumpHandle);
 
 	return 0;
 }

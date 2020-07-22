@@ -199,7 +199,7 @@ Boolean TestDumpTelemetry()
 	//printf("Please Insert Command Subtype:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,255));
 	//cmd.cmd_subtype = temp;
-	cmd->cmd_subtype = DUMP_SUBTYPE;
+	cmd->cmd_subtype = START_DUMP_SUBTYPE;
 
 	//printf("Please Insert Command ID:\n");
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
