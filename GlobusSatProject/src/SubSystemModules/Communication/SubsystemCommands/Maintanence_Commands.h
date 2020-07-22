@@ -55,6 +55,13 @@ int CMD_FRAM_Start(sat_packet_t *cmd);
 int CMD_FRAM_Stop(sat_packet_t *cmd);
 
 /*!
+ * @brief executes the 'FRAM_stop'and 'Fram start' operation.
+ * @return errors according to FRAM.h
+ * @see FRAM.h
+ */
+int CMD_FRAM_Restart(sat_packet_t *cmd);
+
+/*!
  * @brief executes the 'FRAM_getDeviceID' operation.
  * @return errors according to FRAM.h
  * @see FRAM.h
@@ -114,5 +121,12 @@ int CMD_AntennaDeploy(sat_packet_t *cmd);
  * 			Error code according to <hal/errors.h>
  */
 int CMD_ResetComponent(reset_type_t rst_type);
+
+/*!
+* @brief 	set new collection cycle period
+* @return 	0 on success
+* 			Error code according to <hal/errors.h>
+*/
+int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd);
 
 #endif /* MAINTANENCE_COMMANDS_H_ */

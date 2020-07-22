@@ -22,6 +22,7 @@
 #include <string.h>
 #include <hal/errors.h>
 #include "TLM_management.h"
+#include "InitSystem.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/AckHandler.h"
@@ -115,6 +116,12 @@ int CMD_FRAM_Stop(sat_packet_t *cmd)
 	return err;
 }
 
+int CMD_FRAM_Restart(sat_packet_t *cmd)
+{
+	CMD_FRAM_Stop(cmd);
+	return CMD_FRAM_Start(cmd);
+}
+
 int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 {
 	int err = 0;
@@ -194,23 +201,15 @@ int CMD_AntennaDeploy(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	err = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX , isisants_sideA, isisants_arm);
-	if(err != E_NO_SS_ERR ){
-		return err;
-	}
+	err = autoDeploy();
+	return err;
+}
 
-	err = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX , isisants_sideB, isisants_arm);
-	if(err != E_NO_SS_ERR ){
-		return err;
-	}
-
-	err = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA,
-			ANTENNA_DEPLOYMENT_TIMEOUT);
-	if(err != E_NO_SS_ERR ){
-		return err;
-	}
-	err = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB,
-				ANTENNA_DEPLOYMENT_TIMEOUT);
+int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
+{
+	int err=0;
+	//TODO: set tlm_save_periods in FRam
+	//FRAM_write((unsigned char*)tlm_save_periods,TLM_SAVE_PERIOD_START_ADDR,NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
 	return err;
 }
 
