@@ -31,7 +31,7 @@ typedef enum{
 	wod_tlm
 }subsystem_tlm;
 
-#define NUMBER_OF_TELEMETRIES 13	///< number of telemetries the satellite saves
+#define NUMBER_OF_TELEMETRIES 14	///< number of telemetries the satellite saves
 
 #define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5			///<
 /*!

@@ -29,7 +29,7 @@ void logg(LogLevel level, char* msg) {
 	Time_getUnixEpoch(&time);
     int size = sizeof(time) + strlen(msg);
     FileSystemResult res = FS_SUCCSESS;
-    if ((index + size) < LOG_BUFFER_SIZE ) {
+    if ((index + size) > (int)LOG_BUFFER_SIZE ) {
     	res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
     	if (res == FS_FAIL)//handle write fails due to concurrent dump
     		c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
