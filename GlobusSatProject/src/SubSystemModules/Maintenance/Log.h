@@ -12,6 +12,7 @@
 #define LOG_BUFFER_SIZE 4096
 #define CURR_LOG_LEVEL 3
 #define TLMInfo (LogLevel)3
+#define MTNInfo (LogLevel)3
 #define TRXInfo (LogLevel)3
 #define OBCInfo (LogLevel)3
 #define EPSInfo (LogLevel)3

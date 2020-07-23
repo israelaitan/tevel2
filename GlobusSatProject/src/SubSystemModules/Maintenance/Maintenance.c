@@ -16,6 +16,7 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "TLM_management.h"
 #include "Maintenance.h"
+#include "Log.h"
 
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
@@ -151,16 +152,12 @@ void Maintenance()
 
 	if (IsFS_Corrupted()) {
 		//TODO: something
-#ifdef TESTING
-		printf("FS is corrupted\n");
-#endif
+		logg(error, "E:FS is corrupted\n");
 	}
 
 	if (IsGroundCommunicationWDTKick()) {
-#ifdef TESTING
-		printf("GS was kicked. now restarting...\n");
+		logg(error, "E:GS was kicked. now restarting...\n");
 		vTaskDelay(5000);
-#endif
 		restart();
 	}
 

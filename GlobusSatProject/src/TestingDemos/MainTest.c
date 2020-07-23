@@ -295,6 +295,8 @@ void taskTesting()
 		TelemetryCollectorLogic();
 		logg(OBCInfo, "I:Main:TelemetryCollectorLogic\n");
 
+		Maintenance();
+
 		vTaskDelay(100);
 
 		i++;
