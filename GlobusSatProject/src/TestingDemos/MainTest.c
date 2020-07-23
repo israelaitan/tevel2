@@ -282,18 +282,18 @@ void taskTesting()
 	int i = 0;
 	while (1)
 	{
-		logg(info, "I:--------------------Main loop: i= : %d  ------------\n",  i);
+		logg(OBCInfo, "I:--------------------Main loop: i= : %d  ------------\n",  i);
 
 		int res=EPS_Conditioning();
-		logg(info, "I:Main:EPS_Conditioning\n");
+		logg(OBCInfo, "I:Main:EPS_Conditioning\n");
 		if(res!=0)
 			logg(error, "E:in EPS_Conditioning: %d\n", res);
 
 		TRX_Logic();
-		logg(info, "I:Main:TRX_Logic\n");
+		logg(OBCInfo, "I:Main:TRX_Logic\n");
 
 		TelemetryCollectorLogic();
-		logg(info, "I:Main:TelemetryCollectorLogic\n");
+		logg(OBCInfo, "I:Main:TelemetryCollectorLogic\n");
 
 		vTaskDelay(100);
 

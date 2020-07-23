@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "GlobalStandards.h"
 #include "SatCommandHandler.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 
 typedef struct __attribute__ ((__packed__)) delayed_cmd_t
@@ -103,7 +104,7 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length,
 			return cmd_execution_error;
 		}
 	}
-	printf("Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal);
+	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal);
 	return cmd_command_succsess;
 }
 

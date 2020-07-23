@@ -11,6 +11,7 @@
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Housekepping/DUMP.h"
 #include <satellite-subsystems/IsisAntS.h>
@@ -38,28 +39,26 @@ Boolean isFirstActivation()
 	int res=0;
 
 	//TODO: remove print after testing
-	printf("Inside isFirstActivation()\n");
+	logg(OBCInfo, "I:Inside isFirstActivation()\n");
 
 	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 	if (res==-2)
 	{
-		printf(" specified address and size are out of range of the FRAM space\n");
+		logg(error, "E: specified address and size are out of range of the FRAM space\n");
 	}
 	if  (res==-1)
 	{
-		printf(" obtaining lock for FRAM access fails\n");
+		logg(error, "E:  obtaining lock for FRAM access fails\n");
 	}
 
 	if (FirstActivation==1)
 	{
-		//TODO: remove print after testing
-		printf("Inside isFirstActivation() return TRUE\n");
+		logg(OBCInfo, "I:Inside isFirstActivation() return TRUE\n");
 		return TRUE;
 	}
 	else
 	{
-		//TODO: remove print after testing
-		printf("Inside isFirstActivation() - %c return FAlSE\n", FirstActivation);
+		logg(OBCInfo, "I:Inside isFirstActivation() - %c return FAlSE\n", FirstActivation);
 		return FALSE;
 	}
 }
@@ -73,13 +72,13 @@ void firstActivationProcedure()
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 	if (err!=0)
 	{
-		printf("could not read SECONDS_SINCE_DEPLOY from FRAM\n");
+		logg(error, "E:could not read SECONDS_SINCE_DEPLOY from FRAM\n");
 	}
 
 	int i = 1;
 	while (TotalWaitTime>AwaitedTime)
 	{
-		printf("%d) Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
+		logg(OBCInfo, "I:%d Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;
@@ -98,7 +97,7 @@ void firstActivationProcedure()
 	//update first activation flag to false if antenas are not Connected
 	char firstactivation= 0;
 	FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-	printf("*****First Activation without Antenas deployed******\n");
+	logg(OBCInfo, "I:*****First Activation without Antenas deployed******\n");
 
 }
 
@@ -106,7 +105,7 @@ void firstActivationProcedure()
 void WriteDefaultValuesToFRAM()
 {
 	//TODO: remove print after testing
-	printf("Inside WriteDefaultValuesToFRAM()\n");
+	logg(OBCInfo, "I:Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 	EpsThreshVolt_t thresh_volts = { DEFAULT_EPS_THRESHOLD_VOLTAGES };
@@ -135,21 +134,19 @@ void WriteDefaultValuesToFRAM()
 int StartFRAM()
 {
 	int result=0;
-	//TODO: remove print after testing
-	printf("Inside StartFRAM()\n");
+	logg(OBCInfo, "I:Inside StartFRAM()\n");
 	result=FRAM_start();
 	if(-1==result)
 	{
-		printf("failed to creaT semaforeS\n");
+		logg(error, "E:failed to creaT semaforeS\n");
 	}
 	else if(-2==result)
 	{
-		printf("failed to initializing SPI\n");
+		logg(error, "E:failed to initializing SPI\n");
 	}
 	else
 	{
-		//TODO: remove print after testing
-		printf("FRAM_start was successful\n");
+		logg(OBCInfo, "I:FRAM_start was successful\n");
 	}
 
 	return result;
@@ -161,25 +158,25 @@ int StartI2C()
 	int result=0;
 
 	//TODO: remove after finish testing
-	printf("Inside StartI2C() - calling I2C_start driver\n");
+	logg(OBCInfo, "I:Inside StartI2C() - calling I2C_start driver\n");
 
 	result=I2C_start(I2c_SPEED_Hz, I2c_Timeout);
 	if(result==-3)
 	{
-		printf("the driver uses a timeout of 1\n");
+		logg(error, "E:the driver uses a timeout of 1\n");
 	}
 	else if(result==-2)
 	{
-		printf("TWI peripheral fails\n");
+		logg(error, "E:TWI peripheral fails\n");
 	}
 	else if(result==-1)
 	{
-		printf("creating the task that consumes I2C transfer requests failed\n");
+		logg(error, "E:creating the task that consumes I2C transfer requests failed\n");
 	}
 
 	if(result==0)
 	{
-		printf(" success\n");
+		logg(OBCInfo, "I: StartI2C.success\n");
 	}
 
 	return result;
@@ -189,17 +186,16 @@ int StartI2C()
 int StartSPI()
 {
 	int result= 0;
-	//TODO: remove print after testing
-	printf("Inside StartSPI()\n");
+	logg(OBCInfo, "I:Inside StartSPI()\n");
 	result = SPI_start(bus1_spi, slave1_spi);
 
 	if(result==0)
 	{
-		printf("success\n");
+		logg(OBCInfo, "I:StartSPI.success\n");
 	}
 	else if(result==-1)
 	{
-		printf("error\n");
+		logg(error, "E:StartSPI.error\n");
 	}
 	return result;
 }
@@ -208,8 +204,7 @@ int StartSPI()
 int StartTIME()
 {
 	int err = 0;
-	//TODO: remove print after testing
-	printf("Inside StartTIME()\n");
+	logg(OBCInfo, "I:Inside StartTIME()\n");
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
 	err = Time_start(&expected_deploy_time, 0);
 	if (0 != err)
@@ -220,8 +215,7 @@ int StartTIME()
 	time_unix time_before_wakeup = 0;
 	if (!isFirstActivation())
 	{
-		//TODO: remove print after testing
-		printf("reset clock\n");
+		logg(OBCInfo, "I:reset clock\n");
 		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 		Time_setUnixEpoch(time_before_wakeup);
 	}
@@ -237,12 +231,12 @@ int autoDeploy()
 
 	if(res==0)
 	{
-		printf("Deploying: Side A\n");
+		logg(OBCInfo, "I:Deploying: Side A\n");
 		res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
 	}
 	else
 	{
-		printf("Failed Arming Side A\n");
+		logg(error, "E:Failed Arming Side A\n");
 	}
 
 	// unarm antenas side A
@@ -252,12 +246,12 @@ int autoDeploy()
 	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
 	if(res==0)
 	{
-		printf("Deploying: Side B\n");
+		logg(OBCInfo, "I:Deploying: Side B\n");
 		res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
 	}
 	else
 	{
-		printf("Failed Arming Side B\n");
+		logg(error, "E:Failed Arming Side B\n");
 	}
 
 	// unarm antenas side B
@@ -268,7 +262,7 @@ int autoDeploy()
 	int err = Time_getUnixEpoch((unsigned int *)&deploy_time);
 	if(0 != err)
 	{
-		printf("Time_getUnixEpoch failed to set ants last deploy time\n");
+		logg(OBCInfo, "I:Time_getUnixEpoch failed to set ants last deploy time\n");
 	}
 	else
 	{
@@ -284,7 +278,7 @@ int DeploySystem()
 	int res=0;
 
 	//TODO: remove print after testing
-	printf(" DeploySystem() here\n");
+	logg(OBCInfo, "I: DeploySystem() here\n");
 
 	if(isFirstActivation())
 	{
@@ -304,7 +298,7 @@ int DeploySystem()
 int InitSubsystems()
 {
 	//TODO: remove print after testing
-	printf("InitSubsystems()  here\n");
+	logg(OBCInfo, "I:InitSubsystems()  here\n");
 
 	//TODO: not sure we should stop if something fails
 	int err;

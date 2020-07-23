@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include <satellite-subsystems/isis_eps_driver.h>
+#include "SubSystemModules/Maintenance/Log.h"
 
 //TODO: update functions to only the relevant channels
 EpsState_t state;
@@ -11,7 +12,7 @@ Boolean g_low_volt_flag = FALSE; // set to true if in low voltage
 
 int EnterFullMode()
 {
-	printf("EPS enter FullMode\n");
+	logg(EPSInfo,"I:EPS enter FullMode\n");
 	if(state == FullMode)
 		return 0;
 	state = FullMode;
@@ -21,7 +22,7 @@ int EnterFullMode()
 
 int EnterCruiseMode()
 {
-	printf("EPS enter CruiseMode\n");
+	logg(EPSInfo,"I:EPS enter CruiseMode\n");
 	if(state == CruiseMode)
 		return 0;
 	state = CruiseMode;
@@ -31,7 +32,7 @@ int EnterCruiseMode()
 
 int EnterSafeMode()
 {
-	printf("EPS enter SafeMode\n");
+	logg(EPSInfo,"I:EPS enter SafeMode\n");
 	if(state == SafeMode)
 		return 0;
 	state = SafeMode;
@@ -41,7 +42,7 @@ int EnterSafeMode()
 
 int EnterCriticalMode()
 {
-	printf("EPS enter CriticalMode\n");
+	logg(EPSInfo, "I:EPS enter CriticalMode\n");
 	if(state == CriticalMode)
 		return 0;
 	state = CriticalMode;

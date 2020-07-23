@@ -32,7 +32,7 @@ int muteTRXVU(time_unix duration) {
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
-	logg(info, "I:************************inside muteTRXVU: %lu\n", (long unsigned int)g_mute_end_time);
+	logg(TRXInfo, "I:************************inside muteTRXVU: %lu\n", (long unsigned int)g_mute_end_time);
 	return 0;
 }
 
@@ -40,7 +40,7 @@ int muteTRXVU(time_unix duration) {
 void UnMuteTRXVU() {
 	g_mute_end_time = 0;
 	g_mute_flag = MUTE_OFF;
-	logg(info, "I:*********************Setting Mute to OFF\n");
+	logg(TRXInfo, "I:*********************Setting Mute to OFF\n");
 }
 
 Boolean GetMuteFlag() {
@@ -52,12 +52,12 @@ Boolean CheckForMuteEnd() {
 	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
 	if (curr_tick_time > g_mute_end_time)
 	{
-		logg(info, "I:Mute End time reached\n");
+		logg(TRXInfo, "I:Mute End time reached\n");
 		return TRUE;
 	}
 	else
 	{
-		logg(info, "I:Mute End time NOT reached\n");
+		logg(TRXInfo, "I:Mute End time NOT reached\n");
 		return FALSE;
 	}
 
@@ -90,11 +90,11 @@ Boolean CheckTransmitionAllowed() {
 		if(pdTRUE == xSemaphoreTake(xIsTransmitting,0))
 		{
 			xSemaphoreGive(xIsTransmitting);
-			logg(info, "I:TRASMITION ALLOWED\n");
+			logg(TRXInfo, "I:TRASMITION ALLOWED\n");
 			return TRUE;
 		}
 	}
-	logg(info, "I:TRASMITION NOT ALLOWED\n");
+	logg(TRXInfo, "I:TRASMITION NOT ALLOWED\n");
 	return FALSE;
 }
 

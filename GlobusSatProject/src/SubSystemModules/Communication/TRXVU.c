@@ -46,7 +46,7 @@ void setLastDeploymentTime(time_unix time)
 //setting trxvu idle off
 int SetIdleOff()
 {
-	logg(info, "I:inside SetIdleOff()\n");
+	logg(TRXInfo, "I:inside SetIdleOff()\n");
 	int err = 0;
 
 	if(g_idle_flag==TRUE)
@@ -77,7 +77,7 @@ void HandleOpenAnts()
 		}
 		else
 		{
-			logg(info, "I:ants end period not reached\n");
+			logg(TRXInfo, "I:ants end period not reached\n");
 		}
 	}
 }
@@ -95,7 +95,7 @@ void HandleIdleAndMuteTime()
 		}
 		else
 		{
-			logg(info, "I:idle end period not reached\n");
+			logg(TRXInfo, "I:idle end period not reached\n");
 		}
 	}
 
@@ -123,7 +123,7 @@ void HandleTransponderTime()
 // Initialize TRXVU component
 int InitTrxvu()
 {
-	logg(info, "I:InitTrxvu() started\n");
+	logg(TRXInfo, "I:InitTrxvu() started\n");
 	//set I2C addresses
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
@@ -147,7 +147,7 @@ int InitTrxvu()
 	}
 	else
 	{
-		logg(info, "I:IsisTrxvu_initialize succeeded\n");
+		logg(TRXInfo, "I:IsisTrxvu_initialize succeeded\n");
 	}
 
 
@@ -161,7 +161,7 @@ int InitTrxvu()
 	}
 	else
 	{
-		logg(info, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
+		logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 	}
 	vTaskDelay(100);
 
@@ -188,7 +188,7 @@ int InitTrxvu()
 		}
 		else
 		{
-			logg(info, "I:initialization of the Antennas succeeded\n");
+			logg(TRXInfo, "I:initialization of the Antennas succeeded\n");
 		}
 	}
 
@@ -205,7 +205,7 @@ int InitTrxvu()
 //TRX VU main logic
  CommandHandlerErr TRX_Logic()
 {
-	logg(info, "I:Inside TRX_Logic()\n");
+	logg(TRXInfo, "I:Inside TRX_Logic()\n");
 	sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
 	int onCmdCount;
 	unsigned char* data = NULL;
@@ -221,7 +221,7 @@ int InitTrxvu()
 		res = GetOnlineCommand(cmd);
 		if(res==cmd_command_found)
 		{
-			logg(info, "I:Getting the online command success\n");
+			logg(TRXInfo, "I:Getting the online command success\n");
 			//Reset WD communication with earth by saving current time as last communication time in FRAM
 			ResetGroundCommWDT();
 
@@ -233,7 +233,7 @@ int InitTrxvu()
 		}
 		else
 		{
-			logg(info, "I:Status: %d in getting the online command. \n", res);
+			logg(TRXInfo, "I:Status: %d in getting the online command. \n", res);
 		}
 
 		if(g_antOpen==0)
@@ -241,7 +241,7 @@ int InitTrxvu()
 			//update ant open to true
 			g_antOpen=1;
 			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-			logg(info, "I:*****First Activation without Antenas deployed******\n");
+			logg(TRXInfo, "I:*****First Activation without Antenas deployed******\n");
 		}
 
 	}
@@ -269,7 +269,7 @@ int InitTrxvu()
 // Command to set idle state to on
 int CMD_SetIdleOn(sat_packet_t *cmd)
 {
-	logg(info, "I:inside CMD_SetIdleOn()\n");
+	logg(TRXInfo, "I:inside CMD_SetIdleOn()\n");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
@@ -281,7 +281,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 		memcpy(&g_idle_period,cmd->data,sizeof(g_idle_period));
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
-		logg(info, "I:Set idle state for %d seconds. \n", g_idle_period);
+		logg(TRXInfo, "I:Set idle state for %d seconds. \n", g_idle_period);
 	}
 	return err;
 }
@@ -290,7 +290,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 // Command to set idle state to off
 int CMD_SetIdleOff()
 {
-	logg(info, "I:inside CMD_SetIdleOff()\n");
+	logg(TRXInfo, "I:inside CMD_SetIdleOff()\n");
 	return SetIdleOff();
 }
 

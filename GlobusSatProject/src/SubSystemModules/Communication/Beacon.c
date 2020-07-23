@@ -26,7 +26,7 @@ time_unix g_beacon_interval_time = 0;
 //Initialize beacon parameters
 void InitBeaconParams()
 {
-	logg(info, "I: Inside InitBeaconParams()\n");
+	logg(TRXInfo, "I: Inside InitBeaconParams()\n");
 
 	//get interval from RAM
 	int status = FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
@@ -43,7 +43,7 @@ void InitBeaconParams()
 void BeaconLogic()
 {
 
-	logg(info, "I:Inside BeaconLogic()\n");
+	logg(TRXInfo, "I:Inside BeaconLogic()\n");
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
 	unsigned int id=  BEACON_ID;
@@ -67,13 +67,13 @@ void BeaconLogic()
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			logg(info, "I:++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			logg(TRXInfo, "I:++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 		}
 		else
-			logg(info, "I:beacon time did not arrive\n");
+			logg(TRXInfo, "I:beacon time did not arrive\n");
 	}
 	else
-		logg(info, "I:____________________---__________-beacon not allowed\n");
+		logg(TRXInfo, "I:____________________---__________-beacon not allowed\n");
 }
 
 //Update beacon intervals - allows changing this interval from earth
@@ -82,7 +82,7 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 
 	time_unix intrvl = 0;
 	memcpy(&intrvl,cmd->data,sizeof(intrvl));
-	logg(info, "I:Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
+	logg(TRXInfo, "I:Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
 
 	//check if interval is in allowed range
 	if(intrvl > MAX_BEACON_INTERVAL|| intrvl < MIN_BEACON_INTERVAL)
@@ -96,7 +96,7 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 		return err;
 	}
 	else
-		logg(info, "I:interval was updated to FRAM successfully\n");
+		logg(TRXInfo, "I:interval was updated to FRAM successfully\n");
 
 	//set new interval value
 	g_beacon_interval_time = intrvl;
