@@ -24,6 +24,7 @@
 #include "TrxvuTestingDemo.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Trxvu.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 Boolean selectAndExecuteTest()
 {
@@ -281,24 +282,24 @@ void taskTesting()
 	int i = 0;
 	while (1)
 	{
-		printf("--------------------Main loop: i= : %d  ------------\n",  i);
+		logg(info, "I:--------------------Main loop: i= : %d  ------------\n",  i);
 
 		int res=EPS_Conditioning();
-		printf("Main:EPS_Conditioning\n");
+		logg(info, "I:Main:EPS_Conditioning\n");
 		if(res!=0)
-			printf("Error in EPS_Conditioning: %d\n", res);
+			logg(error, "E:in EPS_Conditioning: %d\n", res);
 
 		TRX_Logic();
-		printf("Main:TRX_Logic\n");
+		logg(info, "I:Main:TRX_Logic\n");
 
 		TelemetryCollectorLogic();
-		printf("Main:TelemetryCollectorLogic\n");
+		logg(info, "I:Main:TelemetryCollectorLogic\n");
 
 		vTaskDelay(100);
 
 		i++;
 		//if (i == 10)
-		//	TestDumpTelemetry();
+		//TestDumpTelemetry();
 		//5 0 0 0 0 105 10 0 4 0 128 67 109 56 20 225 11 94
 	}
 

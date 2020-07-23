@@ -84,8 +84,8 @@ void TelemetryCollectorLogic()
 	logg(info, "I:TelemetryCollectorLogic()");
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
-		logg(info, "I:TelemetrySaveEPS");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[eps_tlm]));
+		logg(info, "I:TelemetrySaveEPS, time: %ul", tlm_last_save_time[eps_tlm]);
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){

@@ -27,7 +27,7 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Housekepping/Dump.h"
-
+#include "SubSystemModules/Maintenance/Log.h"
 //idle global variables
 int				g_idle_period = 300 ; // idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
@@ -46,9 +46,7 @@ void setLastDeploymentTime(time_unix time)
 //setting trxvu idle off
 int SetIdleOff()
 {
-#ifdef TESTING
-	printf("inside SetIdleOff()\n");
-#endif
+	logg(info, "I:inside SetIdleOff()\n");
 	int err = 0;
 
 	if(g_idle_flag==TRUE)
@@ -61,7 +59,7 @@ int SetIdleOff()
 		else
 		{
 			//TODO: handle failure in setting idle state off
-			printf("failed in setting trxvu idle off - %d\n", err);
+			logg(error, "E:failed in setting trxvu idle off - %d\n", err);
 		}
 	}
 	return err;
@@ -77,12 +75,10 @@ void HandleOpenAnts()
 			// ants auto deploy
 			autoDeploy();
 		}
-#ifdef TESTING
 		else
 		{
-			printf("ants end period not reached\n");
+			logg(info, "I:ants end period not reached\n");
 		}
-#endif
 	}
 }
 
@@ -97,12 +93,10 @@ void HandleIdleAndMuteTime()
 		{
 			SetIdleOff();
 		}
-#ifdef TESTING
 		else
 		{
-			printf("idle end period not reached\n");
+			logg(info, "I:idle end period not reached\n");
 		}
-#endif
 	}
 
 	//if mute on
@@ -129,10 +123,7 @@ void HandleTransponderTime()
 // Initialize TRXVU component
 int InitTrxvu()
 {
-#ifdef TESTING
-	printf("inside InitTrxvu()\n");
-#endif
-
+	logg(info, "I:InitTrxvu() started\n");
 	//set I2C addresses
 	ISIStrxvuI2CAddress i2cAdress;
 	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
@@ -151,14 +142,12 @@ int InitTrxvu()
 	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
 	if(err!=0)
 	{
-		printf("Error in the initialization: %d\n", err);
+		logg(error, "E: in the initialization: %d\n", err);
 		return err;
 	}
 	else
 	{
-#ifdef TESTING
-		printf("IsisTrxvu_initialize succeeded\n");
-#endif
+		logg(info, "I:IsisTrxvu_initialize succeeded\n");
 	}
 
 
@@ -167,14 +156,12 @@ int InitTrxvu()
 	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
 	if(err!=0)
 	{
-		printf("Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
+		logg(error, "E: in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
 		return err;
 	}
 	else
 	{
-#ifdef TESTING
-		printf("IsisTrxvu_tcSetAx25Bitrate succeeded\n");
-#endif
+		logg(info, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 	}
 	vTaskDelay(100);
 
@@ -199,12 +186,10 @@ int InitTrxvu()
 			printf("Error in the initialization of the Antennas: %d\n", err);
 			return err;
 		}
-	#ifdef TESTING
 		else
 		{
-			printf("initialization of the Antennas succeeded\n");
+			logg(info, "I:initialization of the Antennas succeeded\n");
 		}
-	#endif
 	}
 
 	//Initialize TRXVU transmit lock
@@ -220,9 +205,7 @@ int InitTrxvu()
 //TRX VU main logic
  CommandHandlerErr TRX_Logic()
 {
-	#ifdef TESTING
-	 	 printf("Inside TRX_Logic()\n");
-	#endif
+	logg(info, "I:Inside TRX_Logic()\n");
 	sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
 	int onCmdCount;
 	unsigned char* data = NULL;
@@ -238,10 +221,7 @@ int InitTrxvu()
 		res = GetOnlineCommand(cmd);
 		if(res==cmd_command_found)
 		{
-			#ifdef TESTING
-				printf("Getting the online command success\n");
-			#endif
-
+			logg(info, "I:Getting the online command success\n");
 			//Reset WD communication with earth by saving current time as last communication time in FRAM
 			ResetGroundCommWDT();
 
@@ -253,7 +233,7 @@ int InitTrxvu()
 		}
 		else
 		{
-			printf("Status: %d in getting the online command. \n", res);
+			logg(info, "I:Status: %d in getting the online command. \n", res);
 		}
 
 		if(g_antOpen==0)
@@ -261,7 +241,7 @@ int InitTrxvu()
 			//update ant open to true
 			g_antOpen=1;
 			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-			printf("*****First Activation without Antenas deployed******\n");
+			logg(info, "I:*****First Activation without Antenas deployed******\n");
 		}
 
 	}
@@ -289,13 +269,11 @@ int InitTrxvu()
 // Command to set idle state to on
 int CMD_SetIdleOn(sat_packet_t *cmd)
 {
-#ifdef TESTING
-	printf("inside CMD_SetIdleOn()\n");
-#endif
+	logg(info, "I:inside CMD_SetIdleOn()\n");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
-		printf("Failed in setting trxvy idle on - %d\n", err);
+		logg(error, "E:Failed in setting trxvy idle on - %d\n", err);
 	}
 	else
 	{
@@ -303,7 +281,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 		memcpy(&g_idle_period,cmd->data,sizeof(g_idle_period));
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
-		printf("Set idle state for %d seconds. \n", g_idle_period);
+		logg(info, "I:Set idle state for %d seconds. \n", g_idle_period);
 	}
 	return err;
 }
@@ -312,9 +290,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 // Command to set idle state to off
 int CMD_SetIdleOff()
 {
-#ifdef TESTING
-	printf("inside CMD_SetIdleOff()\n");
-#endif
+	logg(info, "I:inside CMD_SetIdleOff()\n");
 	return SetIdleOff();
 }
 

@@ -11,7 +11,7 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
-
+#include "SubSystemModules/Maintenance/Log.h"
 #include "GlobalStandards.h"
 #include "FRAM_FlightParameters.h"
 #include "SPL.h"
@@ -26,9 +26,7 @@ time_unix g_beacon_interval_time = 0;
 //Initialize beacon parameters
 void InitBeaconParams()
 {
-	#ifdef TESTING
-		printf("Inside InitBeaconParams()\n");
-	#endif
+	logg(info, "I: Inside InitBeaconParams()\n");
 
 	//get interval from RAM
 	int status = FRAM_read((unsigned char*)&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
@@ -44,9 +42,8 @@ void InitBeaconParams()
 //Beacon logic code
 void BeaconLogic()
 {
-	#ifdef TESTING
-		printf("Inside BeaconLogic()\n");
-	#endif
+
+	logg(info, "I:Inside BeaconLogic()\n");
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
 	unsigned int id=  BEACON_ID;
@@ -70,21 +67,13 @@ void BeaconLogic()
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			#ifdef TESTING
-				printf("++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
-			#endif
+			logg(info, "I:++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 		}
-		#ifdef TESTING
-			else
-				printf("beacon time did not arrive\n");
-		#endif
-
-	}
-	#ifdef TESTING
 		else
-			printf("____________________---__________-beacon not allowed\n");
-	#endif
-
+			logg(info, "I:beacon time did not arrive\n");
+	}
+	else
+		logg(info, "I:____________________---__________-beacon not allowed\n");
 }
 
 //Update beacon intervals - allows changing this interval from earth
@@ -93,12 +82,7 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 
 	time_unix intrvl = 0;
 	memcpy(&intrvl,cmd->data,sizeof(intrvl));
-
-#ifdef TESTING
-	printf("Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
-#endif
-
-
+	logg(info, "I:Inside UpdateBeaconInterval() interval: %d, max: %d, min: %d\n" , intrvl, MAX_BEACON_INTERVAL, MIN_BEACON_INTERVAL);
 
 	//check if interval is in allowed range
 	if(intrvl > MAX_BEACON_INTERVAL|| intrvl < MIN_BEACON_INTERVAL)
@@ -108,15 +92,11 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 	int err = FRAM_write((unsigned char *)&intrvl, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
 	if (err!=0)
 	{
-		printf("interval update to FRAM failed\n");
+		logg(error, "E:interval update to FRAM failed\n");
 		return err;
 	}
 	else
-	{
-#ifdef TESTING
-		printf("interval was updated to FRAM successfully\n");
-#endif
-	}
+		logg(info, "I:interval was updated to FRAM successfully\n");
 
 	//set new interval value
 	g_beacon_interval_time = intrvl;

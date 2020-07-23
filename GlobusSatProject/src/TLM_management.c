@@ -418,7 +418,7 @@ FileSystemResult fileReadDataSize(char* c_file_name,
 FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time)
 {
-	if (!buffer)
+	if (!buffer || size_of_buffer == 0 )
 		return FS_BUFFER_OVERFLOW;
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS

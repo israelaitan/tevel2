@@ -45,11 +45,9 @@ int InitDump()
 
 void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t acktype,
 		unsigned char *err, unsigned int size) {
-
+	logg(info, "I:finishDump started\n");
 	SendAckPacket(acktype, task_args->cmd, err, size);
-#ifdef TESTING
-	printf("finish dump:ack packet sent\n");
-#endif
+	logg(info, "I:finishDump:ack packet sent\n");
 	if (NULL != task_args) {
 		if (NULL != task_args->cmd)
 			free(task_args->cmd);
@@ -64,9 +62,7 @@ void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t
 	if(NULL != buffer){
 		free(buffer);
 	}
-#ifdef TESTING
-	printf("finish dump:ended successfully\n");
-#endif
+	logg(info, "I:finish dump:ended successfully\n");
 }
 
 void AbortDump()
@@ -118,7 +114,6 @@ void DumpTask(void *args) {
 	unsigned int size_of_element = 0;
 	time_unix last_time_read = 0;
 	unsigned char * buffer = NULL ;//add size
-	int size_of_buffer = 0;
 	int num_of_tlm_elements_read = 0;
 	char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
 
@@ -134,7 +129,7 @@ void DumpTask(void *args) {
 	logg(info, "I:dump: number of elements: %d\n", num_of_tlm_elements_read);
 	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
 	buffer = malloc(buffer_size);
-	FileSystemResult res = c_fileRead(filename, buffer, size_of_buffer, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
+	FileSystemResult res = c_fileRead(filename, buffer, buffer_size, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
 	if (res != FS_SUCCSESS) {
 		logg(error, "E:%d dump.c_fileRead", err);
 		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
