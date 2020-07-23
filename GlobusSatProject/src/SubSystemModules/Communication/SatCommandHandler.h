@@ -2,7 +2,9 @@
 #ifndef SATCOMMANDS_H_
 #define SATCOMMANDS_H_
 
-#define MAX_COMMAND_DATA_LENGTH 200 ///< maximum AX25 data field available for downlink
+#define T8GBS 8//GIVAT SHMUEL SAT ID IN PACKETS
+#define MAX_COMMAND_DATA_LENGTH 200 //maximum AX25 data field available for downlink
+#define SAT_PACKET_HEADER_LENGTH 8 // short*2+char*4
 
 //<! how many command can be saved in the buffer
 #define MAX_NUM_OF_DELAYED_CMD (100)
@@ -18,6 +20,7 @@ typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 
 typedef struct __attribute__ ((__packed__)) sat_packet_t
 {
+	//!!!change in header size requires update to SAT_PACKET_HEADER_LENGTH
 	unsigned short ID;							///< ID of the received/transmitted command
 	char ordinal;								///< ord number of packet in sequence
 	char targetSat;                             ///< packet target satelite

@@ -139,9 +139,7 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 	}
 
 	int err = 0;
-	unsigned int data_length = packet->length + sizeof(packet->length)
-			+ sizeof(packet->cmd_subtype) + sizeof(packet->cmd_type)
-			+ sizeof(packet->ID) + sizeof(packet->ordinal);
+	unsigned int data_length = packet->length + SAT_PACKET_HEADER_LENGTH;
 
 	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE) {
 		return E_GET_SEMAPHORE_FAILED;
