@@ -8,14 +8,7 @@
 
 #include <satellite-subsystems/IsisTRXVU.h>
 #include <satellite-subsystems/IsisAntS.h>
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
-
-
+#include <satellite-subsystems/isis_eps_driver.h>
 #include <hcc/api_fat.h>
 #include <hal/Drivers/I2C.h>
 #include <stdlib.h>
@@ -239,15 +232,10 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		SendAnonymosAck(ACK_EPS_RESET);
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 		vTaskDelay(10);
-#ifdef ISISEPS
+
 		isis_eps__reset__to_t params;//TODO: what params?
 		isis_eps__reset__from_t response;//TODO: what to do with response?
 		err = isis_eps__reset__tmtc( EPS_I2C_BUS_INDEX, &params , &response );
-
-#endif
-#ifdef GOMEPS
-	//TODO:
-#endif
 		break;
 
 	case reset_trxvu_hard:

@@ -16,13 +16,7 @@
 #include "SubSystemModules/Housekepping/DUMP.h"
 #include <satellite-subsystems/IsisAntS.h>
 #include "TLM_management.h"
-
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
+#include <satellite-subsystems/isis_eps_driver.h>
 
 //TODO change it after testing to 30.
 #define ANT_AWAITED_TIME_MIN 4
@@ -128,6 +122,8 @@ void WriteDefaultValuesToFRAM()
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
 	unsigned short resets = 0;
 	FRAM_write((unsigned char*)&resets,NUMBER_OF_RESETS_ADDR ,NUMBER_OF_RESETS_SIZE);
+	unsigned char reset_flag = FALSE_8BIT;
+	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 }
 
 	//אתחול ה FRAM

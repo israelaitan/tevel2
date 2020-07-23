@@ -86,12 +86,10 @@ int WakeupFromResetCMD()
 		reset_flag = FALSE_8BIT;
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-		FRAM_read((unsigned char*) &num_of_resets,
-		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 		num_of_resets++;
 
-		FRAM_write((unsigned char*) &num_of_resets,
-		NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+		FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 		if (0 != err) {
 			return err;
 		}
@@ -114,8 +112,7 @@ Boolean IsGroundCommunicationWDTKick()
 	Time_getUnixEpoch((unsigned int *)&current_time);
 
 	time_unix last_comm_time = 0;
-	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR,
-	LAST_COMM_TIME_SIZE);
+	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
 	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
@@ -137,28 +134,19 @@ int SetGsWdtKickTime(time_unix new_gs_wdt_kick_time)
 time_unix GetGsWdtKickTime()
 {
 	time_unix no_comm_thresh = 0;
-	FRAM_read((unsigned char*)&no_comm_thresh, NO_COMM_WDT_KICK_TIME_ADDR,
-	NO_COMM_WDT_KICK_TIME_SIZE);
+	FRAM_read((unsigned char*)&no_comm_thresh, NO_COMM_WDT_KICK_TIME_ADDR, NO_COMM_WDT_KICK_TIME_SIZE);
 	return no_comm_thresh;
 }
 
 void Maintenance()
 {
-	SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR,
-	MOST_UPDATED_SAT_TIME_SIZE);
+	SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 
-	//TODO: do error log file
 	WakeupFromResetCMD();
 
 	if (IsFS_Corrupted()) {
 		//TODO: something
 		logg(error, "E:FS is corrupted\n");
-	}
-
-	if (IsGroundCommunicationWDTKick()) {
-		logg(error, "E:GS was kicked. now restarting...\n");
-		vTaskDelay(5000);
-		restart();
 	}
 
 	//TODO: if(current_time < FRAM_sat_time) maybe update 'sat_time' to be 'first_wakeup_'
