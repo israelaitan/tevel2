@@ -6,16 +6,16 @@
 #include "ActUponCommand.h"
 #include "CommandDictionary.h"
 #include "AckHandler.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 int ActUponCommand(sat_packet_t *cmd)
 {
-	#ifdef TESTING
-		printf("XXXXXXXXXXXXXXX Inside ActUponCommand() command type: %d, command sub-type: %d\n", cmd->cmd_type, cmd->cmd_subtype);
-	#endif
-
 	int err = 0;
 	if( cmd == NULL )
-		err = -1;
+			err = -1;
+	logg(TRXInfo, "I:Inside ActUponCommand() target=%d command type: %d, command sub-type: %d\n", cmd->ID, cmd->cmd_type, cmd->cmd_subtype);
+	if (cmd->targetSat != T8GBS)
+		err = 0;
 	else if( cmd->cmd_type == trxvu_cmd_type )
 		err = trxvu_command_router( cmd );
 	else if( cmd->cmd_type == eps_cmd_type )
@@ -30,12 +30,11 @@ int ActUponCommand(sat_packet_t *cmd)
 		unsigned char* data = NULL;
 		unsigned int length = 0;
 		SendAckPacket(ACK_PING, cmd, data, length);
-	}
-	//Todo: add else in case cmd_typ is unknown
+	} else
+		err = -2;
 
-	#ifdef TESTING
-		printf("finished command with error: %d\n" , err);
-	#endif
+	if (err)
+		logg(error, "E:finished command with error: %d\n" , err);
 	return err;
 }
 
