@@ -51,19 +51,5 @@ void logg(LogLevel level, char *fmt, ...) {
 	_logg(logMsg);
 }
 
-void loggError(char* msg, int err) {
-	if (CURR_LOG_LEVEL > error)
-			return;
-	sprintf(logMsg, "ERROR: in %s res=%d\n", msg, err);
-	_logg(logMsg);
-}
-
-void loggInfo(char* msg) {
-	if (CURR_LOG_LEVEL > info)
-			return;
-	sprintf(logMsg, "INFO: %s\n", msg);
-	_logg(logMsg);
-}
-
 
 

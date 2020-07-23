@@ -418,6 +418,8 @@ FileSystemResult fileReadDataSize(char* c_file_name,
 FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time)
 {
+	if (!buffer)
+		return FS_BUFFER_OVERFLOW;
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	char curr_file_name[MAX_F_FILE_NAME_SIZE+sizeof(int)*2];
@@ -438,13 +440,9 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 
 	while( index_from <= index_to ) {
 		get_file_name_by_index( c_file_name, index_from++, curr_file_name );
-		//int error = f_enterFS();
-		//(void)error;
-		//check_int("c_fileWrite, f_enterFS", error);
 		current_file = f_open(curr_file_name, "r");
 		if (current_file == NULL) {
 			free(element);
-			//f_releaseFS();
 			return FS_NOT_EXIST;
 		}
 		unsigned int length = f_filelength(curr_file_name)/(size_elementWithTimeStamp);//number of elements in currnet_file
@@ -465,7 +463,6 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 			if( (unsigned int)buffer_index > (unsigned int)size_of_buffer )
 			{
 				free(element);
-				//f_releaseFS();
 				return FS_BUFFER_OVERFLOW;
 			}
 			(*read)++;
@@ -473,7 +470,6 @@ FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 			buffer_index += size_elementWithTimeStamp;
 		}
 		f_close(current_file);
-		//f_releaseFS();
 	}
 	free(element);
 	return FS_SUCCSESS;
