@@ -25,6 +25,7 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Trxvu.h"
 #include "SubSystemModules/Maintenance/Log.h"
+#include "SubSystemModules/Maintenance/Maintenance.h"
 
 Boolean selectAndExecuteTest()
 {
