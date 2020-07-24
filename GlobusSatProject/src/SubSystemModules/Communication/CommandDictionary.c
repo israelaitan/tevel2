@@ -100,11 +100,15 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_TRANSPONDER_OFF;
 		break;
 
+	case TRANSPONDER_RSSI:
+		err = CMD_set_transponder_RSSI(cmd);
+		ackType=ACK_TRANSPONDER_RSSI;
+		break;
+
 	default:
 		break;
 	}
 
-	//TODO: Not send ACK if no ack for command
 	//Send Acknowledge to earth that command was executed
 	SendErrorMSG(ACK_ERROR_MSG, ackType, cmd,err);
 	return err;
@@ -112,14 +116,20 @@ int trxvu_command_router(sat_packet_t *cmd)
 
 int eps_command_router(sat_packet_t *cmd)
 {
-	//TODO: finish 'eps_command_router'
 	int err = 0;
 
 	switch (cmd->cmd_subtype)
 	{
-	case 0:
+	case EPS_UPDATE_ALPHA:
 		err = UpdateAlpha(*(float*)cmd->data);
 		SendErrorMSG(ACK_ERROR_MSG, ACK_UPDATE_EPS_ALPHA,cmd, err);
+		break;
+	case EPS_RESET_WD:
+		err = CMD_EPS_ResetWDT(cmd);
+		SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);
+		break;
+	case EPS_GET_MODE:
+		err = CMD_GetCurrentMode(cmd);
 		break;
 
 	default:
@@ -153,7 +163,6 @@ int telemetry_command_router(sat_packet_t *cmd)
 
 int managment_command_router(sat_packet_t *cmd)
 {
-	//TODO: finish 'managment_command_router'
 	int err = 0;
 	ack_subtype_t ackType=ACK_UNKNOWN_SUBTYPE;
 
@@ -162,40 +171,42 @@ int managment_command_router(sat_packet_t *cmd)
 
 	case SOFT_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_software);
-		ackType=ACK_SOFT_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case HARD_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_hardware);
-		ackType=ACK_HARD_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case EPS_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_eps);
-		ackType=ACK_EPS_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case TRXVU_HARD_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_trxvu_hard);
-		ackType=ACK_TRXVU_HARD_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case TRXVU_SOFT_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_trxvu_soft);
-		ackType=ACK_TRXVU_SOFT_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case FS_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_filesystem);
-		ackType=ACK_FS_RESET;
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANTS_SIDE_A_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_ant_SideA);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANTS_SIDE_B_RESET_SUBTYPE:
 		CMD_ResetComponent(reset_ant_SideB);
+		ackType=ACK_NO_ACK;
 		break;
 
 	case ANTS_CANCEL_DEPLOY_SUBTYPE:
@@ -219,34 +230,34 @@ int managment_command_router(sat_packet_t *cmd)
 		break;
 
 	case FRAM_WRITE_SUBTYPE:
-			err = CMD_FRAM_WriteAndTransmitt(cmd);
-			ackType=ACK_NO_ACK;
-			break;
+		err = CMD_FRAM_WriteAndTransmitt(cmd);
+		ackType=ACK_NO_ACK;
+		break;
 
 	case FRAM_RESTART_SUBTYPE:
-			err = CMD_FRAM_Restart(cmd);
-			ackType=ACK_FRAM_RESET;
-			break;
+		err = CMD_FRAM_Restart(cmd);
+		ackType=ACK_FRAM_RESET;
+		break;
 
 	case UPDATE_SAT_TIME_SUBTYPE:
-			err = CMD_UpdateSatTime(cmd);
-			ackType=ACK_UPDATE_TIME;
-			break;
+		err = CMD_UpdateSatTime(cmd);
+		ackType=ACK_UPDATE_TIME;
+		break;
 
 	case GET_SAT_TIME_SUBTYPE:
-			err = CMD_GetSatTime(cmd);
-			ackType=ACK_NO_ACK ;
-			break;
+		err = CMD_GetSatTime(cmd);
+		ackType=ACK_NO_ACK ;
+		break;
 
 	case GET_SAT_UP_TIME_SUBTYPE:
-			err = CMD_GetSatUptime(cmd);
-			ackType=ACK_NO_ACK;
-			break;
+		err = CMD_GetSatUptime(cmd);
+		ackType=ACK_NO_ACK;
+		break;
 
 	case TLM_SET_COLL_CYCLE_SUBTYPE:
-			err =CMD_SetTLM_CollectionCycle(cmd);
-			ackType=ACK_TLM_SET_COLL_CYCLE;
-			break;
+		err =CMD_SetTLM_CollectionCycle(cmd);
+		ackType=ACK_TLM_SET_COLL_CYCLE;
+		break;
 
 	default:
 		break;
