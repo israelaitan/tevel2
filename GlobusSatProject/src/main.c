@@ -21,6 +21,7 @@
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Maintenance/Log.h"
 #include "InitSystem.h"
 #include "main.h"
 
@@ -35,7 +36,7 @@
 		int res= InitSubsystems();//deploy ants
 		if(res!=0)
 		{
-			printf("error in InitSubsystems: "+res)
+			logg(error, "E: Error in InitSubsystems: "+res)
 		}
 
 		while(TRUE)//main loop
@@ -43,16 +44,17 @@
 			res=EPS_Conditioning();
 			if(res!=0)
 			{
-				printf("error in EPS_Conditioning: "+res)
+				logg(error, "E: Error in EPS_Conditioning: "+res)
 			}
 
 			res=TRX_Logic();
 			if(res!=0)
 			{
-				printf("error in TRX_Logic: "+res)
+				logg(error, "E: Error in TRX_Logic: "+res)
 			}
 
 			TelemetryCollectorLogic();
+
 			Maintenance();
 		}
 	}
@@ -64,7 +66,7 @@ int main()
 {
 	xTaskHandle taskMainHandle;
 
-	printf("\n\n Hello Givat Shmuel\n\n");
+	logg(OBCInfo, "\n\n Hello Givat Shmuel\n\n");
 
 	TRACE_CONFIGURE_ISP(DBGU_STANDARD, 2000000, BOARD_MCK);
 	// Enable the Instruction cache of the ARM9 core. Keep the MMU and Data Cache disabled.
