@@ -34,11 +34,46 @@
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/Beacon.h"
-
+#include "SubSystemModules/Maintenance/Log.h"
 
 //global variables
-time_unix g_transp_end_time=0;
-Boolean g_transp_mode=TURN_TRANSPONDER_OFF;
+static Boolean g_transp_mode=TURN_TRANSPONDER_OFF;
+static time_unix g_transp_end_time=0;
+
+void initTransponder()
+{
+	int err = 0;
+	err = FRAM_read((unsigned char*) &g_transp_mode ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+	if(err !=0)
+	{
+		g_transp_mode = TURN_TRANSPONDER_OFF;
+		g_transp_end_time=0;
+	}
+	else if (g_transp_mode == TURN_TRANSPONDER_ON)
+	{
+		time_unix duration;
+		err = FRAM_read((unsigned char*) &g_transp_end_time ,TRANSPONDER_TURN_ON_END_TIME_ADRR, TRANSPONDER_TURN_ON_END_TIME_SIZE);
+
+		if(err !=0)
+		{
+			g_transp_end_time=0;
+			duration = DEFAULT_TRANSPONDER_DURATION;
+		}
+		else
+		{
+			time_unix curr = 0;
+			Time_getUnixEpoch((unsigned int *)&curr);
+			duration = curr - g_transp_end_time;
+		}
+
+
+		//turn on transponder
+		sat_packet_t cmd;
+		memcpy(cmd.data,&duration,sizeof(duration));
+		CMD_turnOnTransponder(&cmd);
+	}
+
+}
 
 int set_transonder_mode(Boolean mode)
 {
@@ -48,12 +83,12 @@ int set_transonder_mode(Boolean mode)
 
 	if (mode)
 	{
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTransponder enabled\n");
+		logg(TRXInfo, "I:Transponder enabled\n");
 		data[1] = 0x02;
 	}
 	else
 	{
-		printf("Transponder disabled\n");
+		logg(TRXInfo, "I: Transponder disabled\n");
 		data[1] = 0x01;
 	}
 
@@ -77,9 +112,17 @@ int set_transponder_RSSI(byte *param)
 
 int CMD_turnOnTransponder(sat_packet_t *cmd)
 {
+	logg(TRXInfo, "I: Inside CMD_turnOnTransponder()\n");
 	int err;
 	byte rssiData[2];
 	time_unix duration;
+
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
 
 	Boolean mute = GetMuteFlag();
 	if(!mute)
@@ -117,19 +160,49 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 		//add duration to current time
 		g_transp_end_time += duration;
 
-		FRAM_write((unsigned char*) &g_transp_end_time ,TRANSPONDER_TURN_ON_TIME_ADRR, TRANSPONDER_TURN_ON_TIME_SIZE);
-		printf("*Turned On Transponder until: %lu\n", (long unsigned int)g_transp_end_time);
+		FRAM_write((unsigned char*) &g_transp_end_time ,TRANSPONDER_TURN_ON_END_TIME_ADRR, TRANSPONDER_TURN_ON_END_TIME_SIZE);
+		logg(TRXInfo, "I: Turned On Transponder until: %lu\n", (long unsigned int)g_transp_end_time);
 	}
 
 	return err;
 }
 
+//set RSSI Data from ground control
+int CMD_set_transponder_RSSI(sat_packet_t *cmd)
+{
+	logg(TRXInfo, "I: Inside CMD_set_transponder_RSSI()\n");
+	int err;
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+	else if (g_transp_mode == TURN_TRANSPONDER_OFF)
+	{
+		logg(error, "Transponder mode is OFF - cannot set RSSI");
+		return E_INPUT_POINTER_NULL;
+	}
+
+	//set RSSI
+	byte rssiData[2];
+
+	memcpy(rssiData, cmd->data, 2);
+	err = set_transponder_RSSI(rssiData);
+	if (0 != err)
+	{
+		CMD_turnOffTransponder();
+		return err;
+	}
+
+	return err;
+}
 
 int CMD_turnOffTransponder()
 {
+	logg(TRXInfo, "I: Inside CMD_turnOffTransponder()\n");
 	g_transp_end_time = 0;
 	int err = set_transonder_mode(TURN_TRANSPONDER_OFF);
-	printf("------------------------------------------Setting Transponder to OFF\n");
+	logg(TRXInfo, "I: Setting Transponder to OFF\n");
 	return err;
 }
 
@@ -140,16 +213,17 @@ Boolean getTransponderMode()
 
 Boolean checkEndTransponderMode()
 {
+	logg(TRXInfo, "I: Inside checkEndTransponderMode()\n");
 	time_unix curr_tick_time = 0;
 	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
 	if (curr_tick_time > g_transp_end_time)
 	{
-		printf("Transponder End time reached\n");
+		logg(TRXInfo, "I: Transponder End time reached\n");
 		return TRUE;
 	}
 	else
 	{
-		printf("Transponder End time NOT reached\n");
+		logg(TRXInfo, "I: Transponder End time NOT reached\n");
 		return FALSE;
 	}
 }
