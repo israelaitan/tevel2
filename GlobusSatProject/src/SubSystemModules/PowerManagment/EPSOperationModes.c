@@ -6,7 +6,6 @@
 #include <satellite-subsystems/isis_eps_driver.h>
 #include "SubSystemModules/Maintenance/Log.h"
 
-//TODO: update functions to only the relevant channels
 EpsState_t state;
 Boolean g_low_volt_flag = FALSE; // set to true if in low voltage
 
