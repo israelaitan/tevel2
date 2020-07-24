@@ -20,13 +20,19 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Maintenance/Log.h"
 #include "Maintanence_Commands.h"
 
 int CMD_GenericI2C(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_GenericI2C()\n");
+
 	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
+
 	int err = 0;
 	unsigned char slaveAddr = 0;
 	unsigned int size = 0;
@@ -36,17 +42,26 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	memcpy(&size,cmd->data + sizeof(slaveAddr),sizeof(size));
 
 	unsigned int offset = sizeof(slaveAddr) + sizeof(size);
-	err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, cmd->length);
-	I2C_read((unsigned int)slaveAddr,i2c_data,size);
+	//err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, cmd->length);
+	err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, (cmd->length - offset));
+	err = I2C_read((unsigned int)slaveAddr,i2c_data,size);
+	if (err == E_NO_SS_ERR){
+		TransmitDataAsSPL_Packet(cmd, i2c_data, size);
+	}
+	free(i2c_data);
 
 	return err;
 }
 
 int CMD_FRAM_ReadAndTransmitt(sat_packet_t *cmd)
 {
-	if (cmd == NULL || cmd->data == NULL){
+	logg(MTNInfo, "I:inside CMD_FRAM_ReadAndTransmitt()\n");
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
+
 	int err = 0;
 	unsigned int addr = 0;
 	unsigned int size = 0;
@@ -71,12 +86,16 @@ int CMD_FRAM_ReadAndTransmitt(sat_packet_t *cmd)
 
 int CMD_FRAM_WriteAndTransmitt(sat_packet_t *cmd)
 {
-	if (cmd == NULL || cmd->data == NULL){
+	logg(MTNInfo, "I:inside CMD_FRAM_WriteAndTransmitt()\n");
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
+
 	int err = 0;
 	unsigned int addr = 0;
-	unsigned int length = cmd->length;
+	unsigned short length = cmd->length;
 	unsigned char *data = cmd->data;
 
 	memcpy(&addr, cmd->data, sizeof(addr));
@@ -95,6 +114,8 @@ int CMD_FRAM_WriteAndTransmitt(sat_packet_t *cmd)
 
 int CMD_FRAM_Start(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_FRAM_Start()\n");
+
 	int err = 0;
 	err = FRAM_start();
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
@@ -103,6 +124,7 @@ int CMD_FRAM_Start(sat_packet_t *cmd)
 
 int CMD_FRAM_Stop(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_FRAM_Stop()\n");
 	(void)cmd;
 	int err = 0;
 	FRAM_stop();
@@ -111,12 +133,16 @@ int CMD_FRAM_Stop(sat_packet_t *cmd)
 
 int CMD_FRAM_Restart(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_FRAM_Restart()\n");
+
 	CMD_FRAM_Stop(cmd);
 	return CMD_FRAM_Start(cmd);
 }
 
 int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_FRAM_GetDeviceID()\n");
+
 	int err = 0;
 	unsigned char id;
 	FRAM_getDeviceID(&id);
@@ -126,9 +152,13 @@ int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 
 int CMD_UpdateSatTime(sat_packet_t *cmd)
 {
-	if (cmd == NULL || cmd->data == NULL){
+	logg(MTNInfo, "I:inside CMD_UpdateSatTime()\n");
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
+
 	int err = 0;
 	time_unix set_time = 0;
 	memcpy(&set_time, cmd->data, sizeof(set_time));
@@ -139,6 +169,8 @@ int CMD_UpdateSatTime(sat_packet_t *cmd)
 
 int CMD_GetSatTime(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_GetSatTime()\n");
+
 	int err = 0;
 	time_unix curr_time = 0;
 	err = Time_getUnixEpoch((unsigned int *)&curr_time);
@@ -153,6 +185,8 @@ int CMD_GetSatTime(sat_packet_t *cmd)
 
 int CMD_GetSatUptime(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_GetSatUptime()\n");
+
 	int err = 0;
 	time_unix uptime = 0;
 	uptime = Time_getUptimeSeconds();
@@ -162,8 +196,10 @@ int CMD_GetSatUptime(sat_packet_t *cmd)
 
 int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
-	if (cmd == NULL || cmd->data == NULL)
-	{
+	logg(MTNInfo, "I:inside CMD_SoftTRXVU_ComponenetReset()\n");
+
+	if(cmd == NULL || cmd->data == NULL){
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
 
@@ -177,8 +213,11 @@ int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)
 
 int CMD_HardTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_HardTRXVU_ComponenetReset()\n");
+
 	if (cmd == NULL || cmd->data == NULL)
 	{
+		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
 
@@ -192,6 +231,8 @@ int CMD_HardTRXVU_ComponenetReset(sat_packet_t *cmd)
 
 int CMD_AntennaDeploy(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_AntennaDeploy()\n");
+
 	(void)cmd;
 	int err = 0;
 	err = autoDeploy();
@@ -200,14 +241,61 @@ int CMD_AntennaDeploy(sat_packet_t *cmd)
 
 int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 {
+	logg(MTNInfo, "I:inside CMD_SetTLM_CollectionCycle()\n");
+
+	if (cmd == NULL || cmd->data == NULL)
+	{
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
 	int err=0;
-	//TODO: set tlm_save_periods in FRam
-	//FRAM_write((unsigned char*)tlm_save_periods,TLM_SAVE_PERIOD_START_ADDR,NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
+
+	int tlmComponent;
+	int tlmFramAddress;
+	int period;
+
+	//get component from command
+	memcpy(&tlmComponent,cmd->data,sizeof(tlmComponent));
+
+	//get period
+	memcpy(&period,cmd->data+sizeof(tlmComponent),sizeof(period));
+
+	if (tlmComponent == eps_tlm)
+	{
+		tlmFramAddress = EPS_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Setting EPS TLM with period: %d\n", period);
+	}
+	else if (tlmComponent == trxvu_tlm)
+	{
+		tlmFramAddress = TRXVU_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Setting TRXVU TLM with period: %d\n", period);
+	}
+	else if (tlmComponent == ant_tlm)
+	{
+		tlmFramAddress = ANT_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Setting ANTENNAS TLM with period: %d\n", period);
+	}
+	else if (tlmComponent == solar_panel_tlm)
+	{
+		tlmFramAddress = SOLAR_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Setting SOLAR TLM with period: %d\n", period);
+	}
+	else if (tlmComponent == wod_tlm)
+	{
+		tlmFramAddress = WOD_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Setting WOD TLM with period: %d\n", period);
+	}
+
+	//Set periods in FRAM
+	FRAM_write((unsigned char*)period, tlmFramAddress, sizeof(period));
 	return err;
 }
 
 int CMD_ResetComponent(reset_type_t rst_type)
 {
+	logg(MTNInfo, "I:inside CMD_ResetComponent()\n");
+
 	int err = 0;
 
 	Boolean8bit reset_flag = TRUE_8BIT;
@@ -233,7 +321,8 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 		vTaskDelay(10);
 
-		isis_eps__reset__to_t params;//TODO: what params?
+		isis_eps__reset__to_t params;
+		params.fields.rst_key = 0xA6;
 		isis_eps__reset__from_t response;//TODO: what to do with response?
 		err = isis_eps__reset__tmtc( EPS_I2C_BUS_INDEX, &params , &response );
 		break;
