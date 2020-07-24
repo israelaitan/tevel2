@@ -11,7 +11,6 @@ typedef enum __attribute__ ((__packed__)) spl_command_type_t {
 	ack_type
 }spl_command_type;
 
-//TODO: set all sub-types to be different from one another
 
 typedef enum __attribute__ ((__packed__)) ack_subtype_t
 {
@@ -33,7 +32,7 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_UPDATE_BEACON_BIT_RATE = 0x13,
 	ACK_UPDATE_BEACON_TIME_DELAY = 0x14,
 	ACK_UPDATE_EPS_VOLTAGES = 0x15,
-	ACK_UPDATE_EPS_HEATER_VALUES = 0x16,
+	ACK_RESET_EPS_WD = 0x16,
 	ACK_UPDATE_EPS_ALPHA = 0x17,
 
 	ACK_IDLE_ON = 0x18,
@@ -41,6 +40,7 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_MUTE = 0x8D,
 	ACK_UNMUTE = 0x8E,
 	ACK_TRANSPONDER_ON = 0x8F,
+	ACK_TRANSPONDER_RSSI = 0x8A,
 	ACK_TRANSPONDER_OFF = 0x8C,
 
 	ACK_DUMP_START = 0x90,
@@ -68,8 +68,8 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	BEACON_SUBTYPE =		0x01,	//0b00000001
 	MUTE_TRXVU = 			0x11,	//0b00010001
 	UNMUTE_TRXVU = 			0x88,	//0b10001000
-	TRXVU_IDLE_ON = 		0x87,	//TODO: change to correct address
-	TRXVU_IDLE_OFF = 		0x86,	//TODO: change to correct address
+	TRXVU_IDLE_ON = 		0x87,
+	TRXVU_IDLE_OFF = 		0x86,
 	START_DUMP_SUBTYPE =    0x69,	//0b01101001
 	STOP_DUMP_SUBTYPE= 		0x22,	//0b00100010
 	GET_BEACON_INTERVAL = 	0x23,	//0b00100011
@@ -83,14 +83,16 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t
 	FORCE_ABORT_DUMP_SUBTYPE = 0x33,//0b00110011
 	DELETE_DUMP_TASK = 0x44,		//0b00100010
 	TRANSPONDER_ON = 0x45,
-	TRANSPONDER_OFF = 0x46
+	TRANSPONDER_RSSI = 0x46,
+	TRANSPONDER_OFF = 0x47
 }trxvu_subtypes_t;
 
 
 typedef enum __attribute__ ((__packed__)) eps_subtypes_t
 {
-	a,
-	b
+	EPS_UPDATE_ALPHA = 0x00,
+	EPS_RESET_WD = 0x01,
+	EPS_GET_MODE = 0x02
 }eps_subtypes_t;
 
 
