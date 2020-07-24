@@ -17,8 +17,7 @@ int CMD_UpdateThresholdVoltages(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 	EpsThreshVolt_t thresh_voltages;;
-	memcpy(thresh_voltages.raw, cmd->data,
-			sizeof(thresh_voltages));
+	memcpy(thresh_voltages.raw, cmd->data, 	sizeof(thresh_voltages));
 	err = UpdateThresholdVoltages(&thresh_voltages);
 	return err;
 }
@@ -30,8 +29,7 @@ int CMD_GetThresholdVoltages(sat_packet_t *cmd)
 	err = GetThresholdVoltages(&thresh_voltages);
 	if (err == 0)
 	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*) thresh_voltages.raw,
-				sizeof(thresh_voltages));	//TODO: check if correct
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*) thresh_voltages.raw, sizeof(thresh_voltages));
 	}
 	return err;
 }
@@ -115,7 +113,7 @@ int CMD_GetCurrentMode(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	channel_t state = GetSystemChannelState();
+	EpsState_t state = GetSystemState();
 	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
 	return err;
 }
