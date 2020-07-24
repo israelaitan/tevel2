@@ -66,11 +66,6 @@ int SetEPS_Channels(channel_t channel);
  */
 EpsState_t GetSystemState();
 
-/*
- * Gets the current system channel state
- * @return current system channel state
- */
-channel_t GetSystemChannelState();
 
 Boolean EpsGetLowVoltageFlag();
 
