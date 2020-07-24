@@ -28,6 +28,7 @@
 #include "SubSystemModules/Communication/Beacon.h"
 #include "SubSystemModules/Housekepping/Dump.h"
 #include "SubSystemModules/Maintenance/Log.h"
+
 //idle global variables
 int				g_idle_period = 300 ; // idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
@@ -38,9 +39,10 @@ char g_antOpen= 0;
 time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period =30*60 ; //30 min
 
-void setLastDeploymentTime(time_unix time)
+void setLastAntsAutoDeploymentTime(time_unix time)
 {
 	g_ants_last_dep_time = time;
+	logg(TRXInfo, "I: Last Antenas Auto deployment is: %d\n", time);
 }
 
 //setting trxvu idle off
@@ -58,7 +60,6 @@ int SetIdleOff()
 		}
 		else
 		{
-			//TODO: handle failure in setting idle state off
 			logg(error, "E:failed in setting trxvu idle off - %d\n", err);
 		}
 	}
@@ -147,16 +148,15 @@ int InitTrxvu()
 	}
 	else
 	{
-		logg(TRXInfo, "I:IsisTrxvu_initialize succeeded\n");
+		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 	}
 
 
-	//TODO: check if required as bitrate already provided in init
 	vTaskDelay(100);
 	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
 	if(err!=0)
 	{
-		logg(error, "E: in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
+		logg(error, "E: Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
 		return err;
 	}
 	else
@@ -183,17 +183,20 @@ int InitTrxvu()
 		err=IsisAntS_initialize(&address,1);
 		if(err!=0)
 		{
-			printf("Error in the initialization of the Antennas: %d\n", err);
+			logg(error, "Error in the initialization of the Antennas: %d\n", err);
 			return err;
 		}
 		else
 		{
-			logg(TRXInfo, "I:initialization of the Antennas succeeded\n");
+			logg(TRXInfo, "I: Initialization of the Antennas succeeded\n");
 		}
 	}
 
 	//Initialize TRXVU transmit lock
 	InitTxModule();
+
+	//init transponder
+	initTransponder();
 
 	//Initialize beacon parameters
 	InitBeaconParams();
@@ -233,7 +236,7 @@ int InitTrxvu()
 		}
 		else
 		{
-			logg(TRXInfo, "I:Status: %d in getting the online command. \n", res);
+			logg(TRXInfo, "I: Status: %d in getting the online command. \n", res);
 		}
 
 		if(g_antOpen==0)
@@ -241,7 +244,7 @@ int InitTrxvu()
 			//update ant open to true
 			g_antOpen=1;
 			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-			logg(TRXInfo, "I:*****First Activation without Antenas deployed******\n");
+			logg(TRXInfo, "I: Antenas deployment flag set to TRUE as packet received from Earth******\n");
 		}
 
 	}
@@ -273,7 +276,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
 	{
-		logg(error, "E:Failed in setting trxvy idle on - %d\n", err);
+		logg(error, "E: Error in setting trxvu idle on - %d\n", err);
 	}
 	else
 	{
