@@ -41,7 +41,7 @@ Boolean TestEpsConditioning()
 		printf("seconds till finish: %d\n",(int)(end_time - curr_time)/1000);
 		GetBatteryVoltage(&vbat);
 		printf("Vbat = %d\n",vbat);
-		printf("channel state = %X\n",GetSystemChannelState());
+		//printf("channel state = %X\n",GetSystemChannelState());
 
 		switch(GetSystemState()){
 			case FullMode:
