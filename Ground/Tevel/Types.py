@@ -32,16 +32,14 @@ class Subtype(Enum):
     TRANSPONDER_OFF =           0x46
 
 class Telemetry(Enum):
-    tlm_wod = 0
-    tlm_eps_raw_mb = 1
-    tlm_eps_eng_mb = 2
-    tlm_solar = 3
-    tlm_tx = 4
-    tlm_rx = 5
-    tlm_rx_frame = 6
-    tlm_antenna = 7
-    tlm_log = 8
-    tlm_log_bckp = 9
+    tlm_eps_raw_mb = 0
+    tlm_eps_eng_mb = 1
+    tlm_solar = 2
+    tlm_tx = 3
+    tlm_rx = 4
+    tlm_antenna = 5
+    tlm_log = 6
+    tlm_log_bckp = 7
 
 class AckSubtype(Enum):
     ACK_RECEIVE_COMM =      0x00			# when receive any packet
