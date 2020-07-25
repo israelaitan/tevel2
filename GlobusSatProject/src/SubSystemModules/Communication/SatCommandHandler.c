@@ -44,7 +44,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	}
 	else if(targetSat!=8 && targetSat!=0)
 	{
-		printf("The online command is for target satellite: %d\n" , targetSat);
+		logg(TRXInfo, "The online command is for target satellite: %d\n" , targetSat);
 		return cmd_no_command_found;
 	}
 	offset += sizeof(targetSat);

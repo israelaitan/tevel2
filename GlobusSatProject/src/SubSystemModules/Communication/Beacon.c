@@ -35,7 +35,10 @@ void InitBeaconParams()
 	if(status != 0)
 	{
 		g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
+
 	}
+
+	logg(TRXInfo, "I: Setting Beacon Intervals to %d\n", g_beacon_interval_time);
 }
 
 
@@ -67,13 +70,13 @@ void BeaconLogic()
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			logg(TRXInfo, "I:++++++++++++++++++++++++++++++++beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			logg(TRXInfo, "I: ### Beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 		}
 		else
-			logg(TRXInfo, "I:beacon time did not arrive\n");
+			logg(TRXInfo, "I: Beacon time did not arrive\n");
 	}
 	else
-		logg(TRXInfo, "I:____________________---__________-beacon not allowed\n");
+		logg(TRXInfo, "I:---beacon NOT allowed\n");
 }
 
 //Update beacon intervals - allows changing this interval from earth
@@ -92,7 +95,7 @@ int UpdateBeaconInterval(sat_packet_t *cmd)
 	int err = FRAM_write((unsigned char *)&intrvl, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE );
 	if (err!=0)
 	{
-		logg(error, "E:interval update to FRAM failed\n");
+		logg(error, "E: interval update to FRAM failed\n");
 		return err;
 	}
 	else

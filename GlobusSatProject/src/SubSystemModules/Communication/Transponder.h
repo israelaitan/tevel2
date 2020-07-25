@@ -16,7 +16,12 @@
 #define TURN_TRANSPONDER_OFF FALSE
 #define TURN_TRANSPONDER_ON TRUE
 #define DEFAULT_TRANS_RSSI 200
+#define DEFAULT_TRANSPONDER_DURATION 600
 
+/**
+ * @brief		Init transponder model
+ */
+void initTransponder();
 
 /**
  * @brief		Set transponder mode using generic I2C command
@@ -44,6 +49,12 @@ int CMD_turnOnTransponder(sat_packet_t *cmd);
  *@return		int indicating the error. 0 for success
  */
 int CMD_turnOffTransponder();
+
+/**
+ *@brief		set RSSI Data from ground control
+ *@return		int indicating the error. 0 for success
+ */
+int CMD_set_transponder_RSSI(sat_packet_t *cmd);
 
 /**
  *@brief		Get transponder state - True for on and 0 for off

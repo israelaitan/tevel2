@@ -24,13 +24,13 @@ Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 	int err = Time_getUnixEpoch((unsigned int *)&curr);
 	if(0 != err)
 	{
-		printf("Time_getUnixEpoch failed\n");
+		logg(MTNInfo, "Time_getUnixEpoch failed\n");
 		return FALSE;
 	}
 
-	//printf("current time: %ld, current-prev: %ld\n", curr, curr-prev_time );
 	if(curr - prev_time >= period)
 	{
+		logg(MTNInfo, "CheckExecutionTime return TRUE\n");
 		return TRUE;
 	}
 	return FALSE;
@@ -100,8 +100,7 @@ int WakeupFromResetCMD()
 
 void ResetGroundCommWDT()
 {
-	SaveSatTimeInFRAM(LAST_COMM_TIME_ADDR,
-			LAST_COMM_TIME_SIZE);
+	SaveSatTimeInFRAM(LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 }
 
 // check if last communication with the ground station has passed WDT kick time
@@ -123,7 +122,6 @@ Boolean IsGroundCommunicationWDTKick()
 	return FALSE;
 }
 
-//TODO: add to command dictionary
 int SetGsWdtKickTime(time_unix new_gs_wdt_kick_time)
 {
 	int err = FRAM_write((unsigned char*)&new_gs_wdt_kick_time, NO_COMM_WDT_KICK_TIME_ADDR,

@@ -18,8 +18,8 @@
 #include "TLM_management.h"
 #include <satellite-subsystems/isis_eps_driver.h>
 
-//TODO change it after testing to 30.
-#define ANT_AWAITED_TIME_MIN 4
+
+#define ANT_AWAITED_TIME_MIN 30
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
@@ -32,7 +32,6 @@ Boolean isFirstActivation()
 	unsigned char FirstActivation=0;
 	int res=0;
 
-	//TODO: remove print after testing
 	logg(OBCInfo, "I:Inside isFirstActivation()\n");
 
 	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
@@ -98,7 +97,6 @@ void firstActivationProcedure()
 //שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
 {
-	//TODO: remove print after testing
 	logg(OBCInfo, "I:Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
@@ -153,7 +151,6 @@ int StartI2C()
 {
 	int result=0;
 
-	//TODO: remove after finish testing
 	logg(OBCInfo, "I:Inside StartI2C() - calling I2C_start driver\n");
 
 	result=I2C_start(I2c_SPEED_Hz, I2c_Timeout);
@@ -172,7 +169,7 @@ int StartI2C()
 
 	if(result==0)
 	{
-		logg(OBCInfo, "I: StartI2C.success\n");
+		logg(OBCInfo, "I: StartI2C() - success\n");
 	}
 
 	return result;
@@ -182,16 +179,16 @@ int StartI2C()
 int StartSPI()
 {
 	int result= 0;
-	logg(OBCInfo, "I:Inside StartSPI()\n");
+	logg(OBCInfo, "I: Inside StartSPI()\n");
 	result = SPI_start(bus1_spi, slave1_spi);
 
 	if(result==0)
 	{
-		logg(OBCInfo, "I:StartSPI.success\n");
+		logg(OBCInfo, "I: StartSPI() - success\n");
 	}
 	else if(result==-1)
 	{
-		logg(error, "E:StartSPI.error\n");
+		logg(error, "E: StartSPI - error\n");
 	}
 	return result;
 }
@@ -200,7 +197,7 @@ int StartSPI()
 int StartTIME()
 {
 	int err = 0;
-	logg(OBCInfo, "I:Inside StartTIME()\n");
+	logg(OBCInfo, "I: Inside StartTIME()\n");
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
 	err = Time_start(&expected_deploy_time, 0);
 	if (0 != err)
@@ -211,8 +208,8 @@ int StartTIME()
 	time_unix time_before_wakeup = 0;
 	if (!isFirstActivation())
 	{
-		logg(OBCInfo, "I:reset clock\n");
 		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+		logg(OBCInfo, "I: Reset clock with %d\n", time_before_wakeup);
 		Time_setUnixEpoch(time_before_wakeup);
 	}
 	return 0;
@@ -221,7 +218,9 @@ int StartTIME()
 // antena auto deploy both sides
 int autoDeploy()
 {
+	logg(OBCInfo, "I: Inside autoDeploy()\n");
 	int res=0;
+
 	// antena auto deploy - sides A
 	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
 
@@ -262,7 +261,7 @@ int autoDeploy()
 	}
 	else
 	{
-		setLastDeploymentTime(deploy_time);
+		setLastAntsAutoDeploymentTime(deploy_time);
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 	}
 	return res;
@@ -273,7 +272,6 @@ int DeploySystem()
 {
 	int res=0;
 
-	//TODO: remove print after testing
 	logg(OBCInfo, "I: DeploySystem() here\n");
 
 	if(isFirstActivation())
@@ -293,59 +291,77 @@ int DeploySystem()
 //אתחול כלל המערכות
 int InitSubsystems()
 {
-	//TODO: remove print after testing
-	logg(OBCInfo, "I:InitSubsystems()  here\n");
+	logg(OBCInfo, "I: in InitSubsystems()\n");
+	int err = 0;
 
-	//TODO: not sure we should stop if something fails
-	int err;
 	err = StartSPI();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in StartSPI\n");
+	}
 
 	// start the I2C component
 	err = StartI2C();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in StartI2C\n");
+	}
 
 	// start the FRAM
 	err = StartFRAM();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in StartFRAM\n");
+	}
 
 	// Start the clock
 	err = StartTIME();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in StartTIME\n");
+	}
 
 	// initialize TRXVU (communication) component
 	err=InitTrxvu();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in InitTrxvu\n");
+	}
 
 	// Initalize the file system
 	Boolean firstActivation= isFirstActivation();
 	err=InitializeFS(firstActivation);
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in InitializeFS\n");
+	}
 
 	//Initialize the dump thread (queue and lock)
 	err=InitDump();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in InitDump\n");
+	}
 
 	err = InitTelemetryCollector();
-	//TODO: log if error
+	if (err!=0)
+	{
+		logg(error, "E: Failed in InitTelemetryCollector\n");
+	}
 
 
 	// Initialize EPS
 	err=EPS_Init();
 	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in EPS_Init\n");
+	}
 
 	// Deploy system - open Antetnas
 	err = DeploySystem();
-	if (err!=0)
-		return err;
+	{
+		logg(error, "E: Failed in DeploySystem\n");
+	}
 
 	return 0;
 }
