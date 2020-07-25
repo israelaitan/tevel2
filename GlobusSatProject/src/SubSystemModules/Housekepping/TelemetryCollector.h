@@ -4,6 +4,7 @@
 #include "GlobalStandards.h"
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
+#include "SubSystemModules/Communication/SatCommandHandler.h"
 
 //TODO: finish WOD telemetry according to requirements... TRX TLM...
 typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
@@ -85,5 +86,30 @@ void TelemetrySaveWOD();
  * @param[out] output WOD telemetry. If an error occurred while getting TLM the fields will be zero
  */
 void GetCurrentWODTelemetry(WOD_Telemetry_t *wod);
+
+/*!
+ *  @brief Gets all EPS telemetry
+ * @param[out] output EPS telemetry and sends them to ground control
+ */
+int CMD_getEPS_TLM(sat_packet_t *cmd);
+
+/*!
+ *  @brief Gets all Solar panels telemetry
+ * @param[out] output Solar panels telemetry and sends them to ground control
+ */
+int CMD_getSolar_TLM(sat_packet_t *cmd);
+
+/*!
+ * @brief Gets all TRXVU telemetry
+ * @param[out] output TRXVU telemetry and sends them to ground control
+ */
+int CMD_getTRXVU_TLM(sat_packet_t *cmd);
+
+/*!
+ * @brief Gets all Antennas telemetry
+ * @param[out] output Antennas telemetry and sends them to ground control
+ */
+int CMD_getAnts_TLM(sat_packet_t *cmd);
+
 
 #endif /* TELEMETRYCOLLECTOR_H_ */

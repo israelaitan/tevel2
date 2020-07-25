@@ -14,7 +14,7 @@
 #include "TLM_management.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
-
+#include "SubSystemModules/Communication/SatDataTx.h"
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
@@ -150,7 +150,7 @@ void TelemetrySaveEPS()
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
 	else
-			logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
+		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
 }
 
@@ -192,33 +192,32 @@ void TelemetrySaveANT()
 
 }
 
+int getSolarPanelsTLM(int32_t *t)
+{
+	int err = 0;
+	uint8_t fault;
+
+	err =  IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0, &t[0], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1, &t[1], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_6, &t[6], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_7, &t[7], &fault);
+	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_8, &t[8], &fault);
+
+	return err;
+}
+
 void TelemetrySaveSolarPanels()
 {
-	//TODO: when wake the soler panels?
 	int err = 0;
 	int32_t t[ISIS_SOLAR_PANEL_COUNT];
-	uint8_t fault;
+
 	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
 	{
-		err =  IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0, &t[0],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1, &t[1],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_6, &t[6],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_7, &t[7],
-				&fault);
-		err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_8, &t[8],
-				&fault);
-
+		err = getSolarPanelsTLM(t);
 		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
 		{
 			c_fileWrite(FILENAME_SOLAR_PANELS_TLM, t);
@@ -271,7 +270,112 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.power;
 		wod->consumed_power = hk_tlm_cdb.fields.dist_input.fields.power;
 	}
-    //TODO: number of resets is not managed
+    //Get number of resets is not managed
 	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+}
+
+//get EPS TLM
+int CMD_getEPS_TLM(sat_packet_t *cmd)
+{
+	int err1, err2;
+	int size = sizeof(unsigned char)*116;
+
+	unsigned char rawData[232];
+	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
+	err1 = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
+
+	if (err1 == 0)	{
+		memcpy(&rawData, (unsigned char*)&tlm_mb_raw.raw, size);
+	} else 	{
+		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err1);
+	}
+
+
+	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
+	err2 = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+
+	if (err2 == 0)	{
+		memcpy(&rawData + size, (unsigned char*)&tlm_mb_eng.raw, size);
+	} else {
+		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err2);
+	}
+
+	if(err1 == 0 || err2 == 0)
+	{
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, size*2);
+		return 0;
+	}
+
+
+	return err1;
+}
+
+// Get Solar Panels TLM
+int CMD_getSolar_TLM(sat_packet_t *cmd)
+{
+	int err = 0;
+	int32_t t[ISIS_SOLAR_PANEL_COUNT];
+
+	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
+	{
+		err = getSolarPanelsTLM(t);
+		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
+		{
+			TransmitDataAsSPL_Packet(cmd, (unsigned char*) t, sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
+		}
+	}
+
+	return err;
+}
+
+// Get TRXVU TLM
+int CMD_getTRXVU_TLM(sat_packet_t *cmd)
+{
+	int err1, err2;
+	unsigned char rawData[TRXVU_ALL_RXTELEMETRY_SIZE*2];
+	int size = TRXVU_ALL_RXTELEMETRY_SIZE * sizeof(unsigned char);
+
+	ISIStrxvuTxTelemetry tx_tlm;
+	err1 = IsisTrxvu_tcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
+	if (err1 == 0)
+	{
+		memcpy(&rawData, (unsigned char*)&tx_tlm.raw, size);
+	}
+
+	ISIStrxvuRxTelemetry rx_tlm;
+	err2 = IsisTrxvu_rcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	if (err2 == 0)
+	{
+		memcpy(&rawData+size, (unsigned char*)&rx_tlm.raw, size);
+	}
+
+	if(err1 == 0 || err2 == 0)
+	{
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, size*2);
+		return 0;
+	}
+
+	return err1;
+}
+
+// Get Antennas TLM
+int CMD_getAnts_TLM(sat_packet_t *cmd)
+{
+	int err = 0;
+	ISISantsTelemetry ant_tlm;
+	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, &ant_tlm);
+	if (err != 0)
+	{
+		err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, &ant_tlm);
+	}
+
+	//success get telemetry
+	if (err == 0)
+	{
+		//send data
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*) &ant_tlm,sizeof(ant_tlm));
+	}
+
+	return err;
 }
 
