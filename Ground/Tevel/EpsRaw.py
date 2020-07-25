@@ -1,6 +1,5 @@
 from typing import NamedTuple
 
-
 class EpsRaw(NamedTuple):
     #unsigned char raw[116]   
     reply_header_stid : int
