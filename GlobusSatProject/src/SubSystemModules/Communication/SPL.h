@@ -55,6 +55,8 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_FRAM_RESET = 0xA0,
 	ACK_TLM_SET_COLL_CYCLE= 0xA1,
 
+	ACK_FS_DELETE_ALL = 0x0D,
+	ACK_FS_DELETE_FILE = 0x0E,
 
 	ACK_PING = 0xAA,
 	ACK_UNKNOWN_SUBTYPE = 0xBB,				//when the given subtype is unknown
@@ -98,8 +100,16 @@ typedef enum __attribute__ ((__packed__)) eps_subtypes_t
 
 typedef enum __attribute__ ((__packed__)) telemetry_subtypes_t
 {
-	aa,
-	ba
+	FS_IS_CORRUPT_SUBTYPE = 0x0A,
+	FS_GET_FREE_SPACE_SUBTYPE = 0x0B,
+	FS_GET_LAST_ERR_SUBTYPE = 0x0C,
+	FS_DELETE_ALL_SUBTYPE = 0x0D,
+	FS_DELETE_FILE_BY_TYPE_SUBTYPE = 0x0E,
+	FS_DELETE_FILE_BY_TIME_SUBTYPE = 0x0F,
+	TLM_GET_EPS_SUBTYPE = 0x10,
+	TLM_GET_SOLAR_SUBTYPE = 0x11,
+	TLM_GET_TRXVU_SUBTYPE = 0x12,
+	TLM_GET_ANTS_SUBTYPE = 0x13
 }telemetry_subtypes_t;
 
 
