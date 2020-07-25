@@ -2,9 +2,11 @@ import socket
 import struct
 from colorama import Fore
 
-from Tevel import PVTelemetry
 from Tevel.EpsRaw import *
-from Tevel.TrxvuTelemetry import TxTelemetry
+from Tevel.EpsEng import *
+from Tevel.PVTelemetry import *
+from Tevel.AntTelemetry import *
+from Tevel.TrxvuTelemetry import *
 from Tevel.Types import *
 
 kissPrefix = b'\xc0\x00'
@@ -38,30 +40,37 @@ def handleEpsRaw(header, data):
 def handleEpsEng(header, data):
     time = struct.unpack('I', data[0:4])
     epsData = data[4:]
-    epsEng = EpsEng._make(struct.unpack(gethousekeepingrawFMT, epsData))
+    epsEng = EpsEng._make(struct.unpack(gethousekeepingengFMT, epsData))
     print(f'{Fore.CYAN}{header}')
     print(f'{time[0]}:{epsEng}\n')
 
 def handleTx(header, data):
     time = struct.unpack('I', data[0:4])
     txData = data[4:]
-    tx = TxTelemetry._make(struct.unpack(gethousekeepingrawFMT, txData))
+    tx = TxTelemetry._make(struct.unpack(txTlmFormat, txData))
     print(f'{Fore.CYAN}{header}')
     print(f'{time[0]}:{tx}\n')
 
 def handleRx(header, data):
     time = struct.unpack('I', data[0:4])
     rxData = data[4:]
-    rx = TxTelemetry._make(struct.unpack(gethousekeepingrawFMT, rxData))
+    rx = RxTelemetry._make(struct.unpack(rxTlmFormat, rxData))
     print(f'{Fore.CYAN}{header}')
     print(f'{time[0]}:{rx}\n')
 
 def handlePV(header, data):
     time = struct.unpack('I', data[0:4])
     pvData = data[4:]
-    pv = PVTelemetry._make(struct.unpack(gethousekeepingrawFMT, pvData))
+    pv = PVTelemetry._make(struct.unpack(pvTlmFormat, pvData))
     print(f'{Fore.CYAN}{header}')
     print(f'{time[0]}:{pv}\n')
+
+def handleAnt(header, data):
+    time = struct.unpack('I', data[0:4])
+    antData = data[4:]
+    ant = AntTelemetry._make(struct.unpack(antTlmFormat, antData))
+    print(f'{Fore.CYAN}{header}')
+    print(f'{time[0]}:{ant}\n')
 
 def handleAck(header, data):
     print(f'{Fore.GREEN}{header}')
@@ -90,10 +99,10 @@ def rcvPayload( headerStriped, socket ):
             handleEpsEng(header, splData)
         elif (header.subtype == Telemetry.tlm_tx.value):
             handleTx(header, splData)
-        elif (header.subtype == Telemetry.tlm_tx.value):
+        elif (header.subtype == Telemetry.tlm_rx.value):
             handleRx(header, splData)
         elif (header.subtype == Telemetry.tlm_antenna.value):
-            handleAnts(header, splData)
+            handleAnt(header, splData)
         elif (header.subtype == Telemetry.tlm_solar.value):
             handlePV(header, splData)
     supffix = socket.recv(1)

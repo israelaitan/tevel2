@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-class AntTelemetry(NamedTuple):
+class PVTelemetry(NamedTuple):
     pv0: int
     pv1: int
     pv2: int
@@ -11,4 +11,4 @@ class AntTelemetry(NamedTuple):
     pv7: int
     pv8: int
 
-antTlmFormat = 'IIIIIIIII'
+pvTlmFormat = 'IIIIIIIII'

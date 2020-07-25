@@ -83,4 +83,4 @@ class EpsEng(NamedTuple):
     cc3_curr_out_mppt: int
 
 
-gethousekeepingrawFMT = 'BBBBBBHHhhhhhhHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH'
+gethousekeepingengFMT = 'BBBBBBHHhhhhhhHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH'

@@ -10,8 +10,9 @@ class TxTelemetry(NamedTuple):
     vurx_curr : int
     vupa_curr : int
     pa_temp : int
+    board_temp: int
 
-txTlmFormat = 'HHHHHHHH'
+txTlmFormat = 'HHHHHHHHH'
 
 class RxTelemetry(NamedTuple):
     rx_doppler : int
