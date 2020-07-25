@@ -142,14 +142,30 @@ int eps_command_router(sat_packet_t *cmd)
 
 int telemetry_command_router(sat_packet_t *cmd)
 {
-	//TODO: finish 'telemetry_command_router'
 	int err = 0;
 	ack_subtype_t ackType=ACK_UNKNOWN_SUBTYPE;
 
 	switch (cmd->cmd_subtype)
 	{
-	case 0:
 
+	case TLM_GET_EPS_SUBTYPE:
+		err = CMD_getEPS_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_SOLAR_SUBTYPE:
+		err = CMD_getSolar_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_TRXVU_SUBTYPE:
+		err = CMD_getTRXVU_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_ANTS_SUBTYPE:
+		err = CMD_getAnts_TLM(cmd);
+		ackType=ACK_NO_ACK;
 		break;
 
 	default:
@@ -270,14 +286,34 @@ int managment_command_router(sat_packet_t *cmd)
 
 int filesystem_command_router(sat_packet_t *cmd)
 {
-	//TODO: finish 'filesystem_command_router'
 	int err = 0;
 	ack_subtype_t ackType=ACK_UNKNOWN_SUBTYPE;
 
 	switch (cmd->cmd_subtype)
 	{
-	case 0:
-
+	case FS_IS_CORRUPT_SUBTYPE:
+		err = CMD_isFS_Corrupt(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case FS_GET_FREE_SPACE_SUBTYPE:
+		err = CMD_FreeSpace(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case FS_GET_LAST_ERR_SUBTYPE:
+		err = CMD_GetLastFS_Error(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case FS_DELETE_ALL_SUBTYPE:
+		err = CMD_DeleteFS(cmd);
+		ackType=ACK_FS_DELETE_ALL;
+		break;
+	case FS_DELETE_FILE_BY_TYPE_SUBTYPE:
+		err = CMD_DeleteFilesOfType(cmd);
+		ackType=ACK_FS_DELETE_FILE;
+		break;
+	case FS_DELETE_FILE_BY_TIME_SUBTYPE:
+		err = CMD_DeleteFileByTime(cmd);
+		ackType=ACK_FS_DELETE_FILE;
 		break;
 
 	default:
@@ -288,3 +324,6 @@ int filesystem_command_router(sat_packet_t *cmd)
 	SendErrorMSG(ACK_ERROR_MSG, ackType, cmd,err);
 	return err;
 }
+
+
+
