@@ -323,7 +323,7 @@ int CMD_ResetComponent(reset_type_t rst_type)
 
 		isis_eps__reset__to_t params;
 		params.fields.rst_key = 0xA6;
-		isis_eps__reset__from_t response;//TODO: what to do with response?
+		isis_eps__reset__from_t response;
 		err = isis_eps__reset__tmtc( EPS_I2C_BUS_INDEX, &params , &response );
 		break;
 

@@ -205,7 +205,7 @@ int InitTrxvu()
 }
 
 
-//TODO:TRX VU main logic
+//TRX VU main logic
  CommandHandlerErr TRX_Logic()
 {
 	logg(TRXInfo, "I:Inside TRX_Logic()\n");
