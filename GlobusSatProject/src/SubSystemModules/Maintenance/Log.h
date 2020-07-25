@@ -9,8 +9,9 @@
 #define LOG_H_
 
 //TODO: adjust
-#define LOG_BUFFER_SIZE 4096
-#define CURR_LOG_LEVEL 3
+#define LOG_MSG_SIZE 80
+#define LOG_BUFFER_SIZE 80
+#define CURR_LOG_LEVEL 6
 #define TLMInfo (LogLevel)3
 #define MTNInfo (LogLevel)3
 #define TRXInfo (LogLevel)3
@@ -18,13 +19,13 @@
 #define EPSInfo (LogLevel)3
 
 typedef enum _LogLevel {
-	all,
-	trace,
-	debug,
-	info,
-	warn,
-	error,
-	fatal
+	all = 0,
+	trace = 1,
+	debug = 2,
+	info = 3,
+	warn = 4,
+	error = 5,
+	fatal = 6
 } LogLevel;
 
 void logg(LogLevel level, char *fmt, ...);

@@ -23,7 +23,7 @@ int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd,
 		ord = cmd->ordinal;
 	}
 
-	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, 8, &ack);
+	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, &ack);
 
 	err = TransmitSplPacket(&ack,NULL);
 	vTaskDelay(10);

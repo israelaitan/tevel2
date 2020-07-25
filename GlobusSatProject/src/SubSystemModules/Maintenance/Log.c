@@ -16,9 +16,22 @@
 
 int index = 0;
 char logBuffer[LOG_BUFFER_SIZE];
-char logMsg[80];
+char logMsg[LOG_MSG_SIZE];
 
 void _logg(char* msg) {
+#ifdef TESTING
+	printf(msg);
+#endif
+	memset(logBuffer, 0, LOG_BUFFER_SIZE);
+    int size =  strlen(msg);
+    memcpy(logBuffer, msg, size);
+    FileSystemResult res = FS_SUCCSESS;
+    res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
+    if (res == FS_FAIL)//handle write fails due to concurrent dump
+    	c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
+}
+
+void __logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif
