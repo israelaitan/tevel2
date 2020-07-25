@@ -22,7 +22,6 @@
 #define FILENAME_LOG_BCKP_TLM			"logBckp"
 
 typedef enum {
-	tlm_wod,
 	tlm_eps_raw_mb,
 	tlm_eps_eng_mb,
 	tlm_solar,

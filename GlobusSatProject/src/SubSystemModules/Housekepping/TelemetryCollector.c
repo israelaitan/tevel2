@@ -30,9 +30,7 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 		return -1;
 	}
 	switch (tlm_type) {
-	case tlm_wod:
-		strcpy(filename,FILENAME_WOD_TLM);
-		break;
+
 	case tlm_eps_raw_mb:
 		strcpy(filename,FILENAME_EPS_RAW_MB_TLM);
 		break;
@@ -88,12 +86,6 @@ void TelemetryCollectorLogic()
 		TelemetrySaveSolarPanels();
 		logg(info, "I:TelemetrySaveSolarPanels\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
-	}
-
-	if (CheckExecutionTime(tlm_last_save_time[wod_tlm],tlm_save_periods[wod_tlm])){
-		TelemetrySaveWOD();
-		logg(info, "I:TelemetrySaveWOD\n");
-		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
 
 }
