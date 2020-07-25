@@ -1,9 +1,6 @@
 import socket
 import struct
-from typing import NamedTuple
-from enum import Enum
 from colorama import Fore
-from colorama import Style
 
 from Tevel import PVTelemetry
 from Tevel.EpsRaw import *
