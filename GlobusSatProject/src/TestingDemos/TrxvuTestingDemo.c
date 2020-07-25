@@ -205,7 +205,7 @@ Boolean TestDumpTelemetry()
 	//while(UTIL_DbguGetIntegerMinMax(&temp,0,0xFFFFFFFF));
 	cmd->ID = 5;
 	cmd->ordinal = 0;
-	unsigned short tlmType = tlm_eps_eng_cdb;
+	unsigned short tlmType = tlm_eps_eng_mb;
 	memcpy(cmd->data, &tlmType, sizeof(tlmType));
 	unsigned int from = UNIX_TIME_AT_Y2K, to;
 	Time_getUnixEpoch(&to);

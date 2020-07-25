@@ -39,12 +39,6 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_eps_eng_mb:
 		strcpy(filename,FILENAME_EPS_ENG_MB_TLM);
 		break;
-	case tlm_eps_raw_cdb:
-		strcpy(filename,FILENAME_EPS_RAW_CDB_TLM);
-		break;
-	case tlm_eps_eng_cdb:
-		strcpy(filename,FILENAME_EPS_ENG_CDB_TLM);
-		break;
 	case tlm_solar:
 		strcpy(filename,FILENAME_SOLAR_PANELS_TLM);
 		break;
@@ -126,12 +120,6 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isis_eps__gethousekeepingeng__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
-	res = c_fileCreate(FILENAME_EPS_RAW_CDB_TLM,sizeof(isis_eps__gethousekeepingrawincdb__from_t));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_cdb);
-
-	res = c_fileCreate(FILENAME_EPS_ENG_CDB_TLM,sizeof(isis_eps__gethousekeepingengincdb__from_t));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_cdb);
-
 	// -- TRXVU files
 	res = c_fileCreate(FILENAME_TX_TLM,sizeof(ISIStrxvuTxTelemetry));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_tx);
@@ -169,21 +157,15 @@ void TelemetrySaveEPS()
 		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
 	else
 		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
+
 	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
+	else
+			logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
-	isis_eps__gethousekeepingrawincdb__from_t tlm_cdb_raw;
-	err = isis_eps__gethousekeepingrawincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_raw);
-	if (err == 0)
-		c_fileWrite(FILENAME_EPS_RAW_CDB_TLM, &tlm_cdb_raw);
-
-	isis_eps__gethousekeepingengincdb__from_t tlm_cdb_eng;
-	err = isis_eps__gethousekeepingengincdb__tm(EPS_I2C_BUS_INDEX, &tlm_cdb_eng);
-	if (err == 0)
-		c_fileWrite(FILENAME_EPS_ENG_CDB_TLM, &tlm_cdb_eng);
 }
 
 void TelemetrySaveTRXVU()
