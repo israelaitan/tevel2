@@ -597,37 +597,7 @@ void DeInitializeFS( void )
 	{
 		printf("hcc_mem_delete err , %d\n", err);
 	}
-	printf("deinitializig file system end \n");
-
-}
-typedef struct{
-	int a;
-	int b;
-}TestStruct ;
-/*void test_i()
-{
-
-	time_unix curr_time;
-	time_unix read=0;
-	time_unix last_read_time=0;
-	f_delete("idan0");
-	TestStruct test_struct_arr[8]={0};
-	Time_getUnixEpoch(&curr_time);
-	time_unix start_time_unix=curr_time;
-	InitializeFS(TRUE);
-	TestStruct test_struct = {3,4};
-	c_fileCreate("idan",sizeof(TestStruct));
-	curr_time+=200;
-	Time_setUnixEpoch(curr_time);
-	c_fileWrite("idan",&test_struct);
-	Time_setUnixEpoch(++curr_time);
-	c_fileWrite("idan",&test_struct);
-	Time_setUnixEpoch(++curr_time);
-	c_fileWrite("idan",&test_struct);
-	c_fileRead("idan",test_struct_arr,8,start_time_unix,++curr_time,&read,&last_read_time);
-	c_fileReset("idan");
-
+	printf("deinitializing file system end \n");
 
 }
 
-*/
