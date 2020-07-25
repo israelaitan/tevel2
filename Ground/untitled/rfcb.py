@@ -4,6 +4,7 @@ from typing import NamedTuple
 from enum import Enum
 from colorama import Fore
 from colorama import Style
+from untitled.EPS import *
 
 kissPrefix = b'\xc0\x00'
 kissSuffix = b'\xc0'
@@ -141,6 +142,13 @@ def handelLogDump(header, data):
     print(f'{Fore.BLUE}{header}')
     print(f'{time[0]}:{logData}\n')
 
+def handleEpsRaw(header, data):
+    time = struct.unpack('I', data[0:4])
+    epsData = data[4:]
+    epsRaw = EpsRaw._make(struct.unpack(gethousekeepingrawFMT, epsData))
+    print(f'{Fore.CYAN}{header}')
+    print(f'{time[0]}:{epsRaw}\n')
+
 def handleAck(header, data):
     print(f'{Fore.GREEN}{header}')
     print(f'{AckSubtype(header.subtype)}:{data}\n')
@@ -155,11 +163,13 @@ def rcvPayload( headerStriped, socket ):
     if (header.type == Type.trxvu_cmd_type.value):
         if (header.subtype == Subtype.BEACON_SUBTYPE.value):
             handelBeacon(header, splData)
-    if (header.type == Type.ack_type.value):
+    elif (header.type == Type.ack_type.value):
         handleAck(header, splData)
     elif (header.type == Subtype.START_DUMP_SUBTYPE.value):
         if (header.subtype == Telemetry.tlm_log.value):
             handelLogDump(header, splData)
+        elif (header.subtype == Telemetry.tlm_eps_raw_mb.value):
+            handleEpsRaw(header, splData)
     supffix = socket.recv(1)
     if (supffix != kissSuffix):
         print('E:supffix')
