@@ -42,7 +42,7 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	memcpy(&size,cmd->data + sizeof(slaveAddr),sizeof(size));
 
 	unsigned int offset = sizeof(slaveAddr) + sizeof(size);
-	//err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, cmd->length);
+
 	err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, (cmd->length - offset));
 	err = I2C_read((unsigned int)slaveAddr,i2c_data,size);
 	if (err == E_NO_SS_ERR){
@@ -251,7 +251,7 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 
 	int err=0;
 
-	int tlmComponent;
+	char tlmComponent;
 	int tlmFramAddress;
 	int period;
 
