@@ -201,14 +201,13 @@ int getSolarPanelsTLM(int32_t *t)
 
 void TelemetrySaveSolarPanels()
 {
-	int err = 0;
 	int32_t t[TEVEL_SOLAR_PANEL_COUNT];
 
 	//IsisSolarPanelv2_wakeup();
     //vTaskDelay(500);
 	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
 	{
-		err = getSolarPanelsTLM(t);
+		getSolarPanelsTLM(t);
 		c_fileWrite(FILENAME_SOLAR_PANELS_TLM, t);
 	}
 }
