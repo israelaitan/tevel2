@@ -19,7 +19,7 @@ int CMD_DeleteFileByTime(sat_packet_t *cmd)
 	}
 
 	//get file type
-	int fileType;
+	char fileType;
 	memcpy(&fileType, cmd->data, sizeof(fileType));
 
 	//get file name
@@ -55,7 +55,7 @@ int CMD_DeleteFilesOfType(sat_packet_t *cmd)
 	}
 
 	//get file type
-	int fileType;
+	char fileType;
 	memcpy(&fileType, cmd->data, sizeof(fileType));
 
 	//get file name
