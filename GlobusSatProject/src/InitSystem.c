@@ -100,10 +100,6 @@ void WriteDefaultValuesToFRAM()
 	logg(OBCInfo, "I:Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
-	EpsThreshVolt_t thresh_volts = { DEFAULT_EPS_THRESHOLD_VOLTAGES };
-	FRAM_write((unsigned char*)&thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
-	float alpha = DEFAULT_ALPHA_VALUE;
-	FRAM_write((unsigned char*)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE);
 	int eps= DEFAULT_EPS_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
 	int trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
@@ -222,7 +218,8 @@ int autoDeploy()
 	int res=0;
 
 	// antena auto deploy - sides A
-	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
+	//TODO: remove before flight
+	//res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
 
 	if(res==0)
 	{
@@ -235,10 +232,12 @@ int autoDeploy()
 	}
 
 	// unarm antenas side A
+
 	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_disarm);
 
 	// antenata auto deploy - sides B
-	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
+	//TODO: remove before flight
+	//res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
 	if(res==0)
 	{
 		logg(OBCInfo, "I:Deploying: Side B\n");
@@ -331,6 +330,7 @@ int InitSubsystems()
 	// Initalize the file system
 	Boolean firstActivation= isFirstActivation();
 	err=InitializeFS(firstActivation);
+
 	if (err!=0)
 	{
 		logg(error, "E: Failed in InitializeFS\n");
@@ -349,13 +349,7 @@ int InitSubsystems()
 		logg(error, "E: Failed in InitTelemetryCollector\n");
 	}
 
-
-	// Initialize EPS
-	err=EPS_Init();
-	if (err!=0)
-	{
-		logg(error, "E: Failed in EPS_Init\n");
-	}
+	EPS_Init();
 
 	// Deploy system - open Antetnas
 	err = DeploySystem();

@@ -6,6 +6,7 @@
 #include "TLM_management.h"
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
+#define TEVEL_SOLAR_PANEL_COUNT 6
 //TODO: finish WOD telemetry according to requirements... TRX TLM...
 typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 {

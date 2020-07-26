@@ -18,7 +18,7 @@ int index = 0;
 char logBuffer[LOG_BUFFER_SIZE];
 char logMsg[LOG_MSG_SIZE];
 
-void _logg(char* msg) {
+void __logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif
@@ -31,7 +31,7 @@ void _logg(char* msg) {
     	c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
 }
 
-void __logg(char* msg) {
+void _logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif

@@ -189,15 +189,12 @@ int getSolarPanelsTLM(int32_t *t)
 	int err = 0;
 	uint8_t fault;
 
-	err =  IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0, &t[0], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1, &t[1], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_6, &t[6], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_7, &t[7], &fault);
-	err += IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_8, &t[8], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0, &t[0], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1, &t[1], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
 
 	return err;
 }
@@ -205,15 +202,14 @@ int getSolarPanelsTLM(int32_t *t)
 void TelemetrySaveSolarPanels()
 {
 	int err = 0;
-	int32_t t[ISIS_SOLAR_PANEL_COUNT];
+	int32_t t[TEVEL_SOLAR_PANEL_COUNT];
 
+	//IsisSolarPanelv2_wakeup();
+    //vTaskDelay(500);
 	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
 	{
 		err = getSolarPanelsTLM(t);
-		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
-		{
-			c_fileWrite(FILENAME_SOLAR_PANELS_TLM, t);
-		}
+		c_fileWrite(FILENAME_SOLAR_PANELS_TLM, t);
 	}
 }
 

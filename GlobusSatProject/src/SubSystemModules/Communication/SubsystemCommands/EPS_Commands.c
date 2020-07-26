@@ -6,117 +6,12 @@
 
 #include  "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
-#include "SubSystemModules/PowerManagment/EPSOperationModes.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "EPS_Commands.h"
 #include <hal/errors.h>
-int CMD_UpdateThresholdVoltages(sat_packet_t *cmd)
-{
-	int err = 0;
-	if (NULL == cmd || cmd->data == NULL){
-		return E_INPUT_POINTER_NULL;
-	}
-	EpsThreshVolt_t thresh_voltages;;
-	memcpy(thresh_voltages.raw, cmd->data, 	sizeof(thresh_voltages));
-	err = UpdateThresholdVoltages(&thresh_voltages);
-	return err;
-}
 
-int CMD_GetThresholdVoltages(sat_packet_t *cmd)
-{
-	int err = 0;
-	EpsThreshVolt_t thresh_voltages;
-	err = GetThresholdVoltages(&thresh_voltages);
-	if (err == 0)
-	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*) thresh_voltages.raw, sizeof(thresh_voltages));
-	}
-	return err;
-}
 
-int CMD_UpdateSmoothingFactor(sat_packet_t *cmd)
-{
-	int err = 0;
-	if (NULL == cmd)
-	{
-		return E_INPUT_POINTER_NULL;
-	}
-	float alpha;
-	memcpy((unsigned char*)&alpha, cmd->data, sizeof(alpha));
-	err = UpdateAlpha(alpha);
-	return err;
-}
 
-int CMD_RestoreDefaultAlpha(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = RestoreDefaultAlpha();
-	return err;
-}
-
-int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = RestoreDefaultThresholdVoltages();
-	return err;
-}
-
-int CMD_GetSmoothingFactor(sat_packet_t *cmd)
-{
-	int err = 0;
-	float alpha;
-	err = GetAlpha(&alpha);
-
-	if (err == 0)
-	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*) &alpha,
-				sizeof(alpha) * NUMBER_OF_THRESHOLD_VOLTAGES);
-	}
-	return err;
-}
-
-int CMD_EnterCruiseMode(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = EnterCruiseMode();
-	return err;
-}
-
-int CMD_EnterFullMode(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = EnterFullMode();
-	return err;
-}
-
-int CMD_EnterCriticalMode(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = EnterCriticalMode();
-	return err;
-}
-
-int CMD_EnterSafeMode(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	err = EnterSafeMode();
-	return err;
-}
-
-int CMD_GetCurrentMode(sat_packet_t *cmd)
-{
-	(void)cmd;
-	int err = 0;
-	EpsState_t state = GetSystemState();
-	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
-	return err;
-}
 
 int CMD_EPS_NOP(sat_packet_t *cmd)
 {
@@ -134,55 +29,6 @@ int CMD_EPS_ResetWDT(sat_packet_t *cmd)
 	int err = 0;
 	isis_eps__watchdog__from_t ieps_cmd;
 	err = isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &ieps_cmd );
-	return err;
-}
-
-int CMD_SetChannels3V3_On(sat_packet_t *cmd)
-{
-	if (NULL == cmd->data || NULL == cmd){
-		return E_INPUT_POINTER_NULL;
-	}
-	int err = 0;
-
-	isis_eps__outputbusgroupon__from_t ieps_cmd;
-	isis_eps__outputbusgroupon__to_t chmask = {{0}};
-	err = isis_eps__outputbusgroupon__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
-	return err;
-}
-
-int CMD_SetChannels3V3_Off(sat_packet_t *cmd)
-{
-	if (NULL == cmd->data)
-	{
-		return E_INPUT_POINTER_NULL;
-	}
-	int err = 0;
-
-	isis_eps__outputbusgroupoff__from_t ieps_cmd;
-	isis_eps__outputbusgroupoff__to_t chmask = {{0}};
-	err = isis_eps__outputbusgroupoff__tmtc( EPS_I2C_BUS_INDEX, &chmask , &ieps_cmd );
-
-	return err;
-}
-
-int CMD_SetChannels5V_On(sat_packet_t *cmd)
-{
-	if (NULL == cmd->data || cmd == NULL)
-		return E_INPUT_POINTER_NULL;
-	int err = 0;
-	//ieps_statcmd_t ieps_cmd;
-	//err = IsisEPS_outputBus5vOn(EPS_I2C_BUS_INDEX, 0, &ieps_cmd);
-	return err;
-}
-
-int CMD_SetChannels5V_Off(sat_packet_t *cmd)
-{
-	if (NULL == cmd->data || NULL == cmd){
-		return E_INPUT_POINTER_NULL;
-	}
-	int err = 0;
-	//ieps_statcmd_t ieps_cmd;
-	//err = IsisEPS_outputBus5vOff(EPS_I2C_BUS_INDEX, 0, &ieps_cmd);
 	return err;
 }
 

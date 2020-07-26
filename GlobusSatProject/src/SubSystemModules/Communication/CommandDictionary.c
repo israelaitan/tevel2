@@ -120,16 +120,9 @@ int eps_command_router(sat_packet_t *cmd)
 
 	switch (cmd->cmd_subtype)
 	{
-	case EPS_UPDATE_ALPHA:
-		err = UpdateAlpha(*(float*)cmd->data);
-		SendErrorMSG(ACK_ERROR_MSG, ACK_UPDATE_EPS_ALPHA,cmd, err);
-		break;
 	case EPS_RESET_WD:
 		err = CMD_EPS_ResetWDT(cmd);
 		SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);
-		break;
-	case EPS_GET_MODE:
-		err = CMD_GetCurrentMode(cmd);
 		break;
 
 	default:

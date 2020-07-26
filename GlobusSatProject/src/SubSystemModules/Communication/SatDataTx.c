@@ -7,7 +7,6 @@
 #include <hal/errors.h>
 
 #include <satellite-subsystems/IsisTRXVU.h>
-#include "SubSystemModules/PowerManagment/EPSOperationModes.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "GlobalStandards.h"
 #include "SatDataTx.h"
@@ -81,11 +80,9 @@ Boolean IsTransmitting() {
 }
 
 Boolean CheckTransmitionAllowed() {
-	Boolean low_voltage_flag = TRUE;
 
-	low_voltage_flag = EpsGetLowVoltageFlag();
 
-	if (g_mute_flag == MUTE_OFF && low_voltage_flag == FALSE)
+	if (g_mute_flag == MUTE_OFF )
 	{
 		if(pdTRUE == xSemaphoreTake(xIsTransmitting,0))
 		{

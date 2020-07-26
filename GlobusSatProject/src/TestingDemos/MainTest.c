@@ -285,11 +285,6 @@ void taskTesting()
 	{
 		logg(OBCInfo, "I:--------------------Main loop: i= : %d  ------------\n",  i);
 
-		int res=EPS_Conditioning();
-		logg(OBCInfo, "I:Main:EPS_Conditioning\n");
-		if(res!=0)
-			logg(error, "E:in EPS_Conditioning: %d\n", res);
-
 		TRX_Logic();
 		logg(OBCInfo, "I:Main:TRX_Logic\n");
 

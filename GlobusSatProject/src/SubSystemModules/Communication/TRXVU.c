@@ -121,6 +121,21 @@ void HandleTransponderTime()
 	}
 }
 
+int InitAnts(){
+	//Set Antenas addresses for both sides
+	ISISantsI2Caddress address;
+	address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
+	address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+
+	//initialize Antenas system
+	int err=IsisAntS_initialize(&address,1);
+	if(err)
+		logg(error, "Error in the initialization of the Antennas: %d\n", err);
+	else
+		logg(TRXInfo, "I: Initialization of the Antennas succeeded\n");
+	return err;
+}
+
 // Initialize TRXVU component
 int InitTrxvu()
 {
@@ -172,25 +187,11 @@ int InitTrxvu()
 		g_antOpen=0;
 	}
 
-	if(g_antOpen==0)
-	{
-		//Set Antenas addresses for both sides
-		ISISantsI2Caddress address;
-		address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-		address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+	//TODO:not sure what you meant here... maybe to save power?
+	//if(g_antOpen==0)
+		InitAnts();
 
-		//initialize Antenas system
-		err=IsisAntS_initialize(&address,1);
-		if(err!=0)
-		{
-			logg(error, "Error in the initialization of the Antennas: %d\n", err);
-			return err;
-		}
-		else
-		{
-			logg(TRXInfo, "I: Initialization of the Antennas succeeded\n");
-		}
-	}
+
 
 	//Initialize TRXVU transmit lock
 	InitTxModule();
