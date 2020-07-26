@@ -14,6 +14,7 @@
 #include "SubSystemModules/Communication/AckHandler.h"
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.h"
 #include "TLM_management.h"
 #include "Maintenance.h"
 #include "Log.h"
@@ -147,5 +148,10 @@ void Maintenance()
 		logg(error, "E:FS is corrupted\n");
 	}
 
-	//TODO: if(current_time < FRAM_sat_time) maybe update 'sat_time' to be 'first_wakeup_'
+	//reset if no communication for over a week
+	if(IsGroundCommunicationWDTKick()) {
+		CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
+	}
+
+
 }
