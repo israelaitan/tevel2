@@ -225,6 +225,11 @@ int managment_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
+	case ANTS_TURN_OFF_AUTO_DEP_SUBTYPE:
+		err = CMD_AntStopAutoDeployment(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
 	case ANTS_CANCEL_DEPLOY_SUBTYPE:
 		err = CMD_AntCancelDeployment(cmd);
 		ackType=ACK_ANT_CANCEL_DEP;
