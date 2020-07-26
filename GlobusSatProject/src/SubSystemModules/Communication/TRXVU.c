@@ -187,11 +187,8 @@ int InitTrxvu()
 		g_antOpen=0;
 	}
 
-	//TODO:not sure what you meant here... maybe to save power?
-	//if(g_antOpen==0)
-		InitAnts();
-
-
+	//Initialize Antennas
+	InitAnts();
 
 	//Initialize TRXVU transmit lock
 	InitTxModule();
