@@ -24,6 +24,7 @@ Boolean TestGetBatteryVoltage()
 	return TRUE;
 }
 
+/*
 Boolean selectAndExecuteEpsDemoTest()
 {
 	unsigned int selection = 0;
@@ -78,10 +79,12 @@ Boolean selectAndExecuteEpsDemoTest()
 	}
 	return offerMoreTests;
 }
+*/
 
 Boolean MainEpsTestBench()
 {
-	Boolean offerMoreTests = FALSE;
+	TestGetBatteryVoltage();
+	/*Boolean offerMoreTests = FALSE;
 
 	while(1)
 	{
@@ -91,6 +94,6 @@ Boolean MainEpsTestBench()
 		{
 			return FALSE;
 		}
-	}
+	}*/
 	return FALSE;
 }

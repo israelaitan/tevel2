@@ -171,7 +171,7 @@ Boolean TestTransmitSplPacket()
 
 			TransmitSplPacket(&packet,NULL);
 
-			EPS_Conditioning();
+			//EPS_Conditioning();
 
 			printf("seconds t'ill end: %d\n",end_time - curr_time);
 			vTaskDelay(1000);
@@ -279,7 +279,7 @@ Boolean TestBeaconLogic()
 
 		BeaconLogic();
 
-		EPS_Conditioning();
+		//EPS_Conditioning();
 
 		printf("seconds t'ill end: %d\n",end_time - curr_time);
 		vTaskDelay(1000);
