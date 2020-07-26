@@ -75,7 +75,7 @@
 #define DEFAULT_SOLAR_SAVE_TLM_TIME		5			//<! save solar panel TLM every 20 seconds
 #define DEFAULT_WOD_SAVE_TLM_TIME		5			//<! save WOD TLM every 20 seconds
 #define DEFAULT_LOG_SAVE_TLM_TIME		5			//
-#define DEFAULT_NO_COMM_WDT_KICK_TIME  (15*24*60*60)	//<! number of seconds in 15 days
+#define DEFAULT_NO_COMM_WDT_KICK_TIME  (7*24*60*60)	//<! number of seconds in 7 days
 #define DEFALUT_BEACON_BITRATE_CYCLE	3			//<! default value
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
