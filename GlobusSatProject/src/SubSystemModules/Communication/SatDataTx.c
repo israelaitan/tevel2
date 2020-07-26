@@ -8,6 +8,7 @@
 
 #include <satellite-subsystems/IsisTRXVU.h>
 #include "SubSystemModules/Maintenance/Log.h"
+#include "Transponder.h"
 #include "GlobalStandards.h"
 #include "SatDataTx.h"
 
@@ -22,24 +23,30 @@ void InitTxModule()
 		vSemaphoreCreateBinary(xIsTransmitting);
 }
 
-int muteTRXVU(time_unix duration) {
+int muteTRXVU(time_unix duration)
+{
 	if (duration > MAX_MUTE_TIME) {
 		return -2;
 	}
+
 	time_unix curr_tick_time = 0;
 	Time_getUnixEpoch((unsigned int *)&curr_tick_time);
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
-	logg(TRXInfo, "I:************************inside muteTRXVU: %lu\n", (long unsigned int)g_mute_end_time);
+	logg(TRXInfo, "I: Setting Mute ON until: %lu\n", (long unsigned int)g_mute_end_time);
+
+	//close transponder
+	CMD_turnOffTransponder();
 	return 0;
 }
 
 
-void UnMuteTRXVU() {
+void UnMuteTRXVU()
+{
 	g_mute_end_time = 0;
 	g_mute_flag = MUTE_OFF;
-	logg(TRXInfo, "I:*********************Setting Mute to OFF\n");
+	logg(TRXInfo, "I: Setting Mute to OFF\n");
 }
 
 Boolean GetMuteFlag() {

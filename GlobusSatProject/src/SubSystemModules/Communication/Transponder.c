@@ -113,10 +113,15 @@ int set_transponder_RSSI(byte *param)
 int CMD_turnOnTransponder(sat_packet_t *cmd)
 {
 	logg(TRXInfo, "I: Inside CMD_turnOnTransponder()\n");
-	int err;
+	int err = 0;
 	byte rssiData[2];
 	time_unix duration;
 
+	if (g_transp_mode == TURN_TRANSPONDER_ON)
+	{
+		logg(error, "I: Transponder Mode is already ON");
+		return err;
+	}
 
 	if(cmd == NULL || cmd->data == NULL){
 		logg(error, "E: Input is NULL");
@@ -199,10 +204,15 @@ int CMD_set_transponder_RSSI(sat_packet_t *cmd)
 
 int CMD_turnOffTransponder()
 {
-	logg(TRXInfo, "I: Inside CMD_turnOffTransponder()\n");
-	g_transp_end_time = 0;
-	int err = set_transonder_mode(TURN_TRANSPONDER_OFF);
-	logg(TRXInfo, "I: Setting Transponder to OFF\n");
+	int err = 0;
+	if (g_transp_mode == TURN_TRANSPONDER_ON)
+	{
+		logg(TRXInfo, "I: Inside CMD_turnOffTransponder()\n");
+		g_transp_end_time = 0;
+		err = set_transonder_mode(TURN_TRANSPONDER_OFF);
+		logg(TRXInfo, "I: Setting Transponder to OFF\n");
+	}
+
 	return err;
 }
 
