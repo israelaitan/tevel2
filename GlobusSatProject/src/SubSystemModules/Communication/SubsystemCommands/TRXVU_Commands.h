@@ -16,12 +16,6 @@ int CMD_MuteTRXVU(sat_packet_t *cmd);
 
 int CMD_UnMuteTRXVU(sat_packet_t *cmd);
 
-int CMD_GetBaudRate(sat_packet_t *cmd);
-
-int CMD_SetBaudRate(sat_packet_t *cmd);
-
-int CMD_SetBeaconCycleTime(sat_packet_t *cmd);
-
 int CMD_GetBeaconInterval(sat_packet_t *cmd);
 
 int CMD_SetBeaconInterval(sat_packet_t *cmd);
@@ -30,13 +24,9 @@ int CMD_GetTxUptime(sat_packet_t *cmd);
 
 int CMD_GetRxUptime(sat_packet_t *cmd);
 
-int CMD_GetNumOfDelayedCommands(sat_packet_t *cmd);
+int CMD_AntStopAutoDeployment(sat_packet_t *cmd);
 
 int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd);
-
-int CMD_DeleteDelyedCmdByID(sat_packet_t *cmd);
-
-int CMD_DeleteAllDelyedBuffer(sat_packet_t *cmd);
 
 int CMD_AntSetArmStatus(sat_packet_t *cmd);
 
