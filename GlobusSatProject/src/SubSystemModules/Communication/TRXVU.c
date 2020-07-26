@@ -244,7 +244,7 @@ int InitTrxvu()
 			//update ant open to true
 			g_antOpen=1;
 			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-			logg(TRXInfo, "I: Antenas deployment flag set to TRUE as packet received from Earth******\n");
+			logg(TRXInfo, "I: Antennas deployment flag set to TRUE as packet received from Earth******\n");
 		}
 
 	}
