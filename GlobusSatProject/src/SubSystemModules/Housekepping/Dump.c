@@ -29,9 +29,13 @@ typedef struct __attribute__ ((__packed__))
 	time_unix t_end;
 } dump_arguments_t;
 
+#define RESOLUTION 1
+#define SIZE_DUMP_BUFFER (4096) ///< buffer size for dump operations
+
 xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
 xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
+unsigned char dump_arr[SIZE_DUMP_BUFFER];
 
 int InitDump()
 {
@@ -110,40 +114,44 @@ void DumpTask(void *args) {
 	sat_packet_t dump_tlm = { 0 };
 	int err = 0;
 	int availFrames = 0;
-	unsigned int num_of_packets = 0;
+	int num_of_packets = 0;
 	unsigned int size_of_element = 0;
 	time_unix last_time_read = 0;
-	unsigned char * buffer = NULL ;//add size
-	int num_of_tlm_elements_read = 0;
+	unsigned char *buffer = NULL ;//add size
 	char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
 
-	err = GetTelemetryFilenameByType((tlm_type) task_args->dump_type,
-				filename);
+	err = GetTelemetryFilenameByType((tlm_type) task_args->dump_type, filename);
 	if(err) {
 		logg(error, "E:%d dump.GetTelemetryFilenameByType", err);
 		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 		f_releaseFS();
 		return;
 	}
-	c_fileGetNumOfElements(filename, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read, &size_of_element);
-	logg(info, "I:dump: number of elements: %d\n", num_of_tlm_elements_read);
-	unsigned int buffer_size = num_of_tlm_elements_read * (sizeof(unsigned int) + size_of_element);
-	buffer = malloc(buffer_size);
-	FileSystemResult res = c_fileRead(filename, buffer, buffer_size, task_args->t_start, task_args->t_end, &num_of_tlm_elements_read, &last_time_read);
+
+	buffer = dump_arr;
+
+	FileSystemResult res = c_fileRead(filename, buffer, SIZE_DUMP_BUFFER, task_args->t_start,
+									task_args->t_end, &num_of_packets, &last_time_read, RESOLUTION);
+
+
+	logg(info, "I:dump: number of packets: %d\n", num_of_packets);
+
 	if (res != FS_SUCCSESS) {
 		logg(error, "E:%d dump.c_fileRead", err);
 		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 		f_releaseFS();
 		return;
 	}
-	num_of_packets = buffer_size / MAX_COMMAND_DATA_LENGTH;
-	if (buffer_size % MAX_COMMAND_DATA_LENGTH)
+
+	if (SIZE_DUMP_BUFFER % MAX_COMMAND_DATA_LENGTH)
 			num_of_packets++;
+
 	SendAckPacket(ACK_DUMP_START, task_args->cmd,
 			(unsigned char*) &num_of_packets, sizeof(num_of_packets));
 	logg(info, "I:dump: ack packet sent with number of packets=: %d\n",num_of_packets);
+
 	unsigned int currPacketSize;
-	unsigned int totalDataLeft = buffer_size;
+	unsigned int totalDataLeft = SIZE_DUMP_BUFFER;
 	unsigned short i = 0;
 	while (i < num_of_packets)
 	{
