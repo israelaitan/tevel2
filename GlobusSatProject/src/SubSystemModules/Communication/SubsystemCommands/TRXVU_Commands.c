@@ -161,9 +161,7 @@ int CMD_AntStopAutoDeployment(sat_packet_t *cmd)
 {
 	int err = 0;
 
-	char flag;
-	//get Antennas Open flag
-	FRAM_read((unsigned char *)&flag, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
+	Boolean flag = areAntennasOpen();
 
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &flag, sizeof(flag));
 

@@ -34,8 +34,6 @@
 #define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag
 #define FIRST_ACTIVATION_FLAG_SIZE		4			//<! length in bytes of FIRST_ACTIVATION_FLAG
 
-#define ANT_OPEN_FLAG_ADDR				0X4587		//<! is the ants open flag
-#define ANT_OPEN_FLAG_SIZE				4			//<! length of ants open flag
 #define LAST_ANT_DEP_TIME_ADDR			0X66		//<! saves the first time after satellites wakeup from reset
 #define LAST_ANT_DEP_TIME_SIZE			4			//<! size of the parameter in bytes
 
@@ -70,7 +68,7 @@
 #define LAST_COMM_TIME_SIZE				4			//<! size of last communication time in bytes
 
 #define DEFAULT_EPS_SAVE_TLM_TIME		5			//<! save EPS TLM every 20 seconds
-#define DEFAULT_TRXVU_SAVE_TLM_TIME		5		//<! save TRXVU TLM every 20 seconds
+#define DEFAULT_TRXVU_SAVE_TLM_TIME		5			//<! save TRXVU TLM every 20 seconds
 #define DEFAULT_ANT_SAVE_TLM_TIME		5			//<! save antenna TLM every 20 seconds
 #define DEFAULT_SOLAR_SAVE_TLM_TIME		5			//<! save solar panel TLM every 20 seconds
 #define DEFAULT_WOD_SAVE_TLM_TIME		5			//<! save WOD TLM every 20 seconds
@@ -80,6 +78,6 @@
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
 #define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
-
+#define TRANSPONDER_MAX_DURATION 		(72*60*60)  // max transponder duration is 72 hours
 
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */

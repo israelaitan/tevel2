@@ -100,6 +100,10 @@ void WriteDefaultValuesToFRAM()
 	logg(OBCInfo, "I:Inside WriteDefaultValuesToFRAM()\n");
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
+
+	int noCom = 0;
+	FRAM_write((unsigned char*) &noCom, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+
 	int eps= DEFAULT_EPS_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
 	int trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
@@ -228,7 +232,7 @@ int autoDeploy()
 	}
 	else
 	{
-		logg(error, "E:Failed Arming Side A\n");
+		logg(error, "E:Failed Arming Side A with error: %d\n", res);
 	}
 
 	// unarm antenas side A
@@ -245,7 +249,7 @@ int autoDeploy()
 	}
 	else
 	{
-		logg(error, "E:Failed Arming Side B\n");
+		logg(error, "E:Failed Arming Side B with error: %d\n", res);
 	}
 
 	// unarm antenas side B
