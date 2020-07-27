@@ -133,7 +133,7 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 	if(!mute)
 	{
 		//getting the duration
-		memcpy(&duration,cmd->data,sizeof(duration));
+		duration = getDuration(cmd);
 
 		//turn off idle
 		CMD_SetIdleOff();
@@ -236,6 +236,24 @@ Boolean checkEndTransponderMode()
 		logg(TRXInfo, "I: Transponder End time NOT reached\n");
 		return FALSE;
 	}
+}
+
+int getDuration(sat_packet_t *cmd)
+{
+	time_unix duration;
+
+	//getting the duration
+	memcpy(&duration,cmd->data,sizeof(duration));
+
+	if(duration > TRANSPONDER_MAX_DURATION)
+	{
+		duration = TRANSPONDER_MAX_DURATION;
+		logg(TRXInfo, "I: Transponder duration exceeded Max duration. Setting Max duration");
+	}
+
+	logg(TRXInfo, "I: Transponder duration: %d \n", duration);
+
+	return duration;
 }
 
 
