@@ -115,7 +115,7 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
 
 	//-- SOLAR PANEL files
-	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
+	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*TEVEL_SOLAR_PANEL_COUNT);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 
 	//-- LOG files
