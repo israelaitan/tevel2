@@ -1,0 +1,692 @@
+{
+  "types": [
+    {
+      "id": "0",
+      "name": "TRXVU",
+      "desc": "All TRXVU function calls",
+        "subtypes": [
+            {
+                "id": "69",
+                "name": "Transponder ON",
+                "desc": "Setting the transponder mode to ON",
+                "inParams": [
+                    {
+                        "name": "duration",
+                        "desc": "number of seconds to mute the TRXVU",
+                        "type": "int"
+                    }
+                ]
+            },
+			 {
+                "id": "70",
+                "name": "Transponder RSSI",
+                "desc": "Setting the transponder RSSI",
+                "inParams": [
+                    {
+                        "name": "RSSI",
+                        "desc": "Transponder senstativity [0-4095]",
+                        "type": "short"
+                    }
+                ]
+            },
+            {
+                "id": "71",
+                "name": "Transponder OFF",
+                "desc": "Setting the transponder mode to OFF",
+                "inParams": []
+            },
+            {
+                "id": "17",
+                "name": "mute",
+                "desc": "mute the TRXVU",
+                "inParams": [
+                    {
+                        "name": "duration",
+                        "desc": "number of seconds to mute the TRXVU",
+                        "type": "int"
+                    },
+                    {
+                        "name": "temp value",
+                        "desc": "temp temp",
+                        "type": "short"
+                    }
+                ]
+            },
+            {
+                "id": "136",
+                "name": "unmute",
+                "desc": "unmute the TRXVU",
+                "inParams": []
+            },            
+            {
+                "id": "135",
+                "name": "Set Idle ON",
+                "desc": "Set satelite into IDLE",
+                "inParams": [
+                    {
+                        "name": "duration",
+                        "desc": "idle duration time (max 10 minutes) apply only for state ON",
+                        "type": "int"
+                    }
+                ]
+            },
+            {
+                "id": "134",
+                "name": "Set Idle OFF",
+                "desc": "Set satelite OUT of IDLE",
+                "inParams": []
+            },
+			      {
+                "id": "35",
+                "name": "get beacon interval",
+                "desc": "get the beacon interval time in seconds",
+                "inParams": []
+            },
+            {
+                "id": "36",
+                "name": "set beacon interval",
+                "desc": "set the beacon interval time in seconds",
+                "inParams": [
+                    {
+                        "name": "seconds",
+                        "desc": "number of seconds for beacon interval ",
+                        "type": "int"
+                    }
+                ]
+            },            
+            {
+                "id": "105",
+                "name": "START_DUMP",
+                "desc": "start the dump task",
+                "inParams": [
+                    {
+                        "name": "dump_type",
+                        "desc": "the type of the dump ",
+                        "type": "char",
+                        "values": [
+                            {
+                                "id": "10",
+                                "name": "eps_eng_mb"
+                            },
+                            {
+                                "id": "1",
+                                "name": "TX"
+                            },
+                            {
+                                "id": "4",
+                                "name": "WOD"
+                            },
+                            {
+                                "id": "6",
+                                "name": "RX"
+                            },
+                            {
+                                "id": "13",
+                                "name": "LOG"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "start time",
+                        "desc": "start time of dump ",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "end time",
+                        "desc": "end time of dump - not including this date ",
+                        "type": "datetime"
+                    },
+                    {
+                        "name": "resulotion",
+                        "desc": "dump steps in seconds ",
+                        "type": "int"
+                    }
+                ]
+            },
+            {
+                "id": "105",
+                "name": "DUMP_DAYS",
+                "desc": "start the dump task",
+                "inParams": [
+                    {
+                        "name": "dump_type",
+                        "desc": "the type of the dump ",
+                        "type": "char",
+                        "values": [
+                            {
+                                "id": "10",
+                                "name": "eps_eng_mb"
+                            },
+                            {
+                                "id": "1",
+                                "name": "TX"
+                            },
+                            {
+                                "id": "4",
+                                "name": "WOD"
+                            },
+                            {
+                                "id": "6",
+                                "name": "RX"
+                            },
+                            {
+                                "id": "13",
+                                "name": "LOG"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "start time",
+                        "desc": "start date of dump ",
+                        "type": "date"
+                    },
+                    {
+                        "name": "end time",
+                        "desc": "end date of dump - not including this date",
+                        "type": "date"
+                    },
+                    {
+                        "name": "resulotion",
+                        "desc": "dump steps in seconds ",
+                        "type": "int"
+                    }
+                ]
+            },
+            {
+                "id": "34",
+                "name": "STOP_DUMP",
+                "desc": "Stop the dump",
+                "inParams": []
+            },
+            {
+                "id": "51",
+                "name": "force abort dump",
+                "desc": "stop the dump",
+                "inParams": []
+            },
+            {
+                "id": "102",
+                "name": "Get TX uptime",
+                "desc": "get how much time the satellite is on",
+                "inParams": []
+            },
+            {
+                "id": "104",
+                "name": "Get RX uptime",
+                "desc": "get how much time the satellite is on?",
+                "inParams": []
+            },
+            {
+                "id": "167",
+                "name": "Get num of online commands",
+                "desc": "get how much commands do the satellite needs to do now",
+                "inParams": []
+            },
+            {
+                "id": "178",
+                "name": "ANT get arm status",
+                "desc": "get the status of one side in the antenna",
+                "inParams": [
+                    {
+                        "name": "ant side",
+                        "desc": "what side we want to know the status (side A - 00 | side B - 01) ",
+                        "type": "char",
+                        "values": [
+
+                            {
+                                "id": "00",
+                                "name": "A"
+                            },
+                            {
+                                "id": "01",
+                                "name": "B"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "176",
+                "name": "ANT set arm status",
+                "desc": "set the status of one side in the antenna",
+                "inParams": [
+                    {
+                        "name": "ant side",
+                        "desc": "what side we want to change the status (side A - 00 | side B - 01) ",
+                        "type": "char",
+                        "values": [
+
+                            {
+                                "id": "00",
+                                "name": "A"
+                            },
+                            {
+                                "id": "01",
+                                "name": "B"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "status",
+                        "desc": "what status we want the antenna side to be (disarm = 172 | arm = 173) ",
+                        "type": "char"
+                    }
+                ]
+            },
+            {
+                "id": "179",
+                "name": "ANT get UPTIME",
+                "desc": "get the UPTIME of one side in the antenna",
+                "inParams": [
+                    {
+                        "name": "ant side",
+                        "desc": "what side we want to know the UPTIME (side A - 00 | side B - 01) ",
+                        "type": "char"
+                    }
+                ]
+            }            
+        ]
+    },
+    {
+      "id": "1",
+      "name": "EPS",
+      "desc": "All EPS function calls",
+      "subtypes": [
+        {
+          "id": "0",
+          "name": "Update Alpha",
+          "desc": "update the Alpha value for smothing",
+          "inParams": [
+            {
+              "name": "Alpha",
+              "desc": "new Alpha value (float value)",
+              "type": "float"
+            }
+          ]
+        },
+		    {
+          "id": "1",
+          "name": "Reset Watchdog",
+          "desc": "Reset EPS Watchdog",
+          "inParams": []
+        },
+		    {
+          "id": "2",
+          "name": "Get EPS Mode",
+          "desc": "Get EPS Mode",
+          "inParams": []
+        }
+      ]
+    },
+    {
+		"id": "2",
+		"name": "Telemetry",
+		"subtypes": [
+			{
+				"id": "16",
+				"name": "EPS",
+				"desc": "Get EPS Telemetry",
+				"inParams": []
+			},
+			{
+				"id": "17",
+				"name": "Solar",
+				"desc": "Get Solar Panels Telemetry",
+				"inParams": []
+			},
+			{
+				"id": "18",
+				"name": "TRXVU",
+				"desc": "Get TRXVU Telemetry",
+				"inParams": []
+			},
+			{
+				"id": "19",
+				"name": "ANTs",
+				"desc": "Get AAntennas Telemetry",
+				"inParams": []
+			}
+		]
+    },
+	  {
+		  "id": "3",
+		  "name": "Filesystem",
+		  "subtypes": [
+			  {
+				  "id": "10",
+				  "name": "IsCorrupted",
+				  "desc": "Is Filesystem corrupted",
+				  "inParams": []
+			  },
+			  {
+				  "id": "11",
+				  "name": "Get Freespace",
+				  "desc": "Get amount of Free Space in filesystem",
+				  "inParams": []
+			  },
+			  {
+				  "id": "12",
+				  "name": "Get Last Error",
+				  "desc": "Get last error in filesystem",
+				  "inParams": []
+			  },
+			  {
+				  "id": "13",
+				  "name": "Delete All files",
+				  "desc": "Delete all Files",
+				  "inParams": []
+			  },
+			  {
+			    "id": "14",
+			    "name": "Delete by Type",
+			    "desc": "Delete all TLM Files by Type",
+			    "inParams": [
+			      {
+			        "name": "tlm_type",
+			        "desc": "the type of the telematry to delete ",
+			        "type": "char",
+			        "values": [
+			          {
+			            "id": "0",
+			            "name": "eps_raw_mb"
+			          },
+					      {
+			            "id": "1",
+			            "name": "eps_eng_mb"
+			          },
+			          {
+			            "id": "2",
+			            "name": "Solar"
+			          },
+			          {
+			            "id": "3",
+			            "name": "TX"
+			          },
+			          {
+			            "id": "4",
+			            "name": "RX"
+			          },
+					      {
+						      "id": "5",
+						      "name": "ANTs"
+					      },
+			          {
+			            "id": "6",
+			            "name": "LOG"
+			          },
+					      {
+			          "id": "7",
+			          "name": "Backup LOG"
+			          }
+			        ]
+			      }
+			    ]
+			  },
+			  {
+				  "id": "15",
+				  "name": "Delete TLM Files by time",
+				  "desc": "Delete TLM Files by type and time period",
+				  "inParams": [
+					  {
+					    "name": "tlm_type",
+					    "desc": "the type of the telematry to delete ",
+					    "type": "char",
+					    "values": [
+					      {
+					        "id": "0",
+					        "name": "eps_raw_mb"
+					      },
+						    {
+					        "id": "1",
+					        "name": "eps_eng_mb"
+					      },
+					      {
+					        "id": "2",
+					        "name": "Solar"
+					      },
+					      {
+					        "id": "3",
+					        "name": "TX"
+					      },
+					      {
+					        "id": "4",
+					        "name": "RX"
+					      },
+						    {
+							    "id": "5",
+							    "name": "ANTs"
+						    },
+					      {
+					        "id": "6",
+					        "name": "LOG"
+					      },
+						    {
+					        "id": "7",
+					        "name": "Backup LOG"
+					      }
+					    ]
+					  },
+					  {
+					    "name": "start time",
+					    "desc": "start date of dump ",
+					    "type": "date"
+					  },
+					  {
+					    "name": "end time",
+					    "desc": "end date of dump - not including this date",
+					    "type": "date"
+					  }
+				  ]
+			  }
+		  ]
+	  },
+    {
+      "id": "4",
+      "name": "Management",
+      "subtypes": [
+	  	  {
+            "id": "135",
+            "name": "ANT_STOP_DEPLOY",
+            "desc": "Stop the every 30 min ant deploy in the maintiance",
+            "inParams": []
+        },
+		    {
+            "id": "144",
+            "name": "ANT Deploy",
+            "desc": "Deployment of the antenna",
+            "inParams": []
+        },
+		    {
+            "id": "183",
+            "name": "ANT cancel deploy",
+            "desc": "cancel the deployment of one side in the antenna",
+            "inParams": [
+                {
+                    "name": "ant side",
+                    "desc": "what side we want to cancel the deployment (side A - 00 | side B - 01) ",
+                    "type": "char"
+                }
+            ]
+        },
+		    {
+            "id": "145",
+            "name": "Generic I2C",
+            "desc": "Send a Generic I2C command",
+            "inParams": [
+                {
+                    "name": "Slave Address",
+                    "desc": "Slave Address of I2C",
+                    "type": "char"
+                },
+				        {
+                    "name": "Size of Command",
+                    "desc": "Size of I2C Command",
+                    "type": "int"
+                },
+				        {
+                    "name": "I2C Command",
+                    "desc": "Generic I2C Command",
+                    "type": "char[]"
+                }
+            ]
+        },
+		    {
+            "id": "146",
+            "name": "FRAM Read",
+            "desc": "Generic FRAM Read",
+            "inParams": [
+                {
+                    "name": "FRAM Parameter Address",
+                    "desc": "FRAM Parameter Address",
+                    "type": "int"
+                },
+				        {
+                    "name": "Size of Parameter",
+                    "desc": "Size of Parameter in FRAM",
+                    "type": "int"
+                }
+            ]
+        },
+		    {
+            "id": "147",
+            "name": "FRAM Write",
+            "desc": "Generic FRAM Write",
+            "inParams": [
+                {
+                    "name": "Address",
+                    "desc": "FRAM Parameter Address",
+                    "type": "int"
+                },
+				        {
+                    "name": "Size",
+                    "desc": "Size of Parameter in FRAM",
+                    "type": "int"
+                },
+				        {
+                    "name": "Value",
+                    "desc": "New value for parameter",
+                    "type": "char[]"
+                }
+            ]
+        },
+		    {
+            "id": "148",
+            "name": "FRAM Restart",
+            "desc": "Restart FRAM",
+            "inParams": []
+        },
+        {
+            "id": "160",
+            "name": "Software Reset",
+            "desc": "Software ODBC Reset",
+            "inParams": []
+        },		                
+        {
+			      "id": "161",
+			      "name": "NOT USED reset_hardware",
+			      "desc": "Hardware ODBC Reset",
+			      "inParams": []
+        },        
+        {
+          	"id": "162",
+          	"name": "reset_trxvu_soft",
+			      "desc": "TRXVU Soft Reset",
+			      "inParams": []
+        },
+        {
+			      "id": "163",
+			      "name": "reset_trxvu_hard",
+			      "desc": "TRXVU Hard Reset",
+			      "inParams": []
+        },
+		    {
+			      "id": "164",
+			      "name": "Reset EPS - soft MCU reset",
+			      "desc": "EPS Reset MCU",
+			      "inParams": []
+        },
+		    {
+			      "id": "165",
+			      "name": "Reset filesystem",
+			      "desc": "Filesystem Reset ",
+			      "inParams": []
+        },
+        {
+			      "id": "166",
+			      "name": "reset_ant_SideA",
+			      "desc": "Antennas Side A reset",
+			      "inParams": []
+        },
+        {
+			      "id": "167",
+			      "name": "reset_ant_SideB",
+			      "desc": "Antennas Side B reset",
+			      "inParams": []
+        }, 		
+        {
+            "id": "149",
+            "name": "UPDATE SAT TIME",
+            "desc": "update the time in the satellite",
+            "inParams": [
+              {
+                "name": "time",
+                "desc": "New Satelite time to set",
+                "type": "datetime"
+              }
+            ]
+        },
+		    {
+          "id": "150",
+          "name": "Get SAT TIME",
+          "desc": "Get the satelite time",
+          "inParams": []
+        },
+		    {
+          "id": "151",
+          "name": "Get SAT UPTIME",
+          "desc": "Get the satelite uptime time",
+          "inParams": []
+        },
+		    {
+          "id": "152",
+          "name": "Set TLM Collection Period",
+          "desc": "Set the collection period in sec for TLM",
+          "inParams": [		  	
+            {
+              "name": "tlm_type",
+              "desc": "the type of the telematry to set ",
+              "type": "char",
+              "values": [
+                {
+                  "id": "0",
+                  "name": "EPS"
+                },
+                {
+                  "id": "1",
+                  "name": "TRXVU"
+                },
+                {
+                  "id": "2",
+                  "name": "ANT"
+                },
+                {
+                  "id": "3",
+                  "name": "SOLAR"
+                },
+                {
+                  "id": "4",
+                  "name": "WOD"
+                } 
+			        ]
+			      },
+			      {
+				      "name": "Period",
+				      "desc": "the new collection period of the telematry to set ",
+				      "type": "int"	
+			      }
+		      ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1054 @@
+{
+  "types": 
+  [
+    {
+      "id": "0",
+      "name": "TRXVU",
+      "desc": "All TRXVU function calls",
+      "subtypes": [
+        {
+          "id": "1",
+          "name": "Beacon",
+          "inParams": [
+            {
+              "name": "sat_time",
+              "desc": "satellite's clock current unix time",
+              "type": "datetime"
+            },
+            {
+              "name": "vbat",
+              "desc": "battery voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_5v",
+              "desc": "5v bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_3v3",
+              "desc": "3v3 bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "charging_power",
+              "desc": "the current charging power",
+              "type": "short"
+            },
+            {
+              "name": "consumed_power",
+              "desc": "the satellite consumed power",
+              "type": "short"
+            },
+            {
+              "name": "electric_current",
+              "desc": "the battery's up-to-date electric current",
+              "type": "short"
+            },
+            {
+              "name": "current_3v3",
+              "desc": "3.3 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "current_5v",
+              "desc": "5 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "free_memory",
+              "desc": "the satellite's Sd's free bytes",
+              "type": "int"
+            },
+            {
+              "name": "corrupt_bytes",
+              "desc": "the memory's corrupted bytes",
+              "type": "int"
+            },
+            {
+              "name": "number_of_resets",
+              "desc": "number of resets the satellite has gone through",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "35",
+          "name": "get beacon interval",
+          "desc": "get the beacon interval time in seconds",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "number of seconds for beacon interval ",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "36",
+          "name": "set beacon interval",
+          "desc": "set the beacon interval time in seconds",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "number of seconds set for beacon interval ",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "102",
+          "name": "Get TX uptime",
+          "desc": "get how much time the satellite is on",
+          "inParams": [
+            {
+              "name": "uptime",
+              "desc": "how much time the satellite is on",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "104",
+          "name": "Get RX uptime",
+          "desc": "get how much time the satellite is on?",
+          "inParams": [
+            {
+              "name": "uptime",
+              "desc": "how much time the satellite is on",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "167",
+          "name": "Get num of online commands",
+          "desc": "get how much commands do the satellite needs to do now",
+          "inParams": [
+            {
+              "name": "num of online cmd",
+              "desc": "how much online cmds the satellite needs to do",
+              "type": "short"
+            }
+          ]
+        },
+        {
+          "id": "178",
+          "name": "ANT get arm status",
+          "desc": "get the status of one side in the antenna",
+          "inParams": [
+            {
+              "name": "status",
+              "desc": "what is the status (disarm = 172 | arm = 173)",
+              "type": "char"
+            }
+          ]
+        },
+        {
+          "id": "179",
+          "name": "ANT get UPTIME",
+          "desc": "get the UPTIME of one side in the antenna",
+          "inParams": [
+            {
+              "name": "uptime",
+              "desc": "how much time the antenna is on",
+              "type": "int"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "ACK",
+      "desc": "All ACKNOWLEDGE function calls",
+      "subtypes": [
+        {
+          "id": "0",
+          "name": "ACK_RECEIVE_COMM",
+          "desc": "when receive any packet",
+          "inParams": []
+        },
+        {
+          "id": "1",
+          "name": "ACK_COMD_EXEC",
+          "desc": "when executed any packet / SPL command",
+          "inParams": []
+        },
+        {
+          "id": "127",
+          "name": "ACK_RESET_WAKEUP",
+          "desc": "after waking up from reset",
+          "inParams": []
+        },
+        {
+          "id": "112",
+          "name": "ACK_FS_RESET",
+          "desc": "before going to filesystem reset",
+          "inParams": []
+        },
+        {
+          "id": "113",
+          "name": "ACK_TRXVU_SOFT_RESET",
+          "desc": "before going to trxvu reset",
+          "inParams": []
+        },
+        {
+          "id": "114",
+          "name": "ACK_TRXVU_HARD_RESET",
+          "desc": "before going to trxvu reset",
+          "inParams": []
+        },
+        {
+          "id": "115",
+          "name": "ACK_ANTS_RESET",
+          "desc": "before reseting antennas",
+          "inParams": []
+        },
+        {
+          "id": "128",
+          "name": "ACK_EPS_RESET",
+          "desc": "before going to eps reset",
+          "inParams": []
+        },
+        {
+          "id": "129",
+          "name": "ACK_SOFT_RESET",
+          "desc": "before going to reset",
+          "inParams": []
+        },
+        {
+          "id": "130",
+          "name": "ACK_HARD_RESET",
+          "desc": "before starting hardware reset",
+          "inParams": []
+        },
+        {
+          "id": "131",
+          "name": "ACK_MEMORY_DELETE",
+          "desc": "when memory delete is completed success",
+          "inParams": []
+        },
+        {
+          "id": "18",
+          "name": "ACK_UPDATE_TIME",
+          "desc": "after updating time",
+          "inParams": []
+        },
+        {
+          "id": "20",
+          "name": "ACK_UPDATE_BEACON_TIME_DELAY",
+          "desc": "Updated Beacon intervals",
+          "inParams": []
+        },
+        {
+          "id": "21",
+          "name": "ACK_UPDATE_EPS_VOLTAGES",
+          "desc": "EPS Voltage updated",
+          "inParams": []
+        },
+        {
+          "id": "22",
+          "name": "ACK_RESET_EPS_WD",
+          "desc": "Reset EPS Watchdog",
+          "inParams": []
+        },
+        {
+          "id": "23",
+          "name": "ACK_UPDATE_EPS_ALPHA",
+          "desc": "Update EPS Alpha",
+          "inParams": []
+        },
+        {
+          "id": "24",
+          "name": "ACK_IDLE_ON",
+          "desc": "Idle set ON",
+          "inParams": []
+        },
+        {
+          "id": "25",
+          "name": "ACK_IDLE_OFF",
+          "desc": "Idle set OFF",
+          "inParams": []
+        },
+        {
+          "id": "141",
+          "name": "ACK_MUTE",
+          "desc": "Trxvu is muted",
+          "inParams": []
+        },
+        {
+          "id": "142",
+          "name": "ACK_UNMUTE",
+          "desc": "Trxvu is unmuted",
+          "inParams": []
+        },
+        {
+          "id": "143",
+          "name": "ACK_TRANSPONDER_ON",
+          "desc": "Turmed on Transponder",
+          "inParams": []
+        },
+        {
+          "id": "138",
+          "name": "ACK_TRANSPONDER_RSSI",
+          "desc": "Set Transponder RSSI",
+          "inParams": []
+        },
+        {
+          "id": "140",
+          "name": "ACK_TRANSPONDER_OFF",
+          "desc": "Turned Off Transponder",
+          "inParams": []
+        },
+        {
+          "id": "144",
+          "name": "ACK_DUMP_START",
+          "desc": "when starting a dump",
+          "inParams": []
+        },
+        {
+          "id": "145",
+          "name": "ACK_DUMP_ABORT",
+          "desc": "when a dump has stopped",
+          "inParams": []
+        },
+        {
+          "id": "146",
+          "name": "ACK_DUMP_FINISHED",
+          "desc": "when a dump has finished",
+          "inParams": [
+            {
+              "name": "number of elements",
+              "desc": "the number of dump elements that were sent over RF",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "147",
+          "name": "ACK_GENERIC_I2C_CMD",
+          "desc": "*********",
+          "inParams": []
+        },
+        {
+          "id": "148",
+          "name": "ACK_ARM_DISARM",
+          "desc": "after changing arm state of the ants",
+          "inParams": []
+        },
+        {
+          "id": "149",
+          "name": "ACK_REDEPLOY",
+          "desc": "Antennas Redeployed",
+          "inParams": []
+        },
+        {
+          "id": "158",
+          "name": "ACK_CANCEL_DEP",
+          "desc": "Antennas Redeployed",
+          "inParams": []
+        },
+        {
+          "id": "160",
+          "name": "ACK_FRAM_RESET",
+          "desc": "Reset FRAM",
+          "inParams": []
+        },
+        {
+          "id": "161",
+          "name": "ACK_TLM_SET_COLL_CYCLE",
+          "desc": "Set TLM collection cycle",
+          "inParams": []
+        },
+        {
+          "id": "187",
+          "name": "ACK_UNKNOWN_SUBTYPE",
+          "desc": "when the given subtype is unknown",
+          "inParams": []
+        },
+        {
+          "id": "255",
+          "name": "ACK_ERROR_MSG",
+          "desc": "when error has occurred",
+          "inParams": []
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "DUMP",
+      "desc": "All DUMP Types",
+      "subtypes": [
+        {
+          "id": "10",
+          "name": "tlm_eps_eng_mb",
+          "desc": "EPS eng data",
+          "inParams": [
+            {
+              "name": "timestamp",
+              "desc": "TODO",
+              "type": "datetime"
+            },
+            {
+              "name": "reply_header-stid",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reply_header-ivid",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reply_header-rc",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reply_header-bid",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reply_header-cmderr",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reply_header-stat",
+              "desc": "TODO",
+              "type": "char"
+            },
+            {
+              "name": "reserved",
+              "desc": "reserved",
+              "type": "char"
+            },
+            {
+              "name": "volt_brdsup",
+              "desc": "volt_brdsup",
+              "type": "short"
+            },
+            {
+              "name": "temp",
+              "desc": "temp",
+              "type": "short"
+            },
+            {
+              "name": "dist_input-volt",
+              "desc": "volt_brdsup",
+              "type": "short"
+            },
+            {
+              "name": "dist_input-current",
+              "desc": "temp",
+              "type": "short"
+            },
+            {
+              "name": "dist_input-power",
+              "desc": "volt_brdsup",
+              "type": "short"
+            },
+            {
+              "name": "batt_input-volt",
+              "desc": "temp",
+              "type": "short"
+            },
+            {
+              "name": "batt_input-current",
+              "desc": "volt_brdsup",
+              "type": "short"
+            },
+            {
+              "name": "batt_input-power",
+              "desc": "temp",
+              "type": "short"
+            },
+            {
+              "name": "stat_obc_on",
+              "desc": "Bitflag field indicating channel-on status for the output bus channels",
+              "type": "short"
+            },
+            {
+              "name": "stat_obc_ocf",
+              "desc": "Bitflag field indicating overcurrent latch-off fault status for the output bus channels",
+              "type": "short"
+            },
+            {
+              "name": "bat_stat",
+              "desc": " Bitflag field indicating BP board",
+              "type": "short"
+            },
+            {
+              "name": "temp2",
+              "desc": " 2 and 4 cell battery pack: Battery pack temperature in between the center battery cells",
+              "type": "short"
+            },
+            {
+              "name": "temp3",
+              "desc": "2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack",
+              "type": "short"
+            },
+            {
+              "name": "volt_vd0",
+              "desc": "Voltage of voltage domain 0 in raw form",
+              "type": "short"
+            },
+            {
+              "name": "volt_vd1",
+              "desc": "Voltage of voltage domain 1 in raw form",
+              "type": "short"
+            },
+            {
+              "name": "volt_vd2",
+              "desc": "Voltage of voltage domain 2 in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc00-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc00-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc00-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc01-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc01-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc01-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc02-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc02-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc02-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc03-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc03-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc03-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc04-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc04-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc04-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc05-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc05-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc05-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc06-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc06-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc06-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc07-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc07-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc07-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc08-volt",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc08-current",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "vip_obc08-power",
+              "desc": "Output V, I and P of output bus channel in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc1-volt_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc1-curr_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc1-volt_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc1-curr_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc2-volt_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc2-curr_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc2-volt_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc2-curr_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc3-volt_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc3-curr_in_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc3-volt_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+            {
+              "name": "cc3-curr_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            },
+
+            {
+              "name": "cc3222-curr_out_mppt",
+              "desc": "Data on conditioning chain in raw form",
+              "type": "short"
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "name": "WOD",
+          "desc": "World orbit data",
+          "inParams": [
+            {
+              "name": "timestamp",
+              "desc": "timestamp",
+              "type": "datetime"
+            },
+            {
+              "name": "vbat",
+              "desc": "battery voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_5v",
+              "desc": "5v bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_3v3",
+              "desc": "3v3 bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "charging_power",
+              "desc": "the current charging power",
+              "type": "short"
+            },
+            {
+              "name": "consumed_power",
+              "desc": "the satellite consumed power",
+              "type": "short"
+            },
+            {
+              "name": "electric_current",
+              "desc": "the battery's up-to-date electric current",
+              "type": "short"
+            },
+            {
+              "name": "current_3v3",
+              "desc": "3.3 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "current_5v",
+              "desc": "5 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "sat_time",
+              "desc": "satellite's clock current unix time",
+              "type": "datetime"
+            },
+            {
+              "name": "free_memory",
+              "desc": "the satellite's Sd's free bytes",
+              "type": "int"
+            },
+            {
+              "name": "corrupt_bytes",
+              "desc": "the memory's corrupted bytes",
+              "type": "int"
+            },
+            {
+              "name": "number_of_resets",
+              "desc": "number of resets the satellite has gone through",
+              "type": "int"
+            },
+            {
+              "name": "number_of_cmd_resets",
+              "desc": "number of resets the satellite has gone through",
+              "type": "int"
+            }
+          ]
+        },
+        {
+          "id": "1",
+          "name": "TX",
+          "desc": "TX - TODO",
+          "inParams": [
+            {
+              "name": "timestamp",
+              "desc": "timestamp",
+              "type": "datetime"
+            },
+            {
+              "name": "vbat",
+              "desc": "battery voltage",
+              "type": "short"
+            }
+          ]
+        },
+        {
+          "id": "6",
+          "name": "RX",
+          "desc": "RX - TODO",
+          "inParams": [
+            {
+              "name": "timestamp",
+              "desc": "timestamp",
+              "type": "datetime"
+            },
+            {
+              "name": "vbat",
+              "desc": "battery voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_5v",
+              "desc": "5v bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "volt_3v3",
+              "desc": "3v3 bus voltage",
+              "type": "short"
+            },
+            {
+              "name": "charging_power",
+              "desc": "the current charging power",
+              "type": "short"
+            },
+            {
+              "name": "consumed_power",
+              "desc": "the satellite consumed power",
+              "type": "short"
+            },
+            {
+              "name": "electric_current",
+              "desc": "the battery's up-to-date electric current",
+              "type": "short"
+            },
+            {
+              "name": "current_3v3",
+              "desc": "3.3 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "current_5v",
+              "desc": "5 volt bus up-to-date battery",
+              "type": "short"
+            },
+            {
+              "name": "sat_time",
+              "desc": "satellite's clock current unix time",
+              "type": "datetime"
+            },
+            {
+              "name": "free_memory",
+              "desc": "the satellite's Sd's free bytes",
+              "type": "int"
+            },
+            {
+              "name": "corrupt_bytes",
+              "desc": "the memory's corrupted bytes",
+              "type": "int"
+            },
+            {
+              "name": "number_of_resets",
+              "desc": "number of resets the satellite has gone through",
+              "type": "int"
+            },
+            {
+              "name": "number_of_cmd_resets",
+              "desc": "number of resets the satellite has gone through",
+              "type": "int"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "EPS",
+      "desc": "All EPS function calls",
+      "subtypes": []
+    },
+    {
+      "id": "2",
+      "name": "Telemetry",
+      "subtypes": [
+        {
+          "id": "16",
+          "name": "EPS",
+          "desc": "Get EPS Telemetry",
+          "inParams": []
+        },
+        {
+          "id": "17",
+          "name": "Solar",
+          "desc": "Get Solar Panels Telemetry",
+          "inParams": []
+        },
+        {
+          "id": "18",
+          "name": "TRXVU",
+          "desc": "Get TRXVU Telemetry",
+          "inParams": []
+        },
+        {
+          "id": "19",
+          "name": "ANTs",
+          "desc": "Get AAntennas Telemetry",
+          "inParams": []
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Filesystem",
+      "subtypes": [
+        {
+          "id": "10",
+          "name": "IsCorrupted",
+          "desc": "Is Filesystem corrupted",
+          "inParams": [
+            {
+              "name": "Corruption Indicator",
+              "desc": "Indicates if Filesystem is corrupted",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "id": "11",
+          "name": "Get Freespace",
+          "desc": "Get amount of Free Space in filesystem",
+          "inParams": [
+            {
+              "name": "Free Space",
+              "desc": "Amount of Free Space Filesystem",
+              "type": "long"
+            }
+          ]
+        },
+        {
+          "id": "12",
+          "name": "Get Last Error",
+          "desc": "Get last error in filesystem",
+          "inParams": [
+            {
+              "name": "Last error code",
+              "desc": "last error in Filesystem",
+              "type": "int"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Managment",
+      "desc": "All Managment Types",
+      "subtypes": [
+        {
+          "id": "135",
+          "name": "ANT_STOP_DEPLOY",
+          "desc": "Stop the every 30 min ant deploy in the maintiance",
+          "inParams": [
+            {
+              "name": "Antennas Open",
+              "desc": "1 Indicates Antennas are open",
+              "type": "char"
+            }
+          ]
+        },
+        {
+          "id": "145",
+          "name": "Generic I2C",
+          "desc": "Send a Generic I2C command",
+          "inParams": [
+            {
+              "name": "I2C Command",
+              "desc": "Generic I2C Command sent",
+              "type": "char[]"
+            }
+          ]
+        },
+        {
+          "id": "146",
+          "name": "FRAM Read",
+          "desc": "Generic FRAM Read",
+          "inParams": [
+            {
+              "name": "Value",
+              "desc": "Value of Parameter in FRAM",
+              "type": "char"
+            }
+          ]
+        },
+        {
+          "id": "147",
+          "name": "FRAM Write",
+          "desc": "Generic FRAM Write",
+          "inParams": [
+            {
+              "name": "Value",
+              "desc": "New value for parameter set in FRAM",
+              "type": "char"
+            }
+          ]
+        },
+        {
+          "id": "149",
+          "name": "Update Sat time",
+          "desc": "Update Sat time",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "Current time after time updated",
+              "type": "datetime"
+            }
+          ]
+        },
+        {
+          "id": "150",
+          "name": "Get SAT TIME",
+          "desc": "Get the satelite time",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "Sattelite time in seconds",
+              "type": "datetime"
+            }
+          ]
+        },
+        {
+          "id": "151",
+          "name": "Get SAT UPTIME",
+          "desc": "Get the satelite uptime time",
+          "inParams": [
+            {
+              "name": "seconds",
+              "desc": "Sattelite Up time in seconds",
+              "type": "datetime"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
