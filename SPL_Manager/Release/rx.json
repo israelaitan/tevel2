@@ -68,7 +68,7 @@
             {
               "name": "number_of_resets",
               "desc": "number of resets the satellite has gone through",
-              "type": "int"
+              "type": "short"
             }
           ]
         },

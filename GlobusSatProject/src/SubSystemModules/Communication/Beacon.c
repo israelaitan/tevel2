@@ -18,10 +18,11 @@
 #include "Beacon.h"
 #include "SatDataTx.h"
 
-#define BEACON_ID 0xFFFFFFFF
+#define BEACON_ID 100
 
 time_unix g_prev_beacon_time = 0;				// the time at which the previous beacon occured
 time_unix g_beacon_interval_time = 0;
+unsigned int id=  BEACON_ID;
 
 //Initialize beacon parameters
 void InitBeaconParams()
@@ -49,7 +50,6 @@ void BeaconLogic()
 	logg(TRXInfo, "I:Inside BeaconLogic()\n");
 	sat_packet_t packet;
 	WOD_Telemetry_t wod = { 0 };
-	unsigned int id=  BEACON_ID;
 
 	//check if not on mute and EPS has enough power
 	if(CheckTransmitionAllowed())
@@ -69,6 +69,9 @@ void BeaconLogic()
 
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
+
+			//increase beacon ID
+			id++;
 
 			logg(TRXInfo, "I: ### Beacon sent - id: %d data: %s\n",packet.ID, packet.data );
 		}

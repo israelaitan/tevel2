@@ -145,6 +145,7 @@ int CMD_AntGetUptime(sat_packet_t *cmd)
 	ISISantsSide ant_side;
 	memcpy(&ant_side, cmd->data, sizeof(ant_side));
 	err = IsisAntS_getUptime(ISIS_TRXVU_I2C_BUS_INDEX, ant_side,(unsigned int*) &uptime);
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &uptime, sizeof(uptime));
 	return err;
 }
 

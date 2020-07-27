@@ -357,8 +357,8 @@ int InitSubsystems()
 
 	// Deploy system - open Antetnas
 	err = DeploySystem();
-	{
-		logg(error, "E: Failed in DeploySystem\n");
+	if (err){
+		logg(error, "E:%d Failed in DeploySystem\n", err);
 	}
 
 	return 0;
