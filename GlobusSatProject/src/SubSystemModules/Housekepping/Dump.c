@@ -190,7 +190,6 @@ void DumpTask(void *args) {
 	}
 	logg(TLMInfo, "I:finish dump gracefully %d transmitted", total_packets_read);
 cleanup:
-	free(task_args);
 	f_managed_releaseFS();
 	FinishDump(task_args, ack_return_code, NULL, 0);
 	while(1) {
