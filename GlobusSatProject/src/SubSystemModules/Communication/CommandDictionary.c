@@ -230,7 +230,7 @@ int managment_command_router(sat_packet_t *cmd)
 
 	case ANTS_AUTO_DEPLOY_SUBTYPE:
 		err = CMD_AntennaDeploy(cmd);
-		ackType=ACK_ANT_AUTO_DEP;
+		ackType=ACK_REDEPLOY;
 		break;
 
 	case I2C_GEN_CMD_SUBTYPE:
