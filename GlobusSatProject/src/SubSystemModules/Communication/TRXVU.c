@@ -288,7 +288,7 @@ int CMD_SetIdleOff()
 	return SetIdleOff();
 }
 
-void areAntennasOpen()
+Boolean areAntennasOpen()
 {
 	int err;
 
@@ -303,4 +303,6 @@ void areAntennasOpen()
 	{
 		g_antOpen=TRUE;
 	}
+
+	return g_antOpen;
 }
