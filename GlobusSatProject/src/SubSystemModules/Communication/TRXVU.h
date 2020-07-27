@@ -44,4 +44,9 @@ int CMD_SetIdleOff();
  */
 void setLastAntsAutoDeploymentTime(time_unix time);
 
+/*!
+ * @briefCheck if Antennas are open
+ */
+void areAntennasOpen();
+
 #endif

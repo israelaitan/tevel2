@@ -35,7 +35,7 @@ Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
 //ant open global variables
-char g_antOpen= 0;
+Boolean g_antOpen= FALSE;
 time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period =30*60 ; //30 min
 
@@ -68,7 +68,7 @@ int SetIdleOff()
 
 void HandleOpenAnts()
 {
-	if(g_antOpen == 0)
+	if(g_antOpen == FALSE)
 	{
 		//if ants open period has passed
 		if (CheckExecutionTime(g_ants_last_dep_time, g_ants_dep_period)==TRUE)
@@ -180,12 +180,7 @@ int InitTrxvu()
 	}
 	vTaskDelay(100);
 
-	// get ant open flag from fram
-	err=FRAM_read((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-	if(err!=0)
-	{
-		g_antOpen=0;
-	}
+	areAntennasOpen();
 
 	//Initialize Antennas
 	InitAnts();
@@ -226,6 +221,13 @@ int InitTrxvu()
 			//Reset WD communication with earth by saving current time as last communication time in FRAM
 			ResetGroundCommWDT();
 
+			if(g_antOpen==FALSE)
+			{
+				//update ant open to true
+				g_antOpen=TRUE;
+				logg(TRXInfo, "I: Antennas deployment flag set to TRUE as packet received from Earth******\n");
+			}
+
 			//Send Acknowledge to earth
 			SendAckPacket(ACK_RECEIVE_COMM, cmd, data, length);
 
@@ -236,15 +238,6 @@ int InitTrxvu()
 		{
 			logg(TRXInfo, "I: Status: %d in getting the online command. \n", res);
 		}
-
-		if(g_antOpen==0)
-		{
-			//update ant open to true
-			g_antOpen=1;
-			FRAM_write((unsigned char *)&g_antOpen, ANT_OPEN_FLAG_ADDR,  ANT_OPEN_FLAG_SIZE );
-			logg(TRXInfo, "I: Antennas deployment flag set to TRUE as packet received from Earth******\n");
-		}
-
 	}
 
 	//check idle timer and mute timer
@@ -295,3 +288,19 @@ int CMD_SetIdleOff()
 	return SetIdleOff();
 }
 
+void areAntennasOpen()
+{
+	int err;
+
+	// get ant open flag from fram
+	time_unix lastCommunicationTime;
+	err=FRAM_read((unsigned char *)&lastCommunicationTime, LAST_COMM_TIME_ADDR,  LAST_COMM_TIME_SIZE );
+	if(err!=0 || lastCommunicationTime == 0)
+	{
+		g_antOpen=FALSE;
+	}
+	else
+	{
+		g_antOpen=TRUE;
+	}
+}
