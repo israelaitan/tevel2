@@ -68,6 +68,10 @@ Boolean getTransponderMode();
  */
 Boolean checkEndTransponderMode();
 
-
+/**
+ *@brief		Get Duration of Transponder
+ *@return		return the period
+ */
+int getDuration(sat_packet_t *cmd);
 
 #endif /* TRANSPONDER_H_ */
