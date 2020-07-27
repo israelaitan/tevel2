@@ -197,26 +197,28 @@ cleanup:
 		vTaskDelay(5000);
 	};
 }
-
-int DumpTelemetry(sat_packet_t *cmd) {
-	if (NULL == cmd) {
+int DumpTelemetry(sat_packet_t *cmd)
+{
+	logg(info, "I:Starting DumpTelemetry\n");
+	if (NULL == cmd)
 		return -1;
-	}
 
 	dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
-	int index = 0;
-	memcpy(&(dmp_pckt->dump_type),&cmd->data[index],sizeof(dmp_pckt->dump_type));
-	index+=sizeof(dmp_pckt->dump_type);
-	memcpy(&(dmp_pckt->t_start),&cmd->data[index],sizeof(dmp_pckt->t_start));
-	index+=sizeof(dmp_pckt->t_start);
-	memcpy(&(dmp_pckt->t_end),&cmd->data[index],sizeof(dmp_pckt->t_end));
-	index+=sizeof(dmp_pckt->t_end);
-	memcpy(&(dmp_pckt->cmd),cmd,sizeof(*cmd));
+	unsigned int offset = 0;
+	dmp_pckt->cmd = cmd;
 
+	memcpy(&dmp_pckt->dump_type, cmd->data, sizeof(dmp_pckt->dump_type));
+	offset += sizeof(dmp_pckt->dump_type);
+
+	memcpy(&dmp_pckt->t_start, cmd->data + offset, sizeof(dmp_pckt->t_start));
+	offset += sizeof(dmp_pckt->t_start);
+
+	memcpy(&dmp_pckt->t_end, cmd->data + offset, sizeof(dmp_pckt->t_end));
 
 	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
 		return E_GET_SEMAPHORE_FAILED;
 	}
+
 	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
 			(void* )dmp_pckt, configMAX_PRIORITIES - 2, &xDumpHandle);
 
