@@ -44,11 +44,6 @@
                         "name": "duration",
                         "desc": "number of seconds to mute the TRXVU",
                         "type": "int"
-                    },
-                    {
-                        "name": "temp value",
-                        "desc": "temp temp",
-                        "type": "short"
                     }
                 ]
             },
