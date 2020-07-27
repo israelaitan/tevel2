@@ -48,7 +48,7 @@ int InitDump()
 	return 0;
 }
 
-void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t acktype,
+void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 		unsigned char *err, unsigned int size) {
 
 	SendAckPacket(acktype, task_args->cmd, err, size);
@@ -105,7 +105,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 
 void DumpTask(void *args) {
 	if (NULL == args) {
-		FinishDump(NULL, NULL, ACK_DUMP_ABORT, NULL, 0);
+		FinishDump(NULL, ACK_DUMP_ABORT, NULL, 0);
 		return;
 	}
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
@@ -134,7 +134,7 @@ void DumpTask(void *args) {
 	if(0 != err) {
 		// TODO: see if this can fit into our goto
 		logg(error, "E:problem during dump init with err %d\n", err);
-		FinishDump(task_args, buffer, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
+		FinishDump(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 		return;
 	}
 
@@ -190,8 +190,9 @@ void DumpTask(void *args) {
 	}
 	logg(TLMInfo, "I:finish dump gracefully %d transmitted", total_packets_read);
 cleanup:
+	free(task_args);
 	f_managed_releaseFS();
-	FinishDump(task_args, buffer, ack_return_code, NULL, 0);
+	FinishDump(task_args, ack_return_code, NULL, 0);
 	while(1) {
 		logg(TLMInfo, "I:at end of dump task");
 		vTaskDelay(5000);
