@@ -94,6 +94,8 @@ FileSystemResult c_fileCreate(char* c_file_name,
  * FS_SUCCSESS on success.
  */
 FileSystemResult c_fileWrite(char* c_file_name, void* element);
+FileSystemResult _c_fileWrite(char* c_file_name, void* element, int size, unsigned char withTime);
+
 
 /*!
  * Delete elements from c_file from "from_time" to "to_time".

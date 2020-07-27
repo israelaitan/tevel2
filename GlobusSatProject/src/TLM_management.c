@@ -324,6 +324,12 @@ static void writewithEpochtime(F_FILE* file, byte* data, int size,unsigned int t
 	}
 	f_flush( file ); /* only after flushing can data be considered safe */
 }
+
+static void write(F_FILE* file, byte* data, int size)
+{
+	f_write( data, size,1, file );
+	f_flush( file );
+}
 // get C_FILE struct from FRAM by name
 static Boolean get_C_FILE_struct(char* name,C_FILE* c_file,unsigned int *address)
 {
@@ -397,6 +403,11 @@ FileSystemResult c_fileReset(char* c_file_name)
 
 FileSystemResult c_fileWrite(char* c_file_name, void* element)
 {
+	return _c_fileWrite(c_file_name, element, 0, 1);
+}
+
+FileSystemResult _c_fileWrite(char* c_file_name, void* element, int size, unsigned char withTime)
+{
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	F_FILE *file = NULL;
@@ -419,7 +430,12 @@ FileSystemResult c_fileWrite(char* c_file_name, void* element)
 	{
 		f_managed_close(&file);	/* data is also considered safe when file is closed */
 	}
-	writewithEpochtime(file,element,c_file.size_of_element,curr_time);
+	if (size == 0)
+		size = c_file.size_of_element;
+	if (withTime)
+		writewithEpochtime(file,element, size, curr_time);
+	else
+		write(file,element, size);
 	f_managed_close(&file);	/* data is also considered safe when file is closed */
 	c_file.last_time_modified= curr_time;
 	if(FRAM_write((unsigned char *)&c_file,addr,sizeof(C_FILE))!=0)//update last written
