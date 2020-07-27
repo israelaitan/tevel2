@@ -972,7 +972,7 @@
             {
               "name": "Antennas Open",
               "desc": "1 Indicates Antennas are open",
-              "type": "char"
+              "type": "boolean"
             }
           ]
         },
@@ -984,7 +984,7 @@
             {
               "name": "I2C Command",
               "desc": "Generic I2C Command sent",
-              "type": "char[]"
+              "type": "char"
             }
           ]
         },
