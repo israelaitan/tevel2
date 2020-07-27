@@ -29,7 +29,6 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_MEMORY_DELETE = 0x83,				// when memory delete is completed success
 
 	ACK_UPDATE_TIME = 0x12,					// after updating time
-	ACK_UPDATE_BEACON_BIT_RATE = 0x13,
 	ACK_UPDATE_BEACON_TIME_DELAY = 0x14,
 	ACK_UPDATE_EPS_VOLTAGES = 0x15,
 	ACK_RESET_EPS_WD = 0x16,
@@ -51,7 +50,6 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_ARM_DISARM = 0x94,					//after changing arm state of the ants
 	ACK_REDEPLOY = 0x95,
 	ACK_ANT_CANCEL_DEP = 0x9E,
-	ACK_ANT_AUTO_DEP = 0x96,
 	ACK_FRAM_RESET = 0xA0,
 	ACK_TLM_SET_COLL_CYCLE= 0xA1,
 
