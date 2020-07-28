@@ -344,17 +344,17 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		vTaskDelay(10);
 		err = (unsigned int) InitializeFS(FALSE);
 		vTaskDelay(10);
-		SendAckPacket(ACK_FS_RESET, NULL, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(ACK_FS_RESET, 0xffff, 0xffff, (unsigned char*) &err, sizeof(err));
 		break;
 
 	case reset_ant_SideA:
 		err = IsisAntS_reset(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA);
-		SendAckPacket(ACK_ANTS_RESET, NULL, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(ACK_ANTS_RESET, 0xffff, 0xffff, (unsigned char*) &err, sizeof(err));
 		break;
 
 	case reset_ant_SideB:
 		err = IsisAntS_reset(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB);
-		SendAckPacket(ACK_ANTS_RESET, NULL, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(ACK_ANTS_RESET, 0xffff, 0xffff, (unsigned char*) &err, sizeof(err));
 		break;
 
 	default:

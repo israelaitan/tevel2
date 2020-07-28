@@ -10,15 +10,17 @@
 
 //TODO: adjust
 #define LOG_MSG_SIZE 80
-#define LOG_BUFFER_SIZE (235 * 3)//SIZE_TXFRAME=235
-#define LOG_TLM_SIZE (235 - 4)//SIZE_TXFRAME - sizeof(unsigned int)
+#define LOG_BUFFER_SIZE ((235 - 8) * 3)//SIZE_TXFRAME=235 - spl header
+#define LOG_TLM_SIZE (235 - 4 - 8)//SIZE_TXFRAME - sizeof(unsigned int) - spl header
 
-#define CURR_LOG_LEVEL 3
+#define CURR_LOG_LEVEL 4
 #define TLMInfo (LogLevel)2
 #define MTNInfo (LogLevel)2
-#define TRXInfo (LogLevel)2
+#define TRXInfo (LogLevel)3
 #define OBCInfo (LogLevel)2
 #define EPSInfo (LogLevel)2
+#define DMPInfo (LogLevel)3
+#define FileInfo (LogLevel)3
 
 typedef enum _LogLevel {
 	all = 0,

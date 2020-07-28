@@ -67,24 +67,24 @@ void TelemetryCollectorLogic()
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[eps_tlm]));
-		logg(info, "I:TelemetrySaveEPS, time: %lu\n", tlm_last_save_time[eps_tlm]);
+		logg(event, "I:TelemetrySaveEPS, time: %lu\n", tlm_last_save_time[eps_tlm]);
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){
 		TelemetrySaveTRXVU();
-		logg(info, "I:TelemetrySaveTRXVU\n");
+		logg(TLMInfo, "I:TelemetrySaveTRXVU\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[trxvu_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[ant_tlm],tlm_save_periods[ant_tlm])){
 		TelemetrySaveANT();
-		logg(info, "I:TelemetrySaveANT\n");
+		logg(TLMInfo, "I:TelemetrySaveANT\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[ant_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm],tlm_save_periods[solar_panel_tlm])){
 		TelemetrySaveSolarPanels();
-		logg(info, "I:TelemetrySaveSolarPanels\n");
+		logg(TLMInfo, "I:TelemetrySaveSolarPanels\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
 	}
 
