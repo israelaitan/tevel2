@@ -20,14 +20,15 @@
 
 #include "TLM_management.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 #define NUMBER_OF_WRITES 1
 #define SKIP_FILE_TIME_SEC ((60*60*24*0.5)/NUMBER_OF_WRITES)
 #define _SD_CARD (0)
 #define FIRST_TIME (-1)
 #define FILE_NAME_WITH_INDEX_SIZE (MAX_F_FILE_NAME_SIZE+sizeof(int)*2)
-#define ELEMENTS_PER_READ 17
-#define MAX_ELEMENT_SIZE (200)
+#define ELEMENTS_PER_READ (4500)
+#define MAX_ELEMENT_SIZE (227)
 #define FS_TAKE_SEMPH_DELAY	(1000 * 30)
 
 char allocked_write_element[MAX_ELEMENT_SIZE];
@@ -163,51 +164,31 @@ int f_managed_releaseFS()
 	return 0;
 }
 
-int f_managed_open(char* file_name, char* config, F_FILE** fileHandler)
-{
-	int lastError = 0;
-	if (xSemaphoreTake(xFileOpenHandler, FS_TAKE_SEMPH_DELAY) == pdTRUE)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			*fileHandler = f_open(file_name, config);
-			lastError = f_getlasterror();
-
-			if (*fileHandler != NULL)
+int f_managed_open(char* file_name, char* config, F_FILE** fileHandler) {
+	printf("f_managed_open. before take\n");
+	//if (xSemaphoreTake(xFileOpenHandler, FS_TAKE_SEMPH_DELAY) == pdTRUE) {
+		*fileHandler = f_open(file_name, config);
+		int lastError = f_getlasterror();
+		if (*fileHandler != NULL)
 				return 0;
-			if(lastError == F_ERR_NOTFOUND || lastError == F_ERR_INVALIDDRIVE)
-				return lastError;
-			vTaskDelay(100);
-		}
-
-		if (fileHandler == NULL || lastError != 0)
-			xSemaphoreGive(xFileOpenHandler);
-		//vTaskDelay(SYSTEM_DEALY);
-	}
-	else
-	{
-		return COULD_NOT_TAKE_SEMAPHORE_ERROR;
-	}
-	return lastError;
+//		xSemaphoreGive(xFileOpenHandler);
+		return lastError;
+//	} else
+	//	return COULD_NOT_TAKE_SEMAPHORE_ERROR;
 }
-int f_managed_close(F_FILE** fileHandler)
-{
-	if (fileHandler == NULL)
-		return FILE_NULL_ERROR;
-	int error = f_close(*fileHandler);
-	if (error != 0)
-	{
-		return error;
-	}
-	if (xSemaphoreGive(xFileOpenHandler) == pdTRUE)
-		return 0;
 
-	return COULD_NOT_GIVE_SEMAPHORE_ERROR;
+int f_managed_close(F_FILE** fileHandler) {
+	printf("f_managed_close. before give\n");
+	if (fileHandler != NULL)
+		f_close(*fileHandler);
+	//xSemaphoreGive(xFileOpenHandler);
+	return 0;
 }
 
 FileSystemResult createSemahores_FS()
 {
-	xFileOpenHandler = xSemaphoreCreateCounting(FS_MAX_OPENFILES, FS_MAX_OPENFILES);
+	//xFileOpenHandler = xSemaphoreCreateCounting(FS_MAX_OPENFILES, FS_MAX_OPENFILES);
+	vSemaphoreCreateBinary(xFileOpenHandler);
 	if (xFileOpenHandler == NULL)
 		return FS_COULD_NOT_CREATE_SEMAPHORE;
 	return FS_SUCCSESS;
@@ -330,7 +311,7 @@ static void writewithEpochtime(F_FILE* file, byte* data, int size,unsigned int t
 
 static void write(F_FILE* file, byte* data, int size)
 {
-	f_write( data, size,1, file );
+	long writen = f_write( data, 1, size, file );
 	f_flush( file );
 }
 // get C_FILE struct from FRAM by name
@@ -540,7 +521,7 @@ FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
 	}
 	return FS_SUCCSESS;
 }
-//TODO:
+
 FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, int element_size)
 {
@@ -582,7 +563,7 @@ FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 
 	return FS_SUCCSESS;
 }
-
+//TODO:
 FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time, unsigned int resolution)
 {
@@ -599,7 +580,7 @@ FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 	{
 		return FS_NOT_EXIST;
 	}
-	if(from_time<c_file.creation_time)
+	if(from_time < c_file.creation_time || from_time > to_time)
 	{
 		from_time=c_file.creation_time;
 	}
@@ -622,53 +603,41 @@ FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		f_seek( current_file, 0L , SEEK_SET );
 		for(int j=0;j < length;j+=how_much_to_read)
 		{
-			if(left_to_read<ELEMENTS_PER_READ)
-			{
+			if(left_to_read<ELEMENTS_PER_READ) {
 				how_much_to_read = left_to_read;
 			}
-			else
-			{
+			else {
 				how_much_to_read=ELEMENTS_PER_READ;
 			}
 			element = allocked_read_element;
-			err_fread = f_read(element,(size_t)size_elementWithTimeStamp,how_much_to_read,current_file);
-			for(int k=0;k<how_much_to_read;k++)
-			{
+			err_fread = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
+			for(int k=0;k<how_much_to_read;k++){
 				unsigned int element_time;
 				memcpy(&element_time, element, sizeof(int));
-				//printf("read element, time is %u\n",element_time);
-				if(element_time > to_time)
-				{
+				if(element_time > to_time) {
 					end_read = 1;
-					break;				}
-
-				if(element_time >= from_time)
-				{
+					break;
+				}
+				if(element_time >= from_time) {
 					*last_read_time = element_time;
-					if((unsigned int)buffer_index + size_elementWithTimeStamp>(unsigned int)size_of_buffer)
-					{
+					if( ((unsigned int)buffer_index + size_elementWithTimeStamp) > (unsigned int)size_of_buffer ) {
 						error = f_managed_close(&current_file);
 						if (error == COULD_NOT_GIVE_SEMAPHORE_ERROR)
-						{
 							return FS_COULD_NOT_GIVE_SEMAPHORE;
-						}
 						return FS_BUFFER_OVERFLOW;
 					}
 
-					if (element_time >= (time_unix)resolution + lastCopy_time)
-					{
+					if (element_time >= (time_unix)resolution + lastCopy_time) {
 						(*read)++;
-						memcpy(buffer + buffer_index,element,size_elementWithTimeStamp);
+						memcpy(buffer + buffer_index, element, size_elementWithTimeStamp);
 						buffer_index += size_elementWithTimeStamp;
 						lastCopy_time = element_time;
 					}
 				}
-				element+=c_file.size_of_element+sizeof(int);
+				element += (c_file.size_of_element + sizeof(int));
 			}
 			if(end_read)
-			{
 				break;
-			}
 		}
 		error = f_managed_close(&current_file);
 		if (error == COULD_NOT_GIVE_SEMAPHORE_ERROR)
