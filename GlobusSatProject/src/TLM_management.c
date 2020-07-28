@@ -19,13 +19,14 @@
 #include <stdlib.h>
 
 #include "TLM_management.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
 
 #define NUMBER_OF_WRITES 1
 #define SKIP_FILE_TIME_SEC ((60*60*24*0.5)/NUMBER_OF_WRITES)
 #define _SD_CARD (0)
 #define FIRST_TIME (-1)
 #define FILE_NAME_WITH_INDEX_SIZE (MAX_F_FILE_NAME_SIZE+sizeof(int)*2)
-#define ELEMENTS_PER_READ 9000
+#define ELEMENTS_PER_READ 17
 #define MAX_ELEMENT_SIZE (200)
 #define FS_TAKE_SEMPH_DELAY	(1000 * 30)
 
@@ -268,6 +269,8 @@ FileSystemResult InitializeFS(Boolean first_time)
 		{
 			return FS_FAT_API_FAIL;
 		}
+		Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES];
+		TelemetryCreateFiles(tlms_created);
 	}
 
 
@@ -537,7 +540,7 @@ FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
 	}
 	return FS_SUCCSESS;
 }
-
+//TODO:
 FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, int element_size)
 {

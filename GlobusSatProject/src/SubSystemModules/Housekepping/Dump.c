@@ -68,6 +68,26 @@ void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 
 }
 
+void FinishDumpSelf(dump_arguments_t *task_args, ack_subtype_t acktype,
+		unsigned char *err, unsigned int size) {
+
+	SendAckPacket(acktype, task_args->cmd, err, size);
+	if (NULL != task_args) {
+		logg(TLMInfo, "I:free args\n");
+		free(task_args);
+	}
+	if (NULL != xDumpLock) {
+		logg(TLMInfo, "I:release lock\n");
+		xSemaphoreGive(xDumpLock);
+	}
+	if (xDumpHandle != NULL) {
+		logg(TLMInfo, "I:delete handle\n");
+		vTaskDelete(NULL);
+		xDumpHandle = NULL;
+	}
+
+}
+
 void SendDumpAbortRequest() {
 	if (eTaskGetState(xDumpHandle) == eDeleted) {
 		return;
@@ -105,7 +125,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 
 void DumpTask(void *args) {
 	if (NULL == args) {
-		FinishDump(NULL, ACK_DUMP_ABORT, NULL, 0);
+		FinishDumpSelf(NULL, ACK_DUMP_ABORT, NULL, 0);
 		return;
 	}
 	dump_arguments_t *task_args = (dump_arguments_t *) args;
@@ -134,7 +154,7 @@ void DumpTask(void *args) {
 	if(0 != err) {
 		// TODO: see if this can fit into our goto
 		logg(error, "E:problem during dump init with err %d\n", err);
-		FinishDump(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
+		FinishDumpSelf(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 		return;
 	}
 
@@ -191,7 +211,7 @@ void DumpTask(void *args) {
 	logg(TLMInfo, "I:finish dump gracefully %d transmitted", total_packets_read);
 cleanup:
 	f_managed_releaseFS();
-	FinishDump(task_args, ack_return_code, NULL, 0);
+	FinishDumpSelf(task_args, ack_return_code, NULL, 0);
 	while(1) {
 		logg(TLMInfo, "I:at end of dump task");
 		vTaskDelay(5000);

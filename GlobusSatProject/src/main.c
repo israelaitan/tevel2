@@ -41,11 +41,6 @@
 
 		while(TRUE)//main loop
 		{
-			res=EPS_Conditioning();
-			if(res!=0)
-			{
-				logg(error, "E: Error in EPS_Conditioning: "+res)
-			}
 
 			res=TRX_Logic();
 			if(res!=0)
@@ -64,9 +59,8 @@
 // main operation function. will be called upon software boot.
 int main()
 {
-	xTaskHandle taskMainHandle;
 
-	logg(OBCInfo, "\n\n Hello Givat Shmuel\n\n");
+	xTaskHandle taskMainHandle;
 
 	TRACE_CONFIGURE_ISP(DBGU_STANDARD, 2000000, BOARD_MCK);
 	// Enable the Instruction cache of the ARM9 core. Keep the MMU and Data Cache disabled.
@@ -85,4 +79,5 @@ int main()
 			configMAX_PRIORITIES - 2, &taskMainHandle, NULL, NULL);
 #endif
 	vTaskStartScheduler();
+
 }

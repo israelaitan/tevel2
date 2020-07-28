@@ -293,13 +293,13 @@ void taskTesting()
 
 		Maintenance();
 
-		vTaskDelay(100);
+		//vTaskDelay(100);
 
 		i++;
 		//if (i == 10)
 		//TestDumpTelemetry();
 		//
-		//5 0 0 8 0 69 A 0 C 0 49 1C 0C 5E A8 1C 0C 5E
+		//5 0 0 8 0 69 A 0 C 0 49 1C 0C 5E AA 4B 0F 5E
 		//1577851977
 		//1577852072
 		//5 0 0 0 0 22

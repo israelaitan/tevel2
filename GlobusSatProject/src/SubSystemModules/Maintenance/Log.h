@@ -11,8 +11,9 @@
 //TODO: adjust
 #define LOG_MSG_SIZE 80
 #define LOG_BUFFER_SIZE (235 * 10)//SIZE_TXFRAME=235
+#define LOG_TLM_SIZE (235 - 4)//SIZE_TXFRAME - sizeof(unsigned int)
 
-#define CURR_LOG_LEVEL 5
+#define CURR_LOG_LEVEL 3
 #define TLMInfo (LogLevel)3
 #define MTNInfo (LogLevel)3
 #define TRXInfo (LogLevel)3

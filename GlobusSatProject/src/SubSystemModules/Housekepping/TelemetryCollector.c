@@ -119,9 +119,9 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 
 	//-- LOG files
-	res = c_fileCreate(FILENAME_LOG_TLM, LOG_BUFFER_SIZE);
+	res = c_fileCreate(FILENAME_LOG_TLM, LOG_TLM_SIZE);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
-	res = c_fileCreate(FILENAME_LOG_BCKP_TLM, LOG_BUFFER_SIZE);
+	res = c_fileCreate(FILENAME_LOG_BCKP_TLM, LOG_TLM_SIZE);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log_bckp);
 }
 

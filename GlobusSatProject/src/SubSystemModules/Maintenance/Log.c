@@ -58,6 +58,8 @@ void _logg(char* msg) {
     	Time_getUnixEpoch(&time);
     	memcpy(logBuffer + index, &time, sizeof(time));
     	index += sizeof(time);
+    	memcpy(logBuffer + index, msg, msgSize);
+    	index += msgSize;
     } else {
     	int leftover = SIZE_TXFRAME - reminder;
     	if (msgSize <= leftover) {
