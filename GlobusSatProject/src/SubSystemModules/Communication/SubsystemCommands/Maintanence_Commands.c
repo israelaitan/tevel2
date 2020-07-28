@@ -311,10 +311,7 @@ int CMD_ResetComponent(reset_type_t rst_type)
 
 	case reset_hardware:
 		SendAnonymosAck(ACK_HARD_RESET);
-		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
-		vTaskDelay(10);
-		//TODO: obc hard reset
-		break;
+		//Rest hardware is performed by EPS reset - so no break to execute next case as well
 
 	case reset_eps:
 		SendAnonymosAck(ACK_EPS_RESET);
