@@ -11,8 +11,8 @@ from Tevel.Types import *
 
 kissPrefix = b'\xc0\x00'
 kissSuffix = b'\xc0'
-satAddress = b'\xa8p\x8e\x84\xa6@\xe0'
-groundAddress = b'\xa8p\x8e\x84\xa6@c'
+groundAddress = b'\xa8p\x8e\x84\xa6@\xe0'
+satAddress = b'\xa8p\x8e\x84\xa6@c'
 control = b'\x03'
 pid = b'\xf0'
 ax25headerLen = 2 + 7 + 7 + 2
@@ -21,60 +21,58 @@ splheaderLen = 1 + 1 + 2 + 1 + 1 + 2
 
 def handelBeacon(header, data):
     beacon = Beacon._make(struct.unpack(BeaconFormat, data))
-    print(f'{Fore.RED}{header}')
-    print(f'{beacon}\n')
+    print(f'{Fore.RED}{beacon}')
 
 def handelLogDump(header, data):
     time = struct.unpack('I', data[0:4])
     logData = data[4:]
     print(f'{Fore.BLUE}{header}')
-    print(f'{time[0]}:{logData}\n')
+    print(f'{time[0]}:{logData}')
 
 def handleEpsRaw(header, data):
     time = struct.unpack('I', data[0:4])
     epsData = data[4:]
     epsRaw = EpsRaw._make(struct.unpack(gethousekeepingrawFMT, epsData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{epsRaw}\n')
+    print(f'{time[0]}:{epsRaw}')
 
 def handleEpsEng(header, data):
     time = struct.unpack('I', data[0:4])
     epsData = data[4:]
     epsEng = EpsEng._make(struct.unpack(gethousekeepingengFMT, epsData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{epsEng}\n')
+    print(f'{time[0]}:{epsEng}')
 
 def handleTx(header, data):
     time = struct.unpack('I', data[0:4])
     txData = data[4:]
     tx = TxTelemetry._make(struct.unpack(txTlmFormat, txData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{tx}\n')
+    print(f'{time[0]}:{tx}')
 
 def handleRx(header, data):
     time = struct.unpack('I', data[0:4])
     rxData = data[4:]
     rx = RxTelemetry._make(struct.unpack(rxTlmFormat, rxData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{rx}\n')
+    print(f'{time[0]}:{rx}')
 
 def handlePV(header, data):
     time = struct.unpack('I', data[0:4])
     pvData = data[4:]
     pv = PVTelemetry._make(struct.unpack(pvTlmFormat, pvData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{pv}\n')
+    print(f'{time[0]}:{pv}')
 
 def handleAnt(header, data):
     time = struct.unpack('I', data[0:4])
     antData = data[4:]
     ant = AntTelemetry._make(struct.unpack(antTlmFormat, antData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{ant}\n')
+    print(f'{time[0]}:{ant}')
 
 def handleAck(header, data):
-    print(f'{Fore.GREEN}{header}')
-    print(f'{AckSubtype(header.subtype)}:{data}\n')
+    print(f'{Fore.GREEN}{header}:{AckSubtype(header.subtype)}:{data}')
 
 
 def rcvPayload( headerStriped, socket ):
@@ -119,7 +117,7 @@ def rcvPacket(packet, socket):
         print('E:kiss prefix')
         return
     destAddress = packet[2:9]
-    if (destAddress != satAddress):
+    if (destAddress != groundAddress):
         print('E:destination')
         return
     srcAddress = packet[9:16]
@@ -129,9 +127,15 @@ def rcvPacket(packet, socket):
         print('E:spl header small')
     rcvPayload(payload, socket)
 
+def sendCommand(rfcb_socket):
+    command = b'\x05\x00\x00\x08\x00\x69\x0A\x00\x0C\x00\x49\x1C\x0C\x5E\xA8\x1C\x0C\x5E'
+    comm = b'%b%b%b%b%b%b%b' % (kissPrefix, satAddress, groundAddress, control, pid, command, kissSuffix)
+    rfcb_socket.send(comm)
+
 def connect():
     rfcb_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     rfcb_socket.connect(('127.0.0.1', 3211))
+    #sendCommand(rfcb_socket)
     while 1:
         data = rfcb_socket.recv(ax25headerLen)
         rcvPacket(data, rfcb_socket)
