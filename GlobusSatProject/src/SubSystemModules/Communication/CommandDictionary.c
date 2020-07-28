@@ -126,7 +126,7 @@ int eps_command_router(sat_packet_t *cmd)
 		break;
 
 	default:
-		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd,NULL,0);
+		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd->ID, cmd->ordinal,NULL,0);
 		break;
 	}
 

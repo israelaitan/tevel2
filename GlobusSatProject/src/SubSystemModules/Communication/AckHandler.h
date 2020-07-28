@@ -6,7 +6,7 @@
 #include "SPL.h"
 
 
-#define SendAnonymosAck(acksubtype) SendAckPacket(acksubtype,NULL,NULL,0) //<! sends an ACK without command ID nor data
+#define SendAnonymosAck(acksubtype) SendAckPacket(acksubtype, 0xffff, 0xffff,NULL,0) //<! sends an ACK without command ID nor data
 
 
 /*!
@@ -18,7 +18,7 @@
  * @note the ACK is sent with the corresponding ID of the ACK inside the SPL packet
  * @return errors according t <hal/errors.h>
  */
-int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd, unsigned char *data, unsigned int length);
+int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short ord, unsigned char *data, unsigned int length);
 
 /*!
  * @brief transmits an ack packet as an SPL packet(using the SPL protocol)

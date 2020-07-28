@@ -195,7 +195,7 @@ void TestIsFirstAct(char status)
 	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 
 	// call isFirstActivation check
-	St=isFirstActivation();
+	isFirstActivation(&St);
 	if(St==TRUE)
 	{
 		printf("isFirstActivation()=TRUE\n");
@@ -266,6 +266,17 @@ void taskTesting()
 {
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
+	Boolean St;
+	// call isFirstActivation check
+	isFirstActivation(&St);
+	if(St==TRUE)
+	{
+		printf("isFirstActivation()=TRUE\n");
+	}
+	else
+	{
+		printf("isFirstActivation()=FLASE\n");
+	}
 
 	//TestisFirstActivation();
 	//TestFirstActivionProc();
@@ -283,15 +294,16 @@ void taskTesting()
 	int i = 0;
 	while (1)
 	{
-		logg(OBCInfo, "I:--------------------Main loop: i= : %d  ------------\n",  i);
-
+		//logg(OBCInfo, "I:--------------------Main loop: i= : %d  ------------\n",  i);
+	//	voltage_t v;
 		TRX_Logic();
-		logg(OBCInfo, "I:Main:TRX_Logic\n");
+		logg(DMPInfo, "I:Main:TRX_Logic\n");
 
 		TelemetryCollectorLogic();
-		logg(OBCInfo, "I:Main:TelemetryCollectorLogic\n");
+		logg(DMPInfo, "I:Main:TelemetryCollectorLogic\n");
 
 		Maintenance();
+		logg(DMPInfo, "I:Main:MaintenanaceLogic\n");
 
 		//vTaskDelay(100);
 

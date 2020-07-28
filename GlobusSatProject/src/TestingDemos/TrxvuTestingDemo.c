@@ -308,12 +308,12 @@ Boolean TestMuteTrxvu()
 		printf("current tick = %d\n",(int)xTaskGetTickCount());
 		isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &response );
 		printf("sending ACK(if transmission was heard then error :/ )\n");
-		SendAckPacket(ACK_MUTE,NULL,NULL,0);
+		SendAckPacket(ACK_MUTE, 0xffff, 0xffff, NULL, 0);
 		vTaskDelay(1000);
 	}
 	UnMuteTRXVU();
 	Boolean mute_flag = GetMuteFlag();
-	SendAckPacket(ACK_MUTE,NULL,(unsigned char*)&mute_flag,sizeof(mute_flag));
+	SendAckPacket(ACK_MUTE, 0xffff, 0xffff,(unsigned char*)&mute_flag,sizeof(mute_flag));
 	return TRUE;
 }
 

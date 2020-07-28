@@ -29,7 +29,7 @@ int ActUponCommand(sat_packet_t *cmd)
 	else if( cmd->cmd_type == ack_type ) {
 		unsigned char* data = NULL;
 		unsigned int length = 0;
-		SendAckPacket(ACK_PING, cmd, data, length);
+		SendAckPacket(ACK_PING, cmd->ID, cmd->ordinal, data, length);
 	} else
 		err = -2;
 

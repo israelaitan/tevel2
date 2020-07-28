@@ -10,22 +10,15 @@
 #include "SatDataTx.h"
 #include "TRXVU.h"
 
-int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd,
+int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short ord,
 		unsigned char *data, unsigned int length)
 {
 	int err = 0;
 	sat_packet_t ack = { 0 };
-	unsigned short id = 0xFFFF; //default ID. system ACK. not a response to any command
-	unsigned short ord = 0xFFFF; //default ord.system ACK. not a response to any command
-
-	if (NULL != cmd) {
-		id = cmd->ID;
-		ord = cmd->ordinal;
-	}
 
 	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, &ack);
 
-	err = TransmitSplPacket(&ack,NULL);
+	err = TransmitSplPacket(&ack, NULL);
 	vTaskDelay(10);
 	return err;
 }
@@ -44,14 +37,14 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 	if (ack != ACK_NO_ACK)
 	{
-		SendAckPacket(ack, cmd, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(ack, cmd->ID, cmd->ordinal, (unsigned char*) &err, sizeof(err));
 	}
 }
 
 void SendErrorMSG_IfError(ack_subtype_t subtype, sat_packet_t *cmd, int err)
 {
 	if (err != 0) {
-		SendAckPacket(subtype, cmd, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(subtype, cmd->ID, cmd->ordinal, (unsigned char*) &err, sizeof(err));
 	}
 }
 

@@ -81,7 +81,7 @@ int WakeupFromResetCMD()
 		time_unix curr_time = 0;
 		Time_getUnixEpoch((unsigned int *)&curr_time);
 
-		err = SendAckPacket(ACK_RESET_WAKEUP, NULL, (unsigned char*) &curr_time,
+		err = SendAckPacket(ACK_RESET_WAKEUP, 0xffff, 0xffff, (unsigned char*) &curr_time,
 				sizeof(time_unix));
 
 		reset_flag = FALSE_8BIT;
@@ -150,7 +150,7 @@ void Maintenance()
 
 	//reset if no communication for over a week
 	if(IsGroundCommunicationWDTKick()) {
-		CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
+		//CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
 	}
 
 
