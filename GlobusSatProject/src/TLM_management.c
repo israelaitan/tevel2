@@ -165,7 +165,7 @@ int f_managed_releaseFS()
 }
 
 int f_managed_open(char* file_name, char* config, F_FILE** fileHandler) {
-	printf("f_managed_open. before take\n");
+	//printf("f_managed_open. before take\n");
 	//if (xSemaphoreTake(xFileOpenHandler, FS_TAKE_SEMPH_DELAY) == pdTRUE) {
 		*fileHandler = f_open(file_name, config);
 		int lastError = f_getlasterror();
@@ -178,7 +178,7 @@ int f_managed_open(char* file_name, char* config, F_FILE** fileHandler) {
 }
 
 int f_managed_close(F_FILE** fileHandler) {
-	printf("f_managed_close. before give\n");
+	//printf("f_managed_close. before give\n");
 	if (fileHandler != NULL)
 		f_close(*fileHandler);
 	//xSemaphoreGive(xFileOpenHandler);
