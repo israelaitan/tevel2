@@ -19,7 +19,7 @@
 #include <satellite-subsystems/isis_eps_driver.h>
 
 
-#define ANT_AWAITED_TIME_MIN 30
+#define ANT_AWAITED_TIME_MIN 2
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
@@ -27,33 +27,23 @@
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 
 //האם זו האינטרקציה הראשונה
-Boolean isFirstActivation()
+int isFirstActivation(Boolean * status)
 {
-	unsigned char FirstActivation=0;
-	int res=0;
-
-	logg(OBCInfo, "I:Inside isFirstActivation()\n");
-
-	res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-	if (res==-2)
+	unsigned char FirstActivation = 0;
+	int res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+	if (!res)
 	{
-		logg(error, "E: specified address and size are out of range of the FRAM space\n");
-	}
-	if  (res==-1)
-	{
-		logg(error, "E:  obtaining lock for FRAM access fails\n");
-	}
-
-	if (FirstActivation==1)
-	{
-		logg(OBCInfo, "I:Inside isFirstActivation() return TRUE\n");
-		return TRUE;
+		if (FirstActivation==1)
+			*status = TRUE;
+		else
+			*status = FALSE;
 	}
 	else
 	{
-		logg(OBCInfo, "I:Inside isFirstActivation() - %c return FAlSE\n", FirstActivation);
-		return FALSE;
+		*status = FALSE;
 	}
+
+	return res;
 }
 
 //בדיקה שעברו 30 דק מהשיגור. טיפול במקרה שיש אתחול חוזר של המערכת
@@ -78,9 +68,6 @@ void firstActivationProcedure()
 		FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 		TelemetryCollectorLogic();
 	}
-
-	//write default parms to fram.
-	WriteDefaultValuesToFRAM();
 
 	//set deploment time in FRAM
 	unsigned int deployTime;
@@ -127,92 +114,36 @@ void WriteDefaultValuesToFRAM()
 	//אתחול ה FRAM
 int StartFRAM()
 {
-	int result=0;
-	logg(OBCInfo, "I:Inside StartFRAM()\n");
-	result=FRAM_start();
-	if(-1==result)
-	{
-		logg(error, "E:failed to creaT semaforeS\n");
-	}
-	else if(-2==result)
-	{
-		logg(error, "E:failed to initializing SPI\n");
-	}
-	else
-	{
-		logg(OBCInfo, "I:FRAM_start was successful\n");
-	}
-
-	return result;
+	return FRAM_start();
 }
 
 	// i2c אתחול ה
 int StartI2C()
 {
-	int result=0;
-
-	logg(OBCInfo, "I:Inside StartI2C() - calling I2C_start driver\n");
-
-	result=I2C_start(I2c_SPEED_Hz, I2c_Timeout);
-	if(result==-3)
-	{
-		logg(error, "E:the driver uses a timeout of 1\n");
-	}
-	else if(result==-2)
-	{
-		logg(error, "E:TWI peripheral fails\n");
-	}
-	else if(result==-1)
-	{
-		logg(error, "E:creating the task that consumes I2C transfer requests failed\n");
-	}
-
-	if(result==0)
-	{
-		logg(OBCInfo, "I: StartI2C() - success\n");
-	}
-
-	return result;
+	return I2C_start(I2c_SPEED_Hz, I2c_Timeout);
 }
 
 	//spI אתחול ה
 int StartSPI()
 {
-	int result= 0;
-	logg(OBCInfo, "I: Inside StartSPI()\n");
-	result = SPI_start(bus1_spi, slave1_spi);
-
-	if(result==0)
-	{
-		logg(OBCInfo, "I: StartSPI() - success\n");
-	}
-	else if(result==-1)
-	{
-		logg(error, "E: StartSPI - error\n");
-	}
-	return result;
+	return SPI_start(bus1_spi, slave1_spi);
 }
 
 	//אתחול השעון של הלווין
 int StartTIME()
 {
-	int err = 0;
-	logg(OBCInfo, "I: Inside StartTIME()\n");
 	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
-	err = Time_start(&expected_deploy_time, 0);
-	if (0 != err)
-	{
-		return err;
-	}
-
+	int err = Time_start(&expected_deploy_time, 0);
 	time_unix time_before_wakeup = 0;
-	if (!isFirstActivation())
+	Boolean isFirstA;
+	isFirstActivation(&isFirstA);
+	if (!isFirstA)
 	{
 		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
-		logg(OBCInfo, "I: Reset clock with %d\n", time_before_wakeup);
 		Time_setUnixEpoch(time_before_wakeup);
+		logg(OBCInfo, "I: Reset clock with %d\n", time_before_wakeup);
 	}
-	return 0;
+	return err;
 }
 
 // antena auto deploy both sides
@@ -276,8 +207,9 @@ int DeploySystem()
 	int res=0;
 
 	logg(OBCInfo, "I: DeploySystem() here\n");
-
-	if(isFirstActivation())
+	Boolean isFirstA;
+	isFirstActivation(&isFirstA);
+	if(isFirstA)
 	{
 
 		// waiting for 30 min (collect telemetry every 10 sec)-
@@ -291,75 +223,78 @@ int DeploySystem()
 }
 
 
-//אתחול כלל המערכות
+
+
 int InitSubsystems()
 {
-	logg(OBCInfo, "I: in InitSubsystems()\n");
-	int err = 0;
+	//dont logg anythin brfore time init
+	int errSPI = StartSPI();
+	int errI2C = StartI2C();
+	int errFRAM = StartFRAM();
+	int errTime = StartTIME();
+	Boolean firstActivation;
+	int resFirstActivation = isFirstActivation(&firstActivation);
 
-	err = StartSPI();
-	if (err!=0)
-	{
+	//write default params to fram.
+	if(firstActivation)
+		WriteDefaultValuesToFRAM();
+
+	int errInitFS = InitializeFS(resFirstActivation);
+
+	if ( errSPI != 0 )
 		logg(error, "E: Failed in StartSPI\n");
-	}
-
-	// start the I2C component
-	err = StartI2C();
-	if (err!=0)
-	{
+	else
+		logg(event, "V: StartSPI() - success\n");
+	if ( errI2C != 0 )
 		logg(error, "E: Failed in StartI2C\n");
-	}
-
-	// start the FRAM
-	err = StartFRAM();
-	if (err!=0)
-	{
+	else
+		logg(event, "V: StartI2C() - success\n");
+	if ( errFRAM != 0 )
 		logg(error, "E: Failed in StartFRAM\n");
-	}
-
-	// Start the clock
-	err = StartTIME();
-	if (err!=0)
-	{
+	else
+		logg(event, "V:FRAM_start was successful\n");
+	if ( errTime != 0 )
 		logg(error, "E: Failed in StartTIME\n");
-	}
+	else
+		logg(event, "V: StartTIME was successful\n");
+	if ( resFirstActivation != 0 )
+		logg(error, "E: Failed in firstActivation\n");
+	else
+		logg(event, "V: firstActivation was successful\n");
+	if ( errInitFS != 0 )
+		logg(error, "E: Failed in InitializeFS\n");
+	else
+		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
+
 
 	// initialize TRXVU (communication) component
-	err=InitTrxvu();
+	int err=InitTrxvu();
 	if (err!=0)
-	{
 		logg(error, "E: Failed in InitTrxvu\n");
-	}
-
-	// Initalize the file system
-	Boolean firstActivation= isFirstActivation();
-	err=InitializeFS(firstActivation);
-
-	if (err!=0)
-	{
-		logg(error, "E: Failed in InitializeFS\n");
-	}
+	else
+		logg(event, "V: InitTrxvu was successful\n");
 
 	//Initialize the dump thread (queue and lock)
 	err=InitDump();
 	if (err!=0)
-	{
 		logg(error, "E: Failed in InitDump\n");
-	}
+	else
+		logg(event, "V: InitDump was successful\n");
 
 	err = InitTelemetryCollector();
 	if (err!=0)
-	{
 		logg(error, "E: Failed in InitTelemetryCollector\n");
-	}
+	else
+		logg(event, "V: InitTelemetryCollector was successful\n");
 
 	EPS_Init();
 
 	// Deploy system - open Antetnas
 	err = DeploySystem();
-	if (err){
+	if (err)
 		logg(error, "E:%d Failed in DeploySystem\n", err);
-	}
+	else
+		logg(event, "V: DeploySystem was successful\n");
 
 	return 0;
 }

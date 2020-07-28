@@ -58,7 +58,7 @@ int DeploySystem();
  * @brief	check if first activation procedure
  * @return	false or true
  */
-Boolean isFirstActivation();
+int isFirstActivation(Boolean * status);
 
 /*!
  * @brief	perform the procedure of waiting for xx minutes before deployment of antenas
