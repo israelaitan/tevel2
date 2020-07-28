@@ -38,6 +38,7 @@ time_unix 		g_idle_start_time = 0;
 Boolean g_antOpen= FALSE;
 time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period = ANT_DEPLOY_WAIT_PERIOD; //30 min
+sat_packet_t cmd;
 
 void setLastAntsAutoDeploymentTime(time_unix time)
 {
@@ -202,7 +203,7 @@ int InitTrxvu()
  CommandHandlerErr TRX_Logic()
 {
 	logg(TRXInfo, "I:Inside TRX_Logic()\n");
-	sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
+	//sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
 	int onCmdCount;
 	unsigned char* data = NULL;
 	unsigned int length=0;
@@ -214,7 +215,7 @@ int InitTrxvu()
 	if(onCmdCount>0)
 	{
 		//get the online command
-		res = GetOnlineCommand(cmd);
+		res = GetOnlineCommand(&cmd);
 		if(res==cmd_command_found)
 		{
 			logg(TRXInfo, "I:Getting the online command success\n");
@@ -229,10 +230,10 @@ int InitTrxvu()
 			}
 
 			//Send Acknowledge to earth
-			SendAckPacket(ACK_RECEIVE_COMM, cmd, data, length);
+			SendAckPacket(ACK_RECEIVE_COMM, cmd.ID, cmd.ordinal, data, length);
 
 			//run command
-			res = ActUponCommand(cmd);
+			res = ActUponCommand(&cmd);
 		}
 		else
 		{
@@ -240,15 +241,19 @@ int InitTrxvu()
 		}
 	}
 
+	logg(TRXInfo, "I:TRX_Logic HandleIdleAndMuteTime\n");
 	//check idle timer and mute timer
 	HandleIdleAndMuteTime();
 
+	logg(TRXInfo, "I:TRX_Logic HandleTransponderTime\n");
 	//check transponder timer
 	HandleTransponderTime();
 
+	logg(TRXInfo, "I:TRX_Logic HandleOpenAnts\n");
 	// open ant if not open
     HandleOpenAnts();
 
+    logg(TRXInfo, "I:TRX_Logic BeaconLogic\n");
 	//handle beacon
 	BeaconLogic();
 
