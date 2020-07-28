@@ -224,7 +224,7 @@ int DeploySystem()
 
 
 
-
+//TODO: placeholder for easy access
 int InitSubsystems()
 {
 	//dont logg anythin brfore time init
@@ -239,7 +239,7 @@ int InitSubsystems()
 	if(firstActivation)
 		WriteDefaultValuesToFRAM();
 
-	int errInitFS = InitializeFS(resFirstActivation);
+	int errInitFS = InitializeFS(firstActivation);
 
 	if ( errSPI != 0 )
 		logg(error, "E: Failed in StartSPI\n");
