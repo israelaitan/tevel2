@@ -46,7 +46,8 @@ void _logg(char* msg) {
 		memset(logBuffer, 0, LOG_BUFFER_SIZE);
 
     FileSystemResult res = FS_SUCCSESS;
-    if ((index + msgSize) > (int)LOG_BUFFER_SIZE ) {
+    int dumpSize = (int)LOG_BUFFER_SIZE;
+    if ((index + msgSize) > dumpSize ) {
     	res = _c_fileWrite(FILENAME_LOG_TLM, logBuffer, LOG_BUFFER_SIZE, 0);
     	(void) res;
     	index = 0;
