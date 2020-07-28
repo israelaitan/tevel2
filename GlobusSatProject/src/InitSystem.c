@@ -30,17 +30,15 @@
 int isFirstActivation(Boolean * status)
 {
 	unsigned char FirstActivation = 0;
+
 	int res = FRAM_read(&FirstActivation,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-	if (!res)
+	if (!res && FirstActivation==0)
 	{
-		if (FirstActivation==1)
-			*status = TRUE;
-		else
-			*status = FALSE;
+		*status = FALSE;
 	}
 	else
 	{
-		*status = FALSE;
+		*status = TRUE;
 	}
 
 	return res;
@@ -239,7 +237,7 @@ int InitSubsystems()
 	if(firstActivation)
 		WriteDefaultValuesToFRAM();
 
-	int errInitFS = InitializeFS(resFirstActivation);
+	int errInitFS = InitializeFS(firstActivation);
 
 	if ( errSPI != 0 )
 		logg(error, "E: Failed in StartSPI\n");

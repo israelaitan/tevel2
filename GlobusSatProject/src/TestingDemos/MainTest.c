@@ -195,7 +195,7 @@ void TestIsFirstAct(char status)
 	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 
 	// call isFirstActivation check
-	St=isFirstActivation();
+	isFirstActivation(&St);
 	if(St==TRUE)
 	{
 		printf("isFirstActivation()=TRUE\n");
