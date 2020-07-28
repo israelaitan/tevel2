@@ -23,14 +23,16 @@
 
 typedef struct __attribute__ ((__packed__))
 {
-	sat_packet_t *cmd;
 	unsigned short dump_type;
 	time_unix t_start;
 	time_unix t_end;
+	unsigned short id;
+	char ord;
+
 } dump_arguments_t;
 
 #define RESOLUTION 1
-#define SIZE_DUMP_BUFFER (4096) ///< buffer size for dump operations
+#define SIZE_DUMP_BUFFER (4500 * LOG_TLM_SIZE) ///< buffer size for dump operations
 
 xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
@@ -51,44 +53,25 @@ int InitDump()
 void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 		unsigned char *err, unsigned int size) {
 
-	SendAckPacket(acktype, task_args->cmd, err, size);
+	SendAckPacket(acktype, task_args->id, task_args->ord, err, size);
 	if (NULL != task_args) {
 		logg(TLMInfo, "I:free args\n");
-		free(task_args);
+		//free(task_args);
 	}
-	if (NULL != xDumpLock) {
-		logg(TLMInfo, "I:release lock\n");
-		xSemaphoreGive(xDumpLock);
-	}
+
 	if (xDumpHandle != NULL) {
 		logg(TLMInfo, "I:delete handle\n");
-		vTaskDelete(xDumpHandle);
-		xDumpHandle = NULL;
+		//vTaskDelete(xDumpHandle);
+		//xDumpHandle = NULL;
 	}
-
+	logg(TLMInfo, "I:at end of dump task");
+	//f_managed_releaseFS();
+	vTaskSuspend(NULL);
 }
 
-void FinishDumpSelf(dump_arguments_t *task_args, ack_subtype_t acktype,
-		unsigned char *err, unsigned int size) {
-
-	SendAckPacket(acktype, task_args->cmd, err, size);
-	if (NULL != task_args) {
-		logg(TLMInfo, "I:free args\n");
-		free(task_args);
-	}
-	if (NULL != xDumpLock) {
-		logg(TLMInfo, "I:release lock\n");
-		xSemaphoreGive(xDumpLock);
-	}
-	if (xDumpHandle != NULL) {
-		logg(TLMInfo, "I:delete handle\n");
-		vTaskDelete(NULL);
-		xDumpHandle = NULL;
-	}
-
-}
 
 void SendDumpAbortRequest() {
+	//TODO: suspended running////
 	if (eTaskGetState(xDumpHandle) == eDeleted) {
 		return;
 	}
@@ -124,123 +107,133 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 }
 
 void DumpTask(void *args) {
-	if (NULL == args) {
-		FinishDumpSelf(NULL, ACK_DUMP_ABORT, NULL, 0);
-		return;
-	}
-	dump_arguments_t *task_args = (dump_arguments_t *) args;
-	sat_packet_t dump_tlm = { 0 };
 
-	int err = 0;
-	int ack_return_code = ACK_DUMP_FINISHED;
-	Boolean is_last_read = FALSE;
-	FileSystemResult result = 0;
-	int availFrames = 1;
-	int num_packets_read = 0; //number of packets read from buffer (single_time)
-	int total_packets_read = 0; //total number of packets read from buffer
-	unsigned int num_of_elements = 0;
-	int size_of_element = 0;
-	int size_of_element_with_timestamp;
-	time_unix last_read_time; // this is the last time we have on the buffer
-	time_unix last_sent_time = task_args->t_start; // this is the last we actually sent(where we want to search next)
-
-
-	unsigned char *buffer = NULL;
-	char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
-
-	buffer = dump_arr;
-
-	err = getTelemetryMetaData(task_args->dump_type, filename, &size_of_element);
-	if(0 != err) {
-		// TODO: see if this can fit into our goto
-		logg(error, "E:problem during dump init with err %d\n", err);
-		FinishDumpSelf(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
-		return;
-	}
-
-	size_of_element_with_timestamp = size_of_element + sizeof(time_unix);
+	logg(DMPInfo, "I:startin the  dump task\n");
 	f_managed_enterFS();
-	logg(TLMInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
+	start_over:
+	while(1) {
+		dump_arguments_t *task_args = (dump_arguments_t *) args;
+		if (NULL == args) {
+			FinishDump(NULL, ACK_DUMP_ABORT, NULL, 0);
+			continue;;
+		}
+		sat_packet_t dump_tlm = { 0 };
+		int err = 0;
+		int ack_return_code = ACK_DUMP_FINISHED;
+		Boolean is_last_read = FALSE;
+		FileSystemResult result = 0;
+		int availFrames = 1;
+		int num_packets_read = 0; //number of packets read from buffer (single_time)
+		int total_packets_read = 0; //total number of packets read from buffer
+		unsigned int num_of_elements = 0;
+		int size_of_element = 0;
+		int size_of_element_with_timestamp;
+		time_unix last_read_time; // this is the last time we have on the buffer
+		time_unix last_sent_time = task_args->t_start; // this is the last we actually sent(where we want to search next)
+		unsigned char *buffer = NULL;
+		char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
+		buffer = dump_arr;
+		err = getTelemetryMetaData(task_args->dump_type, filename, &size_of_element);
+		if(0 != err) {
+			// TODO: see if this can fit into our goto
+			logg(error, "E:problem during dump init with err %d\n", err);
+			FinishDump(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
+			continue;
+		}
 
-	// TODO: consider if we actually want to know the number of packets that will be sent,
-	// as it won't be exactly easy.
-	SendAckPacket(ACK_DUMP_START, task_args->cmd,
+		size_of_element_with_timestamp = size_of_element + sizeof(time_unix);
+		logg(DMPInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
+
+		// TODO: consider if we actually want to know the number of packets that will be sent,
+		// as it won't be exactly easy.
+		SendAckPacket(ACK_DUMP_START, task_args->id, task_args->ord,
 			(unsigned char*) &num_of_elements, sizeof(num_of_elements));
 
-	time_unix curr = 0;
-	Time_getUnixEpoch(&curr);
-	logg(TLMInfo, "I:starting dump loop at time: %u\n", curr);
-	while(!is_last_read) {
-		// read
-		num_packets_read = 0;
+		time_unix curr = 0;
+		Time_getUnixEpoch(&curr);
+		logg(DMPInfo, "I:starting dump loop at time: %u\n", curr);
+		while(!is_last_read) {
 
-		// TODO: consider different resolution
-		result = c_fileRead(filename, buffer, SIZE_DUMP_BUFFER,
-		last_sent_time, task_args->t_end, &num_packets_read, &last_read_time,1);
-		if(result != FS_BUFFER_OVERFLOW) {
-			logg(error, "E:c_fileRead returned not buffer overflow but: %d", result);
-			is_last_read = TRUE;
-		}
-		logg(TLMInfo, "I:read from buffer, num_packets_read: %d", num_packets_read);
-		last_sent_time = last_read_time;
-		total_packets_read += num_packets_read;
-		// send packets
-		for(int i = 0; i < num_packets_read; ) {
-			if (CheckDumpAbort() || !CheckTransmitionAllowed()) {
-				logg(error, "E:got dump abort\n");
-				ack_return_code = ACK_DUMP_ABORT;
-				goto cleanup;
-			}
+			num_packets_read = 0;
+			// TODO: consider different resolution
+			result = c_fileRead(filename, buffer, SIZE_DUMP_BUFFER,
+					last_sent_time, task_args->t_end, &num_packets_read, &last_read_time,1);
+			if(result != FS_BUFFER_OVERFLOW) {
+				logg(DMPInfo, "I:c_fileRead res=t: %d", result);
+				is_last_read = TRUE;
+			} else
+				logg(error, "E:c_fileRead returned buffer overflow\n");
+			logg(DMPInfo, "I:read from buffer, num_packets_read: %d", num_packets_read);
+			last_sent_time = last_read_time;
+			total_packets_read += num_packets_read;
+			// send packets
+			for(int i = 0; i < num_packets_read; ) {
+				if (CheckDumpAbort() || !CheckTransmitionAllowed()) {
+					logg(error, "E:got dump abort\n");
+					ack_return_code = ACK_DUMP_ABORT;
+					FinishDump(task_args, ack_return_code, NULL, 0);
+					goto start_over;
+				}
 
-			AssembleCommand((unsigned char*)buffer + size_of_element_with_timestamp * i,
-				size_of_element_with_timestamp,
-				(char) START_DUMP_SUBTYPE, (char) (task_args->dump_type),
-				task_args->cmd->ID, i, T8GBS, &dump_tlm);
-			err = TransmitSplPacket(&dump_tlm, &availFrames);
-			if(err != 0) {
-				logg(error, "E:transmitsplpacket error: %d", err);
-			}
-			if (availFrames != NO_TX_FRAME_AVAILABLE)
-				i++;
-			else {
-				logg(info, "I:dump.no available frames\n");
-				vTaskDelay(100);
+				AssembleCommand((unsigned char*)buffer + size_of_element_with_timestamp * i,
+						size_of_element_with_timestamp,
+						(char) START_DUMP_SUBTYPE, (char) (task_args->dump_type),
+						task_args->id, i, T8GBS, &dump_tlm);
+				err = TransmitSplPacket(&dump_tlm, &availFrames);
+				if(err != 0)
+					logg(error, "E:transmitsplpacket error: %d", err);
+				if (availFrames != NO_TX_FRAME_AVAILABLE)
+					i++;
+				else {
+					logg(DMPInfo, "I:dump.no available frames\n");
+					vTaskDelay(100);
+				}
 			}
 		}
+		logg(DMPInfo, "I:finish dump gracefully %d transmitted", total_packets_read);
+		FinishDump(task_args, ack_return_code, NULL, 0);
 	}
-	logg(TLMInfo, "I:finish dump gracefully %d transmitted", total_packets_read);
-cleanup:
-	f_managed_releaseFS();
-	FinishDumpSelf(task_args, ack_return_code, NULL, 0);
-	while(1) {
-		logg(TLMInfo, "I:at end of dump task");
-		vTaskDelay(5000);
-	};
 }
+
+//dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
+dump_arguments_t dmp_pckt;
 int DumpTelemetry(sat_packet_t *cmd)
 {
-	logg(info, "I:Starting DumpTelemetry\n");
+	logg(DMPInfo, "I:Starting DumpTelemetry\n");
 	if (NULL == cmd)
 		return -1;
 
-	dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
-	unsigned int offset = 0;
-	dmp_pckt->cmd = cmd;
-
-	memcpy(&dmp_pckt->dump_type, cmd->data, sizeof(dmp_pckt->dump_type));
-	offset += sizeof(dmp_pckt->dump_type);
-
-	memcpy(&dmp_pckt->t_start, cmd->data + offset, sizeof(dmp_pckt->t_start));
-	offset += sizeof(dmp_pckt->t_start);
-
-	memcpy(&dmp_pckt->t_end, cmd->data + offset, sizeof(dmp_pckt->t_end));
-
-	if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
-		return E_GET_SEMAPHORE_FAILED;
+	eTaskState state;
+	if (xDumpHandle != NULL) {
+		state = eTaskGetState( xDumpHandle );
+		logg(DMPInfo, "I:eTaskState=%d\n", state);
+		if (state != eSuspended)
+			return 0;
 	}
 
-	xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
-			(void* )dmp_pckt, configMAX_PRIORITIES - 2, &xDumpHandle);
+	//dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
+	unsigned int offset = 0;
+	dmp_pckt.id = cmd->ID;
+	dmp_pckt.ord = cmd->ordinal;
+
+	memcpy(&dmp_pckt.dump_type, cmd->data, sizeof(dmp_pckt.dump_type));
+	offset += sizeof(dmp_pckt.dump_type);
+
+	memcpy(&dmp_pckt.t_start, cmd->data + offset, sizeof(dmp_pckt.t_start));
+	offset += sizeof(dmp_pckt.t_start);
+
+	memcpy(&dmp_pckt.t_end, cmd->data + offset, sizeof(dmp_pckt.t_end));
+
+	//if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
+	//	return E_GET_SEMAPHORE_FAILED;
+	//}
+	int i;
+	if (xDumpHandle != NULL) {
+		if ( state == eSuspended )
+			vTaskResume(xDumpHandle);
+	}	else
+			xTaskCreate(DumpTask, (const signed char* const )"DumpTask", 2000,
+				(void* )&dmp_pckt, configMAX_PRIORITIES - 2, &xDumpHandle);
 
 	return 0;
 }
