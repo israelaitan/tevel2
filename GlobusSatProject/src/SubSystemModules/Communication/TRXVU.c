@@ -263,6 +263,16 @@ int InitTrxvu()
 // Command to set idle state to on
 int CMD_SetIdleOn(sat_packet_t *cmd)
 {
+	if (g_idle_flag==TRUE)
+	{
+		return 0;
+	}
+	else if (getTransponderMode() == TURN_TRANSPONDER_ON)
+	{
+		logg(TRXInfo, "W: Transponder is ON - Cannot turn ON idle \n");
+		return -1;
+	}
+
 	logg(TRXInfo, "I:inside CMD_SetIdleOn()\n");
 	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
 	if(err!=0)
