@@ -6,6 +6,7 @@
 #include "GlobalStandards.h"
 #include "SatCommandHandler.h"
 #include "SubSystemModules/Maintenance/Log.h"
+#include "SubSystemModules/Communication/TRXVU.h"
 
 
 typedef struct __attribute__ ((__packed__)) delayed_cmd_t
@@ -13,6 +14,8 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 	time_unix exec_time;	///< the execution time of the cmd in unix time
 	sat_packet_t cmd;		///< command data
 } delayed_cmd_t;
+
+unsigned char received_frame_data[MAX_COMMAND_DATA_LENGTH];
 
 //parsing the packet to create a command
 CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
@@ -88,9 +91,9 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length,
 
 	if (NULL != data)
 	{
-		if (data_length > MAX_COMMAND_DATA_LENGTH)
+		if (data_length > (SIZE_TXFRAME - SIZE_SPL_HEADER))
 		{
-			cmd->length =  MAX_COMMAND_DATA_LENGTH;
+			cmd->length =   (SIZE_TXFRAME - SIZE_SPL_HEADER);
 		}
 		else
 		{
@@ -122,7 +125,6 @@ CommandHandlerErr GetOnlineCommand(sat_packet_t *cmd)
 	int err = 0;
 
 	unsigned short frame_count = 0;
-	unsigned char received_frame_data[MAX_COMMAND_DATA_LENGTH];
 
 	err = IsisTrxvu_rcGetFrameCount(0, &frame_count);
 	if (0 != err) {
