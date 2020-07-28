@@ -37,7 +37,7 @@ time_unix 		g_idle_start_time = 0;
 //ant open global variables
 Boolean g_antOpen= FALSE;
 time_unix 		g_ants_last_dep_time = 0;
-int				g_ants_dep_period =30*60 ; //30 min
+int				g_ants_dep_period = ANT_DEPLOY_WAIT_PERIOD; //30 min
 
 void setLastAntsAutoDeploymentTime(time_unix time)
 {
