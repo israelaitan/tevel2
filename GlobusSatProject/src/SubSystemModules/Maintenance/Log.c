@@ -53,7 +53,7 @@ void _logg(char* msg) {
     	index = 0;
     	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     }
-    int reminder = index % SIZE_TXFRAME;
+    int reminder = index % (SIZE_TXFRAME - SIZE_SPL_HEADER);
     time_unix time;
     if (!reminder) {
     	Time_getUnixEpoch(&time);
@@ -62,7 +62,7 @@ void _logg(char* msg) {
     	memcpy(logBuffer + index, msg, msgSize);
     	index += msgSize;
     } else {
-    	int leftover = SIZE_TXFRAME - reminder;
+    	int leftover = SIZE_TXFRAME - SIZE_SPL_HEADER - reminder;
     	if (msgSize <= leftover) {
     		memcpy(logBuffer + index, msg, msgSize);
     		index += msgSize;

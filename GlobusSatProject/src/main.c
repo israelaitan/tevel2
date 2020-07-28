@@ -29,30 +29,22 @@
 	#include "TestingDemos/MainTest.h"
 #else
 
-	void taskMain()
-	{
+	void taskMain() {
+
 		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
-		int res= InitSubsystems();//deploy ants
-		if(res!=0)
-		{
-			logg(error, "E: Error in InitSubsystems: "+res)
-		}
+		InitSubsystems();
 
-		while(TRUE)//main loop
-		{
+		while(TRUE) {
 
-			res=TRX_Logic();
-			if(res!=0)
-			{
-				logg(error, "E: Error in TRX_Logic: "+res)
-			}
+			TRX_Logic();
 
 			TelemetryCollectorLogic();
 
 			Maintenance();
 		}
 	}
+
 #endif //! TESTING
 
 
