@@ -47,7 +47,7 @@ int isFirstActivation(Boolean * status)
 void firstActivationProcedure()
 {
 	int err = 0;
-	const int TotalWaitTime = 1000 * 60 * ANT_DEPLOY_WAIT_PERIOD;
+	const int TotalWaitTime = 1000 * ANT_DEPLOY_WAIT_PERIOD;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 	if (err!=0)
@@ -58,7 +58,7 @@ void firstActivationProcedure()
 	int i = 1;
 	while (TotalWaitTime>AwaitedTime)
 	{
-		logg(event, "V:%d Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
+		logg(event, "V:%d Total awaited time is: %d s should:%d\n", i++, AwaitedTime/1000, TotalWaitTime/1000);
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;

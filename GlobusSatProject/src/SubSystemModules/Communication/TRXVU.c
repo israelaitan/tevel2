@@ -77,10 +77,6 @@ void HandleOpenAnts()
 			// ants auto deploy
 			autoDeploy();
 		}
-		else
-		{
-			logg(TRXInfo, "I:ants end period not reached\n");
-		}
 	}
 }
 
@@ -226,7 +222,7 @@ int InitTrxvu()
 			{
 				//update ant open to true
 				g_antOpen=TRUE;
-				logg(TRXInfo, "I: Antennas deployment flag set to TRUE as packet received from Earth******\n");
+				logg(event, "V: TRXLogic.Antennas deployment stopped\n");
 			}
 
 			//Send Acknowledge to earth
