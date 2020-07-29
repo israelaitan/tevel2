@@ -67,7 +67,7 @@ void TelemetryCollectorLogic()
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
 		TelemetrySaveEPS();
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[eps_tlm]));
-		logg(event, "I:TelemetrySaveEPS, time: %lu\n", tlm_last_save_time[eps_tlm]);
+		logg(event, "V:TelemetrySaveEPS, time: %lu\n", tlm_last_save_time[eps_tlm]);
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[trxvu_tlm],tlm_save_periods[trxvu_tlm])){
@@ -94,8 +94,8 @@ void TelemetryCollectorLogic()
 
 void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 {
+	logg(event, "V:TelemetryCreateFiles()\n");
 	FileSystemResult res;
-
 	// -- EPS files
 	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isis_eps__gethousekeepingraw__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb)

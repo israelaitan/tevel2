@@ -58,7 +58,7 @@ void firstActivationProcedure()
 	int i = 1;
 	while (TotalWaitTime>AwaitedTime)
 	{
-		logg(OBCInfo, "I:%d Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
+		logg(event, "V:%d Total awaited time is: %d seconds\n", i++, AwaitedTime/1000 );
 		vTaskDelay(1000*10);
 
 		AwaitedTime += 1000*10;
@@ -146,7 +146,7 @@ int StartTIME()
 // antena auto deploy both sides
 int autoDeploy()
 {
-	logg(OBCInfo, "I: Inside autoDeploy()\n");
+	logg(event, "V: Inside autoDeploy()\n");
 	int res=0;
 
 	// antena auto deploy - sides A
@@ -155,7 +155,7 @@ int autoDeploy()
 
 	if(res==0)
 	{
-		logg(OBCInfo, "I:Deploying: Side A\n");
+		logg(event, "V:Deploying: Side A\n");
 		res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
 	}
 	else
@@ -172,7 +172,7 @@ int autoDeploy()
 	//res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
 	if(res==0)
 	{
-		logg(OBCInfo, "I:Deploying: Side B\n");
+		logg(event, "V:Deploying: Side B\n");
 		res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
 	}
 	else
@@ -194,6 +194,7 @@ int autoDeploy()
 	{
 		setLastAntsAutoDeploymentTime(deploy_time);
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
+		logg(event, "V:setLastAntsAutoDeploymentTime success\n");
 	}
 	return res;
 }
@@ -203,7 +204,7 @@ int DeploySystem()
 {
 	int res=0;
 
-	logg(OBCInfo, "I: DeploySystem() here\n");
+	logg(event, "V: DeploySystem() here\n");
 	Boolean isFirstA;
 	isFirstActivation(&isFirstA);
 	if(isFirstA)
