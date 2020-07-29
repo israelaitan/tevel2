@@ -19,7 +19,6 @@
 #include <satellite-subsystems/isis_eps_driver.h>
 
 
-#define ANT_AWAITED_TIME_MIN 2
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
@@ -48,7 +47,7 @@ int isFirstActivation(Boolean * status)
 void firstActivationProcedure()
 {
 	int err = 0;
-	const int TotalWaitTime = 1000 * 60 * ANT_AWAITED_TIME_MIN;
+	const int TotalWaitTime = 1000 * 60 * ANT_DEPLOY_WAIT_PERIOD;
 	int AwaitedTime = 0;
 	err = FRAM_read ((unsigned char *)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 	if (err!=0)
