@@ -52,8 +52,8 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_log:
 		strcpy(filename,FILENAME_LOG_TLM);
 		break;
-	case tlm_log_bckp:
-		strcpy(filename,FILENAME_LOG_BCKP_TLM);
+	case tlm_wod:
+		strcpy(filename,FILENAME_WOD_TLM);
 		break;
 	default:
 		return -2;
@@ -86,6 +86,12 @@ void TelemetryCollectorLogic()
 		TelemetrySaveSolarPanels();
 		logg(TLMInfo, "I:TelemetrySaveSolarPanels\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
+	}
+
+	if (CheckExecutionTime(tlm_last_save_time[wod_tlm], tlm_save_periods[wod_tlm])){
+		TelemetrySaveWOD();
+		logg(TLMInfo, "I:TelemetrySaveWOD\n");
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
 
 }
@@ -121,8 +127,10 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	//-- LOG files
 	res = c_fileCreate(FILENAME_LOG_TLM, LOG_TLM_SIZE);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
-	res = c_fileCreate(FILENAME_LOG_BCKP_TLM, LOG_TLM_SIZE);
-	SAVE_FLAG_IF_FILE_CREATED(tlm_log_bckp);
+
+	// -- WOD file
+	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
 }
 
 void TelemetrySaveEPS()

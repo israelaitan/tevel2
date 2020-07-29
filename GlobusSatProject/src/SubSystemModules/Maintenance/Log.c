@@ -28,8 +28,8 @@ void __logg(char* msg) {
     memcpy(logBuffer, msg, size);
     FileSystemResult res = FS_SUCCSESS;
     res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
-    if (res == FS_FAIL)//handle write fails due to concurrent dump
-    	c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
+    //if (res == FS_FAIL)//handle write fails due to concurrent dump
+    	//c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
 }
 
 void _logg(char* msg) {
