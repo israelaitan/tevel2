@@ -151,10 +151,10 @@ void Maintenance()
 	}
 
 	//reset if no communication for over a week
-	if(IsGroundCommunicationWDTKick()) {
-		logg(MTNInfo, "Reseting ODBC");
+	//if(IsGroundCommunicationWDTKick()) {
+		//logg(event, "Maintenance.Reseting ODBC");
 		//CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
-	}
+	//}
 
 
 }

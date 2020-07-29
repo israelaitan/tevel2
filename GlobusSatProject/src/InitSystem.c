@@ -22,7 +22,7 @@
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
-#define ANTENNA_DEPLOYMENT_TIMEOUT 10 //<! in seconds
+#define ANTENNA_DEPLOYMENT_TIMEOUT 30 //<! in seconds
 #define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
 
 //האם זו האינטרקציה הראשונה
@@ -147,41 +147,45 @@ int StartTIME()
 int autoDeploy()
 {
 	logg(event, "V: Inside autoDeploy()\n");
-	int res=0;
+	int resArm=0, resDeploy = -1;
 
 	// antena auto deploy - sides A
 	//TODO: remove before flight
-	//res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_arm);
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
 
-	if(res==0)
+	if(resArm==0)
 	{
 		logg(event, "V:Deploying: Side A\n");
-		res=IsisAntS_autoDeployment(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+		resDeploy=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+		if (resDeploy!=0)
+			logg(event, "V:Failed deploy: Side A res=%d\n", resDeploy);
 	}
 	else
 	{
-		logg(error, "E:Failed Arming Side A with error: %d\n", res);
+		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
 	}
 
 	// unarm antenas side A
 
-	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_A_ADDR, isisants_sideA, isisants_disarm);
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
 
 	// antenata auto deploy - sides B
 	//TODO: remove before flight
-	//res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_arm);
-	if(res==0)
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
+	if(resArm==0)
 	{
 		logg(event, "V:Deploying: Side B\n");
-		res = IsisAntS_autoDeployment(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+		resDeploy = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+		if (resDeploy!=0)
+			logg(event, "V:Failed deploy: Side B res=%d\n", resDeploy);
 	}
 	else
 	{
-		logg(error, "E:Failed Arming Side B with error: %d\n", res);
+		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
 	}
 
 	// unarm antenas side B
-	res = IsisAntS_setArmStatus(ANTS_I2C_SIDE_B_ADDR, isisants_sideB, isisants_disarm);
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_disarm);
 
 	// update last deploy time
 	time_unix deploy_time;
@@ -196,7 +200,7 @@ int autoDeploy()
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 		logg(event, "V:setLastAntsAutoDeploymentTime success\n");
 	}
-	return res;
+	return resDeploy;
 }
 
 	// פריסת אנטנות לאחר 30 דק שקט
