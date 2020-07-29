@@ -33,6 +33,9 @@
 
 		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
+////******************REMOVE
+		//IntializeFRAM();
+////******************REMOVE
 		InitSubsystems();
 
 		while(TRUE) {

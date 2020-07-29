@@ -225,6 +225,7 @@ int DeploySystem()
 //TODO: placeholder for easy access
 int InitSubsystems()
 {
+
 	//dont logg anythin brfore time init
 	int errSPI = StartSPI();
 	int errI2C = StartI2C();
@@ -232,11 +233,6 @@ int InitSubsystems()
 	int errTime = StartTIME();
 	Boolean firstActivation;
 	int resFirstActivation = isFirstActivation(&firstActivation);
-
-	//write default params to fram.
-	if(firstActivation)
-		WriteDefaultValuesToFRAM();
-
 	int errInitFS = InitializeFS(firstActivation);
 
 	if ( errSPI != 0 )

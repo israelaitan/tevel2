@@ -23,6 +23,9 @@ void __logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif
+	Boolean TESTING =TRUE;//TODO:REMOVE *****
+	if (TESTING)
+		printf(msg);
 	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     int size =  strlen(msg);
     memcpy(logBuffer, msg, size);
@@ -36,7 +39,9 @@ void _logg(char* msg) {
 #ifdef TESTING
 	printf(msg);
 #endif
-
+	Boolean TESTING =TRUE;//TODO:REMOVE *****
+		if (TESTING)
+			printf(msg);
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
 	if ( msgSizeWithTime > SIZE_TXFRAME )
