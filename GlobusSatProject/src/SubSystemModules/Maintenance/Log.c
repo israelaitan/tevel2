@@ -29,8 +29,8 @@ void __logg(char* msg) {
 	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     int size =  strlen(msg);
     memcpy(logBuffer, msg, size);
-    FileSystemResult res = FS_SUCCSESS;
-    res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
+    //FileSystemResult res = FS_SUCCSESS;
+    //res = c_fileWrite(FILENAME_LOG_TLM, logBuffer);
     //if (res == FS_FAIL)//handle write fails due to concurrent dump
     	//c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
 }

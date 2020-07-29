@@ -14,9 +14,7 @@ int ActUponCommand(sat_packet_t *cmd)
 	if( cmd == NULL )
 			err = -1;
 	logg(TRXInfo, "I:Inside ActUponCommand() target=%d command type: %d, command sub-type: %d\n", cmd->ID, cmd->cmd_type, cmd->cmd_subtype);
-	if (cmd->targetSat != T8GBS)
-		err = 0;
-	else if( cmd->cmd_type == trxvu_cmd_type )
+	if( cmd->cmd_type == trxvu_cmd_type )
 		err = trxvu_command_router( cmd );
 	else if( cmd->cmd_type == eps_cmd_type )
 		err = eps_command_router( cmd );

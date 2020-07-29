@@ -227,7 +227,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 	//if (xSemaphoreTake(xDumpLock,SECONDS_TO_TICKS(1)) != pdTRUE) {
 	//	return E_GET_SEMAPHORE_FAILED;
 	//}
-	int i;
+
 	if (xDumpHandle != NULL) {
 		if ( state == eSuspended )
 			vTaskResume(xDumpHandle);

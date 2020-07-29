@@ -45,7 +45,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	{
 		return cmd_execution_error;
 	}
-	else if( targetSat != T8GBS && targetSat !=0 )
+	else if( targetSat != T8GBS && targetSat != T0ALL )
 	{
 		logg(TRXInfo, "The online command is for target satellite: %d\n" , targetSat);
 		return cmd_no_command_found;

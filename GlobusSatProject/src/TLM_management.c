@@ -311,7 +311,7 @@ static void writewithEpochtime(F_FILE* file, byte* data, int size,unsigned int t
 
 static void write(F_FILE* file, byte* data, int size)
 {
-	long writen = f_write( data, 1, size, file );
+	f_write( data, 1, size, file );
 	f_flush( file );
 }
 // get C_FILE struct from FRAM by name
