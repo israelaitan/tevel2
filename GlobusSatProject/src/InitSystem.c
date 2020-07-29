@@ -167,7 +167,7 @@ int autoDeploy()
 
 	// unarm antenas side A
 
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
+	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
 
 	// antenata auto deploy - sides B
 	//TODO: remove before flight
@@ -185,7 +185,7 @@ int autoDeploy()
 	}
 
 	// unarm antenas side B
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_disarm);
+	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_disarm);
 
 	// update last deploy time
 	time_unix deploy_time;
