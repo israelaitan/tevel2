@@ -117,7 +117,9 @@ Boolean IsGroundCommunicationWDTKick()
 	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
 	//TODO: if current_time - last_comm_time < 0
-	if (current_time - last_comm_time >= wdt_kick_thresh) {
+	if (current_time - last_comm_time >= wdt_kick_thresh)
+	{
+		logg(MTNInfo, "No communication with Earth was received for more then: %d \n", wdt_kick_thresh);
 		return TRUE;
 	}
 	return FALSE;
@@ -150,6 +152,7 @@ void Maintenance()
 
 	//reset if no communication for over a week
 	if(IsGroundCommunicationWDTKick()) {
+		logg(MTNInfo, "Reseting ODBC");
 		//CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
 	}
 
