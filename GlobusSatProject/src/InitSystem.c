@@ -69,7 +69,7 @@ void firstActivationProcedure()
 	//set deploment time in FRAM
 	unsigned int deployTime;
 	Time_getUnixEpoch(&deployTime);
-	FRAM_write((unsigned char *)&deployTime, DEPLOYMENT_TIME_ADDR, DEPLOYMENT_TIME_SIZE);
+	FRAM_write((unsigned char *)&deployTime, LAUNCH_TIME_ADDR, LAUNCH_TIME_SIZE);
 
 	//update first activation flag to false if antenas are not Connected
 	char firstactivation= 0;

@@ -25,7 +25,7 @@ Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 	int err = Time_getUnixEpoch((unsigned int *)&curr);
 	if(0 != err)
 	{
-		logg(MTNInfo, "Time_getUnixEpoch failed\n");
+		logg(error, "Time_getUnixEpoch failed\n");
 		return FALSE;
 	}
 
@@ -114,12 +114,18 @@ Boolean IsGroundCommunicationWDTKick()
 	time_unix last_comm_time = 0;
 	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
+	//After deploy before communication started get satelite deployment time
+	if(last_comm_time == 0)
+	{
+		FRAM_read((unsigned char *)&last_comm_time, LAUNCH_TIME_ADDR, LAUNCH_TIME_SIZE);
+	}
+
 	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
 	//TODO: if current_time - last_comm_time < 0
 	if (current_time - last_comm_time >= wdt_kick_thresh)
 	{
-		logg(MTNInfo, "No communication with Earth was received for more then: %d \n", wdt_kick_thresh);
+		logg(event, "V: No communication with Earth was received for more then: %d \n", wdt_kick_thresh);
 		return TRUE;
 	}
 	return FALSE;
@@ -145,16 +151,12 @@ void Maintenance()
 
 	WakeupFromResetCMD();
 
-	if (IsFS_Corrupted()) {
-		//TODO: something
-		logg(error, "E:FS is corrupted\n");
-	}
 
 	//reset if no communication for over a week
-	//if(IsGroundCommunicationWDTKick()) {
-		//logg(event, "Maintenance.Reseting ODBC");
-		//CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
-	//}
+	if(IsGroundCommunicationWDTKick()) {
+		logg(event, "Maintenance.Reseting ODBC");
+		CMD_ResetComponent(reset_software); //TODO: check if reset_hardware is required
+	}
 
 
 }

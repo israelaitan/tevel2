@@ -12,8 +12,8 @@
 
 // <Satellite Management>
 
-#define DEPLOYMENT_TIME_ADDR			0X05		//<! time at which the satellites starts deployment
-#define DEPLOYMENT_TIME_SIZE			4			//<! size of parameter in bytes
+#define LAUNCH_TIME_ADDR			0X05		//<! time at which the satellites starts deployment
+#define LAUNCH_TIME_SIZE			4			//<! size of parameter in bytes
 
 #define SECONDS_SINCE_DEPLOY_ADDR		0x09		//<! counts how many seconds has past since wakup for use in deployment.
 #define SECONDS_SINCE_DEPLOY_SIZE		4			//<! size of the parameter in bytes
