@@ -112,7 +112,7 @@ Boolean IsGroundCommunicationWDTKick()
 	Time_getUnixEpoch((unsigned int *)&current_time);
 
 	//get last communication time and last wakeup time - take the latest of the two
-	time_unix last_comm_time, last_wake_time;
+	time_unix last_comm_time = 0, last_wake_time = 0;
 	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 	FRAM_read((unsigned char *)&last_wake_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 
