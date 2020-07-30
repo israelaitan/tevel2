@@ -27,7 +27,7 @@
 #define ANT_SAVE_TLM_PERIOD_ADDR		0x30		//<! address where the save tlm period will be
 #define SOLAR_SAVE_TLM_PERIOD_ADDR		0x34		//<! address where the save tlm period will be
 #define WOD_SAVE_TLM_PERIOD_ADDR		0x38		//<! address where the save tlm period will be
-#define LOG_SAVE_TLM_PERIOD_ADDR		0x3B
+
 #define LAST_WAKEUP_TIME_ADDR			0X3F		//<! saves the first time after satellites wakeup from reset
 #define LAST_WAKEUP_TIME_SIZE			4			//<! size of the parameter in bytes
 

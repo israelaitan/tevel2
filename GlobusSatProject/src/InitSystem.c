@@ -88,18 +88,17 @@ void WriteDefaultValuesToFRAM()
 	int noCom = 0;
 	FRAM_write((unsigned char*) &noCom, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
-	int eps= DEFAULT_EPS_SAVE_TLM_TIME;
+	time_unix eps= DEFAULT_EPS_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
-	int trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
+	time_unix trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&trxvu,TRXVU_SAVE_TLM_PERIOD_ADDR,sizeof(trxvu));
-	int ant=DEFAULT_ANT_SAVE_TLM_TIME;
+	time_unix ant=DEFAULT_ANT_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&ant, ANT_SAVE_TLM_PERIOD_ADDR,sizeof(ant));
-	int solar=DEFAULT_SOLAR_SAVE_TLM_TIME;
+	time_unix solar=DEFAULT_SOLAR_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
-	int wod=DEFAULT_WOD_SAVE_TLM_TIME;
+	time_unix wod=DEFAULT_WOD_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
-	int logg = DEFAULT_LOG_SAVE_TLM_TIME;
-	FRAM_write((unsigned char*)&logg, LOG_SAVE_TLM_PERIOD_ADDR, sizeof(logg));
+
 	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
 	unsigned short resets = 0;
