@@ -1019,6 +1019,18 @@
           ]
         },
         {
+          "id": "148",
+          "name": "FRAM Restart",
+          "desc": "FRAM Restart",
+          "inParams": [
+            {
+              "name": "Error",
+              "desc": "Status return from FRAM Start",
+              "type": "int"
+            }
+          ]
+        },
+        {
           "id": "149",
           "name": "Update Sat time",
           "desc": "Update Sat time",
