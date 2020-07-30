@@ -141,7 +141,7 @@ int StartTIME()
 		logg(event, "V: Reset clock with %d\n", time_before_wakeup);
 	}
 
-	//set deploment time in FRAM
+	//set wakeup time in FRAM
 	unsigned int wakeUpTime;
 	Time_getUnixEpoch(&wakeUpTime);
 	FRAM_write((unsigned char *)&wakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
