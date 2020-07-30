@@ -111,18 +111,21 @@ Boolean IsGroundCommunicationWDTKick()
 	time_unix current_time = 0;
 	Time_getUnixEpoch((unsigned int *)&current_time);
 
-	time_unix last_comm_time = 0;
+	//get last communication time and last wakeup time - take the latest of the two
+	time_unix last_comm_time, last_wake_time;
 	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+	FRAM_read((unsigned char *)&last_wake_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 
-	//After deploy before communication started get satelite deployment time
-	if(last_comm_time == 0)
+	//if reset happened after last communication - use wake up time as last communication time
+	if (last_wake_time > last_comm_time)
 	{
-		FRAM_read((unsigned char *)&last_comm_time, LAUNCH_TIME_ADDR, LAUNCH_TIME_SIZE);
+		last_comm_time = last_wake_time;
 	}
 
+	//get no communication max period
 	time_unix wdt_kick_thresh = GetGsWdtKickTime();
 
-	//TODO: if current_time - last_comm_time < 0
+	//if exceeded no communication period  - return true
 	if (current_time - last_comm_time >= wdt_kick_thresh)
 	{
 		logg(event, "V: No communication with Earth was received for more then: %d \n", wdt_kick_thresh);

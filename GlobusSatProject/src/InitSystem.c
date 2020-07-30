@@ -71,7 +71,7 @@ void firstActivationProcedure()
 	Time_getUnixEpoch(&deployTime);
 	FRAM_write((unsigned char *)&deployTime, LAUNCH_TIME_ADDR, LAUNCH_TIME_SIZE);
 
-	//update first activation flag to false if antenas are not Connected
+	//update first activation flag to false if antennas are not Connected
 	char firstactivation= 0;
 	FRAM_write((unsigned char *)&firstactivation, FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 	logg(OBCInfo, "I:*****First Activation without Antenas deployed******\n");
@@ -140,6 +140,12 @@ int StartTIME()
 		Time_setUnixEpoch(time_before_wakeup);
 		logg(event, "V: Reset clock with %d\n", time_before_wakeup);
 	}
+
+	//set deploment time in FRAM
+	unsigned int wakeUpTime;
+	Time_getUnixEpoch(&wakeUpTime);
+	FRAM_write((unsigned char *)&wakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+
 	return err;
 }
 
