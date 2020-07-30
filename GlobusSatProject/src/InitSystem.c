@@ -245,6 +245,8 @@ int InitSubsystems()
 	int resFirstActivation = isFirstActivation(&firstActivation);
 	int errInitFS = InitializeFS(firstActivation);
 
+	initLog();
+
 	if ( errSPI != 0 )
 		logg(error, "E: Failed in StartSPI\n");
 	else

@@ -49,11 +49,17 @@
 #define TRANS_ABORT_FLAG_ADDR			0x500		//<! transmission abort request flag
 #define TRANS_ABORT_FLAG_SIZE			1			//<! size of mute flag in bytes
 
-#define TRANSPONDER_STATE_ADDR			0x502		// transponder state - active or not
-#define TRANSPONDER_STATE_SIZE			4			// size of transponder state
+#define TRANSPONDER_STATE_ADDR				0x502		// transponder state - active or not
+#define TRANSPONDER_STATE_SIZE				4			// size of transponder state
 
 #define TRANSPONDER_TURN_ON_END_TIME_ADRR	0x508		//transponder turn off time
 #define TRANSPONDER_TURN_ON_END_TIME_SIZE	4
+
+#define MUTE_FLAG_ADRR						0x514		// mute state - active or not
+#define MUTE_FLAG_SIZE						4			// size of mute state
+
+#define MUTE_ON_END_TIME_ADRR				0x520		//mute turn off time
+#define MUTE_ON_END_TIME_SIZE				4
 
 #define EPS_ALPHA_FILTER_VALUE_ADDR     0x550			//<! filtering value in the LPF formula
 #define EPS_ALPHA_FILTER_VALUE_SIZE     sizeof(float)	//<! size of double (alpha)
