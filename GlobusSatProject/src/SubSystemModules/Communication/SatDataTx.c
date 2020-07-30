@@ -21,6 +21,9 @@ void InitTxModule()
 {
 	if(NULL == xIsTransmitting)
 		vSemaphoreCreateBinary(xIsTransmitting);
+
+	g_mute_flag = MUTE_OFF;				// mute flag - is the mute enabled
+	g_mute_end_time = 0;
 }
 
 int muteTRXVU(time_unix duration)
