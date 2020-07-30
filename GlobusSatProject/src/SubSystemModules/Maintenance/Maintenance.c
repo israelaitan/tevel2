@@ -15,6 +15,7 @@
 #include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.h"
+#include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "TLM_management.h"
 #include "Maintenance.h"
 #include "Log.h"
@@ -81,8 +82,11 @@ int WakeupFromResetCMD()
 		time_unix curr_time = 0;
 		Time_getUnixEpoch((unsigned int *)&curr_time);
 
+		//set wakeup time in FRAM
+		FRAM_write((unsigned char *)&curr_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+
 		err = SendAckPacket(ACK_RESET_WAKEUP, 0xffff, 0xffff, (unsigned char*) &curr_time,
-				sizeof(time_unix));
+				sizeof(curr_time));
 
 		reset_flag = FALSE_8BIT;
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
@@ -154,6 +158,8 @@ void Maintenance()
 
 	WakeupFromResetCMD();
 
+	//initialize TLM periods
+	InitTelemetryCollector();
 
 	//reset if no communication for over a week
 	if(IsGroundCommunicationWDTKick()) {
