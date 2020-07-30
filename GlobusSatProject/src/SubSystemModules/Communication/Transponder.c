@@ -92,9 +92,15 @@ int set_transonder_mode(Boolean mode)
 		data[1] = 0x01;
 	}
 
-	g_transp_mode = mode;
+
 	err =  I2C_write(I2C_TRXVU_TC_ADDR, data, 2);
-	FRAM_write((unsigned char*) &g_transp_mode ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+
+	if (err == 0) {
+		g_transp_mode = mode;
+		FRAM_write((unsigned char*) &g_transp_mode ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+	} else {
+		logg(error, "E: Failed setting transponder to: %b  with err: %d\n", mode, err);
+	}
 
 	return err;
 }
