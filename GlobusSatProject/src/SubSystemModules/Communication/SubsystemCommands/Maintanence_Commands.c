@@ -273,7 +273,7 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 
 	char tlmComponent;
 	int tlmFramAddress;
-	int period;
+	time_unix period;
 
 	//get component from command
 	memcpy(&tlmComponent,cmd->data,sizeof(tlmComponent));
@@ -357,7 +357,7 @@ int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd)
 	}
 
 	//Get periods in FRAM
-	int period;
+	time_unix period;
 	FRAM_read((unsigned char*)&period, tlmFramAddress, sizeof(period));
 
 	//sending period
