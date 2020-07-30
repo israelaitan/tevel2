@@ -26,40 +26,41 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_SOFT_RESET = 		0x81,			// before going to reset
 	ACK_HARD_RESET = 		0x82,			// before starting hardware reset
 
-	ACK_MEMORY_DELETE = 0x83,				// when memory delete is completed success
+	ACK_MEMORY_DELETE = 	0x83,				// when memory delete is completed success
 
-	ACK_UPDATE_TIME = 0x12,					// after updating time
+	ACK_UPDATE_TIME = 		0x12,					// after updating time
 	ACK_UPDATE_BEACON_TIME_DELAY = 0x14,
 	ACK_UPDATE_EPS_VOLTAGES = 0x15,
-	ACK_RESET_EPS_WD = 0x16,
-	ACK_UPDATE_EPS_ALPHA = 0x17,
+	ACK_RESET_EPS_WD = 		0x16,
+	ACK_UPDATE_EPS_ALPHA = 	0x17,
 
-	ACK_IDLE_ON = 0x18,
-	ACK_IDLE_OFF = 0x19,
-	ACK_MUTE = 0x8D,
-	ACK_UNMUTE = 0x8E,
-	ACK_TRANSPONDER_ON = 0x8F,
-	ACK_TRANSPONDER_RSSI = 0x8A,
-	ACK_TRANSPONDER_OFF = 0x8C,
+	ACK_IDLE_ON = 			0x18,
+	ACK_IDLE_OFF = 			0x19,
+	ACK_MUTE = 				0x8D,
+	ACK_UNMUTE = 			0x8E,
+	ACK_TRANSPONDER_ON = 	0x8F,
+	ACK_TRANSPONDER_RSSI = 	0x8A,
+	ACK_TRANSPONDER_OFF = 	0x8C,
 
-	ACK_DUMP_START = 0x90,
-	ACK_DUMP_ABORT = 0x91,
-	ACK_DUMP_FINISHED = 0x92,
+	ACK_DUMP_START = 		0x90,
+	ACK_DUMP_ABORT = 		0x91,
+	ACK_DUMP_FINISHED = 	0x92,
 
-	ACK_GENERIC_I2C_CMD = 0x93,
-	ACK_ARM_DISARM = 0x94,					//after changing arm state of the ants
-	ACK_REDEPLOY = 0x95,
-	ACK_ANT_CANCEL_DEP = 0x9E,
-	ACK_FRAM_RESET = 0xA0,
+	ACK_GENERIC_I2C_CMD = 	0x93,
+	ACK_ARM_DISARM = 		0x94,					//after changing arm state of the ants
+	ACK_REDEPLOY = 			0x95,
+	ACK_ANT_CANCEL_DEP = 	0x9E,
+	ACK_FRAM_RESET = 		0xA0,
 	ACK_TLM_SET_COLL_CYCLE= 0xA1,
+	ACK_SET_LOG_LEVEL = 	0xA2,
 
-	ACK_FS_DELETE_ALL = 0x0D,
-	ACK_FS_DELETE_FILE = 0x0E,
+	ACK_FS_DELETE_ALL = 	0x0D,
+	ACK_FS_DELETE_FILE = 	0x0E,
 
-	ACK_PING = 0xAA,
-	ACK_UNKNOWN_SUBTYPE = 0xBB,				//when the given subtype is unknown
-	ACK_NO_ACK = 0xCC,						//Do not send ACK
-	ACK_ERROR_MSG = 0XFF 					// send this ACK when error has occurred
+	ACK_PING = 				0xAA,
+	ACK_UNKNOWN_SUBTYPE = 	0xBB,				//when the given subtype is unknown
+	ACK_NO_ACK = 			0xCC,						//Do not send ACK
+	ACK_ERROR_MSG = 		0XFF 					// send this ACK when error has occurred
 }ack_subtype_t;
 
 
@@ -131,7 +132,9 @@ typedef enum __attribute__ ((__packed__)) management_subtypes_t
 	UPDATE_SAT_TIME_SUBTYPE= 	0x95,		//149
 	GET_SAT_TIME_SUBTYPE= 		0x96,		//150
 	GET_SAT_UP_TIME_SUBTYPE= 	0x97,		//151
-	TLM_SET_COLL_CYCLE_SUBTYPE= 0x98		//152
+	TLM_SET_COLL_CYCLE_SUBTYPE= 0x98,		//152
+	TLM_GET_COLL_CYCLE_SUBTYPE= 0x99,		//153
+	SET_LOG_SUBTYPE = 			0x9A		//154
 }management_subtypes_t;
 //-----------------
 

@@ -18,6 +18,7 @@
 int index = 0;
 char logBuffer[LOG_BUFFER_SIZE];
 char logMsg[LOG_MSG_SIZE];
+LogLevel g_currLogLevel = CURR_LOG_LEVEL;
 
 void __logg(char* msg) {
 #ifdef TESTING
@@ -84,7 +85,7 @@ void _logg(char* msg) {
 }
 
 void logg(LogLevel level, char *fmt, ...) {
-	if (CURR_LOG_LEVEL > level)
+	if (g_currLogLevel > level)
 			return;
 	va_list argptr;
 	va_start(argptr, fmt);
@@ -93,5 +94,14 @@ void logg(LogLevel level, char *fmt, ...) {
 	_logg(logMsg);
 }
 
+void setLogLevel(LogLevel level)
+{
+	g_currLogLevel = level;
+}
+
+void initLog()
+{
+	g_currLogLevel = CURR_LOG_LEVEL;
+}
 
 

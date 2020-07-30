@@ -123,10 +123,19 @@ int CMD_AntennaDeploy(sat_packet_t *cmd);
 int CMD_ResetComponent(reset_type_t rst_type);
 
 /*!
-* @brief 	set new collection cycle period
+* @brief 	set new collection cycle period per TLM type
 * @return 	0 on success
 * 			Error code according to <hal/errors.h>
 */
 int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd);
+
+/*!
+* @brief 	Get collection cycle period per TLM type
+* @return 	0 on success
+* 			Error code according to <hal/errors.h>
+*/
+int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd);
+
+int CMD_setLogLevel(sat_packet_t *cmd);
 
 #endif /* MAINTANENCE_COMMANDS_H_ */

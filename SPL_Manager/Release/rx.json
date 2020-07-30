@@ -362,6 +362,12 @@
           "inParams": []
         },
         {
+          "id": "162",
+          "name": "ACK_SET_LOG_LEVEL",
+          "desc": "Set log level",
+          "inParams": []
+        },
+        {
           "id": "187",
           "name": "ACK_UNKNOWN_SUBTYPE",
           "desc": "when the given subtype is unknown",
@@ -929,7 +935,7 @@
             {
               "name": "Corruption Indicator",
               "desc": "Indicates if Filesystem is corrupted",
-              "type": "boolean"
+              "type": "char"
             }
           ]
         },
@@ -941,7 +947,7 @@
             {
               "name": "Free Space",
               "desc": "Amount of Free Space Filesystem",
-              "type": "long"
+              "type": "int"
             }
           ]
         },
@@ -1045,6 +1051,18 @@
               "name": "seconds",
               "desc": "Sattelite Up time in seconds",
               "type": "datetime"
+            }
+          ]
+        },
+        {
+          "id": "153",
+          "name": "Get TLM Collection Period",
+          "desc": "Get the collection period in sec for TLM",
+          "inParams": [
+            {
+              "name": "Period",
+              "desc": "the new collection period of the telematry to set ",
+              "type": "int"
             }
           ]
         }

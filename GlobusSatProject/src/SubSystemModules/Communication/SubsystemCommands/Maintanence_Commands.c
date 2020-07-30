@@ -239,6 +239,26 @@ int CMD_AntennaDeploy(sat_packet_t *cmd)
 	return err;
 }
 
+int CMD_setLogLevel(sat_packet_t *cmd)
+{
+	logg(MTNInfo, "I:inside CMD_setLogLevel()\n");
+
+	if (cmd == NULL || cmd->data == NULL)
+	{
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
+	//get log level
+	char logLevel;
+	memcpy(&logLevel,cmd->data,sizeof(logLevel));
+
+	//set log level
+	setLogLevel(logLevel);
+	logg(event, "I: Set log level to: %d", logLevel);
+	return 0;
+}
+
 int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 {
 	logg(MTNInfo, "I:inside CMD_SetTLM_CollectionCycle()\n");
@@ -289,6 +309,59 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 
 	//Set periods in FRAM
 	FRAM_write((unsigned char*)period, tlmFramAddress, sizeof(period));
+	return err;
+}
+
+int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd)
+{
+	logg(MTNInfo, "I:inside CMD_GetTLM_CollectionCycle()\n");
+
+	if (cmd == NULL || cmd->data == NULL)
+	{
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
+	int err=0;
+
+	char tlmComponent;
+	int tlmFramAddress;
+
+	//get component from command
+	memcpy(&tlmComponent,cmd->data,sizeof(tlmComponent));
+
+	if (tlmComponent == eps_tlm)
+	{
+		tlmFramAddress = EPS_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Getting EPS TLM with period\n");
+	}
+	else if (tlmComponent == trxvu_tlm)
+	{
+		tlmFramAddress = TRXVU_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Getting TRXVU TLM with period.\n");
+	}
+	else if (tlmComponent == ant_tlm)
+	{
+		tlmFramAddress = ANT_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Getting ANTENNAS TLM with period.\n");
+	}
+	else if (tlmComponent == solar_panel_tlm)
+	{
+		tlmFramAddress = SOLAR_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Getting SOLAR TLM with period\n");
+	}
+	else if (tlmComponent == wod_tlm)
+	{
+		tlmFramAddress = WOD_SAVE_TLM_PERIOD_ADDR;
+		logg(MTNInfo, "Getting WOD TLM with period\n");
+	}
+
+	//Get periods in FRAM
+	int period;
+	FRAM_read((unsigned char*)period, tlmFramAddress, sizeof(period));
+
+	//sending period
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&period, sizeof(period));
 	return err;
 }
 

@@ -34,4 +34,8 @@ typedef enum _LogLevel {
 
 void logg(LogLevel level, char *fmt, ...);
 
+void setLogLevel(LogLevel level);
+
+void initLog();
+
 #endif /* LOG_H_ */

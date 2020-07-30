@@ -273,6 +273,16 @@ int managment_command_router(sat_packet_t *cmd)
 		ackType=ACK_TLM_SET_COLL_CYCLE;
 		break;
 
+	case TLM_GET_COLL_CYCLE_SUBTYPE:
+		err =CMD_GetTLM_CollectionCycle(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case SET_LOG_SUBTYPE:
+		err =CMD_setLogLevel(cmd);
+		ackType=ACK_SET_LOG_LEVEL;
+		break;
+
 	default:
 		break;
 	}
