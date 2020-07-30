@@ -56,6 +56,8 @@ int SetIdleOff()
 	if(err==0)
 	{
 		g_idle_flag=FALSE;
+		g_idle_start_time = 0;
+		g_idle_period = 300 ;
 	}
 	else
 	{
@@ -175,10 +177,10 @@ int InitTrxvu()
 	}
 	vTaskDelay(100);
 
-	//initialize global variables
-	g_idle_flag = FALSE;
-	g_idle_start_time = 0;
+	//initialize idle to off
+	SetIdleOff();
 
+	//check if antennas are open
 	areAntennasOpen();
 
 	//Initialize Antennas
@@ -198,7 +200,7 @@ int InitTrxvu()
 
 
 //TRX VU main logic
- CommandHandlerErr TRX_Logic()
+CommandHandlerErr TRX_Logic()
 {
 	logg(TRXInfo, "I:Inside TRX_Logic()\n");
 	//sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
