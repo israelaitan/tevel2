@@ -23,7 +23,7 @@
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
 #define ANTENNA_DEPLOYMENT_TIMEOUT 30 //<! in seconds
-#define PRINT_IF_ERR(method) if(0 != err)printf("error in '" #method  "' err = %d\n",err);
+
 
 //האם זו האינטרקציה הראשונה
 int isFirstActivation(Boolean * status)
@@ -138,7 +138,7 @@ int StartTIME()
 	{
 		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
 		Time_setUnixEpoch(time_before_wakeup);
-		logg(OBCInfo, "I: Reset clock with %d\n", time_before_wakeup);
+		logg(event, "V: Reset clock with %d\n", time_before_wakeup);
 	}
 	return err;
 }
@@ -192,7 +192,7 @@ int autoDeploy()
 	int err = Time_getUnixEpoch((unsigned int *)&deploy_time);
 	if(0 != err)
 	{
-		logg(OBCInfo, "I:Time_getUnixEpoch failed to set ants last deploy time\n");
+		logg(error, "E:Time_getUnixEpoch failed to set ants last deploy time\n");
 	}
 	else
 	{
