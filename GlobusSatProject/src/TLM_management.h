@@ -11,7 +11,6 @@
 #include <hcc/api_fat.h>
 #include <GlobalStandards.h>
 
-typedef unsigned int time_unix;
 #define MAX_F_FILE_NAME_SIZE 7
 #define FIRST_ELEMENT_IN_C_FILE 0
 #define LAST_ELEMENT_IN_C_FILE 0
