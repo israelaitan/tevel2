@@ -308,7 +308,7 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 	}
 
 	//Set periods in FRAM
-	FRAM_write((unsigned char*)period, tlmFramAddress, sizeof(period));
+	FRAM_write((unsigned char*)&period, tlmFramAddress, sizeof(period));
 	return err;
 }
 
@@ -358,7 +358,7 @@ int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd)
 
 	//Get periods in FRAM
 	int period;
-	FRAM_read((unsigned char*)period, tlmFramAddress, sizeof(period));
+	FRAM_read((unsigned char*)&period, tlmFramAddress, sizeof(period));
 
 	//sending period
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&period, sizeof(period));
