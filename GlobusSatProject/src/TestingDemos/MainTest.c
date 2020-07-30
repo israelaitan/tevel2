@@ -313,7 +313,9 @@ void taskTesting()
 		//if (i == 10)
 		//TestDumpTelemetry();
 		//
-		//5 0 0 8 0 69 A 0 C 0 49 1C 0C 5E AA 4B 0F 5E
+		//5 0 0 8 0 69 A 0 C 0 49 1C 0C 5E A3 E3 0B 5E
+
+		//5E0B E3A3
 		//1577851977
 		//1577852072
 		//5 0 0 0 0 22

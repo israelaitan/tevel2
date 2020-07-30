@@ -54,6 +54,8 @@
 // main operation function. will be called upon software boot.
 int main()
 {
+	//gracefulReset(); //for restart of burned code in sattelite
+
 
 	xTaskHandle taskMainHandle;
 
