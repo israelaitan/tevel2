@@ -553,14 +553,9 @@
               "type": "int"
             },
             {
-              "name": "Size",
-              "desc": "Size of Parameter in FRAM",
-              "type": "int"
-            },
-            {
               "name": "Value",
               "desc": "New value for parameter",
-              "type": "char[]"
+              "type": "int"
             }
           ]
         },

@@ -1002,7 +1002,7 @@
             {
               "name": "Value",
               "desc": "Value of Parameter in FRAM",
-              "type": "char"
+              "type": "int"
             }
           ]
         },
@@ -1014,7 +1014,7 @@
             {
               "name": "Value",
               "desc": "New value for parameter set in FRAM",
-              "type": "char"
+              "type": "int"
             }
           ]
         },
