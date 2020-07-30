@@ -22,8 +22,23 @@ void InitTxModule()
 	if(NULL == xIsTransmitting)
 		vSemaphoreCreateBinary(xIsTransmitting);
 
-	g_mute_flag = MUTE_OFF;				// mute flag - is the mute enabled
-	g_mute_end_time = 0;
+	int err = 0;
+	err = FRAM_read((unsigned char*) &g_mute_flag ,MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
+	if (err != 0)
+	{
+		g_mute_flag = MUTE_OFF;				// mute flag - set to false
+		g_mute_end_time = 0;
+	}
+	else //err == 0
+	{
+		err = FRAM_read((unsigned char*) &g_mute_end_time ,MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
+		if (err != 0)
+		{
+			g_mute_end_time = 0;
+		}
+	}
+
+
 }
 
 int muteTRXVU(time_unix duration)
@@ -37,6 +52,10 @@ int muteTRXVU(time_unix duration)
 
 	g_mute_end_time = curr_tick_time + duration;
 	g_mute_flag = MUTE_ON;
+
+	FRAM_write((unsigned char*) &g_mute_end_time ,MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
+	FRAM_write((unsigned char*) &g_mute_flag ,MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
+
 	logg(TRXInfo, "I: Setting Mute ON until: %lu\n", (long unsigned int)g_mute_end_time);
 
 	//close transponder
@@ -49,6 +68,10 @@ void UnMuteTRXVU()
 {
 	g_mute_end_time = 0;
 	g_mute_flag = MUTE_OFF;
+
+	FRAM_write((unsigned char*) &g_mute_end_time ,MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
+	FRAM_write((unsigned char*) &g_mute_flag ,MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
+
 	logg(TRXInfo, "I: Setting Mute to OFF\n");
 }
 
