@@ -52,18 +52,16 @@ int SetIdleOff()
 	logg(TRXInfo, "I:inside SetIdleOff()\n");
 	int err = 0;
 
-	if(g_idle_flag==TRUE)
+	err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
+	if(err==0)
 	{
-		err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
-		if(err==0)
-		{
-			g_idle_flag=FALSE;
-		}
-		else
-		{
-			logg(error, "E:failed in setting trxvu idle off - %d\n", err);
-		}
+		g_idle_flag=FALSE;
 	}
+	else
+	{
+		logg(error, "E:failed in setting trxvu idle off - %d\n", err);
+	}
+
 	return err;
 }
 
@@ -176,6 +174,10 @@ int InitTrxvu()
 		logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 	}
 	vTaskDelay(100);
+
+	//initialize global variables
+	g_idle_flag = FALSE;
+	g_idle_start_time = 0;
 
 	areAntennasOpen();
 
