@@ -283,8 +283,18 @@
           "inParams": [
             {
               "name": "ant side",
-              "desc": "what side we want to know the UPTIME (side A - 00 | side B - 01) ",
-              "type": "char"
+              "desc": "Antennas side for UPTIME",
+              "type": "char",
+              "values": [
+                {
+                  "id": "00",
+                  "name": "A"
+                },
+                {
+                  "id": "01",
+                  "name": "B"
+                }
+              ]
             }
           ]
         }            
@@ -294,31 +304,13 @@
       "id": "1",
       "name": "EPS",
       "desc": "All EPS function calls",
-      "subtypes": [
-        {
-          "id": "0",
-          "name": "Update Alpha",
-          "desc": "update the Alpha value for smothing",
-          "inParams": [
-            {
-              "name": "Alpha",
-              "desc": "new Alpha value (float value)",
-              "type": "float"
-            }
-          ]
-        },
+      "subtypes": [        
 		    {
           "id": "1",
           "name": "Reset Watchdog",
           "desc": "Reset EPS Watchdog",
           "inParams": []
-        },
-		    {
-          "id": "2",
-          "name": "Get EPS Mode",
-          "desc": "Get EPS Mode",
-          "inParams": []
-        }
+        }		    
       ]
     },
     {
