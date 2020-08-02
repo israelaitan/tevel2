@@ -69,7 +69,8 @@ def handleAnt(header, data):
     antData = data[4:]
     ant = AntTelemetry._make(struct.unpack(antTlmFormat, antData))
     print(f'{Fore.CYAN}{header}')
-    print(f'{time[0]}:{ant}')
+    print(f'{time[0]}:{ant}:{0:b}:{0:b}.format(ant.ants_deployment)')
+    print('{0:b}'.format(ant.ants_deployment))
 
 def handleAck(header, data):
     print(f'{Fore.GREEN}{header}:{AckSubtype(header.subtype)}:{data}')
