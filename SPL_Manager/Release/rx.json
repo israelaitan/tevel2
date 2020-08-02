@@ -139,7 +139,7 @@
           "inParams": [
             {
               "name": "status",
-              "desc": "what is the status (disarm = 172 | arm = 173)",
+              "desc": "Antenna arm status (disarm = 0 | arm = 1)",
               "type": "char"
             }
           ]
