@@ -368,6 +368,18 @@
           "inParams": []
         },
         {
+          "id": "13",
+          "name": "ACK_FS_DELETE_ALL",
+          "desc": "Delete all file types",
+          "inParams": []
+        },
+        {
+          "id": "14",
+          "name": "ACK_FS_DELETE_FILE",
+          "desc": "Delete Files of Type",
+          "inParams": []
+        },
+        {
           "id": "187",
           "name": "ACK_UNKNOWN_SUBTYPE",
           "desc": "when the given subtype is unknown",
