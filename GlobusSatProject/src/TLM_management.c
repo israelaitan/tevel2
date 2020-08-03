@@ -194,6 +194,19 @@ FileSystemResult createSemahores_FS()
 	return FS_SUCCSESS;
 }
 
+FileSystemResult formatAndCreateFiles()
+{
+	sd_format(DEFAULT_SD);
+	FS fs = {0,DEFAULT_SD};
+	if(FRAM_write((unsigned char*)&fs,FSFRAM,sizeof(FS))!=0)
+	{
+		return FS_FAT_API_FAIL;
+	}
+	Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES];
+	TelemetryCreateFiles(tlms_created);
+	return FS_SUCCSESS;
+}
+
 FileSystemResult InitializeFS(Boolean first_time)
 {
 	FileSystemResult FS_result = createSemahores_FS();
@@ -244,14 +257,7 @@ FileSystemResult InitializeFS(Boolean first_time)
 
 	if(first_time)
 	{
-		sd_format(DEFAULT_SD);
-		FS fs = {0,DEFAULT_SD};
-		if(FRAM_write((unsigned char*)&fs,FSFRAM,sizeof(FS))!=0)
-		{
-			return FS_FAT_API_FAIL;
-		}
-		Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES];
-		TelemetryCreateFiles(tlms_created);
+		return formatAndCreateFiles();
 	}
 
 

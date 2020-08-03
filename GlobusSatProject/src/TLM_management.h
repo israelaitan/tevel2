@@ -47,18 +47,22 @@ typedef enum
 } FileSystemResult;
 
 int f_managed_enterFS();
+
 int f_managed_releaseFS();
 
 int f_managed_open(char* file_name, char* config, F_FILE** fileHandler);
+
 int f_managed_close(F_FILE** fileHandler);
 
 FileSystemResult reset_FRAM_FS();
 
 void sd_format(int index);
+
 /*
  *
  */
 void deleteDir(char* name, Boolean delete_folder);
+
 /*!
  * Initializes the file system.
  * @note call once for boot and after DeInitializeFS.
@@ -82,8 +86,7 @@ void DeInitializeFS();
  * FS_FRAM_FAIL,
  * FS_SUCCSESS on success.
  */
-FileSystemResult c_fileCreate(char* c_file_name,
-		int size_of_element);
+FileSystemResult c_fileCreate(char* c_file_name, int size_of_element);
 /*!
  * Write element to c_file.
  * @param c_file_name the name of the c_file.
@@ -93,8 +96,11 @@ FileSystemResult c_fileCreate(char* c_file_name,
  * FS_SUCCSESS on success.
  */
 FileSystemResult c_fileWrite(char* c_file_name, void* element);
+
 FileSystemResult _c_fileWrite(char* c_file_name, void* element, int size, unsigned char withTime);
 
+//Perform the format of filesystem and creation of the files
+FileSystemResult formatAndCreateFiles();
 
 /*!
  * Delete elements from c_file from "from_time" to "to_time".
@@ -136,11 +142,18 @@ FileSystemResult c_fileGetSizeOfElement(char* c_file_name,int* size_of_element);
  */
 FileSystemResult c_fileRead(char* c_file_name, byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read,time_unix* last_read_time, unsigned int resolution);
+
 FileSystemResult c_fileGetSizeOfElement(char* c_file_name,int* element_size);
+
 //print c_file for testing
 void print_files(char* c_file_name);
+
 int print_file(char* c_file_name);
+
 FileSystemResult c_fileReset(char* c_file_name);
+
 int FS_test();
+
 void test_i();
+
 #endif /* TM_MANAGMENT_H_ */
