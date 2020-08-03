@@ -78,8 +78,7 @@ int CMD_DeleteFilesOfType(sat_packet_t *cmd)
 int CMD_DeleteFS(sat_packet_t *cmd)
 {
 	(void)cmd;
-	sd_format(DEFAULT_SD);
-	return 0;
+	return formatAndCreateFiles();
 }
 
 int CMD_GetLastFS_Error(sat_packet_t *cmd)
