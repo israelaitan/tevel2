@@ -569,7 +569,7 @@ FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 
 	return FS_SUCCSESS;
 }
-//TODO:
+
 FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		time_unix from_time, time_unix to_time, int* read, time_unix* last_read_time, unsigned int resolution)
 {
