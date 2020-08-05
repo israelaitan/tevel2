@@ -573,7 +573,7 @@
         },
         {
           "id": "161",
-          "name": "NOT USED reset_hardware",
+          "name": "Hardware Reset",
           "desc": "Hardware ODBC Reset",
           "inParams": []
         },
