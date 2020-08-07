@@ -1048,7 +1048,7 @@
           "desc": "Update Sat time",
           "inParams": [
             {
-              "name": "seconds",
+              "name": "time",
               "desc": "Current time after time updated",
               "type": "datetime"
             }
@@ -1060,8 +1060,8 @@
           "desc": "Get the satelite time",
           "inParams": [
             {
-              "name": "seconds",
-              "desc": "Sattelite time in seconds",
+              "name": "time",
+              "desc": "Sattelite time",
               "type": "datetime"
             }
           ]
@@ -1072,8 +1072,8 @@
           "desc": "Get the satelite uptime time",
           "inParams": [
             {
-              "name": "seconds",
-              "desc": "Sattelite Up time in seconds",
+              "name": "time",
+              "desc": "Sattelite Up time",
               "type": "datetime"
             }
           ]

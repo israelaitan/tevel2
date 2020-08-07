@@ -165,8 +165,7 @@ int autoDeploy()
 		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
 	}
 
-	// unarm antenas side A
-
+	// unarm antenas side A - we decided not to use this method
 	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
 
 	// antenata auto deploy - sides B
@@ -184,7 +183,7 @@ int autoDeploy()
 		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
 	}
 
-	// unarm antenas side B
+	// unarm antenas side B - we decided not to use this method
 	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_disarm);
 
 	// update last deploy time
@@ -225,8 +224,12 @@ int DeploySystem()
 }
 
 
+<<<<<<< HEAD
 
 //Init sub system
+=======
+//TODO: placeholder for easy access
+>>>>>>> 16cffc88fbe6add3ffdbf4701c84b26c4cfdbdbf
 int InitSubsystems()
 {
 
