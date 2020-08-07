@@ -85,5 +85,5 @@
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
 #define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
 #define TRANSPONDER_MAX_DURATION 		(72*60*60)  // max transponder duration is 72 hours
-#define ANT_DEPLOY_WAIT_PERIOD			(3*60)		//TODO: change to 30 minutes
+#define ANT_DEPLOY_WAIT_PERIOD			(30*60)		// 30 minutes
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */
