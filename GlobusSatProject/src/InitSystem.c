@@ -150,7 +150,6 @@ int autoDeploy()
 	int resArm=0, resDeploy = -1;
 
 	// antena auto deploy - sides A
-	//TODO: remove before flight
 	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
 
 	if(resArm==0)
@@ -169,7 +168,6 @@ int autoDeploy()
 	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
 
 	// antenata auto deploy - sides B
-	//TODO: remove before flight
 	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
 	if(resArm==0)
 	{
@@ -224,12 +222,9 @@ int DeploySystem()
 }
 
 
-<<<<<<< HEAD
 
 //Init sub system
-=======
-//TODO: placeholder for easy access
->>>>>>> 16cffc88fbe6add3ffdbf4701c84b26c4cfdbdbf
+
 int InitSubsystems()
 {
 
