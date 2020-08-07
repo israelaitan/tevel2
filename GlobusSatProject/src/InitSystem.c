@@ -226,7 +226,7 @@ int DeploySystem()
 
 
 
-//TODO: placeholder for easy access
+//Init sub system
 int InitSubsystems()
 {
 
