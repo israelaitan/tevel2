@@ -120,8 +120,9 @@ Boolean IsGroundCommunicationWDTKick()
 	FRAM_read((unsigned char*) &last_comm_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 	FRAM_read((unsigned char *)&last_wake_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 
-	//if reset happened after last communication - use wake up time as last communication time
-	if (last_wake_time > last_comm_time)
+	//if reset happened after last communication or time was moved back and last communication is in the future
+	// - use wake up time as last communication time
+	if ((last_wake_time > last_comm_time ) || (last_comm_time > current_time ))
 	{
 		last_comm_time = last_wake_time;
 	}
