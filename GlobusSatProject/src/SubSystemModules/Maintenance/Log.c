@@ -53,22 +53,28 @@ void _logg(char* msg) {
 
     FileSystemResult res = FS_SUCCSESS;
     int dumpSize = (int)LOG_BUFFER_SIZE;
-    if ((index + msgSize) > dumpSize ) {
+    int reminder = index % (SIZE_TXFRAME - SIZE_SPL_HEADER);
+    int leftover = SIZE_TXFRAME - SIZE_SPL_HEADER - reminder;
+    int considerTimeSize = 0;
+    time_unix time;
+
+    if ( !reminder || msgSize > leftover)
+    	considerTimeSize = sizeof(time);
+
+    if ( (index + msgSize + considerTimeSize) > dumpSize ) {
     	res = _c_fileWrite(FILENAME_LOG_TLM, logBuffer, LOG_BUFFER_SIZE, 0);
     	(void) res;
     	index = 0;
     	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     }
-    int reminder = index % (SIZE_TXFRAME - SIZE_SPL_HEADER);
-    time_unix time;
+
     if (!reminder) {
     	Time_getUnixEpoch(&time);
     	memcpy(logBuffer + index, &time, sizeof(time));
     	index += sizeof(time);
     	memcpy(logBuffer + index, msg, msgSize);
     	index += msgSize;
-    } else {
-    	int leftover = SIZE_TXFRAME - SIZE_SPL_HEADER - reminder;
+    } else
     	if (msgSize <= leftover) {
     		memcpy(logBuffer + index, msg, msgSize);
     		index += msgSize;
