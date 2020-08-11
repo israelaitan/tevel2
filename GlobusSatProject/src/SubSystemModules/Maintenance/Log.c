@@ -87,7 +87,6 @@ void _logg(char* msg) {
     		memcpy(logBuffer + index, msg + leftover, msgSize - leftover);
     		index += (msgSize - leftover);
     	}
-    }
 }
 
 void logg(LogLevel level, char *fmt, ...) {
