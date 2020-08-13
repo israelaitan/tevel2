@@ -91,9 +91,9 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length,
 
 	if (NULL != data)
 	{
-		if (data_length > (SIZE_TXFRAME - SIZE_SPL_HEADER))
+		if (data_length > (SIZE_RXFRAME - SIZE_SPL_HEADER))
 		{
-			cmd->length =   (SIZE_TXFRAME - SIZE_SPL_HEADER);
+			cmd->length =   (SIZE_RXFRAME - SIZE_SPL_HEADER);
 		}
 		else
 		{

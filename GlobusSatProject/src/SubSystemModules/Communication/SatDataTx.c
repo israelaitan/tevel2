@@ -159,20 +159,18 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned in
 }
 
 int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
-	if (!CheckTransmitionAllowed()) {
+	if (!CheckTransmitionAllowed())
 		return -1;
-	}
 
-	if (NULL == packet) {
+	if (NULL == packet)
 		return E_NOT_INITIALIZED;
-	}
 
 	int err = 0;
 	unsigned int data_length = packet->length + SAT_PACKET_HEADER_LENGTH;
 
-	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE) {
+	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE)
 		return E_GET_SEMAPHORE_FAILED;
-	}
+
 	err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX,
 			(unsigned char*) packet, data_length, (unsigned char*) avalFrames);
 

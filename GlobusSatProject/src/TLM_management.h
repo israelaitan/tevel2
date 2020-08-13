@@ -43,8 +43,36 @@ typedef enum
 	FS_FAIL,
 	FS_COULD_NOT_CREATE_SEMAPHORE,
 	FS_COULD_NOT_TAKE_SEMAPHORE,
-	FS_COULD_NOT_GIVE_SEMAPHORE
+	FS_COULD_NOT_GIVE_SEMAPHORE,
+	FS_ABORT
 } FileSystemResult;
+
+#define NUMBER_OF_WRITES 1
+#define SKIP_FILE_TIME_SEC ((60*60*24*0.5)/NUMBER_OF_WRITES)
+#define _SD_CARD (0)
+#define FIRST_TIME (-1)
+#define FILE_NAME_WITH_INDEX_SIZE (MAX_F_FILE_NAME_SIZE+sizeof(int)*2)
+#define ELEMENTS_PER_READ (4500)
+#define MAX_ELEMENT_SIZE (200)
+#define FS_TAKE_SEMPH_DELAY	(1000 * 30)
+
+//struct for filesystem info
+typedef struct
+{
+	int num_of_files;
+	int sd_index;
+} FS;
+
+//struct for chain file info
+typedef struct
+{
+	int size_of_element;
+	char name[FILE_NAME_WITH_INDEX_SIZE];
+	unsigned int creation_time;
+	unsigned int last_time_modified;
+
+} C_FILE;
+#define C_FILES_BASE_ADDR (FSFRAM+sizeof(FS))
 
 int f_managed_enterFS();
 
@@ -155,5 +183,11 @@ FileSystemResult c_fileReset(char* c_file_name);
 int FS_test();
 
 void test_i();
+
+void get_file_name_by_index(char* c_file_name,int index,char* curr_file_name);
+
+int getFileIndex(unsigned int creation_time, unsigned int current_time);
+
+Boolean get_C_FILE_struct(char* name,C_FILE* c_file,unsigned int *address);
 
 #endif /* TM_MANAGMENT_H_ */
