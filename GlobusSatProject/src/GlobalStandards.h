@@ -64,7 +64,7 @@ typedef unsigned char byte;
 typedef unsigned short voltage_t; 	///< in mV
 typedef unsigned short current_t; 	///< in mA
 typedef unsigned short power_t;		///< in mW
-typedef short temp_t;				///< in Celsius
+typedef unsigned short temp_t;				///< in Celsius
 typedef unsigned char channel_t;	///< each bit represents a specific system state. 1 = ON; 0 = OFF
 
 

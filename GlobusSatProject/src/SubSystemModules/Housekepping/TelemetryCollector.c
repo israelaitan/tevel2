@@ -6,6 +6,7 @@
 #include <satellite-subsystems/IsisAntS.h>
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <hal/Timing/Time.h>
+#include <hal/drivers/ADC.h>
 
 #include <string.h>
 
@@ -121,7 +122,7 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
 
 	//-- SOLAR PANEL files
-	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*TEVEL_SOLAR_PANEL_COUNT);
+	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*NUMBER_OF_SOLAR_PANELS);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 
 	//-- LOG files
@@ -209,7 +210,7 @@ int getSolarPanelsTLM(int32_t *t)
 
 void TelemetrySaveSolarPanels()
 {
-	int32_t t[TEVEL_SOLAR_PANEL_COUNT];
+	int32_t t[NUMBER_OF_SOLAR_PANELS];
 
 	//IsisSolarPanelv2_wakeup();
     //vTaskDelay(500);
@@ -249,22 +250,52 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
 
-	isis_eps__gethousekeepingrawincdb__from_t hk_tlm;
-	isis_eps__gethousekeepingeng__from_t hk_tlm_cdb;
-
-	err = isis_eps__gethousekeepingrawincdb__tm( EPS_I2C_BUS_INDEX, &hk_tlm );
-	err += isis_eps__gethousekeepingeng__tm( EPS_I2C_BUS_INDEX, &hk_tlm_cdb );
+	isis_eps__gethousekeepingeng__from_t hk_tlm;
+	err += isis_eps__gethousekeepingeng__tm( EPS_I2C_BUS_INDEX, &hk_tlm );
 
 	if(err == 0){
 		//TODO: map correct values
-		wod->vbat = hk_tlm_cdb.fields.dist_input.fields.volt;
-		wod->current_3V3 = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->current_5V = hk_tlm_cdb.fields.batt_input.fields.volt;
-		wod->volt_3V3 = hk_tlm_cdb.fields.volt_vd2;
-		wod->volt_5V = hk_tlm_cdb.fields.volt_vd1;
-		wod->charging_power = hk_tlm_cdb.fields.batt_input.fields.power;
-		wod->consumed_power = hk_tlm_cdb.fields.dist_input.fields.power;
+		wod->vbat = hk_tlm.fields.dist_input.fields.volt;
+		wod->electric_current =  hk_tlm.fields.dist_input.fields.current;
+		wod->consumed_power = hk_tlm.fields.dist_input.fields.power;
+
+		wod->charging_power = hk_tlm.fields.batt_input.fields.power;
+
+		wod->current_v0 = hk_tlm.fields.vip_obc00.fields.current;
+		wod->volt_v0 = hk_tlm.fields.vip_obc00.fields.volt;
+
+		wod->current_3V3 = hk_tlm.fields.vip_obc05.fields.current;
+		wod->volt_3V3 = hk_tlm.fields.vip_obc05.fields.volt;
+
+		wod->current_5V = hk_tlm.fields.vip_obc01.fields.current;;
+		wod->volt_5V =hk_tlm.fields.vip_obc01.fields.volt;
+
+		wod->mcu_temp = hk_tlm.fields.temp;
+		wod->bat_temp = hk_tlm.fields.temp2;
+
+		wod->volt_in_mppt1 = hk_tlm.fields.cc1.fields.volt_in_mppt;
+		wod->curr_in_mppt1 = hk_tlm.fields.cc1.fields.curr_in_mppt;
+		wod->volt_in_mppt2 = hk_tlm.fields.cc2.fields.volt_in_mppt;
+		wod->curr_in_mppt2 = hk_tlm.fields.cc2.fields.curr_in_mppt;
+		wod->volt_in_mppt3 = hk_tlm.fields.cc3.fields.volt_in_mppt;
+		wod->curr_in_mppt3 = hk_tlm.fields.cc3.fields.curr_in_mppt;
 	}
+
+	uint8_t status;
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0,&wod->solar_panels[0],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1,&wod->solar_panels[1],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2,&wod->solar_panels[2],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3,&wod->solar_panels[3],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4,&wod->solar_panels[4],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5,&wod->solar_panels[5],&status);
+
+	// get ADC channels vlaues (include the photo diodes mV values)
+	unsigned short adcSamples[8];
+	ADC_SingleShot( adcSamples );
+	for(int i=0; i < NUMBER_OF_SOLAR_PANELS; i++ )
+		wod->photo_diodes[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] ); // convert to mV data
+
+
     //Get number of resets is not managed
 	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 }
