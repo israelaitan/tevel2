@@ -69,7 +69,7 @@ void initTransponder()
 
 		//turn on transponder
 		sat_packet_t cmd;
-		memcpy(cmd.data,&duration,sizeof(duration));
+		memcpy(cmd.data, &duration, sizeof(duration));
 		CMD_turnOnTransponder(&cmd);
 	}
 
@@ -152,8 +152,18 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 		}
 
 		//set RSSI
-		unsigned short temp = DEFAULT_TRANS_RSSI;
-		memcpy(rssiData, &temp, 2);
+		unsigned short rssi;
+		err = FRAM_read((unsigned char*) &rssi ,TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
+
+		if(err != 0)
+		{
+			rssi = DEFAULT_TRANS_RSSI;
+			logg(TRXInfo, "I: Transponder RSSI not found in FRAM - Using default");
+		}
+
+		logg(TRXInfo, "I: Transponder RSSI is: %d\n", rssi);
+
+		memcpy(rssiData, &rssi, TRANSPONDER_RSSI_SIZE);
 		err = set_transponder_RSSI(rssiData);
 		if (0 != err)
 		{
@@ -188,18 +198,17 @@ int CMD_set_transponder_RSSI(sat_packet_t *cmd)
 		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
-	else if (g_transp_mode == TURN_TRANSPONDER_OFF)
-	{
-		logg(error, "Transponder mode is OFF - cannot set RSSI");
-		return E_INPUT_POINTER_NULL;
-	}
 
 	//set RSSI
 	byte rssiData[2];
-
-	memcpy(rssiData, cmd->data, 2);
+	memcpy(rssiData, cmd->data, TRANSPONDER_RSSI_SIZE);
 	err = set_transponder_RSSI(rssiData);
-	if (0 != err)
+
+	if (err == 0)
+	{
+		FRAM_write((unsigned char*) &(cmd->data) ,TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
+	}
+	else
 	{
 		CMD_turnOffTransponder();
 		return err;
