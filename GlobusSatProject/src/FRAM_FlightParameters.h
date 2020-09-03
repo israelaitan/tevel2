@@ -55,6 +55,9 @@
 #define TRANSPONDER_TURN_ON_END_TIME_ADRR	0x508		//transponder turn off time
 #define TRANSPONDER_TURN_ON_END_TIME_SIZE	4
 
+#define TRANSPONDER_RSSI_ADDR				0x700		//transponder RSSI
+#define TRANSPONDER_RSSI_SIZE				2
+
 #define MUTE_FLAG_ADRR						0x514		// mute state - active or not
 #define MUTE_FLAG_SIZE						4			// size of mute state
 
