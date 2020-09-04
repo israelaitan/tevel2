@@ -34,12 +34,11 @@ class Subtype(Enum):
 class Telemetry(Enum):
     tlm_eps_raw_mb = 0
     tlm_eps_eng_mb = 1
-    tlm_solar = 2
-    tlm_tx = 3
-    tlm_rx = 4
-    tlm_antenna = 5
-    tlm_log = 6
-    tlm_log_bckp = 7
+    tlm_tx = 2
+    tlm_rx = 3
+    tlm_antenna = 4
+    tlm_log = 5
+    tlm_wod = 6
 
 class AckSubtype(Enum):
     ACK_RECEIVE_COMM =      0x00			# when receive any packet
@@ -81,6 +80,7 @@ class AckSubtype(Enum):
     ACK_ANT_AUTO_DEP = 0x96
     ACK_FRAM_RESET = 0xA0
     ACK_TLM_SET_COLL_CYCLE = 0xA1
+    ACK_SET_LOG_LEVEL = 0xA2
 
     ACK_PING = 0xAA
     ACK_UNKNOWN_SUBTYPE = 0xBB				#when the given subtype is unknown
@@ -89,24 +89,44 @@ class AckSubtype(Enum):
 
 class SatPacketHeader(NamedTuple):
     id: int
-    ord: int
-    target: int
     type: int
+    target: int
+    ord: int
     subtype: int
     length: int
-SatPacketHeaderFormat = 'HBBBBH'
+SatPacketHeaderFormat = 'HBBHBB'
 
 class Beacon(NamedTuple):
     sat_time: int			#< current Unix time of the satellites clock [sec]
     vbat: int				#< the current voltage on the battery [mV]
+    volt_v0: int
     volt_5V: int			#< the current voltage on the 5V bus [mV]
     volt_3V3: int			#< the current voltage on the 3V3 bus [mV]
     charging_power: int		#< the current charging power [mW]
     consumed_power: int		#< the power consumed by the satellite [mW]
     electric_current: int	#< the up-to-date electric current of the battery [mA]
+    current_v0: int
     current_3V3: int		#< the up-to-date 3.3 Volt bus current of the battery [mA]
     current_5V: int			#< the up-to-date 5 Volt bus current of the battery [mA]
+    mcu_temp: int
+    bat_temp: int
+    volt_in_mppt1: int
+    curr_in_mppt1: int
+    volt_in_mppt2: int
+    curr_in_mppt2: int
+    volt_in_mppt3: int
+    curr_in_mppt3: int
+    sol_pan_t_0: int
+    sol_pan_t_1: int
+    sol_pan_t_2: int
+    sol_pan_t_3: int
+    sol_pan_t_4: int
+    sol_pan_pd_0: int
+    sol_pan_pd_1: int
+    sol_pan_pd_2: int
+    sol_pan_pd_3: int
+    sol_pan_pd_4: int
     free_memory: int		#< number of bytes free in the satellites SD [byte]
     corrupt_bytes: int		#< number of currpted bytes in the memory	[bytes]
     number_of_resets: int   #< counts the number of resets the satellite has gone through [#]
-BeaconFormat = 'IHHHHHHHHIIH'
+BeaconFormat = 'IHHHHHHHHHHHHhhhhhhiiiiiIIIIIIIH'
