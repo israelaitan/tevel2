@@ -24,11 +24,11 @@ typedef struct __attribute__ ((__packed__)) sat_packet_t
 {
 	//!!!change in header size requires update to SAT_PACKET_HEADER_LENGTH
 	unsigned short ID;							///< ID of the received/transmitted command
-	char ordinal;								///< ord number of packet in sequence
-	char targetSat;                             ///< packet target satelite
-	char cmd_type;								///< type of the command. according to SPL protocol
-	char cmd_subtype;							///< sub-type of the command. according to SPL protocol
-	unsigned short length;						///< length of the received data.
+	unsigned char cmd_type;								///< type of the command. according to SPL protocol
+	unsigned char targetSat;                             ///< packet target satelite
+	unsigned short ordinal;								///< ord number of packet in sequence
+	unsigned char cmd_subtype;							///< sub-type of the command. according to SPL protocol
+	unsigned char length;						///< length of the received data.
 	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
 
 }sat_packet_t;
@@ -53,8 +53,8 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd);
  * @return	errors according to CommandHandlerErr
  * @note helpful when assembling assembling a cmd for downlink. assemble
  */
-CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,
-		char subtype,unsigned short id, char ord, char targetSat, sat_packet_t *cmd);
+CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
+		unsigned char subtype,unsigned short id, unsigned short ord, unsigned char targetSat, sat_packet_t *cmd);
 
 /*!
  * @brief returns an online command to be executed if there is one in the RX buffer.

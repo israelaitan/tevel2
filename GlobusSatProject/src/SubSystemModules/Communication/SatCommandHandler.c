@@ -74,8 +74,8 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, targetSat, cmd);
 }
 
-CommandHandlerErr AssembleCommand(unsigned char *data, unsigned int data_length, char type,
-		char subtype, unsigned short id, char ord, char targetSat, sat_packet_t *cmd)
+CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
+		unsigned char subtype, unsigned short id, unsigned short ord, unsigned char targetSat, sat_packet_t *cmd)
 {
 	if (NULL == cmd)
 	{

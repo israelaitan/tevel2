@@ -27,7 +27,7 @@ typedef struct __attribute__ ((__packed__))
 	time_unix t_start;
 	time_unix t_end;
 	unsigned short id;
-	char ord;
+	unsigned short ord;
 
 } dump_arguments_t;
 
@@ -100,14 +100,14 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 	return err;
 }
 
-int send(unsigned char * element, unsigned int size, int id, int ord, char type, int * availFrames){
+int send(unsigned char * element, unsigned char size, unsigned short id, unsigned short ord, unsigned char type, int * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (char) START_DUMP_SUBTYPE, type, id, ord, T8GBS, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) START_DUMP_SUBTYPE, type, id, ord, (unsigned char)T8GBS, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
 
-FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, int dump_id, char dump_type)
+FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned short dump_id, char dump_type)
 {
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
@@ -122,7 +122,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 	F_FILE* current_file = NULL;
 	int index_current = getFileIndex(c_file.creation_time,from_time);
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
-	unsigned int size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
+	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	int availFrames = 0;
 	*sent = 0;
 	do {
