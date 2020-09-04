@@ -136,6 +136,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 		int how_much_to_read = 0;
 		long readen = 0;
 		f_seek( current_file, 0L , SEEK_SET );
+		unsigned short ord = 0;
 		for(int j = 0; j < length; j += how_much_to_read) {
 			how_much_to_read = ELEMENTS_PER_READ;
 			if(left_to_read < ELEMENTS_PER_READ)
@@ -154,7 +155,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 				if(element_time >= from_time) {
 					if (CheckDumpAbort())
 							return FS_ABORT;
-					int err = send(element, size_elementWithTimeStamp, dump_id, k, dump_type,  &availFrames);
+					int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type,  &availFrames);
 					if(err != 0) {
 						logg(error, "E:transmitsplpacket error: %d", err);
 						if (err == -1)//transmition not allowed
