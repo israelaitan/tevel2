@@ -45,7 +45,6 @@ void _logg(char* msg) {
 			printf(msg);
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
-	if ( msgSizeWithTime > SIZE_RXFRAME )
 		return;
 
 	if (index == 0)

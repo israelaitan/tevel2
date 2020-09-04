@@ -143,7 +143,8 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 
 			element = allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
-			for( int k = 0; k < readen; k++) {//TODO:make sure readen is ok to use this way
+			left_to_read -= readen;
+			for( int k = 0; k < readen;) {//TODO:make sure readen is ok to use this way
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
 				if(element_time > to_time) {

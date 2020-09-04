@@ -9,8 +9,6 @@
 #define	FILENAME_EPS_RAW_MB_TLM			"eRwMB"
 #define FILENAME_EPS_ENG_MB_TLM			"eEgMB"
 
-#define	FILENAME_SOLAR_PANELS_TLM		"slrPnl"
-
 //	---trxvu
 #define FILENAME_TX_TLM					"tx"
 #define FILENAME_RX_TLM					"rx"
@@ -23,7 +21,6 @@
 typedef enum {
 	tlm_eps_raw_mb,
 	tlm_eps_eng_mb,
-	tlm_solar,
 	tlm_tx,
 	tlm_rx,
 	tlm_antenna,

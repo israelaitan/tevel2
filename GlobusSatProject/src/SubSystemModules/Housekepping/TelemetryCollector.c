@@ -38,9 +38,6 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_eps_eng_mb:
 		strcpy(filename,FILENAME_EPS_ENG_MB_TLM);
 		break;
-	case tlm_solar:
-		strcpy(filename,FILENAME_SOLAR_PANELS_TLM);
-		break;
 	case tlm_tx:
 		strcpy(filename,FILENAME_TX_TLM);
 		break;
@@ -83,12 +80,6 @@ void TelemetryCollectorLogic()
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[ant_tlm]));
 	}
 
-	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm],tlm_save_periods[solar_panel_tlm])){
-		TelemetrySaveSolarPanels();
-		logg(TLMInfo, "I:TelemetrySaveSolarPanels\n");
-		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
-	}
-
 	if (CheckExecutionTime(tlm_last_save_time[wod_tlm], tlm_save_periods[wod_tlm])){
 		TelemetrySaveWOD();
 		logg(TLMInfo, "I:TelemetrySaveWOD\n");
@@ -120,10 +111,6 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	// -- ANT files
 	res = c_fileCreate(FILENAME_ANTENNA_TLM,sizeof(ISISantsTelemetry));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
-
-	//-- SOLAR PANEL files
-	res = c_fileCreate(FILENAME_SOLAR_PANELS_TLM,sizeof(int32_t)*NUMBER_OF_SOLAR_PANELS);
-	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 
 	//-- LOG files
 	res = c_fileCreate(FILENAME_LOG_TLM, LOG_TLM_SIZE);
@@ -203,23 +190,10 @@ int getSolarPanelsTLM(int32_t *t)
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
 
 	return err;
 }
 
-void TelemetrySaveSolarPanels()
-{
-	int32_t t[NUMBER_OF_SOLAR_PANELS];
-
-	//IsisSolarPanelv2_wakeup();
-    //vTaskDelay(500);
-	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
-	{
-		getSolarPanelsTLM(t);
-		c_fileWrite(FILENAME_SOLAR_PANELS_TLM, t);
-	}
-}
 
 void TelemetrySaveWOD()
 {
