@@ -45,6 +45,7 @@ void _logg(char* msg) {
 			printf(msg);
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
+	if ( msgSizeWithTime > (SIZE_RXFRAME - SIZE_SPL_HEADER))
 		return;
 
 	if (index == 0)
@@ -64,6 +65,7 @@ void _logg(char* msg) {
     	res = _c_fileWrite(FILENAME_LOG_TLM, logBuffer, LOG_BUFFER_SIZE, 0);
     	(void) res;
     	index = 0;
+    	reminder = 0;
     	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     }
 
