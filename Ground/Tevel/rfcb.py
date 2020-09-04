@@ -1,3 +1,4 @@
+import binascii
 import socket
 import struct
 from colorama import Fore
@@ -23,9 +24,17 @@ def handelBeacon(header, data):
     beacon = Beacon._make(struct.unpack(BeaconFormat, data))
     print(f'{Fore.RED}{beacon}')
 
-def handelLogDump(header, data):
+def handelWOD(header, data):
     time = struct.unpack('I', data[0:4])
-    logData = data[4:]
+    wodData = data[4:]
+    wod = Beacon._make(struct.unpack(BeaconFormat, wodData))
+    print(f'{Fore.LIGHTRED_EX}{header}')
+    print(f'{time[0]}:{wod}')
+
+
+def handelLogDump(header, data):
+    time = struct.unpack('I', data[1:5])
+    logData = data[5:]
     print(f'{Fore.BLUE}{header}')
     print(f'{time[0]}:{logData}')
 
@@ -77,11 +86,29 @@ def handleAck(header, data):
 
 
 def rcvPayload( headerStriped, socket ):
+    if headerStriped[4] == 219 and headerStriped[5] == 220:
+        arr = bytearray(headerStriped)
+        arr[4] = 192
+        arr[5] = headerStriped[6]
+        arr[6] = headerStriped[7]
+        arr[7] = socket.recv(1)[0]
+        headerStriped = bytes(arr)
+    if headerStriped[4] == 219 and headerStriped[5] == 221:
+        arr = bytearray(headerStriped)
+        arr[5] = headerStriped[6]
+        arr[6] = headerStriped[7]
+        arr[7] = socket.recv(1)[0]
+        headerStriped = bytes(arr)
+
     header = SatPacketHeader._make(struct.unpack(SatPacketHeaderFormat, headerStriped))
-    splData = socket.recv(header.length)
+    leng = header.length
+    if leng == 219:
+        leng = 193
+    splData = socket.recv(leng)
+
     if len(splData) != header.length:
         print('splData small')
-        return
+
     if (header.type == Type.trxvu_cmd_type.value):
         if (header.subtype == Subtype.BEACON_SUBTYPE.value):
             handelBeacon(header, splData)
@@ -90,8 +117,8 @@ def rcvPayload( headerStriped, socket ):
     elif (header.type == Subtype.START_DUMP_SUBTYPE.value):
         if (header.subtype == Telemetry.tlm_log.value):
             handelLogDump(header, splData)
-        elif (header.subtype == Telemetry.tlm_log_bckp.value):
-            handelLogDump(header, splData)
+        elif (header.subtype == Telemetry.tlm_wod.value):
+            handelWOD(header, splData)
         elif (header.subtype == Telemetry.tlm_eps_raw_mb.value):
             handleEpsRaw(header, splData)
         elif (header.subtype == Telemetry.tlm_eps_eng_mb.value):
