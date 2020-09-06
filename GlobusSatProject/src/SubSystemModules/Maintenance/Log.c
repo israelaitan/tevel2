@@ -15,7 +15,7 @@
 #include "GlobalStandards.h"
 #include "TLM_management.h"
 
-int index = 0;
+int index_ = 0;
 char logBuffer[LOG_BUFFER_SIZE];
 char logMsg[LOG_MSG_SIZE];
 LogLevel g_currLogLevel = CURR_LOG_LEVEL;
@@ -48,12 +48,12 @@ void _logg(char* msg) {
 	if ( msgSizeWithTime > (SIZE_RXFRAME - SIZE_SPL_HEADER))
 		return;
 
-	if (index == 0)
+	if (index_ == 0)
 		memset(logBuffer, 0, LOG_BUFFER_SIZE);
 
     FileSystemResult res = FS_SUCCSESS;
     int dumpSize = (int)LOG_BUFFER_SIZE;
-    int reminder = index % (SIZE_RXFRAME - SIZE_SPL_HEADER);
+    int reminder = index_ % (SIZE_RXFRAME - SIZE_SPL_HEADER);
     int leftover = SIZE_RXFRAME - SIZE_SPL_HEADER - reminder;
     int considerTimeSize = 0;
     time_unix time;
@@ -61,32 +61,32 @@ void _logg(char* msg) {
     if ( !reminder || msgSize > leftover)
     	considerTimeSize = sizeof(time);
 
-    if ( (index + msgSize + considerTimeSize) > dumpSize ) {
+    if ( (index_ + msgSize + considerTimeSize) > dumpSize ) {
     	res = _c_fileWrite(FILENAME_LOG_TLM, logBuffer, LOG_BUFFER_SIZE, 0);
     	(void) res;
-    	index = 0;
+    	index_ = 0;
     	reminder = 0;
     	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     }
 
     if (!reminder) {
     	Time_getUnixEpoch(&time);
-    	memcpy(logBuffer + index, &time, sizeof(time));
-    	index += sizeof(time);
-    	memcpy(logBuffer + index, msg, msgSize);
-    	index += msgSize;
+    	memcpy(logBuffer + index_, &time, sizeof(time));
+    	index_ += sizeof(time);
+    	memcpy(logBuffer + index_, msg, msgSize);
+    	index_ += msgSize;
     } else
     	if (msgSize <= leftover) {
-    		memcpy(logBuffer + index, msg, msgSize);
-    		index += msgSize;
+    		memcpy(logBuffer + index_, msg, msgSize);
+    		index_ += msgSize;
     	} else {
-    		memcpy(logBuffer + index, msg, leftover);
-    		index += leftover;
+    		memcpy(logBuffer + index_, msg, leftover);
+    		index_ += leftover;
     		Time_getUnixEpoch(&time);
-    		memcpy(logBuffer + index, &time, sizeof(time));
-    		index += sizeof(time);
-    		memcpy(logBuffer + index, msg + leftover, msgSize - leftover);
-    		index += (msgSize - leftover);
+    		memcpy(logBuffer + index_, &time, sizeof(time));
+    		index_ += sizeof(time);
+    		memcpy(logBuffer + index_, msg + leftover, msgSize - leftover);
+    		index_ += (msgSize - leftover);
     	}
 }
 

@@ -64,7 +64,8 @@ Boolean TestAssmbleCommand()
 	printf("data length = %d\n",cmd.length);
 
 	printf("data =\t");
-	for(unsigned int i= 0;i<cmd.length;i++)
+	unsigned int i;
+	for(i= 0;i<cmd.length;i++)
 	{
 		printf("%X\t",cmd.data[i]);
 	}
@@ -85,7 +86,8 @@ Boolean TestGetOnlineCommand()
 	}
 
 	printf("data of the online command:\n");
-	for(unsigned int i = 0; i < sizeof(sat_packet_t);i++){
+	unsigned int i;
+	for(i = 0; i < sizeof(sat_packet_t); i++){
 		printf("%x\t",((unsigned char*)(&cmd))[i]);
 	}
 	printf("\n");

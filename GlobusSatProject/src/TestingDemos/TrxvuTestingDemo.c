@@ -145,8 +145,8 @@ Boolean TestTransmitSplPacket()
 	packet.cmd_subtype = 0x43;
 
 	char data[MAX_COMMAND_DATA_LENGTH] = {0};
-
-	for(unsigned int i = 0; i < MAX_COMMAND_DATA_LENGTH; i++)
+	unsigned int i;
+	for(i = 0; i < MAX_COMMAND_DATA_LENGTH; i++)
 	{
 		data[i] = i;
 	}
@@ -406,7 +406,8 @@ Boolean TestTransmitDataAsSPL_Packet()
 
 	unsigned char data[] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x10};
 	printf("Transmitted data\n");
-	for(unsigned int i =0; i < sizeof(data);i++){
+	unsigned int i;
+	for(i =0; i < sizeof(data);i++){
 		printf("%X\t",data[i]);
 	}
 	printf("\n\n");

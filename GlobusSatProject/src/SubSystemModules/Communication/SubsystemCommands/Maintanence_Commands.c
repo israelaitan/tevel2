@@ -272,7 +272,7 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd)
 	int err=0;
 
 	char tlmComponent;
-	int tlmFramAddress;
+	int tlmFramAddress = 0;
 	time_unix period;
 
 	//get component from command
@@ -325,7 +325,7 @@ int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd)
 	int err=0;
 
 	char tlmComponent;
-	int tlmFramAddress;
+	int tlmFramAddress = 0;
 
 	//get component from command
 	memcpy(&tlmComponent,cmd->data,sizeof(tlmComponent));

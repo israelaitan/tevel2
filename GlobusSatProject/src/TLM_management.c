@@ -280,7 +280,8 @@ FileSystemResult c_fileCreate(char* c_file_name,
 //write element with timestamp to file
 static void writewithEpochtime(F_FILE* file, byte* data, int size,unsigned int time)
 {
-	for (int i = 0; i < NUMBER_OF_WRITES; i++)
+	int i;
+	for (i = 0; i < NUMBER_OF_WRITES; i++)
 	{
 		int number_of_writes;
 		number_of_writes = f_write( &time,sizeof(unsigned int),1, file );
@@ -439,7 +440,8 @@ static FileSystemResult deleteElementsFromFile(char* file_name,unsigned long fro
 	else if (error != 0 || file == NULL)
 		return FS_FAIL;
 	char* buffer = allocked_delete_element;
-	for(int i = 0; i<f_filelength(file_name); i+=full_element_size)
+	int i;
+	for(i = 0; i<f_filelength(file_name); i+=full_element_size)
 	{
 
 		f_read(buffer,1,full_element_size,file);
@@ -487,7 +489,8 @@ FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
 	int last_file_index = getFileIndex(c_file.creation_time,to_time);
 	if(first_file_index+1<last_file_index)//delete all files between first to kast file
 	{
-		for(int i =first_file_index+1; i<last_file_index;i++)
+		int i;
+		for(i =first_file_index+1; i<last_file_index;i++)
 		{
 			get_file_name_by_index(c_file_name,i,curr_file_name);
 			f_delete(curr_file_name);
@@ -516,7 +519,8 @@ FileSystemResult fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 	int err_fread=0;
 
 	f_seek( current_file, 0L , SEEK_SET );
-	for(unsigned int j=0;j < length;j++)
+	unsigned int j;
+	for(j=0;j < length;j++)
 	{
 		err_fread = f_read(element,(size_t)size_elementWithTimeStamp,(size_t)1,current_file);
 		(void)err_fread;
@@ -583,7 +587,8 @@ FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 		int err_fread=0;
 		(void)err_fread;
 		f_seek( current_file, 0L , SEEK_SET );
-		for(int j=0;j < length;j+=how_much_to_read)
+		int j;
+		for(j=0;j < length;j+=how_much_to_read)
 		{
 			if(left_to_read<ELEMENTS_PER_READ) {
 				how_much_to_read = left_to_read;
@@ -593,7 +598,8 @@ FileSystemResult c_fileRead(char* c_file_name,byte* buffer, int size_of_buffer,
 			}
 			element = allocked_read_element;
 			err_fread = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
-			for(int k=0;k<how_much_to_read;k++){
+			int k;
+			for(k=0;k<how_much_to_read;k++){
 				unsigned int element_time;
 				memcpy(&element_time, element, sizeof(int));
 				if(element_time > to_time) {
@@ -647,7 +653,8 @@ int print_file(char* c_file_name)
 			c_file.last_time_modified,c_file.last_time_modified, &read, &last_read_time, 1);
 
 	printf("%d\n",c_file.size_of_element);
-	for(unsigned int i= 0;i<c_file.size_of_element+sizeof(int);i++)
+	unsigned int i;
+	for(i= 0;i<c_file.size_of_element+sizeof(int);i++)
 	{
 	    printf("%X",buffer[i]);
 	}

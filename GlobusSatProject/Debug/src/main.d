@@ -47,17 +47,10 @@ src/main.d: ../src/main.c \
  ../src/SubSystemModules/Housekepping/TelemetryCollector.h \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
- C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
  ../src/SubSystemModules/Maintenance/Maintenance.h \
  ../src/SubSystemModules/Maintenance/Log.h ../src/InitSystem.h \
- ../src/main.h ../src/TestingDemos/MainTest.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/EpsTestingDemo.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/FileSystemTestingDemo.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/MaintenanceTestingDemo.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TrxvuTestingDemo.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/CommandsTestingDemo.h \
- C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TelemetryTestingDemo.h
+ ../src/main.h
 
 C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
 
@@ -157,8 +150,6 @@ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/sat
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
-C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h:
-
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
 
 ../src/SubSystemModules/Maintenance/Maintenance.h:
@@ -168,17 +159,3 @@ C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communi
 ../src/InitSystem.h:
 
 ../src/main.h:
-
-../src/TestingDemos/MainTest.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/EpsTestingDemo.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/FileSystemTestingDemo.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/MaintenanceTestingDemo.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TrxvuTestingDemo.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/CommandsTestingDemo.h:
-
-C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingDemos/TelemetryTestingDemo.h:

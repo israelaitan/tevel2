@@ -38,6 +38,9 @@
 ////******************REMOVE
 		InitSubsystems();
 
+////******************REMOVE
+//		CMD_SetIdleOn(NULL);
+////******************REMOVE
 		while(TRUE) {
 
 			TRX_Logic();
@@ -76,5 +79,5 @@ int main()
 			configMAX_PRIORITIES - 2, &taskMainHandle, NULL, NULL);
 #endif
 	vTaskStartScheduler();
-
+	return 0;
 }

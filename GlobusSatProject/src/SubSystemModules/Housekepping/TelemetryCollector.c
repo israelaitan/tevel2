@@ -266,7 +266,8 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	// get ADC channels vlaues (include the photo diodes mV values)
 	unsigned short adcSamples[8];
 	ADC_SingleShot( adcSamples );
-	for(int i=0; i < NUMBER_OF_SOLAR_PANELS; i++ )
+	int i;
+	for(i=0; i < NUMBER_OF_SOLAR_PANELS; i++ )
 		wod->photo_diodes[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] ); // convert to mV data
 
 

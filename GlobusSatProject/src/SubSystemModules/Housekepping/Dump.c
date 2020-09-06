@@ -137,7 +137,8 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 		long readen = 0;
 		f_seek( current_file, 0L , SEEK_SET );
 		unsigned short ord = 0;
-		for(int j = 0; j < length; j += how_much_to_read) {
+		int j;
+		for(j = 0; j < length; j += how_much_to_read) {
 			how_much_to_read = ELEMENTS_PER_READ;
 			if(left_to_read < ELEMENTS_PER_READ)
 				how_much_to_read = left_to_read;
@@ -145,7 +146,8 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 			element = allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
-			for( int k = 0; k < readen;) {//TODO:make sure readen is ok to use this way
+			int k;
+			for( k = 0; k < readen;) {//TODO:make sure readen is ok to use this way
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
 				if(element_time > to_time) {

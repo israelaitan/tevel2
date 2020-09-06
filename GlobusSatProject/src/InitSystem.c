@@ -236,7 +236,7 @@ int InitSubsystems()
 	Boolean firstActivation;
 	int resFirstActivation = isFirstActivation(&firstActivation);
 	int errInitFS = InitializeFS(firstActivation);
-
+	//int errInitFS = InitializeFS(1);
 	initLog();
 
 	if ( errSPI != 0 )

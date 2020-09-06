@@ -39,7 +39,13 @@ src/InitSystem.d: ../src/InitSystem.c \
  ../src/SubSystemModules/Housekepping/TelemetryCollector.h \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
- C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fat.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../config/config_fat.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../config/../version/ver_fat.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_mdriver.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../version/ver_mdriver.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../version/ver_fat.h \
+ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fs_err.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
  ../src/SubSystemModules/Housekepping/DUMP.h \
  C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisAntS.h \
@@ -130,7 +136,19 @@ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/sat
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
-C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hal/include/hal/Boolean.h:
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fat.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../config/config_fat.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../config/../version/ver_fat.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_mdriver.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../version/ver_mdriver.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../version/ver_fat.h:
+
+C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fs_err.h:
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
 

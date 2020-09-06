@@ -3,13 +3,14 @@
 #include <freertos/task.h>
 
 #include <satellite-subsystems/IsisSolarPanelv2.h>
+#include <satellite-subsystems/isis_eps_driver.h>
 #include <hal/errors.h>
 
 #include <string.h>
 
 #include "EPS.h"
 
-#include <satellite-subsystems/isis_eps_driver.h>
+
 #include "SubSystemModules/Maintenance/Log.h"
 
 
