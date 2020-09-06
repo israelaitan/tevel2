@@ -311,15 +311,17 @@ void taskTesting()
 
 		i++;
 		//if (i == 10)
-		//TestDumpTelemetry();
-		//
-		//5 0 0 8 0 69 A 0 C 0 49 1C 0C 5E A3 E3 0B 5E
-		//5 0 0 8 0 69 A 0 1 0 49 1C 0C 5E 80 24 39 5F
-		//5E0B E3A3
-		//1577851977
-		//1577852072
-		//
-		//1,597,580,416 = 5F 39 24 80
+		TestDumpTelemetry();
+
+
+		//0 0 5 8 0 69 A 0 5 0 C3 3B 3D 5F CD EA 3F 5F
+
+		//0 0 5 8 4 9A 1 0 2   set log level debug
+		//0 0 5 8 4 9A 1 0 4   set log level event
+		//0 0 5 8 0 69 A 0 1 0 CD EA 3F 5F 7E 05 40 5F dump eps eng tlm
+		//0 0 5 8 3 0F 9 0 1 CD EA 3F 5F 7E 05 40 5F    delete files by time
+
+		//0 0 5 8 3 0E 1 0 3 delete files by type
 
 	}
 
