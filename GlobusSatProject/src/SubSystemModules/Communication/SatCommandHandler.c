@@ -28,13 +28,13 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	unsigned int offset = 0;
 
 	unsigned short ord = 0;
-	err = memcpy(&ord,data + offset,sizeof(ord));
+	err = memcpy(&ord, data + offset, sizeof(ord));
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(ord);
 
 	unsigned char id = 0;
-	err = memcpy(&id,data,sizeof(id));
+	err = memcpy(&id, data + offset, sizeof(id));
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(id);
