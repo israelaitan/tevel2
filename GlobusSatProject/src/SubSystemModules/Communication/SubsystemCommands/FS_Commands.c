@@ -12,7 +12,7 @@ int CMD_DeleteFileByTime(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-
+	int offset = 0;
 	if(cmd == NULL || cmd->data == NULL)
 	{
 		return E_INPUT_POINTER_NULL;
@@ -21,6 +21,7 @@ int CMD_DeleteFileByTime(sat_packet_t *cmd)
 	//get file type
 	char fileType;
 	memcpy(&fileType, cmd->data, sizeof(fileType));
+	offset += sizeof(fileType);
 
 	//get file name
 	char filename[MAX_F_FILE_NAME_SIZE];
@@ -30,11 +31,11 @@ int CMD_DeleteFileByTime(sat_packet_t *cmd)
 	{
 		//get from time
 		time_unix fromTime;
-		memcpy(&fromTime, cmd->data, sizeof(fromTime));
-
+		memcpy(&fromTime, cmd->data + offset, sizeof(fromTime));
+		offset += sizeof(fromTime);
 		//get to time
 		time_unix toTime;
-		memcpy(&toTime, cmd->data+sizeof(fromTime), sizeof(toTime));
+		memcpy(&toTime, cmd->data + offset, sizeof(toTime));
 
 
 		//delete all file types
