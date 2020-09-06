@@ -33,39 +33,36 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 		return cmd_execution_error;
 	offset += sizeof(id);
 
-	char ord = 0;
-	err = memcpy(&ord,data + offset,sizeof(ord));
+	unsigned char type;
+	err = memcpy(&type,data+offset,sizeof(type));
 	if (NULL == err)
 		return cmd_execution_error;
-	offset += sizeof(ord);
+	offset += sizeof(type);
 
-	char targetSat = 0;
+	unsigned char targetSat = 0;
 	err = memcpy(&targetSat,data + offset,sizeof(targetSat));
 	if (NULL == err)
-	{
 		return cmd_execution_error;
-	}
-	else if( targetSat != T8GBS && targetSat != T0ALL )
-	{
+
+	else if( targetSat != T8GBS && targetSat != T0ALL ) {
 		logg(TRXInfo, "The online command is for target satellite: %d\n" , targetSat);
 		return cmd_no_command_found;
 	}
 	offset += sizeof(targetSat);
 
-	char type;
-	err = memcpy(&type,data+offset,sizeof(type));
+	unsigned short ord = 0;
+	err = memcpy(&ord,data + offset,sizeof(ord));
 	if (NULL == err)
 		return cmd_execution_error;
+	offset += sizeof(ord);
 
-	offset += sizeof(type);
-
-	char subtype;
+	unsigned char subtype;
 	err = memcpy(&subtype, data + offset,sizeof(subtype));
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(subtype);
 
-	unsigned short data_length = 0;
+	unsigned char data_length = 0;
 	err = memcpy(&data_length, data + offset,sizeof(data_length));
 	if (NULL == err)
 		return cmd_execution_error;
