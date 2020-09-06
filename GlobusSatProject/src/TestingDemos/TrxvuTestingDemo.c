@@ -121,7 +121,7 @@ Boolean TestSendDumpAbortRequest()
 Boolean TestTransmitDummySplPacket()
 {
 	sat_packet_t packet = {0};
-	packet.ID = 0x1234;
+	packet.ID = 0x6;
 	packet.cmd_type = 0x42;
 	packet.cmd_subtype = 0x43;
 
@@ -140,7 +140,7 @@ Boolean TestTransmitDummySplPacket()
 Boolean TestTransmitSplPacket()
 {
 	sat_packet_t packet = {0};
-	packet.ID = 0x1234;
+	packet.ID = 0x6;
 	packet.cmd_type = 0x42;
 	packet.cmd_subtype = 0x43;
 
