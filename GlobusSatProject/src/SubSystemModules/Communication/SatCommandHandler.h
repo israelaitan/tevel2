@@ -23,12 +23,12 @@ typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 typedef struct __attribute__ ((__packed__)) sat_packet_t
 {
 	//!!!change in header size requires update to SAT_PACKET_HEADER_LENGTH
-	unsigned short ID;							///< ID of the received/transmitted command
-	unsigned char cmd_type;								///< type of the command. according to SPL protocol
-	unsigned char targetSat;                             ///< packet target satelite
 	unsigned short ordinal;								///< ord number of packet in sequence
+	unsigned char ID;							///< ID of the received/transmitted command
+	unsigned char targetSat;                             ///< packet target satelite
+	unsigned char cmd_type;								///< type of the command. according to SPL protocol
 	unsigned char cmd_subtype;							///< sub-type of the command. according to SPL protocol
-	unsigned char length;						///< length of the received data.
+	unsigned short length;						///< length of the received data.
 	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
 
 }sat_packet_t;
