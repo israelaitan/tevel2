@@ -88,13 +88,13 @@ class AckSubtype(Enum):
     ACK_ERROR_MSG = 0XFF 					# send this ACK when error has occurred
 
 class SatPacketHeader(NamedTuple):
-    id: int
-    type: int
-    target: int
     ord: int
+    id: int
+    target: int
+    type: int
     subtype: int
     length: int
-SatPacketHeaderFormat = 'HBBHBB'
+SatPacketHeaderFormat = 'HBBBBH'
 
 class Beacon(NamedTuple):
     sat_time: int			#< current Unix time of the satellites clock [sec]

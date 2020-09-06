@@ -52,6 +52,7 @@ def handleEpsEng(header, data):
     print(f'{Fore.CYAN}{header}')
     print(f'{time[0]}:{epsEng}')
 
+
 def handleTx(header, data):
     time = struct.unpack('I', data[0:4])
     txData = data[4:]
@@ -86,15 +87,23 @@ def handleAck(header, data):
 
 
 def rcvPayload( headerStriped, socket ):
-    if headerStriped[4] == 219 and headerStriped[5] == 220:
+    if headerStriped[0] == 219 and headerStriped[1] == 220:
         arr = bytearray(headerStriped)
-        arr[4] = 192
+        arr[0] = 192
+        arr[1] = headerStriped[2]
+        arr[2] = headerStriped[3]
+        arr[3] = headerStriped[4]
+        arr[4] = headerStriped[5]
         arr[5] = headerStriped[6]
         arr[6] = headerStriped[7]
         arr[7] = socket.recv(1)[0]
         headerStriped = bytes(arr)
-    if headerStriped[4] == 219 and headerStriped[5] == 221:
+    if headerStriped[0] == 219 and headerStriped[1] == 221:
         arr = bytearray(headerStriped)
+        arr[1] = headerStriped[2]
+        arr[2] = headerStriped[3]
+        arr[3] = headerStriped[4]
+        arr[4] = headerStriped[5]
         arr[5] = headerStriped[6]
         arr[6] = headerStriped[7]
         arr[7] = socket.recv(1)[0]
@@ -102,11 +111,11 @@ def rcvPayload( headerStriped, socket ):
 
     header = SatPacketHeader._make(struct.unpack(SatPacketHeaderFormat, headerStriped))
     leng = header.length
-    if leng == 219:
+    if leng == 56539:
         leng = 193
     splData = socket.recv(leng)
 
-    if len(splData) != header.length:
+    if len(splData) != header.length and header.length != 56539:
         print('splData small')
 
     if (header.type == Type.trxvu_cmd_type.value):
@@ -176,6 +185,8 @@ def test():
     rcvPacket(logg2)
 
 def main():
+    #headerStriped = b'\x80\x00\x00\x08\x00\x01Z\x00'
+    #header = SatPacketHeader._make(struct.unpack(SatPacketHeaderFormat, headerStriped))
     connect()
 
 
