@@ -21,8 +21,12 @@ splheaderLen = 1 + 1 + 2 + 1 + 1 + 2
 
 
 def handelBeacon(header, data):
-    beacon = Beacon._make(struct.unpack(BeaconFormat, data))
+    beaconSizeExError = 90
+    beacon = Beacon._make(struct.unpack(BeaconFormat, data[0:beaconSizeExError]))
     print(f'{Fore.RED}{beacon}')
+    if header.length > beaconSizeExError:
+        errorTime = struct.unpack('I', data[beaconSizeExError:beaconSizeExError+4])[0]
+        print(f'{errorTime}:{data[beaconSizeExError+4:]}')
 
 def handelWOD(header, data):
     time = struct.unpack('I', data[0:4])
