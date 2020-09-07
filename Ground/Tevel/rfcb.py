@@ -21,7 +21,7 @@ splheaderLen = 1 + 1 + 2 + 1 + 1 + 2
 
 
 def handelBeacon(header, data):
-    beaconSizeExError = 90
+    beaconSizeExError = 92
     beacon = Beacon._make(struct.unpack(BeaconFormat, data[0:beaconSizeExError]))
     print(f'{Fore.RED}{beacon}')
     if header.length > beaconSizeExError:
