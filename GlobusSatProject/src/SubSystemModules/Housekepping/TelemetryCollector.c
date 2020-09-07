@@ -275,6 +275,8 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 }
 
+
+
 //get EPS TLM
 int CMD_getEPS_TLM(sat_packet_t *cmd)
 {

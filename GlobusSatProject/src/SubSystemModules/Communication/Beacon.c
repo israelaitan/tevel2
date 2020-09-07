@@ -60,8 +60,12 @@ void BeaconLogic()
 			//get current Whole Orbit Data
 			GetCurrentWODTelemetry(&wod);
 
+			int errorSizeMsg = getLastErrorMsgSize();
+			if (errorSizeMsg > 0)
+				copyLastErrorMsg(wod.last_error_msg);
+
 			//create from WOD a packet to send to earth
-			AssembleCommand((unsigned char *)&wod, sizeof(wod), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, &packet);
+			AssembleCommand((unsigned char *)&wod, sizeof(wod) - LOG_MSG_SIZE + errorSizeMsg, trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, &packet);
 
 			// transmit packet to earth
 			int availableFrames = 0;
