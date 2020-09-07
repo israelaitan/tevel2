@@ -18,6 +18,9 @@
 int index_ = 0;
 char logBuffer[LOG_BUFFER_SIZE];
 char logMsg[LOG_MSG_SIZE];
+char lastErrorMsg[LOG_MSG_SIZE];
+int realErrorSize = 0;
+Boolean hasError = FALSE;
 LogLevel g_currLogLevel = CURR_LOG_LEVEL;
 
 void __logg(char* msg) {
@@ -97,6 +100,13 @@ void logg(LogLevel level, char *fmt, ...) {
 	va_start(argptr, fmt);
 	vsprintf(logMsg, fmt, argptr);
 	va_end(argptr);
+	if (level == error) {
+		time_unix time;
+		Time_getUnixEpoch(&time);
+		memcpy(lastErrorMsg, &time, sizeof(time));
+		realErrorSize = strlen(logMsg);
+		memcpy(lastErrorMsg + sizeof(time), logMsg, realErrorSize);
+	}
 	_logg(logMsg);
 }
 
@@ -108,6 +118,16 @@ void setLogLevel(LogLevel level)
 void initLog()
 {
 	g_currLogLevel = CURR_LOG_LEVEL;
+	realErrorSize = 0;
 }
 
+int getLastErrorMsgSize() {
+	return realErrorSize;
+}
+
+void copyLastErrorMsg(unsigned char * buffer){
+	if (buffer == NULL || realErrorSize == 0)
+		return;
+	memcpy(buffer, lastErrorMsg, realErrorSize);
+}
 

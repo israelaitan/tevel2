@@ -38,4 +38,8 @@ void setLogLevel(LogLevel level);
 
 void initLog();
 
+int getLastErrorMsgSize();
+
+void copyLastErrorMsg(unsigned char * buffer);
+
 #endif /* LOG_H_ */
