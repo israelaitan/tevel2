@@ -82,6 +82,9 @@ class AckSubtype(Enum):
     ACK_TLM_SET_COLL_CYCLE = 0xA1
     ACK_SET_LOG_LEVEL = 0xA2
 
+    ACK_FS_DELETE_ALL = 0x0D
+    ACK_FS_DELETE_FILE = 0x0E
+
     ACK_PING = 0xAA
     ACK_UNKNOWN_SUBTYPE = 0xBB				#when the given subtype is unknown
     ACK_NO_ACK = 0xCC						#Do not send ACK
