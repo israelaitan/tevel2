@@ -310,7 +310,7 @@ Boolean areAntennasOpen()
 	// get ant open flag from fram
 	time_unix lastCommunicationTime;
 	err=FRAM_read((unsigned char *)&lastCommunicationTime, LAST_COMM_TIME_ADDR,  LAST_COMM_TIME_SIZE );
-	if(err!=0 || lastCommunicationTime == 0)
+	if(err!=0 || lastCommunicationTime == UNIX_DEPLOY_DATE_JAN_D1_Y2020_SEC)
 	{
 		g_antOpen=FALSE;
 	}

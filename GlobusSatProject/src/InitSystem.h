@@ -8,6 +8,7 @@
 #ifndef INITSYSTEM_H_
 #define INITSYSTEM_H_
 
+
 /*!
  * @brief	Starts the FRAM using drivers, and checks for errors.
  * @see FRAM.h

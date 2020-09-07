@@ -24,6 +24,7 @@
 #define I2c_TimeoutTest portMAX_DELAY
 #define ANTENNA_DEPLOYMENT_TIMEOUT 30 //<! in seconds
 
+time_unix expected_deploy_time_sec = 0;
 
 //האם זו האינטרקציה הראשונה
 int isFirstActivation(Boolean * status)
@@ -88,7 +89,7 @@ void WriteDefaultValuesToFRAM()
 	unsigned int lastWakeUpTime = 0;
 	FRAM_write((unsigned char*)&lastWakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 
-	int noCom = 0;
+	unsigned int noCom = UNIX_DEPLOY_DATE_JAN_D1_Y2020_SEC;
 	FRAM_write((unsigned char*) &noCom, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
 	time_unix eps= DEFAULT_EPS_SAVE_TLM_TIME;
@@ -149,10 +150,6 @@ int StartTIME()
 			logg(error, "E:%d Time_setUnixEpoch\n", setError);
 		else
 			logg(event, "V: Reset clock with %d\n", time_before_wakeup);
-	} else {
-		time_unix deploy_time = 0;
-		Time_getUnixEpoch((unsigned int *)&deploy_time);
-		FRAM_write((unsigned char*) &deploy_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 	}
 
 	return err;
