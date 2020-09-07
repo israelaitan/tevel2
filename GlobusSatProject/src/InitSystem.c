@@ -85,6 +85,9 @@ void WriteDefaultValuesToFRAM()
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 
+	unsigned int lastWakeUpTime = 0;
+	FRAM_write((unsigned char*)&lastWakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+
 	int noCom = 0;
 	FRAM_write((unsigned char*) &noCom, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 
