@@ -28,8 +28,10 @@ int ActUponCommand(sat_packet_t *cmd)
 		unsigned char* data = NULL;
 		unsigned int length = 0;
 		SendAckPacket(ACK_PING, cmd->ID, cmd->ordinal, data, length);
-	} else
+	} else {
+		logg(error, "E:ActUponCommand:cmd_type unknown=%d\n" , cmd->cmd_type);
 		err = -2;
+	}
 
 	if (err)
 		logg(error, "E:finished command with error: %d\n" , err);
