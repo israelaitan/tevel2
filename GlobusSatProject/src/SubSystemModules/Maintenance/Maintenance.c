@@ -75,9 +75,15 @@ int WakeupFromResetCMD()
 {
 	int err = 0;
 	unsigned char reset_flag = 0;
-	unsigned int num_of_resets = 0;
-	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+	unsigned short num_of_cmd_resets = 0;
+	unsigned short num_of_resets = 0;
 
+	// first increase the number of total resets
+	FRAM_read((unsigned short*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	num_of_resets++;
+	FRAM_write((unsigned short*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+
+	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 	if (reset_flag) {
 		time_unix curr_time = 0;
 		Time_getUnixEpoch((unsigned int *)&curr_time);
@@ -91,16 +97,13 @@ int WakeupFromResetCMD()
 		reset_flag = FALSE_8BIT;
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-		FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-		num_of_resets++;
+		FRAM_read((unsigned char*) &num_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+		num_of_cmd_resets++;
 
-		FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-		if (0 != err) {
-			return err;
-		}
+		FRAM_write((unsigned char*) &num_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 	}
 
-	return 0;
+	return err;
 }
 
 void ResetGroundCommWDT()

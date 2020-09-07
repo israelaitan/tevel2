@@ -273,6 +273,7 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 
     //Get number of resets is not managed
 	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 }
 
 

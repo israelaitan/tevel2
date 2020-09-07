@@ -101,8 +101,13 @@ void WriteDefaultValuesToFRAM()
 
 	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
+
 	unsigned short resets = 0;
 	FRAM_write((unsigned char*)&resets,NUMBER_OF_RESETS_ADDR ,NUMBER_OF_RESETS_SIZE);
+
+	unsigned short resets_cmd = 0;
+	FRAM_write((unsigned char*) &resets_cmd, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 }
@@ -152,8 +157,9 @@ int autoDeploy()
 	logg(event, "V: Inside autoDeploy()\n");
 	int resArm=0, resDeploy = -1;
 
+	//TODO: arm before launch
 	// antena auto deploy - sides A
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
+	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
 
 	if(resArm==0)
 	{
@@ -170,8 +176,9 @@ int autoDeploy()
 	// unarm antenas side A - we decided not to use this method
 	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
 
+	//TODO: arm before launch
 	// antenata auto deploy - sides B
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
+	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
 	if(resArm==0)
 	{
 		logg(event, "V:Deploying: Side B\n");

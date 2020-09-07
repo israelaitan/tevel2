@@ -34,14 +34,17 @@
 #define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag
 #define FIRST_ACTIVATION_FLAG_SIZE		4			//<! length in bytes of FIRST_ACTIVATION_FLAG
 
-#define LAST_ANT_DEP_TIME_ADDR			0X66		//<! saves the first time after satellites wakeup from reset
-#define LAST_ANT_DEP_TIME_SIZE			4			//<! size of the parameter in bytes
-
 #define MOST_UPDATED_SAT_TIME_ADDR		0x60		//<! this parameters saves the sat time to be read after resets
 #define MOST_UPDATED_SAT_TIME_SIZE		4			//<! size of the parameter in bytes
 
 #define NUMBER_OF_RESETS_ADDR			0x64		//<! counts how many restarts did the satellite endure
 #define NUMBER_OF_RESETS_SIZE			2			//<! size of the parameter in bytes
+
+#define NUMBER_OF_CMD_RESETS_ADDR		0x66
+#define NUMBER_OF_CMD_RESETS_SIZE		2
+
+#define LAST_ANT_DEP_TIME_ADDR			0X68		//<! saves the first time after satellites wakeup from reset
+#define LAST_ANT_DEP_TIME_SIZE			4			//<! size of the parameter in bytes
 
 #define RESET_CMD_FLAG_ADDR				0x105		//<! the flag is raised whenever a restart is commissioned
 #define RESET_CMD_FLAG_SIZE				1			//<! size of the parameter in bytes
