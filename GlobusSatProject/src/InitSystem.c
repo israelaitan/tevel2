@@ -136,8 +136,11 @@ int StartTIME()
 	if (!isFirstA)
 	{
 		FRAM_read((unsigned char*) &time_before_wakeup,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
-		Time_setUnixEpoch(time_before_wakeup);
-		logg(event, "V: Reset clock with %d\n", time_before_wakeup);
+		int setError = Time_setUnixEpoch(time_before_wakeup);
+		if (setError)
+			logg(error, "E:%d Time_setUnixEpoch\n", setError);
+		else
+			logg(event, "V: Reset clock with %d\n", time_before_wakeup);
 	}
 
 	return err;
