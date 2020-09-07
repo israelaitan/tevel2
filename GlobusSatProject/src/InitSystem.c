@@ -149,6 +149,10 @@ int StartTIME()
 			logg(error, "E:%d Time_setUnixEpoch\n", setError);
 		else
 			logg(event, "V: Reset clock with %d\n", time_before_wakeup);
+	} else {
+		time_unix deploy_time = 0;
+		Time_getUnixEpoch((unsigned int *)&deploy_time);
+		FRAM_write((unsigned char*) &deploy_time, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
 	}
 
 	return err;
@@ -306,6 +310,11 @@ int InitSubsystems()
 		logg(error, "E:%d Failed in DeploySystem\n", err);
 	else
 		logg(event, "V: DeploySystem was successful\n");
+	unsigned short num_of_resets = 0;
 
+	//increase the number of total resets
+	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	num_of_resets++;
+	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	return 0;
 }

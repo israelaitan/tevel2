@@ -76,12 +76,6 @@ int WakeupFromResetCMD()
 	int err = 0;
 	unsigned char reset_flag = 0;
 	unsigned short num_of_cmd_resets = 0;
-	unsigned short num_of_resets = 0;
-
-	// first increase the number of total resets
-	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-	num_of_resets++;
-	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 
 	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 	if (reset_flag) {
