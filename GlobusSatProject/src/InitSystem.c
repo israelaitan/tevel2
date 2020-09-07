@@ -240,27 +240,27 @@ int InitSubsystems()
 	initLog();
 
 	if ( errSPI != 0 )
-		logg(error, "E: Failed in StartSPI\n");
+		logg(error, "E:%d Failed in StartSPI\n", errSPI);
 	else
 		logg(event, "V: StartSPI() - success\n");
 	if ( errI2C != 0 )
-		logg(error, "E: Failed in StartI2C\n");
+		logg(error, "E:%d Failed in StartI2C\n", errI2C);
 	else
 		logg(event, "V: StartI2C() - success\n");
 	if ( errFRAM != 0 )
-		logg(error, "E: Failed in StartFRAM\n");
+		logg(error, "E:%d Failed in StartFRAM\n", errFRAM);
 	else
 		logg(event, "V:FRAM_start was successful\n");
 	if ( errTime != 0 )
-		logg(error, "E: Failed in StartTIME\n");
+		logg(error, "E:%d Failed in StartTIME\n", errTime);
 	else
-		logg(event, "V: StartTIME was successful\n");
+		logg(event, "V:StartTIME was successful\n");
 	if ( resFirstActivation != 0 )
-		logg(error, "E: Failed in firstActivation\n");
+		logg(error, "E:%d Failed in firstActivation\n", resFirstActivation);
 	else
 		logg(event, "V: firstActivation was successful\n");
 	if ( errInitFS != 0 )
-		logg(error, "E: Failed in InitializeFS\n");
+		logg(error, "E:%d Failed in InitializeFS\n", errInitFS);
 	else
 		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
 
@@ -268,20 +268,20 @@ int InitSubsystems()
 	// initialize TRXVU (communication) component
 	int err=InitTrxvu();
 	if (err!=0)
-		logg(error, "E: Failed in InitTrxvu\n");
+		logg(error, "E:%d Failed in InitTrxvu\n", err);
 	else
 		logg(event, "V: InitTrxvu was successful\n");
 
 	//Initialize the dump thread (queue and lock)
 	err=InitDump();
 	if (err!=0)
-		logg(error, "E: Failed in InitDump\n");
+		logg(error, "E:%d Failed in InitDump\n", err);
 	else
 		logg(event, "V: InitDump was successful\n");
 
 	err = InitTelemetryCollector();
 	if (err!=0)
-		logg(error, "E: Failed in InitTelemetryCollector\n");
+		logg(error, "E:%d Failed in InitTelemetryCollector\n", err);
 	else
 		logg(event, "V: InitTelemetryCollector was successful\n");
 
