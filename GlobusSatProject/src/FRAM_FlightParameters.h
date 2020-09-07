@@ -31,7 +31,7 @@
 #define LAST_WAKEUP_TIME_ADDR			0X3F		//<! saves the first time after satellites wakeup from reset
 #define LAST_WAKEUP_TIME_SIZE			4			//<! size of the parameter in bytes
 
-#define FIRST_ACTIVATION_FLAG_ADDR		0x5F		//<! is this the first activation after launch flag
+#define FIRST_ACTIVATION_FLAG_ADDR		0x4F		//<! is this the first activation after launch flag
 #define FIRST_ACTIVATION_FLAG_SIZE		4			//<! length in bytes of FIRST_ACTIVATION_FLAG
 
 #define MOST_UPDATED_SAT_TIME_ADDR		0x60		//<! this parameters saves the sat time to be read after resets
