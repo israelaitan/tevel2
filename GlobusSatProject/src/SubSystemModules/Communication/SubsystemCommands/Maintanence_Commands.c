@@ -29,7 +29,7 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	logg(MTNInfo, "I:inside CMD_GenericI2C()\n");
 
 	if(cmd == NULL || cmd->data == NULL){
-		logg(error, "E: Input is NULL");
+		logg(error, "E: CMD_GenericI2C Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
 
@@ -38,13 +38,13 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	unsigned int size = 0;
 	unsigned char *i2c_data = malloc(size);
 
-	memcpy(&slaveAddr,cmd->data,sizeof(slaveAddr));
-	memcpy(&size,cmd->data + sizeof(slaveAddr),sizeof(size));
+	memcpy(&slaveAddr, cmd->data, sizeof(slaveAddr));
+	memcpy(&size, cmd->data + sizeof(slaveAddr), sizeof(size));
 
 	unsigned int offset = sizeof(slaveAddr) + sizeof(size);
 
-	err = I2C_write((unsigned int)slaveAddr,cmd->data + offset, (cmd->length - offset));
-	err = I2C_read((unsigned int)slaveAddr,i2c_data,size);
+	err = I2C_write((unsigned int)slaveAddr, cmd->data + offset, (cmd->length - offset));
+	err = I2C_read((unsigned int)slaveAddr, i2c_data, size);
 	if (err == E_NO_SS_ERR){
 		TransmitDataAsSPL_Packet(cmd, i2c_data, size);
 	}
