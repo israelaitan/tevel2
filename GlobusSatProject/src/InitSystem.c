@@ -44,7 +44,7 @@ int isFirstActivation(Boolean * status)
 	return res;
 }
 
-//בדיקה שעברו 30 דק מהשיגור. טיפול במקרה שיש אתחול חוזר של המערכת
+//בדיקה שעברו  מספר דק מהשיגור. טיפול במקרה שיש אתחול חוזר של המערכת
 void firstActivationProcedure()
 {
 	int err = 0;
