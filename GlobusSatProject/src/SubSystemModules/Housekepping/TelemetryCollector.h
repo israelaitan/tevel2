@@ -8,7 +8,7 @@
 #include "SubSystemModules/Maintenance/Log.h"
 
 #define NUMBER_OF_SOLAR_PANELS 5
-//TODO: finish WOD telemetry according to requirements... TRX TLM...
+
 typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 {
 	time_unix sat_time;				///< current Unix time of the satellites clock [sec]

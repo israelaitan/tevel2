@@ -214,7 +214,6 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	F_SPACE space = { 0 };
 	int drivenum = f_getdrive();
 	err = f_getlasterror();
-	//TODO:check drivenum=-1 error = 37?
 	err = f_getfreespace(drivenum, &space);
 	if (err == F_NO_ERROR){
 		wod->free_memory = space.free;
@@ -228,7 +227,6 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	err += isis_eps__gethousekeepingeng__tm( EPS_I2C_BUS_INDEX, &hk_tlm );
 
 	if(err == 0){
-		//TODO: map correct values
 		wod->vbat = hk_tlm.fields.dist_input.fields.volt;
 		wod->electric_current =  hk_tlm.fields.dist_input.fields.current;
 		wod->consumed_power = hk_tlm.fields.dist_input.fields.power;

@@ -71,7 +71,6 @@ void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 
 
 void SendDumpAbortRequest() {
-	//TODO: suspended running////
 	if (eTaskGetState(xDumpHandle) == eDeleted)
 		return;
 	Boolean queue_msg = TRUE;
@@ -147,7 +146,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
 			int k;
-			for( k = 0; k < readen;) {//TODO:make sure readen is ok to use this way
+			for( k = 0; k < readen;) {
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
 				if(element_time > to_time) {
@@ -212,15 +211,12 @@ void DumpStart(dump_arguments_t *task_args){
 		char filename[MAX_F_FILE_NAME_SIZE] = { 0 };
 		err = getTelemetryMetaData(task_args->dump_type, filename, &size_of_element);
 		if(0 != err) {
-			// TODO: see if this can fit into our goto
 			logg(error, "E:problem during dump init with err %d\n", err);
 			FinishDump(task_args, ACK_DUMP_ABORT, (unsigned char*) &err,sizeof(err));
 			continue;
 		}
 		logg(DMPInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
 
-		// TODO: consider if we actually want to know the number of packets that will be sent,
-		// as it won't be exactly easy.
 		SendAckPacket(ACK_DUMP_START, task_args->id, task_args->ord,
 				(unsigned char*) &num_of_elements, sizeof(num_of_elements));
 

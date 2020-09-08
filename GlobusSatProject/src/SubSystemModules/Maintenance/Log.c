@@ -24,12 +24,7 @@ Boolean hasError = FALSE;
 LogLevel g_currLogLevel = CURR_LOG_LEVEL;
 
 void __logg(char* msg) {
-#ifdef TESTING
-	printf(msg);
-#endif
-	Boolean TESTING =TRUE;//TODO:REMOVE *****
-	if (TESTING)
-		printf(msg);
+	//printf(msg);
 	memset(logBuffer, 0, LOG_BUFFER_SIZE);
     int size =  strlen(msg);
     memcpy(logBuffer, msg, size);
@@ -40,12 +35,7 @@ void __logg(char* msg) {
 }
 
 void _logg(char* msg) {
-#ifdef TESTING
-	printf(msg);
-#endif
-	Boolean TESTING =TRUE;//TODO:REMOVE *****
-		if (TESTING)
-			printf(msg);
+	//printf(msg);
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
 	if ( msgSizeWithTime > (SIZE_RXFRAME - SIZE_SPL_HEADER))
