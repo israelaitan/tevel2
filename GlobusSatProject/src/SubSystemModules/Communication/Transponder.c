@@ -123,12 +123,6 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 	byte rssiData[2];
 	time_unix duration;
 
-	if (g_transp_mode == TURN_TRANSPONDER_ON)
-	{
-		logg(error, "I: Transponder Mode is already ON");
-		return err;
-	}
-
 	if(cmd == NULL || cmd->data == NULL){
 		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
