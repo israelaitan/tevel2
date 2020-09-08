@@ -9,6 +9,7 @@
 #include "GlobalStandards.h"
 #include "SatDataTx.h"
 #include "TRXVU.h"
+#include <SubSystemModules/Maintenance/Log.h>
 
 int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short ord,
 		unsigned char *data, unsigned int length)
@@ -37,6 +38,7 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 	if (ack != ACK_NO_ACK)
 	{
+		logg(event, "V:SendAck fail:%d succ:%d\n", fail_subt, succ_subt);
 		SendAckPacket(ack, cmd->ID, cmd->ordinal, (unsigned char*) &err, sizeof(err));
 	}
 }
