@@ -323,6 +323,15 @@ void taskTesting()
 
 		//0 0 5 8 3 0E 1 0 3 delete files by type
 
+		//0 0 5 8 0 69 A 0 1 0 12 8f 42 5F 69 91 42 5F
+		//0 0 5 8 0
+
+		//0 0 5 8 4 91 8 0 61 2 0 0 0 38 2 generic i2c turn transponder on
+		//0 0 5 8 4 91 8 0 61 2 0 0 0 38 1 generic i2c turn transponder off
+		//0 0 5 8 4 91 8 0 61 3 0 0 0 52 c8 0 generic i2c set rssi 200
+		//0 0 5 8 4 91 8 0 61 3 0 0 0 52 0 0 generic i2c set rssi 200
+
+
 	}
 
 }
