@@ -60,7 +60,6 @@ int CMD_GetBeaconInterval(sat_packet_t *cmd)
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &beacon_interval,
 			sizeof(beacon_interval));
 
-	printf("Beacon Interval is: %d", beacon_interval);
 	return err;
 }
 
