@@ -318,7 +318,7 @@ void taskTesting()
 
 		//0 0 5 8 4 9A 1 0 2   set log level debug
 		//0 0 5 8 4 9A 1 0 4   set log level event
-		//0 0 5 8 0 69 A 0 1 0 CD EA 3F 5F 7E 05 40 5F dump eps eng tlm
+		//0 0 5 8 0 69 A 0 5 0 0 0 0 0 7E 05 40 5F dump eps eng tlm
 		//0 0 5 8 3 0F 9 0 1 CD EA 3F 5F 7E 05 40 5F    delete files by time
 
 		//0 0 5 8 3 0E 1 0 3 delete files by type

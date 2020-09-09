@@ -114,6 +114,10 @@ void WriteDefaultValuesToFRAM()
 
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+
+	unsigned short rssi = 2500;
+	FRAM_write((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
+
 }
 
 	//אתחול ה FRAM
