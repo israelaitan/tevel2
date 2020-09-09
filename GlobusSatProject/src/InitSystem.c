@@ -165,9 +165,8 @@ int autoDeploy()
 	logg(event, "V: Inside autoDeploy()\n");
 	int resArm=0, resDeploy = -1;
 
-	//TODO: arm before launch
 	// antena auto deploy - sides A
-	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
 
 	if(resArm==0)
 	{
@@ -181,12 +180,8 @@ int autoDeploy()
 		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
 	}
 
-	// unarm antenas side A - we decided not to use this method
-	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_disarm);
-
-	//TODO: arm before launch
 	// antenata auto deploy - sides B
-	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
+	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
 	if(resArm==0)
 	{
 		logg(event, "V:Deploying: Side B\n");
@@ -198,9 +193,6 @@ int autoDeploy()
 	{
 		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
 	}
-
-	// unarm antenas side B - we decided not to use this method
-	//resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_disarm);
 
 	// update last deploy time
 	time_unix deploy_time;
