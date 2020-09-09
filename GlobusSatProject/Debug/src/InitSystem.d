@@ -47,6 +47,7 @@ src/InitSystem.d: ../src/InitSystem.c \
  C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../version/ver_fat.h \
  C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fs_err.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
+ C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h \
  ../src/SubSystemModules/Housekepping/DUMP.h \
  C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/IsisAntS.h \
  ../src/TLM_management.h \
@@ -151,6 +152,8 @@ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/../v
 C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/hcc/include/hcc/api_fs_err.h:
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
+
+C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h:
 
 ../src/SubSystemModules/Housekepping/DUMP.h:
 

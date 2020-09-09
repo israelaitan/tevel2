@@ -48,6 +48,7 @@ src/main.d: ../src/main.c \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
+ C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h \
  ../src/SubSystemModules/Maintenance/Maintenance.h \
  ../src/SubSystemModules/Maintenance/Log.h ../src/InitSystem.h \
  ../src/main.h
@@ -151,6 +152,8 @@ C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//satellite-subsystems/sat
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
+
+C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h:
 
 ../src/SubSystemModules/Maintenance/Maintenance.h:
 

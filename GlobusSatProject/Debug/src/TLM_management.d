@@ -46,6 +46,7 @@ src/TLM_management.d: ../src/TLM_management.c \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h \
  C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
+ C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h \
  ../src/SubSystemModules/Maintenance/Log.h
 
 C:/TEVEL/GivatShmuel/Base-Aug-2019/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
@@ -141,5 +142,7 @@ C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TestingConfigurations.h:
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/TLM_management.h:
 
 C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
+
+C:\TEVEL\GivatShmuel\Base-Aug-2019\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h:
 
 ../src/SubSystemModules/Maintenance/Log.h:
