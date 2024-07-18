@@ -36,10 +36,11 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	int err = 0;
 	unsigned char slaveAddr = 0;
 	unsigned int size = 0;
-	unsigned char *i2c_data = malloc(size);
+	unsigned char *i2c_data = NULL;
 
 	memcpy(&slaveAddr, cmd->data, sizeof(slaveAddr));
 	memcpy(&size, cmd->data + sizeof(slaveAddr), sizeof(size));
+	i2c_data = (unsigned char*)malloc(size);
 
 	unsigned int offset = sizeof(slaveAddr) + sizeof(size);
 
