@@ -59,6 +59,21 @@ void HandleOpenAnts()
 	}
 }
 
+//setting trxvu idle off
+int SetIdleOff()
+{
+	logg(TRXInfo, "I:inside SetIdleOff()\n");
+	int err = isis_vu_e__set_idle_state(ISIS_TRXVU_I2C_BUS_INDEX, isis_vu_e__onoff__off);
+	if(err == 0){
+		g_idle_flag=FALSE;
+		g_idle_start_time = 0;
+		g_idle_period = 300 ;
+	} else
+		logg(error, "E:failed in setting trxvu idle off - %d\n", err);
+
+	return err;
+}
+
 // Checking if in idle state and if need to return back to regular state
 void HandleIdleAndMuteTime()
 {
@@ -105,7 +120,7 @@ int InitAnts(){
 	address[1].i2cAddr = ANTS_I2C_SIDE_B_ADDR;
 
 	//initialize Antenas system
-	int err = ISIS_ANTS_Init(&address, 2);
+	int err = ISIS_ANTS_Init(address, 2);
 	if(err)
 		logg(error, "Error in the initialization of the Antennas: %d\n", err);
 	else
@@ -249,21 +264,6 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 		g_idle_flag=TRUE;
 		logg(TRXInfo, "I:Set idle state for %d seconds. \n", g_idle_period);
 	}
-	return err;
-}
-
-//setting trxvu idle off
-int SetIdleOff()
-{
-	logg(TRXInfo, "I:inside SetIdleOff()\n");
-	int err = isis_vu_e__set_idle_state(ISIS_TRXVU_I2C_BUS_INDEX, isis_vu_e__onoff__off);
-	if(err == 0){
-		g_idle_flag=FALSE;
-		g_idle_start_time = 0;
-		g_idle_period = 300 ;
-	} else
-		logg(error, "E:failed in setting trxvu idle off - %d\n", err);
-
 	return err;
 }
 

@@ -522,7 +522,7 @@ Discarded input sections
  .text.TestMaintenanceMainLoop
                 0x00000000      0x120 ./src/TestingDemos/MaintenanceTestingDemo.o
  .text.selectAndExecuteMaintenanceDemoTest
-                0x00000000      0x160 ./src/TestingDemos/MaintenanceTestingDemo.o
+                0x00000000      0x15c ./src/TestingDemos/MaintenanceTestingDemo.o
  .text.MainMaintenanceTestBench
                 0x00000000       0x40 ./src/TestingDemos/MaintenanceTestingDemo.o
  .debug_info    0x00000000      0x2ca ./src/TestingDemos/MaintenanceTestingDemo.o
@@ -531,7 +531,7 @@ Discarded input sections
  .debug_aranges
                 0x00000000       0x50 ./src/TestingDemos/MaintenanceTestingDemo.o
  .debug_ranges  0x00000000       0x40 ./src/TestingDemos/MaintenanceTestingDemo.o
- .debug_line    0x00000000      0x2cb ./src/TestingDemos/MaintenanceTestingDemo.o
+ .debug_line    0x00000000      0x2ca ./src/TestingDemos/MaintenanceTestingDemo.o
  .debug_str     0x00000000      0x2db ./src/TestingDemos/MaintenanceTestingDemo.o
  .comment       0x00000000       0x71 ./src/TestingDemos/MaintenanceTestingDemo.o
  .ARM.attributes
@@ -601,9 +601,9 @@ Discarded input sections
  .text.TelemetrySaveRADFET
                 0x00000000       0x14 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
  .text.CMD_getPic32_TLM
-                0x00000000       0x24 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
+                0x00000000       0x2c ./src/SubSystemModules/Housekepping/TelemetryCollector.o
  .text.CMD_getRadfet_TLM
-                0x00000000       0x24 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
+                0x00000000       0x2c ./src/SubSystemModules/Housekepping/TelemetryCollector.o
  .text          0x00000000        0x0 ./src/SubSystemModules/Communication/SubsystemCommands/EPS_Commands.o
  .data          0x00000000        0x0 ./src/SubSystemModules/Communication/SubsystemCommands/EPS_Commands.o
  .bss           0x00000000        0x0 ./src/SubSystemModules/Communication/SubsystemCommands/EPS_Commands.o
@@ -2234,27 +2234,27 @@ END GROUP
  .text.HandleOpenAnts
                 0x2000cc98       0x54 ./src/SubSystemModules/Communication/TRXVU.o
                 0x2000cc98                HandleOpenAnts
- .text.HandleIdleAndMuteTime
-                0x2000ccec       0x8c ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000ccec                HandleIdleAndMuteTime
- .text.HandleTransponderTime
-                0x2000cd78       0x30 ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000cd78                HandleTransponderTime
- .text.InitAnts
-                0x2000cda8       0x78 ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000cda8                InitAnts
- .text.InitTrxvu
-                0x2000ce20      0x108 ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000ce20                InitTrxvu
- .text.TRX_Logic
-                0x2000cf28      0x168 ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000cf28                TRX_Logic
- .text.CMD_SetIdleOn
-                0x2000d090       0xfc ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000d090                CMD_SetIdleOn
  .text.SetIdleOff
-                0x2000d18c       0x94 ./src/SubSystemModules/Communication/TRXVU.o
-                0x2000d18c                SetIdleOff
+                0x2000ccec       0x94 ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000ccec                SetIdleOff
+ .text.HandleIdleAndMuteTime
+                0x2000cd80       0x8c ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000cd80                HandleIdleAndMuteTime
+ .text.HandleTransponderTime
+                0x2000ce0c       0x30 ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000ce0c                HandleTransponderTime
+ .text.InitAnts
+                0x2000ce3c       0x78 ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000ce3c                InitAnts
+ .text.InitTrxvu
+                0x2000ceb4      0x108 ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000ceb4                InitTrxvu
+ .text.TRX_Logic
+                0x2000cfbc      0x168 ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000cfbc                TRX_Logic
+ .text.CMD_SetIdleOn
+                0x2000d124       0xfc ./src/SubSystemModules/Communication/TRXVU.o
+                0x2000d124                CMD_SetIdleOn
  .text.CMD_SetIdleOff
                 0x2000d220       0x28 ./src/SubSystemModules/Communication/TRXVU.o
                 0x2000d220                CMD_SetIdleOff
@@ -4381,7 +4381,7 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
  .debug_frame   0x00007a6c       0x2c c:/isis/application/toolchain/bin/../lib/gcc/arm-none-eabi/4.7.4/../../../../arm-none-eabi/lib\libc_s.a(lib_a-fstatr.o)
  .debug_frame   0x00007a98       0x2c c:/isis/application/toolchain/bin/../lib/gcc/arm-none-eabi/4.7.4/../../../../arm-none-eabi/lib\libc_s.a(lib_a-isattyr.o)
 
-.debug_info     0x00000000    0x2d818
+.debug_info     0x00000000    0x2d7ea
  .debug_info    0x00000000      0x8c8 ./src/SubSystemModules/PowerManagment/EPS.o
  .debug_info    0x000008c8      0x20f ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
  .debug_info    0x00000ad7      0x3c9 ./src/SubSystemModules/Maintenance/Log.o
@@ -4398,60 +4398,60 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
  .debug_info    0x0000555c      0x567 ./src/SubSystemModules/Communication/CommandDictionary.o
  .debug_info    0x00005ac3      0x3c3 ./src/SubSystemModules/Communication/SatCommandHandler.o
  .debug_info    0x00005e86      0x513 ./src/SubSystemModules/Communication/SatDataTx.o
- .debug_info    0x00006399      0x6a0 ./src/SubSystemModules/Communication/TRXVU.o
- .debug_info    0x00006a39      0x423 ./src/SubSystemModules/Communication/Transponder.o
- .debug_info    0x00006e5c      0x543 ./src/InitSystem.o
- .debug_info    0x0000739f     0x10f6 ./src/TLM_management.o
- .debug_info    0x00008495      0x3ed ./src/main.o
- .debug_info    0x00008882     0x173e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
- .debug_info    0x00009fc0     0x1981 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
- .debug_info    0x0000b941      0xa33 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
- .debug_info    0x0000c374      0x8a4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
- .debug_info    0x0000cc18     0x1093 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
- .debug_info    0x0000dcab      0x3f1 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
- .debug_info    0x0000e09c      0x20b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
- .debug_info    0x0000e2a7      0xf03 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
- .debug_info    0x0000f1aa      0x1aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
- .debug_info    0x0000f354      0x506 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
- .debug_info    0x0000f85a     0x19f9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
- .debug_info    0x00011253     0x28dd C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
- .debug_info    0x00013b30     0x4751 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
- .debug_info    0x00018281     0x2750 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
- .debug_info    0x0001a9d1      0xd43 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
- .debug_info    0x0001b714       0xb0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
- .debug_info    0x0001b7c4      0x1aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
- .debug_info    0x0001b96e      0x4c6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
- .debug_info    0x0001be34      0x157 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
- .debug_info    0x0001bf8b      0x1ba C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
- .debug_info    0x0001c145      0xd35 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
- .debug_info    0x0001ce7a      0x1ad C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
- .debug_info    0x0001d027      0xc86 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
- .debug_info    0x0001dcad     0x1102 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
- .debug_info    0x0001edaf     0x2047 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
- .debug_info    0x00020df6     0x23b5 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
- .debug_info    0x000231ab      0xd24 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
- .debug_info    0x00023ecf      0x2aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
- .debug_info    0x00024179     0x17f9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
- .debug_info    0x00025972      0x762 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
- .debug_info    0x000260d4       0xf4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
- .debug_info    0x000261c8      0x214 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
- .debug_info    0x000263dc      0x5d3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
- .debug_info    0x000269af      0xaf7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
- .debug_info    0x000274a6      0x287 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
- .debug_info    0x0002772d      0xc4d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
- .debug_info    0x0002837a      0xc6e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
- .debug_info    0x00028fe8      0x734 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
- .debug_info    0x0002971c      0x1ae C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
- .debug_info    0x000298ca      0xc40 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
- .debug_info    0x0002a50a      0x576 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
- .debug_info    0x0002aa80      0xf50 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
- .debug_info    0x0002b9d0      0x457 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
- .debug_info    0x0002be27       0x92 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
- .debug_info    0x0002beb9       0x81 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
- .debug_info    0x0002bf3a      0xf88 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
- .debug_info    0x0002cec2      0x956 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
+ .debug_info    0x00006399      0x672 ./src/SubSystemModules/Communication/TRXVU.o
+ .debug_info    0x00006a0b      0x423 ./src/SubSystemModules/Communication/Transponder.o
+ .debug_info    0x00006e2e      0x543 ./src/InitSystem.o
+ .debug_info    0x00007371     0x10f6 ./src/TLM_management.o
+ .debug_info    0x00008467      0x3ed ./src/main.o
+ .debug_info    0x00008854     0x173e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
+ .debug_info    0x00009f92     0x1981 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
+ .debug_info    0x0000b913      0xa33 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
+ .debug_info    0x0000c346      0x8a4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
+ .debug_info    0x0000cbea     0x1093 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
+ .debug_info    0x0000dc7d      0x3f1 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
+ .debug_info    0x0000e06e      0x20b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
+ .debug_info    0x0000e279      0xf03 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
+ .debug_info    0x0000f17c      0x1aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
+ .debug_info    0x0000f326      0x506 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
+ .debug_info    0x0000f82c     0x19f9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
+ .debug_info    0x00011225     0x28dd C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
+ .debug_info    0x00013b02     0x4751 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
+ .debug_info    0x00018253     0x2750 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
+ .debug_info    0x0001a9a3      0xd43 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
+ .debug_info    0x0001b6e6       0xb0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
+ .debug_info    0x0001b796      0x1aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
+ .debug_info    0x0001b940      0x4c6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
+ .debug_info    0x0001be06      0x157 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
+ .debug_info    0x0001bf5d      0x1ba C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
+ .debug_info    0x0001c117      0xd35 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
+ .debug_info    0x0001ce4c      0x1ad C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
+ .debug_info    0x0001cff9      0xc86 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
+ .debug_info    0x0001dc7f     0x1102 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
+ .debug_info    0x0001ed81     0x2047 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
+ .debug_info    0x00020dc8     0x23b5 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
+ .debug_info    0x0002317d      0xd24 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
+ .debug_info    0x00023ea1      0x2aa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
+ .debug_info    0x0002414b     0x17f9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
+ .debug_info    0x00025944      0x762 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
+ .debug_info    0x000260a6       0xf4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
+ .debug_info    0x0002619a      0x214 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
+ .debug_info    0x000263ae      0x5d3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
+ .debug_info    0x00026981      0xaf7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
+ .debug_info    0x00027478      0x287 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
+ .debug_info    0x000276ff      0xc4d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
+ .debug_info    0x0002834c      0xc6e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
+ .debug_info    0x00028fba      0x734 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
+ .debug_info    0x000296ee      0x1ae C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
+ .debug_info    0x0002989c      0xc40 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
+ .debug_info    0x0002a4dc      0x576 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
+ .debug_info    0x0002aa52      0xf50 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
+ .debug_info    0x0002b9a2      0x457 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
+ .debug_info    0x0002bdf9       0x92 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
+ .debug_info    0x0002be8b       0x81 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
+ .debug_info    0x0002bf0c      0xf88 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
+ .debug_info    0x0002ce94      0x956 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
-.debug_abbrev   0x00000000     0x6846
+.debug_abbrev   0x00000000     0x680f
  .debug_abbrev  0x00000000      0x15f ./src/SubSystemModules/PowerManagment/EPS.o
  .debug_abbrev  0x0000015f       0xe6 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
  .debug_abbrev  0x00000245      0x16b ./src/SubSystemModules/Maintenance/Log.o
@@ -4468,58 +4468,58 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
  .debug_abbrev  0x000011b4      0x129 ./src/SubSystemModules/Communication/CommandDictionary.o
  .debug_abbrev  0x000012dd      0x11b ./src/SubSystemModules/Communication/SatCommandHandler.o
  .debug_abbrev  0x000013f8      0x1e2 ./src/SubSystemModules/Communication/SatDataTx.o
- .debug_abbrev  0x000015da      0x1fa ./src/SubSystemModules/Communication/TRXVU.o
- .debug_abbrev  0x000017d4      0x14d ./src/SubSystemModules/Communication/Transponder.o
- .debug_abbrev  0x00001921      0x162 ./src/InitSystem.o
- .debug_abbrev  0x00001a83      0x249 ./src/TLM_management.o
- .debug_abbrev  0x00001ccc      0x114 ./src/main.o
- .debug_abbrev  0x00001de0      0x2a8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
- .debug_abbrev  0x00002088      0x353 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
- .debug_abbrev  0x000023db      0x1c7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
- .debug_abbrev  0x000025a2      0x260 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
- .debug_abbrev  0x00002802      0x2c2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
- .debug_abbrev  0x00002ac4       0xf6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
- .debug_abbrev  0x00002bba      0x11b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
- .debug_abbrev  0x00002cd5      0x21e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
- .debug_abbrev  0x00002ef3       0xeb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
- .debug_abbrev  0x00002fde      0x163 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
- .debug_abbrev  0x00003141      0x1c9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
- .debug_abbrev  0x0000330a      0x2ce C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
- .debug_abbrev  0x000035d8      0x2c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
- .debug_abbrev  0x00003898      0x265 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
- .debug_abbrev  0x00003afd      0x22f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
- .debug_abbrev  0x00003d2c       0x5a C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
- .debug_abbrev  0x00003d86       0xb3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
- .debug_abbrev  0x00003e39      0x13e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
- .debug_abbrev  0x00003f77       0xad C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
- .debug_abbrev  0x00004024       0xb4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
- .debug_abbrev  0x000040d8      0x1fb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
- .debug_abbrev  0x000042d3       0xb3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
- .debug_abbrev  0x00004386      0x211 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
- .debug_abbrev  0x00004597      0x19c C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
- .debug_abbrev  0x00004733      0x1e8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
- .debug_abbrev  0x0000491b      0x200 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
- .debug_abbrev  0x00004b1b      0x1af C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
- .debug_abbrev  0x00004cca       0xc0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
- .debug_abbrev  0x00004d8a      0x2b2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
- .debug_abbrev  0x0000503c      0x170 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
- .debug_abbrev  0x000051ac       0xa2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
- .debug_abbrev  0x0000524e      0x116 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
- .debug_abbrev  0x00005364      0x21e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
- .debug_abbrev  0x00005582      0x200 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
- .debug_abbrev  0x00005782       0xc3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
- .debug_abbrev  0x00005845      0x1f0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
- .debug_abbrev  0x00005a35      0x1f7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
- .debug_abbrev  0x00005c2c      0x185 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
- .debug_abbrev  0x00005db1       0xd3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
- .debug_abbrev  0x00005e84      0x1fc C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
- .debug_abbrev  0x00006080       0xff C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
- .debug_abbrev  0x0000617f      0x24f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
- .debug_abbrev  0x000063ce      0x15d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
- .debug_abbrev  0x0000652b       0x12 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
- .debug_abbrev  0x0000653d       0x14 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
- .debug_abbrev  0x00006551      0x1ac C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
- .debug_abbrev  0x000066fd      0x149 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
+ .debug_abbrev  0x000015da      0x1c3 ./src/SubSystemModules/Communication/TRXVU.o
+ .debug_abbrev  0x0000179d      0x14d ./src/SubSystemModules/Communication/Transponder.o
+ .debug_abbrev  0x000018ea      0x162 ./src/InitSystem.o
+ .debug_abbrev  0x00001a4c      0x249 ./src/TLM_management.o
+ .debug_abbrev  0x00001c95      0x114 ./src/main.o
+ .debug_abbrev  0x00001da9      0x2a8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
+ .debug_abbrev  0x00002051      0x353 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
+ .debug_abbrev  0x000023a4      0x1c7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
+ .debug_abbrev  0x0000256b      0x260 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
+ .debug_abbrev  0x000027cb      0x2c2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
+ .debug_abbrev  0x00002a8d       0xf6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
+ .debug_abbrev  0x00002b83      0x11b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
+ .debug_abbrev  0x00002c9e      0x21e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
+ .debug_abbrev  0x00002ebc       0xeb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
+ .debug_abbrev  0x00002fa7      0x163 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
+ .debug_abbrev  0x0000310a      0x1c9 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
+ .debug_abbrev  0x000032d3      0x2ce C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
+ .debug_abbrev  0x000035a1      0x2c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
+ .debug_abbrev  0x00003861      0x265 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
+ .debug_abbrev  0x00003ac6      0x22f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
+ .debug_abbrev  0x00003cf5       0x5a C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
+ .debug_abbrev  0x00003d4f       0xb3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
+ .debug_abbrev  0x00003e02      0x13e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
+ .debug_abbrev  0x00003f40       0xad C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
+ .debug_abbrev  0x00003fed       0xb4 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
+ .debug_abbrev  0x000040a1      0x1fb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
+ .debug_abbrev  0x0000429c       0xb3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
+ .debug_abbrev  0x0000434f      0x211 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
+ .debug_abbrev  0x00004560      0x19c C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
+ .debug_abbrev  0x000046fc      0x1e8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
+ .debug_abbrev  0x000048e4      0x200 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
+ .debug_abbrev  0x00004ae4      0x1af C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
+ .debug_abbrev  0x00004c93       0xc0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
+ .debug_abbrev  0x00004d53      0x2b2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
+ .debug_abbrev  0x00005005      0x170 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
+ .debug_abbrev  0x00005175       0xa2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
+ .debug_abbrev  0x00005217      0x116 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
+ .debug_abbrev  0x0000532d      0x21e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
+ .debug_abbrev  0x0000554b      0x200 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
+ .debug_abbrev  0x0000574b       0xc3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
+ .debug_abbrev  0x0000580e      0x1f0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
+ .debug_abbrev  0x000059fe      0x1f7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
+ .debug_abbrev  0x00005bf5      0x185 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
+ .debug_abbrev  0x00005d7a       0xd3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
+ .debug_abbrev  0x00005e4d      0x1fc C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
+ .debug_abbrev  0x00006049       0xff C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
+ .debug_abbrev  0x00006148      0x24f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
+ .debug_abbrev  0x00006397      0x15d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
+ .debug_abbrev  0x000064f4       0x12 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
+ .debug_abbrev  0x00006506       0x14 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
+ .debug_abbrev  0x0000651a      0x1ac C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
+ .debug_abbrev  0x000066c6      0x149 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
 .debug_loc      0x00000000     0xa59c
  .debug_loc     0x00000000      0x18c ./src/SubSystemModules/PowerManagment/EPS.o
@@ -4796,75 +4796,75 @@ OUTPUT(GlobusSatProject.elf elf32-littlearm)
  .debug_ranges  0x00002148       0x30 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
  .debug_ranges  0x00002178       0x28 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
-.debug_line     0x00000000     0xfb55
+.debug_line     0x00000000     0xfb57
  .debug_line    0x00000000      0x39f ./src/SubSystemModules/PowerManagment/EPS.o
  .debug_line    0x0000039f      0x1d9 ./src/SubSystemModules/PowerManagment/EPSOperationModes.o
  .debug_line    0x00000578      0x23d ./src/SubSystemModules/Maintenance/Log.o
  .debug_line    0x000007b5      0x3a7 ./src/SubSystemModules/Maintenance/Maintenance.o
  .debug_line    0x00000b5c      0x5ac ./src/SubSystemModules/Housekepping/Dump.o
- .debug_line    0x00001108      0x656 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
- .debug_line    0x0000175e      0x26d ./src/SubSystemModules/Communication/SubsystemCommands/EPS_Commands.o
- .debug_line    0x000019cb      0x286 ./src/SubSystemModules/Communication/SubsystemCommands/FS_Commands.o
- .debug_line    0x00001c51      0x5d3 ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
- .debug_line    0x00002224      0x3df ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
- .debug_line    0x00002603      0x11b ./src/SubSystemModules/Communication/AckHandler.o
- .debug_line    0x0000271e      0x105 ./src/SubSystemModules/Communication/ActUponCommand.o
- .debug_line    0x00002823      0x2c6 ./src/SubSystemModules/Communication/Beacon.o
- .debug_line    0x00002ae9      0x26f ./src/SubSystemModules/Communication/CommandDictionary.o
- .debug_line    0x00002d58      0x26d ./src/SubSystemModules/Communication/SatCommandHandler.o
- .debug_line    0x00002fc5      0x4a4 ./src/SubSystemModules/Communication/SatDataTx.o
- .debug_line    0x00003469      0x431 ./src/SubSystemModules/Communication/TRXVU.o
- .debug_line    0x0000389a      0x288 ./src/SubSystemModules/Communication/Transponder.o
- .debug_line    0x00003b22      0x2e6 ./src/InitSystem.o
- .debug_line    0x00003e08      0x6ca ./src/TLM_management.o
- .debug_line    0x000044d2      0x250 ./src/main.o
- .debug_line    0x00004722      0x4bc C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
- .debug_line    0x00004bde      0x5d0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
- .debug_line    0x000051ae      0x260 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
- .debug_line    0x0000540e      0x373 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
- .debug_line    0x00005781      0x4c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
- .debug_line    0x00005c41       0xe3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
- .debug_line    0x00005d24      0x14b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
- .debug_line    0x00005e6f      0x318 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
- .debug_line    0x00006187      0x147 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
- .debug_line    0x000062ce      0x1fa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
- .debug_line    0x000064c8      0x61b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
- .debug_line    0x00006ae3     0x1049 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
- .debug_line    0x00007b2c     0x1b61 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
- .debug_line    0x0000968d      0xc81 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
- .debug_line    0x0000a30e      0x53c C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
- .debug_line    0x0000a84a       0x92 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
- .debug_line    0x0000a8dc      0x14d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
- .debug_line    0x0000aa29      0x18b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
- .debug_line    0x0000abb4      0x108 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
- .debug_line    0x0000acbc      0x116 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
- .debug_line    0x0000add2      0x57f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
- .debug_line    0x0000b351      0x117 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
- .debug_line    0x0000b468      0x467 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
- .debug_line    0x0000b8cf      0x4e8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
- .debug_line    0x0000bdb7      0x824 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
- .debug_line    0x0000c5db      0x56d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
- .debug_line    0x0000cb48      0x671 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
- .debug_line    0x0000d1b9      0x10e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
- .debug_line    0x0000d2c7      0x8c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
- .debug_line    0x0000db87      0x2a6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
- .debug_line    0x0000de2d       0x89 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
- .debug_line    0x0000deb6      0x13e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
- .debug_line    0x0000dff4      0x215 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
- .debug_line    0x0000e209      0x281 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
- .debug_line    0x0000e48a       0xb2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
- .debug_line    0x0000e53c      0x223 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
- .debug_line    0x0000e75f      0x278 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
- .debug_line    0x0000e9d7      0x1b7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
- .debug_line    0x0000eb8e      0x136 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
- .debug_line    0x0000ecc4      0x220 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
- .debug_line    0x0000eee4      0x14e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
- .debug_line    0x0000f032      0x3c2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
- .debug_line    0x0000f3f4      0x29a C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
- .debug_line    0x0000f68e      0x11d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
- .debug_line    0x0000f7ab       0x6f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
- .debug_line    0x0000f81a      0x1fb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
- .debug_line    0x0000fa15      0x140 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
+ .debug_line    0x00001108      0x658 ./src/SubSystemModules/Housekepping/TelemetryCollector.o
+ .debug_line    0x00001760      0x26d ./src/SubSystemModules/Communication/SubsystemCommands/EPS_Commands.o
+ .debug_line    0x000019cd      0x286 ./src/SubSystemModules/Communication/SubsystemCommands/FS_Commands.o
+ .debug_line    0x00001c53      0x5d3 ./src/SubSystemModules/Communication/SubsystemCommands/Maintanence_Commands.o
+ .debug_line    0x00002226      0x3df ./src/SubSystemModules/Communication/SubsystemCommands/TRXVU_Commands.o
+ .debug_line    0x00002605      0x11b ./src/SubSystemModules/Communication/AckHandler.o
+ .debug_line    0x00002720      0x105 ./src/SubSystemModules/Communication/ActUponCommand.o
+ .debug_line    0x00002825      0x2c6 ./src/SubSystemModules/Communication/Beacon.o
+ .debug_line    0x00002aeb      0x26f ./src/SubSystemModules/Communication/CommandDictionary.o
+ .debug_line    0x00002d5a      0x26d ./src/SubSystemModules/Communication/SatCommandHandler.o
+ .debug_line    0x00002fc7      0x4a4 ./src/SubSystemModules/Communication/SatDataTx.o
+ .debug_line    0x0000346b      0x431 ./src/SubSystemModules/Communication/TRXVU.o
+ .debug_line    0x0000389c      0x288 ./src/SubSystemModules/Communication/Transponder.o
+ .debug_line    0x00003b24      0x2e6 ./src/InitSystem.o
+ .debug_line    0x00003e0a      0x6ca ./src/TLM_management.o
+ .debug_line    0x000044d4      0x250 ./src/main.o
+ .debug_line    0x00004724      0x4bc C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(SPI.o)
+ .debug_line    0x00004be0      0x5d0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(I2C.o)
+ .debug_line    0x000051b0      0x260 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(ADC.o)
+ .debug_line    0x00005410      0x373 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(FRAM.o)
+ .debug_line    0x00005783      0x4c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(Time.o)
+ .debug_line    0x00005c43       0xe3 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerNoOS.o)
+ .debug_line    0x00005d26      0x14b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTT.o)
+ .debug_line    0x00005e71      0x318 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(RTC.o)
+ .debug_line    0x00006189      0x147 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(WatchDogTimerOS.o)
+ .debug_line    0x000062d0      0x1fa C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hal/lib\libHALD.a(LED.o)
+ .debug_line    0x000064ca      0x61b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_m.o)
+ .debug_line    0x00006ae5     0x1049 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat.o)
+ .debug_line    0x00007b2e     0x1b61 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(fat_common.o)
+ .debug_line    0x0000968f      0xc81 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(safefat.o)
+ .debug_line    0x0000a310      0x53c C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc.o)
+ .debug_line    0x0000a84c       0x92 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_task.o)
+ .debug_line    0x0000a8de      0x14d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(oalp_mutex.o)
+ .debug_line    0x0000aa2b      0x18b C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(atmel_mcipdc_hw.o)
+ .debug_line    0x0000abb6      0x108 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rand.o)
+ .debug_line    0x0000acbe      0x116 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_rtc.o)
+ .debug_line    0x0000add4      0x57f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(hcc_mem.o)
+ .debug_line    0x0000b353      0x117 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/hcc/lib\libHCCD.a(psp_hcc_mem.o)
+ .debug_line    0x0000b46a      0x467 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(IsisSolarPanelv2.o)
+ .debug_line    0x0000b8d1      0x4e8 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_ants.o)
+ .debug_line    0x0000bdb9      0x824 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isis_vu_e.o)
+ .debug_line    0x0000c5dd      0x56d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/lib\libSatelliteSubsystemsD.a(isismepsv2_ivid5_piu.o)
+ .debug_line    0x0000cb4a      0x671 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(queue.o)
+ .debug_line    0x0000d1bb      0x10e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(list.o)
+ .debug_line    0x0000d2c9      0x8c0 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(tasks.o)
+ .debug_line    0x0000db89      0x2a6 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(timers.o)
+ .debug_line    0x0000de2f       0x89 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(hooks.o)
+ .debug_line    0x0000deb8      0x13e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(standardMemMang.o)
+ .debug_line    0x0000dff6      0x215 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/lib\libFreeRTOSD.a(port.o)
+ .debug_line    0x0000e20b      0x281 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(adc_at91.o)
+ .debug_line    0x0000e48c       0xb2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(aic.o)
+ .debug_line    0x0000e53e      0x223 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15.o)
+ .debug_line    0x0000e761      0x278 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(dbgu.o)
+ .debug_line    0x0000e9d9      0x1b7 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pio.o)
+ .debug_line    0x0000eb90      0x136 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pit.o)
+ .debug_line    0x0000ecc6      0x220 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(pmc.o)
+ .debug_line    0x0000eee6      0x14e C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(spi_at91.o)
+ .debug_line    0x0000f034      0x3c2 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(twi_at91.o)
+ .debug_line    0x0000f3f6      0x29a C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(ExitHandler.o)
+ .debug_line    0x0000f690      0x11d C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_cstartup.o)
+ .debug_line    0x0000f7ad       0x6f C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(cp15_asm.o)
+ .debug_line    0x0000f81c      0x1fb C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_lowlevel.o)
+ .debug_line    0x0000fa17      0x140 C:/Users/sattlite/Documents/GitHub/tevel2/GlobusSatProject/..//hal/at91/lib\libAt91D.a(board_memories.o)
 
 .debug_str      0x00000000     0xb347
  .debug_str     0x00000000      0x5fc ./src/SubSystemModules/PowerManagment/EPS.o

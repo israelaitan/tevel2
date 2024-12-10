@@ -29,7 +29,7 @@
 
 Boolean selectAndExecuteTest()
 {
-	unsigned int selection = 0;
+	int selection = 0;
 	Boolean offerMoreTests = TRUE;
 
 #define RESTART_INDEX		0

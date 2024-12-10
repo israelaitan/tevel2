@@ -132,13 +132,13 @@ int CMD_getAnts_TLM(sat_packet_t *cmd);
  * @brief Gets all Pic32 telemetry
  * @param[out] output Pic32 telemetry and sends them to ground control
  */
-int_CMD_getPic32_TLM(sat_packet_t *cmd);
+int CMD_getPic32_TLM(sat_packet_t *cmd);
 
 /*!
  * @brief Gets all Radfet telemetry
  * @param[out] output Radfet telemetry and sends them to ground control
  */
-int_CMD_getRadfet_TLM(sat_packet_t *cmd);
+int CMD_getRadfet_TLM(sat_packet_t *cmd);
 
 /*!
  *  @brief saves current pic32 telemetry into file

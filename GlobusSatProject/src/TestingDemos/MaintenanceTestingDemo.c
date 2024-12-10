@@ -74,7 +74,7 @@ Boolean TestMaintenanceMainLoop()
 {
 	int minutes = 2;
 		printf("\nPlease insert number of minutes to test(0 to 10)\n");
-		while (UTIL_DbguGetIntegerMinMax((unsigned int*)&minutes, 0, 10) == 0);
+		while (UTIL_DbguGetIntegerMinMax((int*)&minutes, 0, 10) == 0);
 
 		printf("Starting test for a period of %d minutes\n\n",minutes);
 
@@ -101,7 +101,7 @@ Boolean TestMaintenanceMainLoop()
 
 Boolean selectAndExecuteMaintenanceDemoTest()
 {
-	unsigned int selection = 0;
+	int selection = 0;
 	Boolean offerMoreTests = TRUE;
 
 	printf("\n\r Select a test to perform: \n\r");
@@ -113,7 +113,7 @@ Boolean selectAndExecuteMaintenanceDemoTest()
 	printf("\t 5) Test SaveSatTimeInFRAM\n\r");
 	printf("\t 6) Maintenance Main Loop\n\r");
 
-	unsigned int number_of_tests = 8;
+	int number_of_tests = 8;
 	while (UTIL_DbguGetIntegerMinMax(&selection, 0, number_of_tests) == 0);
 
 	switch (selection)

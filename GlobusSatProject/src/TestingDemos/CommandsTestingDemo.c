@@ -21,7 +21,7 @@ Boolean TestActUponCommand()
 	printf("\nPlease insert number of minutes to test(1 to 10)\n");
 	int minutes = 0;
 	int err = 0;
-	while(UTIL_DbguGetIntegerMinMax((unsigned int*)&minutes,1,10) == 0);
+	while(UTIL_DbguGetIntegerMinMax((int*)&minutes,1,10) == 0);
 
 	portTickType curr_time = xTaskGetTickCount();
 	portTickType end_time = MINUTES_TO_TICKS(minutes) + curr_time;
@@ -98,7 +98,7 @@ Boolean TestGetOnlineCommand()
 
 Boolean selectAndExecuteCommandsDemoTest()
 {
-	unsigned int selection = 0;
+	int selection = 0;
 	Boolean offerMoreTests = TRUE;
 
 	printf("\n\r Select a test to perform: \n\r");

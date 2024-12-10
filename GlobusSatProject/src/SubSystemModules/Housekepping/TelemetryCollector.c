@@ -360,12 +360,14 @@ void TelemetrySaveRADFET()
 // Get Pic32 TLM
 int CMD_getPic32_TLM(sat_packet_t *cmd)
 {
+	cmd = NULL;
 	return 0;
 }
 
 // Get Radfet TLM
 int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
+	cmd = NULL;
 	return 0;
 }
 
