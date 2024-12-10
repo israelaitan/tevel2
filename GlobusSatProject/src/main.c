@@ -79,5 +79,5 @@ int main()
 			configMAX_PRIORITIES - 2, &taskMainHandle, NULL, NULL);
 #endif
 	vTaskStartScheduler();
-	return 0;
+	exit(0);
 }
