@@ -1,7 +1,8 @@
 #include <string.h>
 #include <stdio.h>
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
+#include <stdint.h>
+#include <satellite-subsystems/isis_vu_e.h>
+#include <satellite-subsystems/isis_ants.h>
 
 #include "GlobalStandards.h"
 #include "SubSystemModules/Communication/TRXVU.h"
@@ -83,8 +84,8 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd)
 int CMD_GetTxUptime(sat_packet_t *cmd)
 {
 	int err = 0;
-	time_unix uptime = 0;
-	err = IsisTrxvu_tcGetUptime(ISIS_TRXVU_I2C_BUS_INDEX, (unsigned int*)&uptime);
+	uint32_t uptime = 0;
+	err = isis_vu_e__tx_uptime(ISIS_TRXVU_I2C_BUS_INDEX, (uint32_t*)&uptime);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&uptime, sizeof(uptime));
 
 	return err;
@@ -93,8 +94,8 @@ int CMD_GetTxUptime(sat_packet_t *cmd)
 int CMD_GetRxUptime(sat_packet_t *cmd)
 {
 	int err = 0;
-	time_unix uptime = 0;
-	err = IsisTrxvu_rcGetUptime(ISIS_TRXVU_I2C_BUS_INDEX,(unsigned int*) &uptime);
+	uint32_t uptime = 0;
+	err = isis_vu_e__rx_uptime(ISIS_TRXVU_I2C_BUS_INDEX,(uint32_t*) &uptime);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &uptime, sizeof(uptime));
 
 	return err;
@@ -102,24 +103,23 @@ int CMD_GetRxUptime(sat_packet_t *cmd)
 
 int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd)
 {
-	int err = 0;
-	unsigned short int temp = 0;
-	err = IsisTrxvu_rcGetFrameCount(ISIS_TRXVU_I2C_BUS_INDEX, &temp);
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &temp, sizeof(temp));
-
+	uint16_t frame_count_out = 0;
+	int err = isis_vu_e__get_frame_count(ISIS_TRXVU_I2C_BUS_INDEX, &frame_count_out);
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &frame_count_out, sizeof(frame_count_out));
 	return err;
 }
 
 int CMD_AntSetArmStatus(sat_packet_t *cmd)
 {
-	if (cmd == NULL || cmd->data == NULL) {
+	if (cmd == NULL || cmd->data == NULL)
 		return E_INPUT_POINTER_NULL;
-	}
 	int err = 0;
-	ISISantsSide ant_side = cmd->data[0];
-
-	ISISantsArmStatus status = cmd->data[1];
-	err = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, ant_side, status);
+	uint8_t ant_side = cmd->data[0];
+	uint8_t status = cmd->data[1];
+	if (status)
+		err = isis_ants__arm(ant_side);
+	else
+		err = isis_ants__disarm(ant_side);
 
 	return err;
 }
@@ -127,11 +127,11 @@ int CMD_AntSetArmStatus(sat_packet_t *cmd)
 int CMD_AntGetArmStatus(sat_packet_t *cmd)
 {
 	int err = 0;
-	ISISantsStatus status;
-	ISISantsSide ant_side;
+	isis_ants__get_status__from_t status;
+	uint8_t ant_side;
 	memcpy(&ant_side, cmd->data, sizeof(ant_side));
 
-	err = IsisAntS_getStatusData(ISIS_TRXVU_I2C_BUS_INDEX, ant_side, &status);
+	err = isis_ants__get_status(ant_side, &status);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &status, sizeof(status));
 
 	return err;
@@ -140,20 +140,19 @@ int CMD_AntGetArmStatus(sat_packet_t *cmd)
 int CMD_AntGetUptime(sat_packet_t *cmd)
 {
 	int err = 0;
-	time_unix uptime = 0;
-	ISISantsSide ant_side;
+	uint32_t uptime = 0;
+	uint8_t ant_side;
 	memcpy(&ant_side, cmd->data, sizeof(ant_side));
-	err = IsisAntS_getUptime(ISIS_TRXVU_I2C_BUS_INDEX, ant_side,(unsigned int*) &uptime);
+	err = isis_ants__get_uptime(ant_side, &uptime);
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*) &uptime, sizeof(uptime));
 	return err;
 }
 
 int CMD_AntCancelDeployment(sat_packet_t *cmd)
 {
-	int err = 0;
-	ISISantsSide ant_side;
+	char ant_side;
 	memcpy(&ant_side, cmd->data, sizeof(ant_side));
-	err = IsisAntS_cancelDeployment(ISIS_TRXVU_I2C_BUS_INDEX, ant_side);
+	int err = isis_ants__cancel_deploy(ant_side);
 	return err;
 }
 

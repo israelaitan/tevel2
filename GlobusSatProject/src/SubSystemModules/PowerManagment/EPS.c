@@ -22,9 +22,8 @@ EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES}
 
 int EPS_Init()
 {
-	int rv;
 	ISISMEPSV2_IVID5_PIU_t isis_eps = {EPS_I2C_ADDR};
-	rv =ISIS_EPS_Init( &isis_eps, 1 );
+	int rv = ISISMEPSV2_IVID5_PIU_Init(&isis_eps, 1);
 	if (rv != E_NO_SS_ERR) {
 		logg(error, "E:EPS init failed\n");
 		return -1;

@@ -96,12 +96,11 @@ Boolean CheckForMuteEnd() {
 }
 
 int GetNumberOfFramesInBuffer() {
-	unsigned short frameCounter = 0;
-	int err = IsisTrxvu_rcGetFrameCount(0, &frameCounter);
-	if (0 != err) {
+	uint16_t frame_count_out = 0;
+	int err = isis_vu_e__get_frame_count(ISIS_TRXVU_I2C_BUS_INDEX, &frame_count_out);
+	if (0 != err)
 		return -1;
-	}
-	return frameCounter;
+	return frame_count_out;
 }
 
 Boolean IsTransmitting() {

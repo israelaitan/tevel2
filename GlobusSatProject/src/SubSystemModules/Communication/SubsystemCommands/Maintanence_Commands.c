@@ -8,7 +8,7 @@
 
 #include <satellite-subsystems/isis_vu_e.h>
 #include <satellite-subsystems/isis_ants.h>
-#include <satellite-subsystems/isis_eps_driver.h>
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 #include <hcc/api_fat.h>
 #include <hal/Drivers/I2C.h>
 #include <stdlib.h>
@@ -204,11 +204,7 @@ int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 
-	int err = 0;
-	ISIStrxvuComponent component;
-	memcpy(&component, cmd->data, sizeof(component));
-
-	err = IsisTrxvu_componentSoftReset(ISIS_TRXVU_I2C_BUS_INDEX, component);
+	int err = isis_vu_e__reset_hw_rx(ISIS_TRXVU_I2C_BUS_INDEX);
 	return err;
 }
 
@@ -222,11 +218,7 @@ int CMD_HardTRXVU_ComponenetReset(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 
-	int err = 0;
-	ISIStrxvuComponent component;
-	memcpy(&component, cmd->data, sizeof(component));
-
-	err = IsisTrxvu_componentHardReset(ISIS_TRXVU_I2C_BUS_INDEX, component);
+	int err = isis_vu_e__reset_hw_rx(ISIS_TRXVU_I2C_BUS_INDEX);
 	return err;
 }
 
@@ -392,21 +384,19 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 		vTaskDelay(10);
 
-		isis_eps__reset__to_t params;
-		params.fields.rst_key = 0xA6;
-		isis_eps__reset__from_t response;
-		err = isis_eps__reset__tmtc( EPS_I2C_BUS_INDEX, &params , &response );
+		isismepsv2_ivid5_piu__replyheader_t response;
+		err = isismepsv2_ivid5_piu__reset( EPS_I2C_BUS_INDEX , &response );
 		break;
 
 	case reset_trxvu_hard:
 		SendAnonymosAck(ACK_TRXVU_HARD_RESET);
-		err = IsisTrxvu_hardReset(ISIS_TRXVU_I2C_BUS_INDEX);
+		err = isis_vu_e__reset_hw_tx(ISIS_TRXVU_I2C_BUS_INDEX);
 		vTaskDelay(100);
 		break;
 
 	case reset_trxvu_soft:
 		SendAnonymosAck(ACK_TRXVU_SOFT_RESET);
-		err = IsisTrxvu_softReset(ISIS_TRXVU_I2C_BUS_INDEX);
+		err = isis_vu_e__reset_hw_rx(ISIS_TRXVU_I2C_BUS_INDEX);
 		vTaskDelay(100);
 		break;
 
@@ -419,12 +409,12 @@ int CMD_ResetComponent(reset_type_t rst_type)
 		break;
 
 	case reset_ant_SideA:
-		err = IsisAntS_reset(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA);
+		err = isis_ants__reset(0);
 		SendAckPacket(ACK_ANTS_RESET, 0xffff, 0xffff, (unsigned char*) &err, sizeof(err));
 		break;
 
 	case reset_ant_SideB:
-		err = IsisAntS_reset(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB);
+		err = isis_ants__reset(1);
 		SendAckPacket(ACK_ANTS_RESET, 0xffff, 0xffff, (unsigned char*) &err, sizeof(err));
 		break;
 
