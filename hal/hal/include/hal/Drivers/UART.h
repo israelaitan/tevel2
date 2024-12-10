@@ -3,7 +3,6 @@
  * @brief	UART communication.
  * @warning User may not change the entries in this header file. Values such as
  * define preprocessor directives are for information and not for configuration.
- * @date	Feb 18, 2013
  * @author	Akhil Piplani
  */
 
@@ -113,7 +112,7 @@ typedef struct _UARTconfig {
 typedef struct _UARTgenericTransfer {
 	UARTbus bus;              ///< The UART bus over which the transfer should be made.
 	UARTdirection direction;  ///< Direction of the transfer.
-	unsigned char *writeData; ///< Location of data to be sent.
+	const unsigned char *writeData; ///< Location of data to be sent.
 	volatile unsigned char *readData;  ///< Location where the driver should store data received over UART
 	unsigned int writeSize;   ///< Number of bytes to send.
 	unsigned int readSize;    ///< Number of bytes to receive.
@@ -192,7 +191,7 @@ int UART_queueTransfer(UARTgenericTransfer *tx);
  * If a positive error is returned, an error occurred during the transfer.
  * @note The positive error values correspond to the members of UARTtransferStatus enumerated data type.
  */
-int UART_write(UARTbus bus, unsigned char *data, unsigned int size);
+int UART_write(UARTbus bus, const unsigned char *data, unsigned int size);
 
 /*!
  * Performs a blocking read transfer by sleeping the task until the specified transfer is complete.

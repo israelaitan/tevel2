@@ -2,7 +2,6 @@
  * @file	RTC.h
  * @brief	Communicates with DS3234 RTC over SPI.
  * @author	Akhil Piplani
- * @date	Feb 11, 2011
  * @see		RTC.c
  */
 
@@ -20,16 +19,11 @@
 int RTC_start(void);
 
 /*!
- * Stops the RTC interface.
- */
-void RTC_stop(void);
-
-/*!
  * @brief Sets the time inside the RTC.
  * @param[in] time Pointer to an array whose value is going to be stored inside the RTC.
  * @return -2 if the input time was invalid, -1 if starting the SPI transfer failed, 0 on success.
  */
-int RTC_setTime(Time *time);
+int RTC_setTime(const Time *time);
 
 /*!
  * @brief This function gets the time inside the RTC.
@@ -68,12 +62,13 @@ void RTC_printSeconds(void);
  * @param[in] time RTC time structure to be checked.
  * @return -1 if the time stored in the structure is invalid, 0 otherwise
  */
-int RTC_checkTimeValid(Time *time);
+int RTC_checkTimeValid(const Time *time);
 
 /*!
  * @brief Reads 10bit temperature sensor measurement inside the RTC.
  * @param[in,out] temperature Location where temperature should be stored.
  * @return -1 if SPI transfer could not be started,
+ * -2 if temperature is invalid,
  * 0 on success.
  */
 int RTC_getTemperature(float *temperature);

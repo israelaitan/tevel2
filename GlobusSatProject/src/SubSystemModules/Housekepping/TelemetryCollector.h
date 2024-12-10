@@ -44,7 +44,9 @@ typedef enum{
 	trxvu_tlm,
 	ant_tlm,
 	solar_panel_tlm,
-	wod_tlm
+	wod_tlm,
+	pic32_tlm,
+	radfet_tlm
 }subsystem_tlm;
 
 #define NUMBER_OF_TELEMETRIES 8	///< number of telemetries the satellite saves
@@ -125,6 +127,28 @@ int CMD_getTRXVU_TLM(sat_packet_t *cmd);
  * @param[out] output Antennas telemetry and sends them to ground control
  */
 int CMD_getAnts_TLM(sat_packet_t *cmd);
+
+/*!
+ * @brief Gets all Pic32 telemetry
+ * @param[out] output Pic32 telemetry and sends them to ground control
+ */
+int_CMD_getPic32_TLM(sat_packet_t *cmd);
+
+/*!
+ * @brief Gets all Radfet telemetry
+ * @param[out] output Radfet telemetry and sends them to ground control
+ */
+int_CMD_getRadfet_TLM(sat_packet_t *cmd);
+
+/*!
+ *  @brief saves current pic32 telemetry into file
+ */
+void TelemetrySavePIC32();
+
+/*!
+ *  @brief saves current radfet telemetry into file
+ */
+void TelemetrySaveRADFET();
 
 
 #endif /* TELEMETRYCOLLECTOR_H_ */

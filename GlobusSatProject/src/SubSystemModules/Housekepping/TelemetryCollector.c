@@ -1,9 +1,12 @@
 #include <hcc/api_fat.h>
 #include "GlobalStandards.h"
-#include <satellite-subsystems/isis_eps_driver.h>
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
+#include <satellite-subsystems/isis_vu_e.h>
+
+#include <satellite-subsystems/isis_ants.h>
+#include <satellite-subsystems/isis_ants_types.h>
+
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <hal/Timing/Time.h>
 #include <hal/drivers/ADC.h>
@@ -16,6 +19,8 @@
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+
+#define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
@@ -53,6 +58,13 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_wod:
 		strcpy(filename,FILENAME_WOD_TLM);
 		break;
+	case tlm_pic32:
+		strcpy(filename,FILENAME_PIC32_TLM);
+		break;
+	case tlm_radfet:
+		strcpy(filename,FILENAME_RADFET_TLM);
+		break;
+
 	default:
 		return -2;
 	}
@@ -88,28 +100,27 @@ void TelemetryCollectorLogic()
 
 }
 
-#define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
 void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 {
 	logg(event, "V:TelemetryCreateFiles()\n");
 	FileSystemResult res;
 	// -- EPS files
-	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isis_eps__gethousekeepingraw__from_t));
+	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingraw__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb)
 
-	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isis_eps__gethousekeepingeng__from_t));
+	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingeng__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
 	// -- TRXVU files
-	res = c_fileCreate(FILENAME_TX_TLM,sizeof(ISIStrxvuTxTelemetry));
+	res = c_fileCreate(FILENAME_TX_TLM,sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_tx);
 
-	res = c_fileCreate(FILENAME_RX_TLM,sizeof(ISIStrxvuRxTelemetry));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb);
+	res = c_fileCreate(FILENAME_RX_TLM,sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_rx);
 
 	// -- ANT files
-	res = c_fileCreate(FILENAME_ANTENNA_TLM,sizeof(ISISantsTelemetry));
+	res = c_fileCreate(FILENAME_ANTENNA_TLM,sizeof(isis_ants__get_status__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
 
 	//-- LOG files
@@ -119,21 +130,28 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	// -- WOD file
 	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
+
+	// -- PAYLOAS file
+	//res = c_fileCreat(FILENAME_PIC32_TLM, sizeof(?));
+	//SVAE_FLAG_IF_FILE_CREATED(tlm_pic32);
+
+	//res = c_fileCreat(FILENAME_RADFET_TLM, sizeof(?));
+	//SVAE_FLAG_IF_FILE_CREATED(tlm_radfet);
 }
 
 void TelemetrySaveEPS()
 {
 	int err = 0;
 
-	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
-	err = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
+	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
+	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
 	else
 		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
 
-	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
-	err = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
@@ -142,42 +160,80 @@ void TelemetrySaveEPS()
 
 }
 
+//get EPS TLM
+int CMD_getEPS_TLM(sat_packet_t *cmd)
+{
+	int err = 0;
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+
+	if(err == 0)
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)&tlm_mb_eng.raw, sizeof(tlm_mb_eng));
+	else
+			logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
+
+	return err;
+}
+
 void TelemetrySaveTRXVU()
 {
 	int err = 0;
-	ISIStrxvuTxTelemetry tx_tlm;
-	err = IsisTrxvu_tcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
+	isis_vu_e__get_tx_telemetry__from_t tx_tlm;
+	err = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
 	if (err == 0)
-	{
 		c_fileWrite(FILENAME_TX_TLM, &tx_tlm);
-	}
 
-	ISIStrxvuRxTelemetry rx_tlm;
-	err = IsisTrxvu_rcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	isis_vu_e__get_tx_telemetry_last__from_t rx_tlm;
+	err = isis_vu_e__get_tx_telemetry_last()(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
 	if (err == 0)
-	{
 		c_fileWrite(FILENAME_RX_TLM, &rx_tlm);
+
+}
+
+int CMD_getTRXVU_TLM(sat_packet_t *cmd)
+{
+	int err1, err2;
+	unsigned char rawData[sizeof(isis_vu_e__get_tx_telemetry__from_t) + sizeof(isis_vu_e__get_tx_telemetry_last__from_t)];
+
+	isis_vu_e__get_tx_telemetry__from_t tx_tlm;
+	err1 = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
+	if (err1 == 0)
+		memcpy(&rawData, (unsigned char*)&tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
+
+	isis_vu_e__get_tx_telemetry_last__from_t rx_tlm;
+	err2 = isis_vu_e__get_tx_telemetry_last(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	if (err2 == 0)
+		memcpy(&rawData + sizeof(isis_vu_e__get_tx_telemetry__from_t), (unsigned char*)&rx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
+
+	if(err1 == 0 || err2 == 0)
+	{
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(isis_vu_e__get_tx_telemetry__from_t) + sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
+		return 0;
 	}
 
+	return err1 || err2;
 }
 
 void TelemetrySaveANT()
 {
 	int err = 0;
-	ISISantsTelemetry ant_tlmA, ant_tlmB;
-	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA,
-			&ant_tlmA);
+	isis_ants__get_all_telemetry__from_t ant_tlmA;
+	err = isis_ants__get_all_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &ant_tlmA);
 	if (err == 0)
-	{
 		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmA);
-	}
-	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB,
-			&ant_tlmB);
-	if (err == 0)
-	{
-		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmB);
-	}
+}
 
+// Get Antennas TLM
+int CMD_getAnts_TLM(sat_packet_t *cmd)
+{
+	int err = 0;
+	isis_ants__get_all_telemetry__from_t ant_tlm;
+	err = isis_ants__get_all_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &ant_tlm);
+
+	if (err == 0)
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*) &ant_tlm,sizeof(ant_tlm));
+
+	return err;
 }
 
 int getSolarPanelsTLM(int32_t *t)
@@ -194,6 +250,24 @@ int getSolarPanelsTLM(int32_t *t)
 	return err;
 }
 
+// Get Solar Panels TLM
+int CMD_getSolar_TLM(sat_packet_t *cmd)
+{
+	int err = 0;
+	int32_t t[ISIS_SOLAR_PANEL_COUNT];
+
+	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
+	{
+		err = getSolarPanelsTLM(t);
+		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
+		{
+			TransmitDataAsSPL_Packet(cmd, (unsigned char*) t, sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
+		}
+	}
+
+	return err;
+}
+
 
 void TelemetrySaveWOD()
 {
@@ -204,9 +278,8 @@ void TelemetrySaveWOD()
 
 void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 {
-	if (NULL == wod){
+	if (NULL == wod)
 		return;
-	}
 
 	memset(wod,0,sizeof(*wod));
 	int err = 0;
@@ -223,8 +296,8 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
 
-	isis_eps__gethousekeepingeng__from_t hk_tlm;
-	err += isis_eps__gethousekeepingeng__tm( EPS_I2C_BUS_INDEX, &hk_tlm );
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
+	err += isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &hk_tlm);
 
 	if(err == 0){
 		wod->vbat = hk_tlm.fields.dist_input.fields.volt;
@@ -274,110 +347,25 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 }
 
-
-
-//get EPS TLM
-int CMD_getEPS_TLM(sat_packet_t *cmd)
+void TelemetrySavePIC32()
 {
-	int err1, err2;
-	int size = sizeof(unsigned char)*116;
 
-	unsigned char rawData[232];
-	isis_eps__gethousekeepingraw__from_t tlm_mb_raw;
-	err1 = isis_eps__gethousekeepingraw__tm(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
-
-	if (err1 == 0)	{
-		memcpy(&rawData, (unsigned char*)&tlm_mb_raw.raw, size);
-	} else 	{
-		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err1);
-	}
-
-
-	isis_eps__gethousekeepingeng__from_t tlm_mb_eng;
-	err2 = isis_eps__gethousekeepingeng__tm(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
-
-	if (err2 == 0)	{
-		memcpy(&rawData + size, (unsigned char*)&tlm_mb_eng.raw, size);
-	} else {
-		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err2);
-	}
-
-	if(err1 == 0 || err2 == 0)
-	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, size*2);
-		return 0;
-	}
-
-
-	return err1;
 }
 
-// Get Solar Panels TLM
-int CMD_getSolar_TLM(sat_packet_t *cmd)
+void TelemetrySaveRADFET()
 {
-	int err = 0;
-	int32_t t[ISIS_SOLAR_PANEL_COUNT];
 
-	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
-	{
-		err = getSolarPanelsTLM(t);
-		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
-		{
-			TransmitDataAsSPL_Packet(cmd, (unsigned char*) t, sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
-		}
-	}
-
-	return err;
 }
 
-// Get TRXVU TLM
-int CMD_getTRXVU_TLM(sat_packet_t *cmd)
+// Get Pic32 TLM
+int CMD_getPic32_TLM(sat_packet_t *cmd)
 {
-	int err1, err2;
-	unsigned char rawData[TRXVU_ALL_RXTELEMETRY_SIZE*2];
-	int size = TRXVU_ALL_RXTELEMETRY_SIZE * sizeof(unsigned char);
-
-	ISIStrxvuTxTelemetry tx_tlm;
-	err1 = IsisTrxvu_tcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
-	if (err1 == 0)
-	{
-		memcpy(&rawData, (unsigned char*)&tx_tlm.raw, size);
-	}
-
-	ISIStrxvuRxTelemetry rx_tlm;
-	err2 = IsisTrxvu_rcGetTelemetryAll(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
-	if (err2 == 0)
-	{
-		memcpy(&rawData+size, (unsigned char*)&rx_tlm.raw, size);
-	}
-
-	if(err1 == 0 || err2 == 0)
-	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, size*2);
-		return 0;
-	}
-
-	return err1;
+	return 0;
 }
 
-// Get Antennas TLM
-int CMD_getAnts_TLM(sat_packet_t *cmd)
+// Get Radfet TLM
+int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
-	int err = 0;
-	ISISantsTelemetry ant_tlm;
-	err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, &ant_tlm);
-	if (err != 0)
-	{
-		err = IsisAntS_getAlltelemetry(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, &ant_tlm);
-	}
-
-	//success get telemetry
-	if (err == 0)
-	{
-		//send data
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*) &ant_tlm,sizeof(ant_tlm));
-	}
-
-	return err;
+	return 0;
 }
 

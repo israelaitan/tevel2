@@ -1,409 +1,0 @@
-=~=~=~=~=~=~=~=~=~=~=~= PuTTY log 2019.08.13 11:15:05 =~=~=~=~=~=~=~=~=~=~=~=
--I- I cache enabled.
-still alive 0
--D-  Time sync done 
-still alive 1
--D-  Time sync done 
-still alive 2
--D-  Time sync done 
-still alive 3
--D-  Time sync done 
-still alive 4
--D-  Time sync done 
-still alive 5
--D-  Time sync done 
-still alive 6
--D-  Time sync done 
-still alive 7
--D-  Time sync done 
-still alive 8
--D-  Time sync done 
-still alive 9
--D-  Time sync done 
-still alive 10
--D-  Time sync done 
-still alive 11
--D-  Time sync done 
-still alive 12
--D-  Time sync done 
-still alive 13
--D-  Time sync done 
-still alive 14
--D-  Time sync done 
-still alive 15
--D-  Time sync done 
-still alive 16
--D-  Time sync done 
-still alive 17
--D-  Time sync done 
-still alive 18
--D-  Time sync done 
-still alive 19
--D-  Time sync done 
-still alive 20
--D-  Time sync done 
-still alive 21
--D-  Time sync done 
-still alive 22
--D-  Time sync done 
-still alive 23
--D-  Time sync done 
-still alive 24
--D-  Time sync done 
-still alive 25
--D-  Time sync done 
-still alive 26
--D-  Time sync done 
-still alive 27
--D-  Time sync done 
-still alive 28
--D-  Time sync done 
-still alive 29
--D-  Time sync done 
-still alive 30
--D-  Time sync done 
-still alive 31
--D-  Time sync done 
-still alive 32
--D-  Time sync done 
-still alive 33
--D-  Time sync done 
-still alive 34
--D-  Time sync done 
--I- PMC_EnablePeripheral: clock of peripheral 11 is already enabled
-gomspace tele vbat: 42405
-still alive 0
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 1
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 2
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 3
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 4
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 5
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 6
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 7
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 8
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 9
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 10
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 11
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 12
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 13
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 14
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 15
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 16
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 17
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 18
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 19
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 20
--D-  Time sync done 
-gomspace tele vbat: 42405
-still alive 21
--D-  Time sync done 
--I- PMC_EnablePeripheral: clock of peripheral 11 is already enabled
--D-  Time sync done 
-gomspace tele vbat: 7334
-still alive 0
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 1
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 2
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 3
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 4
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 5
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 6
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 7
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 8
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 9
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 10
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 11
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 12
--D-  Time sync done 
-gomspace tele vbat: 7325
-still alive 13
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 14
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 15
--D-  Time sync done 
-gomspace tele vbat: 7296
-still alive 16
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 17
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 18
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 19
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 20
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 21
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 22
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 23
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 24
--D-  Time sync done 
-gomspace tele vbat: 7101
-still alive 25
--D-  Time sync done 
-gomspace tele vbat: 7101
-still alive 26
--D-  Time sync done 
-gomspace tele vbat: 7101
-still alive 27
--D-  Time sync done 
-gomspace tele vbat: 7110
-still alive 28
--D-  Time sync done 
-gomspace tele vbat: 7101
-still alive 29
--D-  Time sync done 
-gomspace tele vbat: 7214
-still alive 30
--D-  Time sync done 
-gomspace tele vbat: 7205
-still alive 31
--D-  Time sync done 
-gomspace tele vbat: 7214
-still alive 32
--D-  Time sync done 
-gomspace tele vbat: 7214
-still alive 33
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 34
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 35
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 36
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 37
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 38
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 39
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 40
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 41
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 42
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 43
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 44
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 45
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 46
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 47
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 48
--D-  Time sync done 
-gomspace tele vbat: 7306
-still alive 49
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 50
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 51
--D-  Time sync done 
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 52
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 53
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 54
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 55
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 56
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 57
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 58
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 59
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 60
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 61
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 62
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 63
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 64
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 65
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 66
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 67
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 68
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 69
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 70
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 71
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 72
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 73
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 74
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 75
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 76
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 77
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 78
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 79
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 80
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 81
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 82
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 83
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 84
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 85
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 86
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 87
--D-  Time sync done 
-gomspace tele vbat: 7315
-still alive 88
--D-  Time sync done 

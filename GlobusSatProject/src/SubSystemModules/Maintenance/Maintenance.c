@@ -6,8 +6,6 @@
 
 #include "GlobalStandards.h"
 
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
 
 #include <hcc/api_fat.h>
 

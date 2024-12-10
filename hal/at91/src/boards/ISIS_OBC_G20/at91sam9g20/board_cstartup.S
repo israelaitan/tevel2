@@ -31,7 +31,7 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include "at91/boards/ISIS_OBC_G20/board.h"
+#include <at91/boards/ISIS_OBC_G20/board.h>
 
 //------------------------------------------------------------------------------
 //         Definitions
@@ -39,8 +39,8 @@
 // If you change any of these from 0 to non-zero,
 // make sure to add instructions to actually reserve this stack space
 #define UND_STACK_SIZE	0x00000000		/* Stack size for "undefined instruction" interrupts		*/
-#define ABT_STACK_SIZE	0x00000000		/* Stack size for "abort" interrupts						*/
-#define FIQ_STACK_SIZE	0x00000000		/* Stack size for "FIQ" interrupts						*/
+#define ABT_STACK_SIZE	0x00028000		/* Stack size for "abort" interrupts						*/
+#define FIQ_STACK_SIZE	0x00018000		/* Stack size for "FIQ" interrupts						*/
 #define IRQ_STACK_SIZE	0x00018000		/* Stack size for "IRQ" normal interrupts				*/
 #define SVC_STACK_SIZE	0x00018000		/* Stack size for "SVC" supervisor mode					*/
 
@@ -70,7 +70,7 @@
 resetVector:
         ldr     pc, =resetHandler				/* Reset */
 undefVector:
-        b       undefVector						/* Undefined instruction */
+        ldr     pc, =startOverDataAbort	        /* Undefined instruction */
 swiVector:
 #ifdef no_os
 		b       irqHandler						/* Interrupt */
@@ -201,7 +201,7 @@ resetHandler:
 
 /* Initialize the prerelocate segment */
 1:
-        ldr     r0, =_efixed
+        ldr     r0, =_eextab
         ldr     r1, =_sprerelocate
         ldr     r2, =_eprerelocate
 1:
@@ -279,10 +279,20 @@ resetHandler:
         mov     sp, r0
         sub     r0, r0, #IRQ_STACK_SIZE
 
+/* ABT mode */
+        msr     CPSR_c, #ARM_MODE_ABT | I_BIT | F_BIT
+        mov     sp, r0
+        sub     r0, r0, #ABT_STACK_SIZE
+
 /* Supervisor mode (interrupts enabled) */
         msr     CPSR_c, #ARM_MODE_SVC |I_BIT | F_BIT
         mov     sp, r0
         sub     r0, r0, #SVC_STACK_SIZE
+
+ /* FIQ mode */
+        msr     CPSR_c, #ARM_MODE_FIQ |I_BIT | F_BIT
+        mov     sp, r0
+        sub     r0, r0, #FIQ_STACK_SIZE
 
 /* System mode, the normal mode of operation */
         msr     CPSR_c, #ARM_MODE_SYS | I_BIT | F_BIT
@@ -301,12 +311,51 @@ startOver:
 		blx		r0
 
 startOverPrefetchAbort:
-		ldr     r0, =restartPrefetchAbort
-		blx		r0
+/*
+Copying shared registers + LR to stack for preservation
+This is AAPCS function call conformant assuming we've filled up r0-r3
+*/
+        stmdb   sp, {r0-r12}^
+/* Writeback to SP from list is not supported here, so manual add it is */
+        sub     sp, #52
+        stmdb   sp!, {lr}
+		mov		r4, #0
+/* Jump into startOverDataAbort to avoid duplication of code */
+		b		startOverAbort
 
 startOverDataAbort:
-		ldr     r0, =restartDataAbort
-		blx		r0
+/*
+Copying shared registers + LR to stack for preservation
+This is AAPCS function call conformant assuming we've filled up r0-r3
+*/
+        stmdb   sp, {r0-r12}^
+/* Writeback to SP from list is not supported here, so manual add it is */
+        sub     sp, #52
+        stmdb   sp!, {lr}
+		mov		r4, #1
+	startOverAbort:
+/* Saving the cpsr and spsr so we can switch mode */
+		mrs 	r0, cpsr
+		mrs		r1, spsr
+		tst		r1, #0xF
+		orreq	r1, r1, #0xF
+		bic		r7, r1, #0x20
+/* Switching to fault causing mode*/
+		msr		cpsr_c, r7
+/*
+Retrieve sp + lr (except for FIQ, the only banked registers along with pc)
+NOTE: lr will here be the address of the last function call before the crash
+ */
+		mov		r2, sp
+		mov		r3, lr
+/* Switching back to abort mode */
+		msr		cpsr_c, r0
+/*
+Pushing last parameter to handleAbort on stack as we've run out of registers
+This is AAPCS conformant
+*/
+		stmdb	sp!, {r4}
+		bl		handleAbort
 
 /* Loop indefinitely when program is finished */
 1:

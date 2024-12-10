@@ -1,5 +1,6 @@
-/** @file checksum.h
- * Collection of checksum functions
+/**
+ * @file checksum.h
+ * @brief Collection of checksum functions
  */
 
 #ifndef CHECKSUM_H
@@ -18,6 +19,27 @@
 #define CRC32_POLYNOMIAL_REVERSED		0xEDB88320
 
 /**
+ * Generate a LUT for CRC 32 calculations with a certain polynomial, using the
+ * sliced-by-4 algorithm
+ *
+ * @param[in] polynomial Reverse of 32-bit CRC polynomial to be used
+ * @param[out] LUT 2D pointer to memory block where LUT can be stored, needs to be at least 4 by 256 * sizeof(unsigned int) = 4KiB
+ */
+void checksum_prepareSlicedLUTCRC32(unsigned int polynomial, unsigned int LUT[4][256]);
+
+/**
+ * Calculates a CRC 32 checksum according to ISO 3309, using a LUT based on the
+ * sliced-by-4 algorithm
+ *
+ * @param[in] data Pointer to data to calculate the checksum for.
+ * @param[in] length Length of the data in bytes.
+ * @param[in] LUT Pointer to LUT to use for CRC calculations, prepared using checksum_prepareSlicedLUTCRC32()
+ * @param[in] start_remainder Remainder to start CRC calculation with
+ * @return 32-bit CRC checksum.
+ */
+unsigned int checksum_calculateSlicedCRC32LUT(const unsigned char* data, unsigned int length, unsigned int LUT[4][256], unsigned int start_remainder);
+
+/**
  * Generate a LUT for CRC 32 calculations with a certain polynomial
  *
  * @param[in] polynomial Reverse of 32-bit CRC polynomial to be used
@@ -34,7 +56,7 @@ void checksum_prepareLUTCRC32(unsigned int polynomial, unsigned int* LUT);
  * @param[in] start_remainder Remainder to start CRC calculation with
  * @return 32-bit CRC checksum.
  */
-unsigned int checksum_calculateCRC32LUT(unsigned char* data, unsigned int length, unsigned int* LUT, unsigned int start_remainder);
+unsigned int checksum_calculateCRC32LUT(const unsigned char* data, unsigned int length, const unsigned int* LUT, unsigned int start_remainder);
 
 /**
  * Calculates a CRC 32 checksum according to ISO 3309, using bitwise operations
@@ -45,7 +67,7 @@ unsigned int checksum_calculateCRC32LUT(unsigned char* data, unsigned int length
  * @param[in] start_remainder Remainder to start CRC calculation with
  * @return 32-bit CRC checksum.
  */
-unsigned int checksum_calculateCRC32(unsigned char* data, unsigned int length, unsigned int polynomial, unsigned int start_remainder);
+unsigned int checksum_calculateCRC32(const unsigned char* data, unsigned int length, unsigned int polynomial, unsigned int start_remainder);
 
 /*!
  * @brief Verifies CRC32 Calculation by comparing a calculated CRC frame with input CRC frame, using bitwise calculation
@@ -55,7 +77,7 @@ unsigned int checksum_calculateCRC32(unsigned char* data, unsigned int length, u
  * @param[in] polynomial Reverse of 32-bit CRC polynomial to be used.
  * @return TRUE (checksum correct) or FALSE (checksum incorrect).
  */
-Boolean checksum_verifyCRC32(unsigned char* data, unsigned int length, unsigned int polynomial);
+Boolean checksum_verifyCRC32(const unsigned char* data, unsigned int length, unsigned int polynomial);
 
 /**
  * Generate a LUT for CRC 16 calculations with a certain polynomial
@@ -75,7 +97,7 @@ void checksum_prepareLUTCRC16(unsigned short polynomial, unsigned short* LUT);
  * @param[in] endofdata Indicates whether this is the end of larger datablock (TRUE) or not yet (FALSE)
  * @return 16-bit CRC checksum.
  */
-unsigned short checksum_calculateCRC16LUT(unsigned char* data, unsigned int length, unsigned short* LUT, unsigned short start_remainder, Boolean endofdata);
+unsigned short checksum_calculateCRC16LUT(const unsigned char* data, unsigned int length, const unsigned short* LUT, unsigned short start_remainder, Boolean endofdata);
 
 /**
  * Calculates a CRC 16 checksum according to CRC-16 CCITT, using bitwise calculation
@@ -87,7 +109,7 @@ unsigned short checksum_calculateCRC16LUT(unsigned char* data, unsigned int leng
  * @param[in] endofdata Indicates whether this is the end of larger datablock (TRUE) or not yet (FALSE)
  * @return 16-bit CRC checksum.
  */
-unsigned short checksum_calculateCRC16(unsigned char* data, unsigned int length, unsigned short polynomial, unsigned short start_remainder, Boolean endofdata);
+unsigned short checksum_calculateCRC16(const unsigned char* data, unsigned int length, unsigned short polynomial, unsigned short start_remainder, Boolean endofdata);
 
 /*!
  * @brief Verifies CRC16 Calculation by comparing a calculated CRC frame with input CRC frame, using bitwise calculation
@@ -97,7 +119,7 @@ unsigned short checksum_calculateCRC16(unsigned char* data, unsigned int length,
  * @param[in] polynomial 16-bit CRC polynomial to be used.
  * @return TRUE (checksum correct) or FALSE (checksum incorrect).
  */
-Boolean checksum_verifyCRC16(unsigned char* data, unsigned int length, unsigned short polynomial);
+Boolean checksum_verifyCRC16(const unsigned char* data, unsigned int length, unsigned short polynomial);
 
 /**
  * Generate a LUT for CRC 8 calculations with a certain polynomial

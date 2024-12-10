@@ -2,7 +2,6 @@
 
 #include <freertos/task.h>
 #include <freertos/semphr.h>
-#include <satellite-subsystems/GomEPS.h>
 
 #include <config/config_fat.h>
 

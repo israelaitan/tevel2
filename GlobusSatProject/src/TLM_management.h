@@ -11,7 +11,7 @@
 #include <hcc/api_fat.h>
 #include <GlobalStandards.h>
 
-#define MAX_F_FILE_NAME_SIZE 7
+#define MAX_F_FILE_NAME_SIZE 9
 #define FIRST_ELEMENT_IN_C_FILE 0
 #define LAST_ELEMENT_IN_C_FILE 0
 #define DEFAULT_NUM_OF_FILES 0

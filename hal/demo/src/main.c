@@ -19,6 +19,7 @@
 #include "Tests/boardTest.h"
 #include "Tests/checksumTest.h"
 #include "Tests/SDCardTest.h"
+#include "Tests/RTTAlarm.h"
 
 #include <at91/utility/exithandler.h>
 #include <at91/commons.h>
@@ -61,7 +62,7 @@
 #endif
 
 Boolean selectAndExecuteTest() {
-	unsigned int selection = 0;
+	int selection = 0;
 	Boolean offerMoreTests = TRUE;
 
 	printf( "\n\r Select a test to perform: \n\r");
@@ -80,8 +81,9 @@ Boolean selectAndExecuteTest() {
 	printf("\t 13) Board Test \n\r");
 	printf("\t 14) Time Test \n\r");
 	printf("\t 15) Checksum Test \n\r");
+	printf("\t 16) RTT alarm Test \n\r");
 
-	while(UTIL_DbguGetIntegerMinMax(&selection, 1, 15) == 0);
+	while(UTIL_DbguGetIntegerMinMax(&selection, 1, 16) == 0);
 
 	switch(selection) {
 	case 1:
@@ -129,6 +131,9 @@ Boolean selectAndExecuteTest() {
 	case 15:
 		offerMoreTests = checksumTest();
 		break;
+	case 16:
+	    offerMoreTests = RTTAlarm();
+	    break;
 	default:
 		break;
 	}
@@ -137,7 +142,7 @@ Boolean selectAndExecuteTest() {
 }
 
 void taskMain() {
-	unsigned int choice;
+	int choice;
 	Boolean offerMoreTests = FALSE;
 
 	WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
@@ -174,11 +179,12 @@ void taskMain() {
 
 }
 
-int main() {
-	unsigned int i = 0;
+int main()
+{
+	unsigned int i;
 	xTaskHandle taskMainHandle;
 
-	TRACE_CONFIGURE_ISP(DBGU_STANDARD, 2000000, BOARD_MCK);
+	TRACE_CONFIGURE_ISP(DBGU_STANDARD, 115200, BOARD_MCK);
 	// Enable the Instruction cache of the ARM9 core. Keep the MMU and Data Cache disabled.
 	CP15_Enable_I_Cache();
 
@@ -206,12 +212,13 @@ int main() {
 	vTaskStartScheduler();
 
 	// This part should never be reached.
-	MAIN_TRACE_DEBUG("\t main: Waiting in an infinite loop. \n\r");
-	while(1) {
+	MAIN_TRACE_DEBUG("\t main: Unexpected end of scheduling \n\r");
+
+	//Flash some LEDs for about 100 seconds
+	for (i=0; i < 2500; i++)
+	{
 		LED_wave(1);
 		MAIN_TRACE_DEBUG("MAIN: STILL ALIVE %d\n\r", i);
-		i++;
 	}
-
-	return 0;
+	exit(0);
 }

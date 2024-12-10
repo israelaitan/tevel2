@@ -2,12 +2,6 @@
 #include "EPSOperationModes.h"
 #include "GlobalStandards.h"
 
-#ifdef ISISEPS
-	#include <satellite-subsystems/isis_eps_driver.h>
-#endif
-#ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
 
 
 //TODO: update functions to only the relevant channels
