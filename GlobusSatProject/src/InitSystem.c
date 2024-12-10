@@ -14,9 +14,9 @@
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Housekepping/DUMP.h"
-#include <satellite-subsystems/IsisAntS.h>
+#include <satellite-subsystems/isis_ants.h>
 #include "TLM_management.h"
-#include <satellite-subsystems/isis_eps_driver.h>
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
 
 #define I2c_Timeout 10
@@ -26,7 +26,6 @@
 
 time_unix expected_deploy_time_sec = 0;
 
-//האם זו האינטרקציה הראשונה
 int isFirstActivation(Boolean * status)
 {
 	unsigned char FirstActivation = 0;
@@ -166,43 +165,37 @@ int autoDeploy()
 	int resArm=0, resDeploy = -1;
 
 	// antena auto deploy - sides A
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, isisants_arm);
+	resArm = isis_ants__arm(0);
 
-	if(resArm==0)
+	if(resArm == 0)
 	{
 		logg(event, "V:Deploying: Side A\n");
-		resDeploy=IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideA, ANTENNA_DEPLOYMENT_TIMEOUT);
+		resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);
 		if (resDeploy!=0)
 			logg(event, "V:Failed deploy: Side A res=%d\n", resDeploy);
 	}
 	else
-	{
 		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
-	}
 
 	// antenata auto deploy - sides B
-	resArm = IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, isisants_arm);
-	if(resArm==0)
+	resArm = isis_ants__arm(1);
+	if(resArm == 0)
 	{
 		logg(event, "V:Deploying: Side B\n");
-		resDeploy = IsisAntS_autoDeployment(ISIS_TRXVU_I2C_BUS_INDEX, isisants_sideB, ANTENNA_DEPLOYMENT_TIMEOUT);
+		resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);
 		if (resDeploy!=0)
 			logg(event, "V:Failed deploy: Side B res=%d\n", resDeploy);
 	}
 	else
-	{
 		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
-	}
+
 
 	// update last deploy time
 	time_unix deploy_time;
 	int err = Time_getUnixEpoch((unsigned int *)&deploy_time);
 	if(0 != err)
-	{
 		logg(error, "E:Time_getUnixEpoch failed to set ants last deploy time\n");
-	}
-	else
-	{
+	else {
 		setLastAntsAutoDeploymentTime(deploy_time);
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 		logg(event, "V:setLastAntsAutoDeploymentTime success\n");
@@ -275,7 +268,7 @@ int InitSubsystems()
 		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
 
 
-	// initialize TRXVU (communication) component
+	// initialize TRXVU (communication) component and ants
 	int err=InitTrxvu();
 	if (err!=0)
 		logg(error, "E:%d Failed in InitTrxvu\n", err);

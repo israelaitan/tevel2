@@ -10,7 +10,7 @@
 
 #include <hal/Utility/util.h>
 #include <hal/Timing/Time.h>
-
+/*
 #include <satellite-subsystems/isis_eps_driver.h>
 #include "SubSystemModules/PowerManagment/EPS.h"	// for EPS_Conditioning
 
@@ -527,3 +527,4 @@ Boolean MainTrxvuTestBench()
 	}
 	return FALSE;
 }
+*/

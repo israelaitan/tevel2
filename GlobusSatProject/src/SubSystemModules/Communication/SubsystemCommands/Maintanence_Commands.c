@@ -6,8 +6,8 @@
 
 #include <hal/Timing/Time.h>
 
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
+#include <satellite-subsystems/isis_vu_e.h>
+#include <satellite-subsystems/isis_ants.h>
 #include <satellite-subsystems/isis_eps_driver.h>
 #include <hcc/api_fat.h>
 #include <hal/Drivers/I2C.h>

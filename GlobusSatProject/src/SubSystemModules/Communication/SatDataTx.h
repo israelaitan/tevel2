@@ -8,7 +8,7 @@
 #define MUTE_ON 		TRUE	///< mute is on flag
 #define MUTE_OFF 		FALSE	///< mute is off flag
 
-#include <satellite-subsystems/IsisTRXVU.h>
+#include <satellite-subsystems/isis_vu_e.h>
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
 /*!
@@ -64,7 +64,7 @@ Boolean CheckForMuteEnd();
  * @param[out] bitrate the current baud rate of the satellite
  * @return errors according to <hal/errors.h>
  */
-int GetTrxvuBitrate(ISIStrxvuBitrateStatus *bitrate);
+int GetTrxvuBitrate(isis_vu_e__bitrate_t *bitrate);
 
 /*!
  * @brief returns number of online frames are in the TRX frame buffer

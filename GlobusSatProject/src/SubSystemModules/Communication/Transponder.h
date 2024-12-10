@@ -8,7 +8,7 @@
 #ifndef TRANSPONDER_H_
 #define TRANSPONDER_H_
 
-#include <satellite-subsystems/IsisTRXVU.h>
+#include <satellite-subsystems/isis_vu_e.h>
 #include "GlobalStandards.h"
 #include "AckHandler.h"
 #include "SatCommandHandler.h"

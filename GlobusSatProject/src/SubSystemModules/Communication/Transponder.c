@@ -14,8 +14,8 @@
 #include <hal/errors.h>
 #include <hal/Drivers/I2C.h>
 
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
+#include <satellite-subsystems/isis_vu_e.h>
+#include <satellite-subsystems/isis_ants.h>
 
 #include <stdlib.h>
 #include <string.h>

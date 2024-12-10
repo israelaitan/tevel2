@@ -5,8 +5,8 @@
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
 
-#include <satellite-subsystems/IsisTRXVU.h>
-#include <satellite-subsystems/IsisAntS.h>
+#include <satellite-subsystems/isis_vu_e.h>
+#include <satellite-subsystems/isis_ants.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -44,27 +44,6 @@ void setLastAntsAutoDeploymentTime(time_unix time)
 {
 	g_ants_last_dep_time = time;
 	logg(TRXInfo, "I: Last Antenas Auto deployment is: %d\n", time);
-}
-
-//setting trxvu idle off
-int SetIdleOff()
-{
-	logg(TRXInfo, "I:inside SetIdleOff()\n");
-	int err = 0;
-
-	err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_off);
-	if(err==0)
-	{
-		g_idle_flag=FALSE;
-		g_idle_start_time = 0;
-		g_idle_period = 300 ;
-	}
-	else
-	{
-		logg(error, "E:failed in setting trxvu idle off - %d\n", err);
-	}
-
-	return err;
 }
 
 void HandleOpenAnts()
@@ -120,12 +99,13 @@ void HandleTransponderTime()
 
 int InitAnts(){
 	//Set Antenas addresses for both sides
-	ISISantsI2Caddress address;
-	address.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-	address.addressSideB = ANTS_I2C_SIDE_B_ADDR;
+
+	ISIS_ANTS_t address[2];
+	address[0].i2cAddr = ANTS_I2C_SIDE_A_ADDR;
+	address[1].i2cAddr = ANTS_I2C_SIDE_B_ADDR;
 
 	//initialize Antenas system
-	int err=IsisAntS_initialize(&address,1);
+	int err = ISIS_ANTS_Init(&address, 2);
 	if(err)
 		logg(error, "Error in the initialization of the Antennas: %d\n", err);
 	else
@@ -133,49 +113,32 @@ int InitAnts(){
 	return err;
 }
 
-// Initialize TRXVU component
 int InitTrxvu()
 {
 	logg(TRXInfo, "I:InitTrxvu() started\n");
-	//set I2C addresses
-	ISIStrxvuI2CAddress i2cAdress;
-	i2cAdress.addressVu_rc=I2C_TRXVU_RC_ADDR;
-	i2cAdress.addressVu_tc=I2C_TRXVU_TC_ADDR;
 
-	//set max frame lengths
-	ISIStrxvuFrameLengths framelengths;
-	framelengths.maxAX25frameLengthRX=SIZE_RXFRAME;
-	framelengths.maxAX25frameLengthTX=SIZE_TXFRAME;
+	ISIS_VU_E_t myTRXVU[1];
+	myTRXVU[0].rxAddr = I2C_TRXVU_RC_ADDR;
+	myTRXVU[0].txAddr = I2C_TRXVU_TC_ADDR;
+	myTRXVU[0].maxSendBufferLength = SIZE_TXFRAME;
+	myTRXVU[0].maxReceiveBufferLength = SIZE_RXFRAME;
 
-	//set bitrate
-	ISIStrxvuBitrate default_bitrates;
-	default_bitrates=trxvu_bitrate_9600;
-
-	//Initialize TRXVU driver
-	int err = IsisTrxvu_initialize(&i2cAdress,&framelengths,&default_bitrates,1);
-	if(err!=0)
-	{
+	driver_error_t err = ISIS_VU_E_Init(myTRXVU, 1);
+	if(err!=0) {
 		logg(error, "E: in the initialization: %d\n", err);
 		return err;
 	}
 	else
-	{
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
-	}
 
-
-	vTaskDelay(100);
-	err=IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX ,trxvu_bitrate_9600);
-	if(err!=0)
-	{
+	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
+	if(err!=0) {
 		logg(error, "E: Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
 		return err;
 	}
 	else
-	{
 		logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
-	}
-	vTaskDelay(100);
+
 
 	//initialize idle to off
 	SetIdleOff();
@@ -260,10 +223,7 @@ CommandHandlerErr TRX_Logic()
 	return res;
 }
 
- /*
-  * TRXVU Online Commands
-  *
-  */
+ /* TRXVU Online Commands */
 
 // Command to set idle state to on
 int CMD_SetIdleOn(sat_packet_t *cmd)
@@ -279,13 +239,10 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 	}
 
 	logg(TRXInfo, "I:inside CMD_SetIdleOn()\n");
-	int err=IsisTrxvu_tcSetIdlestate(ISIS_TRXVU_I2C_BUS_INDEX, trxvu_idle_state_on);
+	int err = isis_vu_e__set_idle_state(ISIS_TRXVU_I2C_BUS_INDEX, isis_vu_e__onoff__on);
 	if(err!=0)
-	{
 		logg(error, "E: Error in setting trxvu idle on - %d\n", err);
-	}
-	else
-	{
+	else {
 		//get time of start idle period & set idle state flag to true and set idle period
 		memcpy(&g_idle_period,cmd->data,sizeof(g_idle_period));
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
@@ -295,6 +252,20 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 	return err;
 }
 
+//setting trxvu idle off
+int SetIdleOff()
+{
+	logg(TRXInfo, "I:inside SetIdleOff()\n");
+	int err = isis_vu_e__set_idle_state(ISIS_TRXVU_I2C_BUS_INDEX, isis_vu_e__onoff__off);
+	if(err == 0){
+		g_idle_flag=FALSE;
+		g_idle_start_time = 0;
+		g_idle_period = 300 ;
+	} else
+		logg(error, "E:failed in setting trxvu idle off - %d\n", err);
+
+	return err;
+}
 
 // Command to set idle state to off
 int CMD_SetIdleOff()
@@ -305,19 +276,12 @@ int CMD_SetIdleOff()
 
 Boolean areAntennasOpen()
 {
-	int err;
-
 	// get ant open flag from fram
 	time_unix lastCommunicationTime;
-	err=FRAM_read((unsigned char *)&lastCommunicationTime, LAST_COMM_TIME_ADDR,  LAST_COMM_TIME_SIZE );
+	int err = FRAM_read((unsigned char *)&lastCommunicationTime, LAST_COMM_TIME_ADDR,  LAST_COMM_TIME_SIZE );
 	if(err!=0 || lastCommunicationTime == UNIX_DEPLOY_DATE_JAN_D1_Y2020_SEC)
-	{
 		g_antOpen=FALSE;
-	}
 	else
-	{
 		g_antOpen=TRUE;
-	}
-
 	return g_antOpen;
 }

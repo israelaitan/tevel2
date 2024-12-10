@@ -1,4 +1,4 @@
-#include <satellite-subsystems/IsisTRXVU.h>
+#include <satellite-subsystems/isis_vu_e.h>
 #include <hal/Timing/Time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 	sat_packet_t cmd;		///< command data
 } delayed_cmd_t;
 
-unsigned char received_frame_data[MAX_COMMAND_DATA_LENGTH];
+unsigned char received_frame_data[SIZE_RXFRAME] = {0};
 
 //parsing the packet to create a command
 CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
@@ -116,27 +116,22 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length
 
 CommandHandlerErr GetOnlineCommand(sat_packet_t *cmd)
 {
-	if (NULL == cmd) {
+	if (NULL == cmd)
 		return cmd_null_pointer_error;
-	}
-	int err = 0;
 
 	unsigned short frame_count = 0;
-
-	err = IsisTrxvu_rcGetFrameCount(0, &frame_count);
-	if (0 != err) {
+	int err = isis_vu_e__get_frame_count(0, &frame_count);
+	if (0 != err)
 		return cmd_execution_error;
-	}
-	if (0 == frame_count) {
+
+	if (0 == frame_count)
 		return cmd_no_command_found;
-	}
-	ISIStrxvuRxFrame rxFrameCmd = { 0, 0, 0,
-			(unsigned char*) received_frame_data }; // for getting raw data from Rx, nullify values
 
-	err = IsisTrxvu_rcGetCommandFrame(0, &rxFrameCmd); //get the frame from the Rx buffer
-	if (0 != err) {
+	isis_vu_e__get_frame__from_t rxFrameCmd = { 0, 0, 0, received_frame_data };
+
+	err = isis_vu_e__get_frame(0, &rxFrameCmd); //get the frame from the Rx buffer
+	if (0 != err)
 		return cmd_execution_error;
-	}
 
 	err = ParseDataToCommand(received_frame_data,cmd);
 

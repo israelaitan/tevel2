@@ -6,7 +6,7 @@
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
 
-#include <satellite-subsystems/IsisTRXVU.h>
+#include <satellite-subsystems/isis_vu_e.h>
 #include "SubSystemModules/Maintenance/Log.h"
 #include "Transponder.h"
 #include "GlobalStandards.h"
@@ -128,16 +128,17 @@ Boolean CheckTransmitionAllowed() {
 	return FALSE;
 }
 
-int GetTrxvuBitrate(ISIStrxvuBitrateStatus *bitrate) {
-	if (NULL == bitrate) {
-		return E_NOT_INITIALIZED;
-	}
-	ISIStrxvuTransmitterState trxvu_state;
-	int err = IsisTrxvu_tcGetState(ISIS_TRXVU_I2C_BUS_INDEX, &trxvu_state);
+int GetTrxvuBitrate(isis_vu_e__bitrate_t *bitrate) {
 
-	if (E_NO_SS_ERR == err) {
-		*bitrate = trxvu_state.fields.transmitter_bitrate;
-	}
+	if (NULL == bitrate)
+		return E_NOT_INITIALIZED;
+
+	isis_vu_e__state__from_t trxvu_state;
+	int err = isis_vu_e__state(ISIS_TRXVU_I2C_BUS_INDEX, &trxvu_state);
+
+	if (E_NO_SS_ERR == err)
+		*bitrate = trxvu_state.fields.bitrate;
+
 	return err;
 
 }
@@ -171,7 +172,7 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE)
 		return E_GET_SEMAPHORE_FAILED;
 
-	err = IsisTrxvu_tcSendAX25DefClSign(ISIS_TRXVU_I2C_BUS_INDEX,
+	err = isis_vu_e__send_frame(ISIS_TRXVU_I2C_BUS_INDEX,
 			(unsigned char*) packet, data_length, (unsigned char*) avalFrames);
 
 	xSemaphoreGive(xIsTransmitting);

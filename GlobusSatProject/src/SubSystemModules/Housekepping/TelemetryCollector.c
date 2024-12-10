@@ -184,7 +184,7 @@ void TelemetrySaveTRXVU()
 		c_fileWrite(FILENAME_TX_TLM, &tx_tlm);
 
 	isis_vu_e__get_tx_telemetry_last__from_t rx_tlm;
-	err = isis_vu_e__get_tx_telemetry_last()(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	err = isis_vu_e__get_tx_telemetry_last(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
 	if (err == 0)
 		c_fileWrite(FILENAME_RX_TLM, &rx_tlm);
 
