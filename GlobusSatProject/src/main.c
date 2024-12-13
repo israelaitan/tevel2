@@ -31,6 +31,8 @@
 
 	void taskMain() {
 
+		TRACE_CONFIGURE(DBGU_STANDARD, 115200, BOARD_MCK);
+
 		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
 ////******************REMOVE

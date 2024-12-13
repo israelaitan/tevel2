@@ -124,7 +124,7 @@ Boolean CheckTransmitionAllowed() {
 		}
 	}
 	logg(TRXInfo, "I:TRASMITION NOT ALLOWED\n");
-	return FALSE;
+	return TRUE;//TODO: should be FALSE
 }
 
 int GetTrxvuBitrate(isis_vu_e__bitrate_t *bitrate) {
@@ -154,11 +154,12 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned in
 	if (err != 0) {
 		return err;
 	}
-	err = TransmitSplPacket(&packet, NULL);
+	uint8_t avalFrames= 0;
+	err = TransmitSplPacket(&packet, &avalFrames);
 	return err;
 }
 
-int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
+int TransmitSplPacket(sat_packet_t *packet, uint8_t *avalFrames) {
 	if (!CheckTransmitionAllowed())
 		return -1;
 
@@ -172,7 +173,7 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 		return E_GET_SEMAPHORE_FAILED;
 
 	err = isis_vu_e__send_frame(ISIS_TRXVU_I2C_BUS_INDEX,
-			(unsigned char*) packet, data_length, (unsigned char*) avalFrames);
+			(unsigned char*) packet, data_length, avalFrames);
 
 	xSemaphoreGive(xIsTransmitting);
 

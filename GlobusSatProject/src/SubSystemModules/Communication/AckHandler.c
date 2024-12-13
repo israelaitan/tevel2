@@ -19,8 +19,9 @@ int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short or
 
 	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, &ack);
 
-	err = TransmitSplPacket(&ack, NULL);
-	vTaskDelay(10);
+	uint8_t availableFrames = 0;
+	err = TransmitSplPacket(&ack, &availableFrames);
+	//vTaskDelay(10);
 	return err;
 }
 

@@ -15,7 +15,6 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 	sat_packet_t cmd;		///< command data
 } delayed_cmd_t;
 
-unsigned char received_frame_data[SIZE_RXFRAME] = {0};
 
 //parsing the packet to create a command
 CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
@@ -127,13 +126,14 @@ CommandHandlerErr GetOnlineCommand(sat_packet_t *cmd)
 	if (0 == frame_count)
 		return cmd_no_command_found;
 
+	unsigned char received_frame_data[SIZE_RXFRAME] = {0};
 	isis_vu_e__get_frame__from_t rxFrameCmd = { 0, 0, 0, received_frame_data };
 
 	err = isis_vu_e__get_frame(0, &rxFrameCmd); //get the frame from the Rx buffer
+	isis_vu_e__remove_frame(0);//TODO:why?
 	if (0 != err)
 		return cmd_execution_error;
 
 	err = ParseDataToCommand(received_frame_data,cmd);
-
 	return err;
 }

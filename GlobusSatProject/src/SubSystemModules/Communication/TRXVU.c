@@ -40,6 +40,39 @@ time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period = ANT_DEPLOY_WAIT_PERIOD; //30 min
 sat_packet_t cmd;
 
+/*!
+ * Get configured receiver and transmitter frequencies.
+ *
+ * @note Seems to also work with the TRXVU Rev. D.
+ */
+static Boolean vu_getFrequenciesTest_revE(void)
+{
+	isis_vu_e__get_rx_freq__from_t rx_freq;
+	uint32_t tx_freq;
+	int rv;
+
+	// Getting RX and TX frequencies separately
+	printf("\r\nGet frequencies of RX and TX\r\n\r\n");
+	rv = isis_vu_e__get_rx_freq(0, &rx_freq);
+	if(rv)
+	{
+		printf("Subsystem receiver call failed. rv = %d", rv);
+		return TRUE;
+	}
+
+	rv = isis_vu_e__get_tx_freq(0, &tx_freq);
+	if(rv)
+	{
+		printf("Subsystem transmitter call failed. rv = %d", rv);
+		return TRUE;
+	}
+
+	printf("Receiver frequency    = %lu kHz\r\n", rx_freq.fields.freq);
+	printf("Transmitter frequency = %lu kHz\r\n", tx_freq);
+
+	return TRUE;
+}
+
 void setLastAntsAutoDeploymentTime(time_unix time)
 {
 	g_ants_last_dep_time = time;
@@ -140,7 +173,7 @@ int InitTrxvu()
 
 	driver_error_t err = ISIS_VU_E_Init(myTRXVU, 1);
 	if(err!=0) {
-		logg(error, "E: in the initialization: %d\n", err);
+		logg(error, "E: in the ISIS_VU_E_Init: %d\n", err);
 		return err;
 	}
 	else
@@ -148,12 +181,32 @@ int InitTrxvu()
 
 	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
 	if(err!=0) {
-		logg(error, "E: Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
+		logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
 		return err;
 	}
 	else
 		logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 
+	/*
+	uint32_t rx_freq = TRXVU_RX_FREQ;
+	uint32_t tx_freq = TRXVU_TX_FREQ;
+	err = isis_vu_e__set_rx_freq(0, &rx_freq);
+	if(err!=0) {
+			logg(error, "E: Error in the isis_vu_e__set_rx_freq: %d\n", err);
+			return err;
+	}
+	else
+		logg(TRXInfo, "I:isis_vu_e__get_rx_freq succeeded\n");
+
+	err = isis_vu_e__set_tx_freq(0, &tx_freq);
+	if(err!=0) {
+		logg(error, "E: Error in the isis_vu_e__set_tx_freq: %d\n", err);
+		return err;
+	}
+	else
+		logg(TRXInfo, "I:isis_vu_e__set_tx_freq succeeded\n");
+    */
+	vu_getFrequenciesTest_revE();//TODO: remove
 
 	//initialize idle to off
 	SetIdleOff();

@@ -21,3 +21,8 @@ GlobusSatProject/Debug/src/main.d
 GlobusSatProject/Debug/src/main.o
 GlobusSatProject/Debug/src/TLM_management.d
 GlobusSatProject/Debug/src/TLM_management.o
+
+*.xml
+*.o
+*.d
+*.map

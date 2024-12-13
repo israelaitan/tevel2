@@ -19,5 +19,7 @@
 #define EPS_I2C_BUS_INDEX 0			//!< index of the EPS I2C
 #define EPS_I2C_ADDR 0x20			//!< I2C address of the EPS
 
+#define TRXVU_RX_FREQ 145970
+#define TRXVU_TX_FREQ 436400
 
 #endif /* SYSI2CADDR_H_ */
