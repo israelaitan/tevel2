@@ -32,11 +32,11 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 	if (err == 0) {
 		ack = succ_subt;
-		logg(event, "Command Ack: %d was successful\n", ack);
+		logg(event, "V:Command Ack: %d was successful\n", ack);
 	}
 	else {
 		ack = fail_subt;
-		logg(error, "Command ack: %d was Failed with error: %d\n", ack, err);
+		logg(error, "V:Command ack: %d was Failed with error: %d\n", ack, err);
 	}
 
 	if (ack != ACK_NO_ACK)

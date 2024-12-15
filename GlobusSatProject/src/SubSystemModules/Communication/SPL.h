@@ -53,6 +53,7 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_FRAM_RESET = 		0xA0,
 	ACK_TLM_SET_COLL_CYCLE= 0xA1,
 	ACK_SET_LOG_LEVEL = 	0xA2,
+	ACK_GET_LOG_LEVEL = 	0xA3,
 
 	ACK_FS_DELETE_ALL = 	0x0D,
 	ACK_FS_DELETE_FILE = 	0x0E,
@@ -134,7 +135,8 @@ typedef enum __attribute__ ((__packed__)) management_subtypes_t
 	GET_SAT_UP_TIME_SUBTYPE= 	0x97,		//151
 	TLM_SET_COLL_CYCLE_SUBTYPE= 0x98,		//152
 	TLM_GET_COLL_CYCLE_SUBTYPE= 0x99,		//153
-	SET_LOG_SUBTYPE = 			0x9A		//154
+	SET_LOG_SUBTYPE = 			0x9A,		//154
+	GET_LOG_SUBTYPE = 			0x9B		//155
 }management_subtypes_t;
 //-----------------
 

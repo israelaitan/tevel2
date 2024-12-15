@@ -248,7 +248,25 @@ int CMD_setLogLevel(sat_packet_t *cmd)
 
 	//set log level
 	setLogLevel(logLevel);
-	logg(event, "I: Set log level to: %d", logLevel);
+	logg(event, "V: Set log level to: %d", logLevel);
+	return 0;
+}
+
+int CMD_getLogLevel(sat_packet_t *cmd)
+{
+	logg(MTNInfo, "I:inside CMD_getLogLevel()\n");
+
+	if (cmd == NULL || cmd->data == NULL)
+	{
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
+	//get log level
+	LogLevel logLevel = getLogLevel();
+
+	logg(event, "V: Get log level is: %d\n", logLevel);
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&logLevel, sizeof(logLevel));
 	return 0;
 }
 

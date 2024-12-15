@@ -155,9 +155,9 @@ int InitAnts(){
 	//initialize Antenas system
 	int err = ISIS_ANTS_Init(address, 2);
 	if(err)
-		logg(error, "Error in the initialization of the Antennas: %d\n", err);
+		logg(error, "E: Error in the initialization of the Antennas: %d\n", err);
 	else
-		logg(TRXInfo, "I: Initialization of the Antennas succeeded\n");
+		logg(event, "V: Initialization of the Antennas succeeded\n");
 	return err;
 }
 
@@ -179,7 +179,8 @@ int InitTrxvu()
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
-	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
+	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__1200bps);
+	//err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
 	if(err!=0) {
 		logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
 		return err;
@@ -205,7 +206,7 @@ int InitTrxvu()
 	}
 	else
 		logg(TRXInfo, "I:isis_vu_e__set_tx_freq succeeded\n");
-    */
+	 */
 	vu_getFrequenciesTest_revE();//TODO: remove
 
 	//initialize idle to off

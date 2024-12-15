@@ -77,13 +77,13 @@ void BeaconLogic()
 			//increase beacon ID
 			id++;
 
-			logg(TRXInfo, "I: ### Beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID, packet.length );
 		}
 		else
 			logg(TRXInfo, "I: Beacon time did not arrive\n");
 	}
 	else
-		logg(TRXInfo, "I:---beacon NOT allowed\n");
+		logg(event, "V:---beacon NOT allowed\n");
 }
 
 //Update beacon intervals - allows changing this interval from earth

@@ -33,6 +33,8 @@ typedef enum _LogLevel {
 
 void logg(LogLevel level, char *fmt, ...);
 
+LogLevel getLogLevel();
+
 void setLogLevel(LogLevel level);
 
 void initLog();

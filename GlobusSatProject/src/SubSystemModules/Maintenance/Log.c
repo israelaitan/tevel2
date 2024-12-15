@@ -35,7 +35,7 @@ void __logg(char* msg) {
 }
 
 void _logg(char* msg) {
-	//printf(msg);
+	printf(msg);//TODO:comment
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
 	if ( msgSizeWithTime > (SIZE_RXFRAME - SIZE_SPL_HEADER))
@@ -103,6 +103,11 @@ void logg(LogLevel level, char *fmt, ...) {
 void setLogLevel(LogLevel level)
 {
 	g_currLogLevel = level;
+}
+
+LogLevel getLogLevel()
+{
+	return g_currLogLevel;
 }
 
 void initLog()

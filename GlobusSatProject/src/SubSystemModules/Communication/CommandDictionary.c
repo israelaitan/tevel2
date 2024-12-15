@@ -283,6 +283,11 @@ int managment_command_router(sat_packet_t *cmd)
 		ackType=ACK_SET_LOG_LEVEL;
 		break;
 
+	case GET_LOG_SUBTYPE:
+		err = CMD_getLogLevel(cmd);
+		ackType=ACK_GET_LOG_LEVEL;
+		break;
+
 	default:
 		break;
 	}
