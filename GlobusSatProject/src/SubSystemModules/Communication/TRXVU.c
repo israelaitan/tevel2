@@ -179,8 +179,8 @@ int InitTrxvu()
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
-	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__1200bps);
-	//err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
+	//err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__1200bps);
+	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
 	if(err!=0) {
 		logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
 		return err;

@@ -156,7 +156,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 				if(element_time >= from_time) {
 					if (CheckDumpAbort())
 							return FS_ABORT;
-					int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type,  &availFrames);
+					int err = send(element, size_elementWithTimeStamp, dump_id, ord, dump_type,  &availFrames);
 					if(err != 0) {
 						logg(error, "E:transmitsplpacket error: %d", err);
 						if (err == -1)//transmition not allowed
@@ -171,8 +171,9 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 							k++;
 							element += size_elementWithTimeStamp;
 							(*sent)++;
+							ord++;
 						} else {
-							logg(DMPInfo, "I:dump.no available frames\n");
+							logg(event, "V:dump.no available frames\n");
 							vTaskDelay(100);
 						}
 					}
