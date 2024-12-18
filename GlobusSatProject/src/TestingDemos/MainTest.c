@@ -148,35 +148,12 @@ void testsMute()
 	}
 }
 
-//Initialize method to set FRAM to initial phase before first Init of satelite
- void IntializeFRAM()
- {
-	int err = 0;
-	err = StartSPI();
-	err = StartI2C();
-	err = StartFRAM();
-
-	if(!err)
-	{
-		 //set first activation flag to true
-		int status = 1;
-		FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-
-		 //set seconds since deploy to 0
-		int a = 0;
-		FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-
-		WriteDefaultValuesToFRAM();
-	}
- }
-
-
 //Test for firstActivationProcedure Logic
 void TestFirstActivionProc()
 {
 	printf("i am starting\n");
 	int err;
-	IntializeFRAM();
+	//IntializeFRAM();
 	err = StartTIME();
 
 	//added to allow Telemetry collector to work

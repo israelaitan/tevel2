@@ -37,6 +37,7 @@
 
 ////******************REMOVE
 //		IntializeFRAM();
+//		ReadDefaultValuesToFRAM();
 ////******************REMOVE
 		InitSubsystems();
 
@@ -50,6 +51,7 @@
 			TelemetryCollectorLogic();
 
 			Maintenance();
+
 		}
 	}
 

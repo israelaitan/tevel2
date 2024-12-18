@@ -19,4 +19,5 @@ S_UPPER_DEPS :=
 SUBDIRS := \
 src \
 src/Demos \
+src/Demos/payload \
 

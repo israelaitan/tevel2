@@ -17,6 +17,8 @@ C_SRCS += \
 ../src/Demos/isis_ants_demo.c \
 ../src/Demos/isismeps_ivid5_pdu_demo.c \
 ../src/Demos/isismeps_ivid5_piu_demo.c \
+../src/Demos/isismeps_ivid7_piu_demo.c \
+../src/Demos/payload_demo.c \
 ../src/Demos/trxvu_frame_ready.c 
 
 OBJS += \
@@ -33,6 +35,8 @@ OBJS += \
 ./src/Demos/isis_ants_demo.o \
 ./src/Demos/isismeps_ivid5_pdu_demo.o \
 ./src/Demos/isismeps_ivid5_piu_demo.o \
+./src/Demos/isismeps_ivid7_piu_demo.o \
+./src/Demos/payload_demo.o \
 ./src/Demos/trxvu_frame_ready.o 
 
 C_DEPS += \
@@ -49,6 +53,8 @@ C_DEPS += \
 ./src/Demos/isis_ants_demo.d \
 ./src/Demos/isismeps_ivid5_pdu_demo.d \
 ./src/Demos/isismeps_ivid5_piu_demo.d \
+./src/Demos/isismeps_ivid7_piu_demo.d \
+./src/Demos/payload_demo.d \
 ./src/Demos/trxvu_frame_ready.d 
 
 

@@ -1,5 +1,6 @@
+#include <string.h>
+
 #include <hcc/api_fat.h>
-#include "GlobalStandards.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
 #include <satellite-subsystems/isis_vu_e.h>
@@ -11,14 +12,14 @@
 #include <hal/Timing/Time.h>
 #include <hal/drivers/ADC.h>
 
-#include <string.h>
-
+#include "GlobalStandards.h"
 #include "TelemetryCollector.h"
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Payload/payload_drivers.h"
 
 #define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
@@ -27,7 +28,7 @@ time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 
 
 int InitTelemetryCollector() {
-	return FRAM_read((unsigned char*)tlm_save_periods,TLM_SAVE_PERIOD_START_ADDR,NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
+	return FRAM_read((unsigned char*)tlm_save_periods, TLM_SAVE_PERIOD_START_ADDR, NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
 }
 
 int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_SIZE])
@@ -97,6 +98,25 @@ void TelemetryCollectorLogic()
 		logg(TLMInfo, "I:TelemetrySaveWOD\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
+
+	if (CheckExecutionTime(tlm_last_save_time[seu_tlm], tlm_save_periods[seu_tlm])){
+		checkPayloadReadEvents();
+		logg(event, "V:TelemetrySaveSEU\n");
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[seu_tlm]));
+	}
+
+	if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
+			checkPayloadReadEvents();
+			logg(event, "V:TelemetrySavePIC_32\n");
+			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
+	}
+
+	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
+		checkPayloadReadEnvironment();
+			logg(event, "V:TelemetrySaveRADFET\n");
+			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
+	}
+
 
 }
 
@@ -356,6 +376,43 @@ void TelemetrySaveRADFET()
 {
 
 }
+
+Boolean checkPayloadReadEvents() {
+    printf("Testing payloadReadEvents...\n");
+    PayloadEventData event_data;
+    SoreqResult result = payloadReadEvents(&event_data);
+    if (result == PAYLOAD_SUCCESS) {
+        printf("payloadReadEvents: SUCCESS\n");
+        printf("  SEL Count: %d\n", event_data.sel_count);
+        printf("  SEU Count: %d\n", event_data.seu_count);
+        return TRUE;
+    } else {
+        printf("payloadReadEvents: ERROR (%d)\n", result);
+        return FALSE;
+    }
+}
+
+Boolean checkPayloadReadEnvironment() {
+    printf("Testing payloadReadEnvironment...\n");
+    PayloadEnvironmentData environment_data;
+    SoreqResult result = payloadReadEnvironment(&environment_data);
+
+    if (result == PAYLOAD_SUCCESS) {
+        printf("payloadReadEnvironment: SUCCESS\n");
+        printf("  RADFET Voltage 1: %d (0x%X)\n",
+               environment_data.adc_conversion_radfet1,
+               environment_data.adc_conversion_radfet1);
+        printf("  RADFET Voltage 2: %d (0x%X)\n",
+               environment_data.adc_conversion_radfet2,
+               environment_data.adc_conversion_radfet2);
+        printf("  Temperature: %lf\n", environment_data.temperature);
+        return TRUE;
+    } else {
+        printf("payloadReadEnvironment: ERROR (%d)\n", result);
+        return FALSE;
+    }
+}
+
 
 // Get Pic32 TLM
 int CMD_getPic32_TLM(sat_packet_t *cmd)
