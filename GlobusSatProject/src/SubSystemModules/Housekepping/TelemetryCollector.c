@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include <hcc/api_fat.h>
-#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
+#include <satellite-subsystems/isismepsv2_ivid7_piu.h>
 
 #include <satellite-subsystems/isis_vu_e.h>
 
@@ -126,10 +126,10 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	logg(event, "V:TelemetryCreateFiles()\n");
 	FileSystemResult res;
 	// -- EPS files
-	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingraw__from_t));
+	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isismepsv2_ivid7_piu__gethousekeepingraw__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb)
 
-	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingeng__from_t));
+	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isismepsv2_ivid7_piu__gethousekeepingeng__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
 	// -- TRXVU files
@@ -163,15 +163,15 @@ void TelemetrySaveEPS()
 {
 	int err = 0;
 
-	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
-	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
+	isismepsv2_ivid7_piu__gethousekeepingraw__from_t tlm_mb_raw;
+	err = isismepsv2_ivid7_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
 	else
 		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
 
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
-	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+	isismepsv2_ivid7_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isismepsv2_ivid7_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 
 	if (err == 0)
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
@@ -184,8 +184,8 @@ void TelemetrySaveEPS()
 int CMD_getEPS_TLM(sat_packet_t *cmd)
 {
 	int err = 0;
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
-	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+	isismepsv2_ivid7_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isismepsv2_ivid7_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 
 	if(err == 0)
 		TransmitDataAsSPL_Packet(cmd, (unsigned char*)&tlm_mb_eng.raw, sizeof(tlm_mb_eng));
@@ -316,8 +316,8 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	Time_getUnixEpoch((unsigned int *)&current_time);
 	wod->sat_time = current_time;
 
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
-	err += isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &hk_tlm);
+	isismepsv2_ivid7_piu__gethousekeepingeng__from_t hk_tlm;
+	err += isismepsv2_ivid7_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &hk_tlm);
 
 	if(err == 0){
 		wod->vbat = hk_tlm.fields.dist_input.fields.volt;

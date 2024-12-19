@@ -181,6 +181,7 @@ int SetFreqAndBitrate(){
 			logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 		vTaskDelay(100);
 		vu_getFrequenciesTest_revE();
+		return err;
 }
 
 int InitTrxvu() {

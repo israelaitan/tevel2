@@ -99,7 +99,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 	return err;
 }
 
-int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, int * availFrames){
+int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, uint8_t * availFrames){
 	sat_packet_t dump_tlm = { 0 };
 	AssembleCommand( element, size, (unsigned char) START_DUMP_SUBTYPE, type, id, ord, (unsigned char)T8GBS, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
@@ -122,7 +122,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 	int index_current = getFileIndex(c_file.creation_time,from_time);
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
 	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
-	int availFrames = 0;
+	uint8_t availFrames = 0;
 	*sent = 0;
 	do {
 		get_file_name_by_index(c_file_name, index_current++, curr_file_name);

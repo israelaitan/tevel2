@@ -80,25 +80,19 @@ void firstActivationProcedure()
 }
 
 //Initialize method to set FRAM to initial phase before first Init of satelite
- void IntializeFRAM()
- {
+ void IntializeFRAM() {
 	int err = 0;
 	err = StartSPI();
 	err = StartI2C();
 	err = StartFRAM();
+	if(err)
+		return;
+	int status = 1;
+	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 
-	if(!err)
-	{
-		 //set first activation flag to true
-		int status = 1;
-		FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
-
-		 //set seconds since deploy to 0
-		int a = 0;
-		FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-
-		WriteDefaultValuesToFRAM();
-	}
+	int a = 0;
+	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	WriteDefaultValuesToFRAM();
  }
 
 
@@ -306,8 +300,7 @@ int DeploySystem()
 
 //Init sub system
 
-int InitSubsystems()
-{
+int InitSubsystems() {
 
 	//dont logg anythin brfore time init
 	int errSPI = StartSPI();
