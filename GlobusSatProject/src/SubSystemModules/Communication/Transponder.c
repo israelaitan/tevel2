@@ -104,13 +104,18 @@ int set_transonder_mode(Boolean mode)
 
 	return err;
 }
-
+/*
+RSSI threshold value. This value will be used as the new RSSI
+threshold for the transponder chain activation. The value received
+here will be the raw value, therefore between 0 and 4095. The most
+significant byte is transmitted first (big endian).
+*/
 int set_transponder_RSSI(byte *param)
 {
 	byte data[3];
 	data[0] = 0x52;
-	data[1] = param[0];
-	data[2] = param[1];
+	data[1] = param[1];//big endian
+	data[2] = param[0];
 
 	int err = I2C_write(I2C_TRXVU_TC_ADDR, data, 2);
 	return err;
