@@ -139,7 +139,7 @@ void WriteDefaultValuesToFRAM()
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-	unsigned short rssi = 2500;
+	uint16_t rssi = (uint16_t)(__builtin_bswap32(2500) >> 16u);
 	FRAM_write((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
 
 }
@@ -189,8 +189,9 @@ void ReadDefaultValuesToFRAM()
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-	unsigned short rssi = 2500;
+	unsigned short rssi;
 	FRAM_read((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
+	printf("FRAM TRANSPONDER_RSSI_ADDR %d=%d  \n", TRANSPONDER_RSSI_ADDR, rssi);
 
 }
 
