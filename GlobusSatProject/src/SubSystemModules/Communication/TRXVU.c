@@ -230,9 +230,8 @@ CommandHandlerErr TRX_Logic()
 
 	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
-
-	if(onCmdCount>0)
-	{
+	if(onCmdCount>0) {
+		//printf("Command in bufffer =%d\n", onCmdCount);//TODO:remove
 		//get the online command
 		res = GetOnlineCommand(&cmd);
 		if(res==cmd_command_found)

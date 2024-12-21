@@ -26,3 +26,7 @@ GlobusSatProject/Debug/src/TLM_management.o
 *.o
 *.d
 *.map
+GlobusSatProject/Debug/GlobusSatProject.map
+GlobusSatProject/GlobusSatProject-debug.launch
+GlobusSatProject/Debug/GlobusSatProject.map
+*.map

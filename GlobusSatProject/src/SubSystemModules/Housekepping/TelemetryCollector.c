@@ -112,7 +112,7 @@ void TelemetryCollectorLogic()
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
-		checkPayloadReadEnvironment();
+			checkPayloadReadEnvironment();
 			logg(event, "V:TelemetrySaveRADFET\n");
 			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
 	}
