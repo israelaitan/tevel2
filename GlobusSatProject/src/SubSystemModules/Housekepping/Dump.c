@@ -101,7 +101,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 
 int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, uint8_t * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (unsigned char) START_DUMP_SUBTYPE, type, id, ord, (unsigned char)T8GBS, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T8GBS, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
