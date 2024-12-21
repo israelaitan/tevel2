@@ -14,54 +14,54 @@ typedef enum __attribute__ ((__packed__)) spl_command_type_t {
 
 typedef enum __attribute__ ((__packed__)) ack_subtype_t
 {
-	ACK_RECEIVE_COMM = 		0x00,			// when receive any packet
+	ACK_RECEIVE_COMM = 		0,			// when receive any packet
 
-	ACK_RESET_WAKEUP = 		0x7F,			// after waking up from reset
+	ACK_RESET_WAKEUP = 		1,			// after waking up from reset
 
-	ACK_FS_RESET = 			0x70,			// before going to filesystem reset
-	ACK_TRXVU_SOFT_RESET = 	0x71,			// before going to trxvu reset
-	ACK_TRXVU_HARD_RESET =	0x72,			// before going to trxvu reset
-	ACK_ANTS_RESET = 		0x73,			// before reseting antennas
-	ACK_EPS_RESET = 		0x80,			// before going to eps reset
-	ACK_SOFT_RESET = 		0x81,			// before going to reset
-	ACK_HARD_RESET = 		0x82,			// before starting hardware reset
+	ACK_FS_RESET = 			2,			// before going to filesystem reset
+	ACK_TRXVU_SOFT_RESET = 	3,			// before going to trxvu reset
+	ACK_TRXVU_HARD_RESET =	4,			// before going to trxvu reset
+	ACK_ANTS_RESET = 		5,			// before reseting antennas
+	ACK_EPS_RESET = 		6,			// before going to eps reset
+	ACK_SOFT_RESET = 		7,			// before going to reset
+	ACK_HARD_RESET = 		8,			// before starting hardware reset
 
-	ACK_MEMORY_DELETE = 	0x83,				// when memory delete is completed success
+	ACK_MEMORY_DELETE = 	9,				// when memory delete is completed success
 
-	ACK_UPDATE_TIME = 		0x12,					// after updating time
-	ACK_UPDATE_BEACON_TIME_DELAY = 0x14,
-	ACK_UPDATE_EPS_VOLTAGES = 0x15,
-	ACK_RESET_EPS_WD = 		0x16,
-	ACK_UPDATE_EPS_ALPHA = 	0x17,
+	ACK_UPDATE_TIME = 		10,					// after updating time
+	ACK_UPDATE_BEACON_TIME_DELAY = 11,
+	ACK_UPDATE_EPS_VOLTAGES = 12,
+	ACK_RESET_EPS_WD = 		13,
+	ACK_UPDATE_EPS_ALPHA = 	14,
 
-	ACK_IDLE_ON = 			0x18,
-	ACK_IDLE_OFF = 			0x19,
-	ACK_MUTE = 				0x8D,
-	ACK_UNMUTE = 			0x8E,
-	ACK_TRANSPONDER_ON = 	0x8F,
-	ACK_TRANSPONDER_RSSI = 	0x8A,
-	ACK_TRANSPONDER_OFF = 	0x8C,
+	ACK_IDLE_ON = 			15,
+	ACK_IDLE_OFF = 			16,
+	ACK_MUTE = 				17,
+	ACK_UNMUTE = 			18,
+	ACK_TRANSPONDER_ON = 	19,
+	ACK_TRANSPONDER_RSSI = 	20,
+	ACK_TRANSPONDER_OFF = 	21,
 
-	ACK_DUMP_START = 		0x90,
-	ACK_DUMP_ABORT = 		0x91,
-	ACK_DUMP_FINISHED = 	0x92,
+	ACK_DUMP_START = 		22,
+	ACK_DUMP_ABORT = 		23,
+	ACK_DUMP_FINISHED = 	24,
 
-	ACK_GENERIC_I2C_CMD = 	0x93,
-	ACK_ARM_DISARM = 		0x94,					//after changing arm state of the ants
-	ACK_REDEPLOY = 			0x95,
-	ACK_ANT_CANCEL_DEP = 	0x9E,
-	ACK_FRAM_RESET = 		0xA0,
-	ACK_TLM_SET_COLL_CYCLE= 0xA1,
-	ACK_SET_LOG_LEVEL = 	0xA2,
-	ACK_GET_LOG_LEVEL = 	0xA3,
+	ACK_GENERIC_I2C_CMD = 	25,
+	ACK_ARM_DISARM = 		26,					//after changing arm state of the ants
+	ACK_REDEPLOY = 			27,
+	ACK_ANT_CANCEL_DEP = 	28,
+	ACK_FRAM_RESET = 		29,
+	ACK_TLM_SET_COLL_CYCLE= 30,
+	ACK_SET_LOG_LEVEL = 	31,
+	ACK_GET_LOG_LEVEL = 	32,
 
-	ACK_FS_DELETE_ALL = 	0x0D,
-	ACK_FS_DELETE_FILE = 	0x0E,
+	ACK_FS_DELETE_ALL = 	33,
+	ACK_FS_DELETE_FILE = 	34,
 
-	ACK_PING = 				0xAA,
-	ACK_UNKNOWN_SUBTYPE = 	0xBB,				//when the given subtype is unknown
-	ACK_NO_ACK = 			0xCC,						//Do not send ACK
-	ACK_ERROR_MSG = 		0XFF 					// send this ACK when error has occurred
+	ACK_PING = 				35,
+	ACK_UNKNOWN_SUBTYPE = 	36,				//when the given subtype is unknown
+	ACK_NO_ACK = 			37,						//Do not send ACK
+	ACK_ERROR_MSG = 		38 					// send this ACK when error has occurred
 }ack_subtype_t;
 
 
