@@ -50,8 +50,11 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_rx:
 		strcpy(filename,FILENAME_RX_TLM);
 		break;
-	case tlm_antenna:
-		strcpy(filename,FILENAME_ANTENNA_TLM);
+	case tlm_antA:
+		strcpy(filename,FILENAME_ANTENNA_SIDE_A_TLM);
+		break;
+	case tlm_antB:
+		strcpy(filename,FILENAME_ANTENNA_SIDE_B_TLM);
 		break;
 	case tlm_log:
 		strcpy(filename,FILENAME_LOG_TLM);
@@ -139,9 +142,11 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_RX_TLM,sizeof(isis_vu_e__get_rx_telemetry__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_rx);
 
-	// -- ANT files
-	res = c_fileCreate(FILENAME_ANTENNA_TLM,sizeof(isis_ants__get_status__from_t));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
+	// -- ANTs files
+	res = c_fileCreate(FILENAME_ANTENNA_SIDE_A_TLM,sizeof(isis_ants__get_all_telemetry__from_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_antA);
+	res = c_fileCreate(FILENAME_ANTENNA_SIDE_B_TLM,sizeof(isis_ants__get_all_telemetry__from_t));
+		SAVE_FLAG_IF_FILE_CREATED(tlm_antB);
 
 	//-- LOG files
 	res = c_fileCreate(FILENAME_LOG_TLM, LOG_TLM_SIZE);
@@ -237,10 +242,21 @@ int CMD_getTRXVU_TLM(sat_packet_t *cmd)
 void TelemetrySaveANT()
 {
 	int err = 0;
-	isis_ants__get_all_telemetry__from_t ant_tlmA;
-	err = isis_ants__get_all_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &ant_tlmA);
+	isis_ants__get_all_telemetry__from_t ant_tlmA = {0};
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlmA);
 	if (err == 0)
-		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmA);
+		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
+	else
+		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);//TODO:remove after replacing card
+		logg(error, "E=%d TelemetrySaveANT side A\n", err);
+
+	isis_ants__get_all_telemetry__from_t ant_tlmB = {0};
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
+	if (err == 0)
+		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
+	else
+		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);//TODO:remove after replacing card
+		logg(error, "E=%d TelemetrySaveANT side B\n", err);
 }
 
 // Get Antennas TLM
