@@ -64,7 +64,7 @@ void firstActivationProcedure()
 
 		AwaitedTime += 1000*10;
 		FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-		TelemetryCollectorLogic();
+		TelemetryCollectorLogic();//should kick tx and rx implicitly
 	}
 
 	//set deploment time in FRAM
@@ -287,7 +287,7 @@ int DeploySystem()
 	if(isFirstA)
 	{
 
-		// waiting for 30 min (collect telemetry every 10 sec)-
+		// waiting for 30 min (collect telemetry every x sec)-
 		firstActivationProcedure();
 
 

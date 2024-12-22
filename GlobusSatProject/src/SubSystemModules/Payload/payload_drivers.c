@@ -4,7 +4,7 @@
 #include "hal/Drivers/I2C.h"
 #include <string.h>
 #include <hal/Timing/Time.h>
-#include <satellite-subsystems/isismepsv2_ivid7_piu.h>
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
 
 #define PAYLOAD_I2C_ADDRESS 0x55
@@ -107,13 +107,13 @@ SoreqResult payloadSoftReset() {
 }
 
 SoreqResult payloadTurnOff() {
-	isismepsv2_ivid7_piu__replyheader_t response;
-    return isismepsv2_ivid7_piu__outputbuschanneloff(EPS_INDEX, PAYLOAD_BUS_CHANNEL, &response);
+	isismepsv2_ivid5_piu__replyheader_t response;
+    return isismepsv2_ivid5_piu__outputbuschanneloff(EPS_INDEX, PAYLOAD_BUS_CHANNEL, &response);
 }
 
 SoreqResult payloadTurnOn() {
-	isismepsv2_ivid7_piu__gethousekeepingeng__from_t tlm_mb_eng;
-	int err = isismepsv2_ivid7_piu__gethousekeepingeng(0, &tlm_mb_eng);
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	int err = isismepsv2_ivid5_piu__gethousekeepingeng(0, &tlm_mb_eng);
 	if (err == 0){
 		printf("volt=%d\n", tlm_mb_eng.fields.vip_obc04.fields.volt);
 		printf("cur=%d\n", tlm_mb_eng.fields.vip_obc04.fields.current);
@@ -122,12 +122,12 @@ SoreqResult payloadTurnOn() {
 	else
 		printf("E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
-	isismepsv2_ivid7_piu__replyheader_t response;
+	isismepsv2_ivid5_piu__replyheader_t response;
 	printf("Turn on eps ch 4\n");
-	err = isismepsv2_ivid7_piu__outputbuschannelon(EPS_INDEX, isismepsv2_ivid7_piu__imeps_channel__channel_5v_sw3, &response);
+	err = isismepsv2_ivid5_piu__outputbuschannelon(EPS_INDEX, isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3, &response);
 	printf("Turn on eps ch 4 res=%d\n", err);
 
-	err = isismepsv2_ivid7_piu__gethousekeepingeng(0, &tlm_mb_eng);
+	err = isismepsv2_ivid5_piu__gethousekeepingeng(0, &tlm_mb_eng);
 	if (err == 0){
 		printf("volt=%d\n", tlm_mb_eng.fields.vip_obc04.fields.volt);
 		printf("cur=%d\n", tlm_mb_eng.fields.vip_obc04.fields.current);

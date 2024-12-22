@@ -11,7 +11,7 @@
 
 
 #include "SubSystemModules/Maintenance/Log.h"
-#include <satellite-subsystems/isismepsv2_ivid7_piu.h>
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
 
 // y[i] = a * x[i] +(1-a) * y[i-1]
@@ -22,8 +22,8 @@ EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES}
 
 int EPS_Init()
 {
-	ISISMEPSV2_IVID7_PIU_t isis_eps = {EPS_I2C_ADDR};
-	int rv = ISISMEPSV2_IVID7_PIU_Init(&isis_eps, 1);
+	ISISMEPSV2_IVID5_PIU_t isis_eps = {EPS_I2C_ADDR};
+	int rv = ISISMEPSV2_IVID5_PIU_Init(&isis_eps, 1);
 	if (rv != E_NO_SS_ERR) {
 		logg(error, "E:EPS init failed\n");
 		return -1;
@@ -106,8 +106,8 @@ int GetBatteryVoltage(voltage_t *vbatt)
 	err = isis_eps__gethousekeepingraw__tm( EPS_I2C_BUS_INDEX,  &hk_tlm );
 	*vbatt = hk_tlm.fields.batt_input.fields.volt;
 #else
-	isismepsv2_ivid7_piu__gethousekeepingeng__from_t hk_tlm;
-	err = isismepsv2_ivid7_piu__gethousekeepingeng( EPS_I2C_BUS_INDEX,  &hk_tlm );
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
+	err = isismepsv2_ivid5_piu__gethousekeepingeng( EPS_I2C_BUS_INDEX,  &hk_tlm );
 	*vbatt = hk_tlm.fields.volt_vd0;//TODO:change to charging
 #endif
 	return err;
