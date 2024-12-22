@@ -5,7 +5,7 @@
 #define T8GBS 8 //GIVAT SHMUEL SAT ID IN PACKETS
 #define T0ALL 0 //ALL SATS
 
-#define MAX_COMMAND_DATA_LENGTH 200 //maximum AX25 data field available for downlink
+#define MAX_COMMAND_DATA_LENGTH 235 //SIZE_TXFRAME maximum AX25 data field available for downlink
 #define SAT_PACKET_HEADER_LENGTH 8 // short*2+char*4
 
 //<! how many command can be saved in the buffer

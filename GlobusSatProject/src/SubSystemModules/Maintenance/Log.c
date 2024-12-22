@@ -38,7 +38,7 @@ void _logg(char* msg) {
 	printf(msg);//TODO:comment
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
-	if ( msgSizeWithTime > (SIZE_RXFRAME - SIZE_SPL_HEADER))
+	if ( msgSizeWithTime > (SIZE_TXFRAME - SIZE_SPL_HEADER))
 		return;
 
 	if (index_ == 0)
@@ -46,8 +46,8 @@ void _logg(char* msg) {
 
     FileSystemResult res = FS_SUCCSESS;
     int dumpSize = (int)LOG_BUFFER_SIZE;
-    int reminder = index_ % (SIZE_RXFRAME - SIZE_SPL_HEADER);
-    int leftover = SIZE_RXFRAME - SIZE_SPL_HEADER - reminder;
+    int reminder = index_ % (SIZE_TXFRAME - SIZE_SPL_HEADER);
+    int leftover = SIZE_TXFRAME - SIZE_SPL_HEADER - reminder;
     int considerTimeSize = 0;
     time_unix time;
 

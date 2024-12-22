@@ -74,9 +74,7 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length
 		unsigned char subtype, unsigned short id, unsigned short ord, unsigned char targetSat, sat_packet_t *cmd)
 {
 	if (NULL == cmd)
-	{
 		return cmd_null_pointer_error;
-	}
 
 	cmd->ID = id;
 	cmd->targetSat = targetSat;
@@ -85,23 +83,17 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length
 	cmd->length = 0;
 	cmd->ordinal = ord;
 
-	if (NULL != data)
-	{
-		if (data_length > (SIZE_RXFRAME - SIZE_SPL_HEADER))
-		{
-			cmd->length =   (SIZE_RXFRAME - SIZE_SPL_HEADER);
-		}
+	if (NULL != data) {
+
+		if (data_length > (SIZE_TXFRAME - SIZE_SPL_HEADER))
+			cmd->length =   (SIZE_TXFRAME - SIZE_SPL_HEADER);
 		else
-		{
 			cmd->length = data_length;
-		}
 
 		void *err = memcpy(cmd->data, data, cmd->length);
 
 		if (NULL == err)
-		{
 			return cmd_execution_error;
-		}
 	}
 	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal);
 	return cmd_command_succsess;
