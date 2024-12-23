@@ -1,5 +1,3 @@
-
-
 #include "payload_drivers.h"
 #include "hal/Drivers/I2C.h"
 #include <string.h>
@@ -29,18 +27,24 @@ SoreqResult payloadInit() {
 }
 
 SoreqResult payloadRead(int size, unsigned char *buffer) {
+
     unsigned char wtd_and_read[] = {CLEAR_WDT};
-    int i;
-    for (i = 0; i < TIMEOUT / READ_DELAY; ++i) {
-        if (I2C_write(PAYLOAD_I2C_ADDRESS, wtd_and_read, 1) != 0) return PAYLOAD_I2C_WRITE_ERROR;
+    for (int i = 0; i < TIMEOUT / READ_DELAY; ++i) {
+        if (I2C_write(PAYLOAD_I2C_ADDRESS, wtd_and_read, 1))
+        	return PAYLOAD_I2C_WRITE_ERROR;
+
         vTaskDelay(READ_DELAY);
-        if (I2C_read(PAYLOAD_I2C_ADDRESS, buffer, size) == 0 && buffer[3] == 0) return PAYLOAD_SUCCESS;
+
+        if (!I2C_read(PAYLOAD_I2C_ADDRESS, buffer, size) && buffer[3] == 0)
+        	return PAYLOAD_SUCCESS;
     }
     return PAYLOAD_TIMEOUT;
 }
 
 SoreqResult payloadSendCommand(char opcode, int size, unsigned char *buffer, int delay) {
-    if (I2C_write(PAYLOAD_I2C_ADDRESS, (unsigned char *)&opcode, 1) != 0) return PAYLOAD_I2C_WRITE_ERROR;
+
+	if (I2C_write(PAYLOAD_I2C_ADDRESS, (unsigned char *)&opcode, 1))
+    	return PAYLOAD_I2C_WRITE_ERROR;
     vTaskDelay(delay);
     return payloadRead(size, buffer);
 }
@@ -55,9 +59,9 @@ SoreqResult payloadReadEnvironment(PayloadEnvironmentData *environment_data) {
 
     // Read RADFET voltages
     res = payloadSendCommand(READ_RADFET_VOLTAGES, sizeof(buffer), buffer, 1250 / portTICK_RATE_MS);
-    if (res != PAYLOAD_SUCCESS) {
+    if (res != PAYLOAD_SUCCESS)
         return res;
-    }
+
     memcpy(&environment_data->adc_conversion_radfet1, buffer + 4, 4);
     memcpy(&environment_data->adc_conversion_radfet2, buffer + 8, 4);
     CHANGE_ENDIAN(environment_data->adc_conversion_radfet1);
@@ -66,16 +70,16 @@ SoreqResult payloadReadEnvironment(PayloadEnvironmentData *environment_data) {
     // Read temperature ADC value
     int raw_temperature_adc;
     res = payloadSendCommand(MEASURE_TEMPERATURE, sizeof(buffer), buffer, 845 / portTICK_RATE_MS);
-    if (res != PAYLOAD_SUCCESS) {
+    if (res)
         return res;
-    }
+
     memcpy(&raw_temperature_adc, buffer + 4, 4);
     CHANGE_ENDIAN(raw_temperature_adc);
 
     // Extract and process ADC value
     int remove_extra_bits = (raw_temperature_adc & (~(1 << 29))) >> 5; // Mask and shift to remove redundant bits
-    double voltage = ADC_TO_VOLTAGE(remove_extra_bits); // Convert ADC value to voltage
-    double temperature = VOLTAGE_TO_TEMPERATURE(voltage); // Convert voltage to temperature
+    float voltage = ADC_TO_VOLTAGE(remove_extra_bits); // Convert ADC value to voltage
+    float temperature = VOLTAGE_TO_TEMPERATURE(voltage); // Convert voltage to temperature
     environment_data->temperature = temperature;
 
     return PAYLOAD_SUCCESS;
@@ -87,14 +91,16 @@ SoreqResult payloadReadEvents(PayloadEventData *event_data) {
     SoreqResult res;
 
     // Read SEL count
-    if ((res = payloadSendCommand(READ_PIC32_SEL, sizeof(buffer), buffer, 10 / portTICK_RATE_MS)) != PAYLOAD_SUCCESS)
+    res = payloadSendCommand(READ_PIC32_SEL, sizeof(buffer), buffer, 10 / portTICK_RATE_MS);
+    if (res)
         return res;
     memcpy(&event_data->sel_count, buffer + 4, 4);
     if (event_data->sel_count == 0) memcpy(&event_data->sel_count, buffer + 8, 4);
     CHANGE_ENDIAN(event_data->sel_count);
 
     // Read SEU count
-    if ((res = payloadSendCommand(READ_PIC32_SEU, sizeof(buffer), buffer, 100 / portTICK_RATE_MS)) != PAYLOAD_SUCCESS)
+    payloadSendCommand(READ_PIC32_SEU, sizeof(buffer), buffer, 100 / portTICK_RATE_MS);
+    if (res)
         return res;
     memcpy(&event_data->seu_count, buffer + 4, 4);
     CHANGE_ENDIAN(event_data->seu_count);

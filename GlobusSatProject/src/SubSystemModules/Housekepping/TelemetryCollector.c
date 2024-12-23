@@ -102,24 +102,17 @@ void TelemetryCollectorLogic()
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
 
-	if (CheckExecutionTime(tlm_last_save_time[seu_tlm], tlm_save_periods[seu_tlm])){
-		checkPayloadReadEvents();
-		logg(event, "V:TelemetrySaveSEU\n");
-		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[seu_tlm]));
-	}
-
 	if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
-			checkPayloadReadEvents();
-			logg(event, "V:TelemetrySavePIC_32\n");
+			TelemetrySavePIC32();
+			logg(event, "I:TelemetrySavePIC_32\n");
 			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
-			checkPayloadReadEnvironment();
-			logg(event, "V:TelemetrySaveRADFET\n");
+			TelemetrySaveRADFET();
+			logg(event, "I:TelemetrySaveRADFET\n");
 			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
 	}
-
 
 }
 
@@ -157,11 +150,11 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
 
 	// -- PAYLOAS file
-	//res = c_fileCreat(FILENAME_PIC32_TLM, sizeof(?));
-	//SVAE_FLAG_IF_FILE_CREATED(tlm_pic32);
+	res = c_fileCreate(FILENAME_PIC32_TLM, sizeof(PayloadEventData));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_pic32);
 
-	//res = c_fileCreat(FILENAME_RADFET_TLM, sizeof(?));
-	//SVAE_FLAG_IF_FILE_CREATED(tlm_radfet);
+	res = c_fileCreate(FILENAME_RADFET_TLM, sizeof(PayloadEnvironmentData));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_radfet);
 }
 
 void TelemetrySaveEPS()
@@ -242,7 +235,7 @@ int CMD_getTRXVU_TLM(sat_packet_t *cmd)
 void TelemetrySaveANT()
 {
 	int err = 0;
-	isis_ants__get_all_telemetry__from_t ant_tlmA = {0};
+	isis_ants__get_all_telemetry__from_t ant_tlmA = { 0 };
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlmA);
 	if (err == 0)
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
@@ -250,7 +243,7 @@ void TelemetrySaveANT()
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);//TODO:remove after replacing card
 		logg(error, "E=%d TelemetrySaveANT side A\n", err);
 
-	isis_ants__get_all_telemetry__from_t ant_tlmB = {0};
+	isis_ants__get_all_telemetry__from_t ant_tlmB = { 0 };
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
 	if (err == 0)
 		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
@@ -383,52 +376,26 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 }
 
-void TelemetrySavePIC32()
-{
+void TelemetrySavePIC32() {
 
+	PayloadEventData event_data;
+	SoreqResult result = payloadReadEvents(&event_data);
+	if (!result)
+		c_fileWrite(FILENAME_PIC32_TLM, &event_data);
+	else
+		logg(error, "E:payloadReadEvents=%d\n", result);
 }
 
-void TelemetrySaveRADFET()
-{
+void TelemetrySaveRADFET() {
+
+	PayloadEnvironmentData environment_data;
+	SoreqResult result = payloadReadEnvironment(&environment_data);
+	if (!result)
+		c_fileWrite(FILENAME_RADFET_TLM, &environment_data);
+	else
+		logg(error, "E:TelemetrySaveRADFET=%d\n", result);
 
 }
-
-Boolean checkPayloadReadEvents() {
-    printf("Testing payloadReadEvents...\n");
-    PayloadEventData event_data;
-    SoreqResult result = payloadReadEvents(&event_data);
-    if (result == PAYLOAD_SUCCESS) {
-        printf("payloadReadEvents: SUCCESS\n");
-        printf("  SEL Count: %d\n", event_data.sel_count);
-        printf("  SEU Count: %d\n", event_data.seu_count);
-        return TRUE;
-    } else {
-        printf("payloadReadEvents: ERROR (%d)\n", result);
-        return FALSE;
-    }
-}
-
-Boolean checkPayloadReadEnvironment() {
-    printf("Testing payloadReadEnvironment...\n");
-    PayloadEnvironmentData environment_data;
-    SoreqResult result = payloadReadEnvironment(&environment_data);
-
-    if (result == PAYLOAD_SUCCESS) {
-        printf("payloadReadEnvironment: SUCCESS\n");
-        printf("  RADFET Voltage 1: %d (0x%X)\n",
-               environment_data.adc_conversion_radfet1,
-               environment_data.adc_conversion_radfet1);
-        printf("  RADFET Voltage 2: %d (0x%X)\n",
-               environment_data.adc_conversion_radfet2,
-               environment_data.adc_conversion_radfet2);
-        printf("  Temperature: %lf\n", environment_data.temperature);
-        return TRUE;
-    } else {
-        printf("payloadReadEnvironment: ERROR (%d)\n", result);
-        return FALSE;
-    }
-}
-
 
 // Get Pic32 TLM
 int CMD_getPic32_TLM(sat_packet_t *cmd)

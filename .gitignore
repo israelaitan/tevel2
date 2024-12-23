@@ -33,3 +33,14 @@ GlobusSatProject/Debug/GlobusSatProject.map
 GlobusSatProject/Debug/GlobusSatProject.map
 GlobusSatProject/GlobusSatProject-debug.launch
 GlobusSatProject/Debug/GlobusSatProject.map
+satellite-subsystems/demo/Debug/satellite-subsystems-demo.elf
+satellite-subsystems/demo/Debug/satellite-subsystems-demo.bin
+hal/demo/Debug/src/Tests/subdir.mk
+hal/demo/Debug/src/subdir.mk
+hal/demo/Debug/src/Demo/subdir.mk
+hal/demo/Debug/sources.mk
+hal/demo/Debug/makefile
+hal/demo/Debug/hal-demo.map
+hal/demo/Debug/hal-demo.elf
+hal/demo/Debug/hal-demo.bin
+GlobusSatProject/Debug/GlobusSatProject.map

@@ -121,11 +121,9 @@ void WriteDefaultValuesToFRAM()
 	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
 
 	time_unix pic32 = DEFAULT_PIC32_SAVE_TLM_TIME;
-	FRAM_write((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
-	time_unix seu = DEFAULT_SEU_SAVE_TLM_TIME;
-	FRAM_write((unsigned char*)&seu, SEU_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+	FRAM_write((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(pic32));
 	time_unix radfet = DEFAULT_RADFET_SAVE_TLM_TIME;
-	FRAM_write((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+	FRAM_write((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(radfet));
 
 	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
@@ -171,11 +169,9 @@ void ReadDefaultValuesToFRAM()
 	FRAM_read((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
 
 	time_unix pic32 = DEFAULT_PIC32_SAVE_TLM_TIME;
-	FRAM_read((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
-	time_unix seu = DEFAULT_SEU_SAVE_TLM_TIME;
-	FRAM_read((unsigned char*)&seu, SEU_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+	FRAM_read((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(pic32));
 	time_unix radfet = DEFAULT_RADFET_SAVE_TLM_TIME;
-	FRAM_read((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+	FRAM_read((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(radfet));
 
 	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_read((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
@@ -356,6 +352,11 @@ int InitSubsystems() {
 
 	EPS_Init();
 
+	err = InitTelemetryCollector();
+		if (err!=0)
+			logg(error, "E:%d Failed in InitTelemetryCollector\n", err);
+		else
+			logg(event, "V: InitTelemetryCollector was successful\n");
 	// Deploy system - open Antetnas
 	err = DeploySystem();
 	if (err)
@@ -375,11 +376,6 @@ int InitSubsystems() {
 	else
 		logg(event, "V: payloadInit was successful\n");
 
-	err = InitTelemetryCollector();
-	if (err!=0)
-		logg(error, "E:%d Failed in InitTelemetryCollector\n", err);
-	else
-		logg(event, "V: InitTelemetryCollector was successful\n");
 
 	return 0;
 }

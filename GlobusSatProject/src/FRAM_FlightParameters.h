@@ -30,11 +30,11 @@
 #define SOLAR_SAVE_TLM_PERIOD_ADDR		0x20		//20,21,22,23 <! address where the save tlm period will be
 #define WOD_SAVE_TLM_PERIOD_ADDR  	    0x24		//24,25,26,27
 #define PIC32_SAVE_TLM_PERIOD_ADDR		0x28		//28,29,2A,2B
-#define SEU_SAVE_TLM_PERIOD_ADDR 		0x2C		//2C,2D,2E,2F
-#define RADFET_SAVE_TLM_PERIOD_ADDR		0x30		//30,31,32,33
-#define aaaa_ADDR						0x34		//34,35,36,37
-#define aabb_ADDR						0x38		//38,39,3A,3B
-#define aacc_ADDR						0x3C		//3C,3D,3E,3F
+#define RADFET_SAVE_TLM_PERIOD_ADDR 	0x2C		//2C,2D,2E,2F
+#define aaaa_ADDR						0x30		//30,31,32,33
+#define aabb_ADDR						0x34		//34,35,36,37
+#define aacc_ADDR						0x38		//38,39,3A,3B
+#define aadd_ADDR						0x3C		//3C,3D,3E,3F
 
 #define LAST_WAKEUP_TIME_ADDR			0X40		//40,41,42,43 <! saves the first time after satellites wakeup from reset
 #define LAST_WAKEUP_TIME_SIZE			4			//<! size of the parameter in bytes
@@ -99,9 +99,8 @@
 #define DEFAULT_SOLAR_SAVE_TLM_TIME		5			//<! save solar panel TLM every 20 seconds
 #define DEFAULT_WOD_SAVE_TLM_TIME		5			//<! save WOD TLM every 20 seconds
 
-#define DEFAULT_PIC32_SAVE_TLM_TIME		60 * 60		//<!
-#define DEFAULT_SEU_SAVE_TLM_TIME		30		    //<!
-#define DEFAULT_RADFET_SAVE_TLM_TIME	60			//<!
+#define DEFAULT_PIC32_SAVE_TLM_TIME		20
+#define DEFAULT_RADFET_SAVE_TLM_TIME	60 * 15
 
 #define DEFAULT_LOG_SAVE_TLM_TIME		5			//
 #define DEFAULT_NO_COMM_WDT_KICK_TIME  (7*24*60*60)	//<! number of seconds in 7 days

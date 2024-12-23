@@ -31,7 +31,7 @@ typedef enum {
 typedef struct {
     int adc_conversion_radfet1; /**< ADC conversion result for RADFET 1 */
     int adc_conversion_radfet2; /**< ADC conversion result for RADFET 2 */
-    double temperature;            /**< Temperature measurement in degrees Celsius */
+    float temperature;            /**< Temperature measurement in degrees Celsius */
 } PayloadEnvironmentData;
 
 /**
