@@ -127,8 +127,10 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 	do {
 		get_file_name_by_index(c_file_name, index_current++, curr_file_name);
 		int error = f_managed_open(curr_file_name, "r", &current_file);
-		if ( error != 0 || curr_file_name == NULL )
+		if ( error != 0 || curr_file_name == NULL ){
+			logg(error, "E:dump f_managed_open failed=%d curr_file_name=%s\n", error, curr_file_name);
 			continue;
+		}
 		int file_length = f_filelength(curr_file_name);
 		int length = file_length / (size_elementWithTimeStamp);//number of elements in currnet_file
 		int left_to_read = length;
