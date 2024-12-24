@@ -67,9 +67,6 @@
 #define TRANSPONDER_TURN_ON_END_TIME_ADRR	0x508		//transponder turn off time
 #define TRANSPONDER_TURN_ON_END_TIME_SIZE	4
 
-#define TRANSPONDER_RSSI_ADDR				0x700		//transponder RSSI
-#define TRANSPONDER_RSSI_SIZE				2
-
 #define MUTE_FLAG_ADRR						0x514		// mute state - active or not
 #define MUTE_FLAG_SIZE						4			// size of mute state
 
@@ -81,6 +78,9 @@
 
 #define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
 #define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
+
+#define TRANSPONDER_RSSI_ADDR				0x700		//transponder RSSI
+#define TRANSPONDER_RSSI_SIZE				2
 
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes

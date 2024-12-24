@@ -140,6 +140,14 @@ void WriteDefaultValuesToFRAM()
 	uint16_t rssi = 2500;
 	FRAM_write((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
 
+	unsigned int transponder_state = 0;
+	FRAM_write((unsigned char*) &transponder_state, TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+
+	unsigned int mute_flag = 0;
+	FRAM_write((unsigned char*) &mute_flag, MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
+
+	time_unix mute_end_time = 0;
+	FRAM_write((unsigned char*) &mute_end_time, MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
 }
 
 void ReadDefaultValuesToFRAM()
