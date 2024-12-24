@@ -84,7 +84,7 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t {
 	FORCE_ABORT_DUMP_SUBTYPE,
 	DELETE_DUMP_TASK,
 	TRANSPONDER_ON,
-	TRANSPONDER_RSSI,
+	SET_TRANSPONDER_RSSI,
 	TRANSPONDER_OFF
 } trxvu_subtypes_t;
 

@@ -57,11 +57,6 @@
 #define RESET_CMD_FLAG_ADDR				0x105		//<! the flag is raised whenever a restart is commissioned
 #define RESET_CMD_FLAG_SIZE				1			//<! size of the parameter in bytes
 
-#define PAYLOAD_DATA_ADD				0x400
-#define PAYLOAD_DATA_SIZE				sizeof(int) * 2
-
-#define PAYLOAD_OVERRIDE_REBOOT_FPGA_ADDR 0x400 + sizeof(int) * 2
-#define	PAYLOAD_OVERRIDE_REBOOT_FPGA_SIZE 1
 
 #define TRANS_ABORT_FLAG_ADDR			0x500		//<! transmission abort request flag
 #define TRANS_ABORT_FLAG_SIZE			1			//<! size of mute flag in bytes
@@ -92,6 +87,9 @@
 
 #define LAST_COMM_TIME_ADDR 			0X9485		//<! saves the last unix time at which communication has occured
 #define LAST_COMM_TIME_SIZE				4			//<! size of last communication time in bytes
+
+#define FSFRAM 							0x10000
+#define FSFRAM_SIZE						2 * sizeof(int)
 
 #define DEFAULT_EPS_SAVE_TLM_TIME		5			//<! save EPS TLM every 20 seconds
 #define DEFAULT_TRXVU_SAVE_TLM_TIME		5			//<! save TRXVU TLM every 20 seconds

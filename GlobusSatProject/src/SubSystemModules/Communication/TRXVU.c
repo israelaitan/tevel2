@@ -140,17 +140,17 @@ void HandleTransponderTime()
 }
 
 int InitAnts() {
-	//Set Antenas addresses for both sides
+
 	ISIS_ANTS_t address[2];
 	address[0].i2cAddr = ANTS_I2C_SIDE_A_ADDR;
 	address[1].i2cAddr = ANTS_I2C_SIDE_B_ADDR;
 
-	//initialize Antenas system
 	int err = ISIS_ANTS_Init(address, 2);
 	if(err)
 		logg(error, "E: Error in the initialization of the Antennas: %d\n", err);
 	else
 		logg(event, "V: Initialization of the Antennas succeeded\n");
+
 	return err;
 }
 
@@ -206,8 +206,6 @@ int InitTrxvu() {
 
 	areAntennasOpen();
 
-	InitAnts();
-
 	InitTxModule();
 
 	initTransponder();
@@ -227,8 +225,11 @@ CommandHandlerErr TRX_Logic()
 	unsigned char* data = NULL;
 	unsigned int length=0;
 	CommandHandlerErr  res =0;
+	isis_vu_e__state__from_t response;
+	int rv =  isis_vu_e__state(0, &response);
+	if ((!rv && response.fields.bitrate != isis_vu_e__bitrate_tlm__9600bps))//probably trxvu restarted by wdt
+		SetFreqAndBitrate();
 
-	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
 	if(onCmdCount>0) {
 		//printf("Command in bufffer =%d\n", onCmdCount);//TODO:remove

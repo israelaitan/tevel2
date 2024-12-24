@@ -100,7 +100,7 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_TRANSPONDER_OFF;
 		break;
 
-	case TRANSPONDER_RSSI:
+	case SET_TRANSPONDER_RSSI:
 		err = CMD_set_transponder_RSSI(cmd);
 		ackType=ACK_TRANSPONDER_RSSI;
 		break;

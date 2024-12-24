@@ -15,7 +15,6 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Housekepping/DUMP.h"
 #include "SubSystemModules/Payload/payload_drivers.h"
-#include <satellite-subsystems/isis_ants.h>
 #include "TLM_management.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
@@ -137,7 +136,8 @@ void WriteDefaultValuesToFRAM()
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-	uint16_t rssi = (uint16_t)(__builtin_bswap32(2500) >> 16u);
+	//uint16_t rssi = (uint16_t)(__builtin_bswap32(2500) >> 16u);
+	uint16_t rssi = 2500;
 	FRAM_write((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
 
 }
@@ -242,9 +242,9 @@ int autoDeploy()
 
 	if(resArm == 0) {
 		logg(event, "V:Deploying: Side A\n");
-		resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);
+		//resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
 		if (resDeploy!=0)
-			logg(event, "V:Failed deploy: Side A res=%d\n", resDeploy);
+			logg(error, "E:Failed deploy: Side A res=%d\n", resDeploy);
 	} else
 		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
 
@@ -252,9 +252,9 @@ int autoDeploy()
 	resArm = isis_ants__arm(1);
 	if(resArm == 0) {
 		logg(event, "V:Deploying: Side B\n");
-		resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);
+		//resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
 		if (resDeploy!=0)
-			logg(event, "V:Failed deploy: Side B res=%d\n", resDeploy);
+			logg(error, "E:Failed deploy: Side B res=%d\n", resDeploy);
 	} else
 		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
 
@@ -292,8 +292,6 @@ int DeploySystem()
 	}
 	return res;
 }
-
-
 
 //Init sub system
 
@@ -335,6 +333,8 @@ int InitSubsystems() {
 	else
 		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
 
+
+	InitAnts();
 
 	// initialize TRXVU (communication) component and ants
 	int err=InitTrxvu();
