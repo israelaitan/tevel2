@@ -75,7 +75,6 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	return 0;
 }
 
-
 void TelemetryCollectorLogic()
 {
 	if (CheckExecutionTime(tlm_last_save_time[eps_tlm],tlm_save_periods[eps_tlm])){
@@ -104,13 +103,13 @@ void TelemetryCollectorLogic()
 
 	if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
 			TelemetrySavePIC32();
-			logg(event, "I:TelemetrySavePIC_32\n");
+			logg(TLMInfo, "I:TelemetrySavePIC_32\n");
 			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
 	}
 
 	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
 			TelemetrySaveRADFET();
-			logg(event, "I:TelemetrySaveRADFET\n");
+			logg(TLMInfo, "I:TelemetrySaveRADFET\n");
 			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
 	}
 
@@ -240,7 +239,6 @@ void TelemetrySaveANT()
 	if (err == 0)
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
 	else
-		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);//TODO:remove after replacing card
 		logg(error, "E=%d TelemetrySaveANT side A\n", err);
 
 	isis_ants__get_all_telemetry__from_t ant_tlmB = { 0 };
@@ -248,7 +246,6 @@ void TelemetrySaveANT()
 	if (err == 0)
 		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
 	else
-		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);//TODO:remove after replacing card
 		logg(error, "E=%d TelemetrySaveANT side B\n", err);
 }
 

@@ -4,15 +4,12 @@
 
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <hal/errors.h>
-
 #include <string.h>
-
 #include "EPS.h"
-
-
 #include "SubSystemModules/Maintenance/Log.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
+ISISMEPSV2_IVID5_PIU_t subsystem[1]; // One instance to be initialised.
 
 // y[i] = a * x[i] +(1-a) * y[i-1]
 voltage_t prev_filtered_voltage = 0;		// y[i-1]
@@ -22,12 +19,13 @@ EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES}
 
 int EPS_Init()
 {
-	ISISMEPSV2_IVID5_PIU_t isis_eps = {EPS_I2C_ADDR};
-	int rv = ISISMEPSV2_IVID5_PIU_Init(&isis_eps, 1);
+	subsystem[0].i2cAddr = EPS_I2C_ADDR;
+	int rv = ISISMEPSV2_IVID5_PIU_Init(subsystem, 1);
 	if (rv != E_NO_SS_ERR) {
 		logg(error, "E:EPS init failed\n");
 		return -1;
 	}
+
 
 #ifdef SOLAR_PANELS_ASSEMBELED
 	rv = IsisSolarPanelv2_initialize(slave0_spi);
@@ -54,6 +52,50 @@ int EPS_Init()
 	EPS_Conditioning();
 
 	return 0;
+}
+
+int eps_i2c_comm(){
+	uint8_t NOP_W = 0x02;//NOP_W
+	uint8_t NOP_R = 0x03;//NOP_R
+	uint8_t GET_CONF_W = 0x82;
+	uint8_t SET_CONF_W = 0x84;
+	uint8_t CONF_R = 0x85;//CONF_R
+
+	uint8_t SAFETY_VOLT_LOTHR_H = 0x48;
+	uint8_t SAFETY_VOLT_LOTHR_L = 0x00; //read only. uint16. emergency
+
+	uint8_t stid=26;
+	uint8_t ivid_7=7;
+	uint8_t ivid_5=5;
+	uint8_t bid=1;
+
+
+	//STID IVID 0x84 BID 0x0A 0x48 read only
+	int w_size = 6;
+	unsigned char i2c_wrie_data[] = { stid, ivid_5, GET_CONF_W, bid , SAFETY_VOLT_LOTHR_L, SAFETY_VOLT_LOTHR_H };
+	int err = I2C_write(EPS_I2C_ADDR, i2c_wrie_data, w_size);
+	if (err)
+		return err;
+	//STID IVID 0x85 BID 0x80 res 0x0A 0x48 0x?? 0x??
+	#define r_size  8 + 2
+	unsigned char i2c_read_data[r_size] = { 0 };
+	vTaskDelay(20);
+	err = I2C_read(EPS_I2C_ADDR, i2c_read_data, r_size);
+
+	unsigned char data[] = {0, ' '};
+	uint16_t val =  data[1] + (data[0] << 8);
+
+	//memcpy(&val + 1 , i2c_read_data[8], 1);
+	//memcpy(&val, i2c_read_data[9], 1);
+
+	return err;
+}
+
+int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
+	isismepsv2_ivid5_piu__replyheader_t response;
+	int err = isismepsv2_ivid5_piu__outputbuschannelon(0, channel, &response);
+	if (err)
+		logg(error, "E:eps_set_5v_channels_on=%d failed\n", channel);
 }
 
 #define GetFilterdVoltage(curr_voltage) (voltage_t) (alpha * curr_voltage + (1 - alpha) * prev_filtered_voltage)

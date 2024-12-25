@@ -1,11 +1,10 @@
 #include "payload_drivers.h"
 #include "hal/Drivers/I2C.h"
+#include "SysI2CAddr.h"
 #include <string.h>
 #include <hal/Timing/Time.h>
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
-
-#define PAYLOAD_I2C_ADDRESS 0x55
 #define CLEAR_WDT 0x3F
 #define SOFT_RESET 0xF8
 #define READ_RADFET_VOLTAGES 0x33
@@ -30,12 +29,12 @@ SoreqResult payloadRead(int size, unsigned char *buffer) {
 
     unsigned char wtd_and_read[] = {CLEAR_WDT};
     for (int i = 0; i < TIMEOUT / READ_DELAY; ++i) {
-        if (I2C_write(PAYLOAD_I2C_ADDRESS, wtd_and_read, 1))
+        if (I2C_write(PAYLOAD_I2C_ADDR, wtd_and_read, 1))
         	return PAYLOAD_I2C_WRITE_ERROR;
 
         vTaskDelay(READ_DELAY);
 
-        if (!I2C_read(PAYLOAD_I2C_ADDRESS, buffer, size) && buffer[3] == 0)
+        if (!I2C_read(PAYLOAD_I2C_ADDR, buffer, size) && buffer[3] == 0)
         	return PAYLOAD_SUCCESS;
     }
     return PAYLOAD_TIMEOUT;
@@ -43,7 +42,7 @@ SoreqResult payloadRead(int size, unsigned char *buffer) {
 
 SoreqResult payloadSendCommand(char opcode, int size, unsigned char *buffer, int delay) {
 
-	if (I2C_write(PAYLOAD_I2C_ADDRESS, (unsigned char *)&opcode, 1))
+	if (I2C_write(PAYLOAD_I2C_ADDR, (unsigned char *)&opcode, 1))
     	return PAYLOAD_I2C_WRITE_ERROR;
     vTaskDelay(delay);
     return payloadRead(size, buffer);
@@ -118,30 +117,7 @@ SoreqResult payloadTurnOff() {
 }
 
 SoreqResult payloadTurnOn() {
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
-	int err = isismepsv2_ivid5_piu__gethousekeepingeng(0, &tlm_mb_eng);
-	if (err == 0){
-		printf("volt=%d\n", tlm_mb_eng.fields.vip_obc04.fields.volt);
-		printf("cur=%d\n", tlm_mb_eng.fields.vip_obc04.fields.current);
-		printf("pow=%d\n", tlm_mb_eng.fields.vip_obc04.fields.power);
-	}
-	else
-		printf("E=%d isis_eps__gethousekeepingeng__tm\n", err);
-
-	isismepsv2_ivid5_piu__replyheader_t response;
-	printf("Turn on eps ch 4\n");
-	err = isismepsv2_ivid5_piu__outputbuschannelon(EPS_INDEX, isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3, &response);
-	printf("Turn on eps ch 4 res=%d\n", err);
-
-	err = isismepsv2_ivid5_piu__gethousekeepingeng(0, &tlm_mb_eng);
-	if (err == 0){
-		printf("volt=%d\n", tlm_mb_eng.fields.vip_obc04.fields.volt);
-		printf("cur=%d\n", tlm_mb_eng.fields.vip_obc04.fields.current);
-		printf("pow=%d\n", tlm_mb_eng.fields.vip_obc04.fields.power);
-	}
-	else
-		printf("E=%d isis_eps__gethousekeepingeng__tm\n", err);
-	return err;
+	return eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
 }
 
 

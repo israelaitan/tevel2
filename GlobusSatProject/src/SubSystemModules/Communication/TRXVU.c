@@ -140,17 +140,13 @@ void HandleTransponderTime()
 }
 
 int InitAnts() {
-
+	eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw2);
 	ISIS_ANTS_t address[2];
 	address[0].i2cAddr = ANTS_I2C_SIDE_A_ADDR;
 	address[1].i2cAddr = ANTS_I2C_SIDE_B_ADDR;
-
 	int err = ISIS_ANTS_Init(address, 2);
 	if(err)
 		logg(error, "E: Error in the initialization of the Antennas: %d\n", err);
-	else
-		logg(event, "V: Initialization of the Antennas succeeded\n");
-
 	return err;
 }
 

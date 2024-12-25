@@ -9,6 +9,8 @@
 #include "GlobalStandards.h"
 #include "EPSOperationModes.h"
 
+#include <satellite-subsystems/isismepsv2_ivid5_piu.h>
+
 /*
  	 	 	 	  ______
 			  ___|		|___
@@ -65,6 +67,8 @@ typedef union __attribute__ ((__packed__)){
  * @note if FRAM read error than use default values of 'alpha' and 'eps_threshold_voltages'
  */
 int EPS_Init();
+
+int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel);
 
 /*!
  * @brief EPS logic. controls the state machine of which subsystem

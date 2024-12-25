@@ -341,8 +341,11 @@ int InitSubsystems() {
 	else
 		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
 
+	EPS_Init();
 
-	InitAnts();
+	InitAnts();//TODO: turn off somewhere after deploy
+
+	//eps_i2c_comm();//TODO: remove
 
 	// initialize TRXVU (communication) component and ants
 	int err=InitTrxvu();
@@ -358,7 +361,6 @@ int InitSubsystems() {
 	else
 		logg(event, "V: InitDump was successful\n");
 
-	EPS_Init();
 
 	err = InitTelemetryCollector();
 		if (err!=0)
@@ -383,7 +385,6 @@ int InitSubsystems() {
 		logg(error, "E:%d Failed in payloadInit\n", err);
 	else
 		logg(event, "V: payloadInit was successful\n");
-
 
 	return 0;
 }
