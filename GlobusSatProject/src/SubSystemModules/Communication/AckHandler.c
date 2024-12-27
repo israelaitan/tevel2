@@ -17,7 +17,7 @@ int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short or
 	int err = 0;
 	sat_packet_t ack = { 0 };
 
-	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, &ack);
+	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, 1, &ack);
 
 	err = TransmitSplPacket(&ack, NULL);
 	vTaskDelay(10);

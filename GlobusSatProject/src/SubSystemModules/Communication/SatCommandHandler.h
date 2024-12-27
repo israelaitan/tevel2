@@ -5,8 +5,8 @@
 #define T8GBS 8 //GIVAT SHMUEL SAT ID IN PACKETS
 #define T0ALL 0 //ALL SATS
 
-#define MAX_COMMAND_DATA_LENGTH 200 //maximum AX25 data field available for downlink
-#define SAT_PACKET_HEADER_LENGTH 8 // short*2+char*4
+#define MAX_COMMAND_DATA_LENGTH 225 //maximum AX25 data field available for downlink
+#define SAT_PACKET_HEADER_LENGTH 10 // short*3+char*4
 
 //<! how many command can be saved in the buffer
 #define MAX_NUM_OF_DELAYED_CMD (100)
@@ -29,6 +29,7 @@ typedef struct __attribute__ ((__packed__)) sat_packet_t
 	unsigned char cmd_type;								///< type of the command. according to SPL protocol
 	unsigned char cmd_subtype;							///< sub-type of the command. according to SPL protocol
 	unsigned short length;						///< length of the received data.
+	unsigned short total;
 	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
 
 }sat_packet_t;
@@ -54,7 +55,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd);
  * @note helpful when assembling assembling a cmd for downlink. assemble
  */
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
-		unsigned char subtype,unsigned short id, unsigned short ord, unsigned char targetSat, sat_packet_t *cmd);
+		unsigned char subtype,unsigned short id, unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd);
 
 /*!
  * @brief returns an online command to be executed if there is one in the RX buffer.

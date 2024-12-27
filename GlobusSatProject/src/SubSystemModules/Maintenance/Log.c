@@ -121,3 +121,4 @@ void copyLastErrorMsg(unsigned char * buffer){
 	memcpy(buffer, lastErrorMsg, realErrorSize);
 }
 
+

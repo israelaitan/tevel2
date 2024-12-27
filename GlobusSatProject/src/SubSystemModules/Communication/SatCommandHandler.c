@@ -17,6 +17,44 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 
 unsigned char received_frame_data[SIZE_RXFRAME] = {0};
 
+CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
+		unsigned char subtype, unsigned short id, unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd)
+{
+	if (NULL == cmd)
+	{
+		return cmd_null_pointer_error;
+	}
+
+	cmd->ID = id;
+	cmd->targetSat = targetSat;
+	cmd->cmd_type = type;
+	cmd->cmd_subtype = subtype;
+	cmd->length = 0;
+	cmd->ordinal = ord;
+	cmd->total = total;
+
+	if (NULL != data)
+	{
+		if (data_length > (SIZE_RXFRAME - SIZE_SPL_HEADER))
+		{
+			cmd->length =   (SIZE_RXFRAME - SIZE_SPL_HEADER);
+		}
+		else
+		{
+			cmd->length = data_length;
+		}
+
+		void *err = memcpy(cmd->data, data, cmd->length);
+
+		if (NULL == err)
+		{
+			return cmd_execution_error;
+		}
+	}
+	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal, cmd->total);
+	return cmd_command_succsess;
+}
+
 //parsing the packet to create a command
 CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 {
@@ -68,45 +106,9 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 		return cmd_execution_error;
 	offset += sizeof(data_length);
 
-	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, targetSat, cmd);
+	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, 1, targetSat, cmd);
 }
 
-CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
-		unsigned char subtype, unsigned short id, unsigned short ord, unsigned char targetSat, sat_packet_t *cmd)
-{
-	if (NULL == cmd)
-	{
-		return cmd_null_pointer_error;
-	}
-
-	cmd->ID = id;
-	cmd->targetSat = targetSat;
-	cmd->cmd_type = type;
-	cmd->cmd_subtype = subtype;
-	cmd->length = 0;
-	cmd->ordinal = ord;
-
-	if (NULL != data)
-	{
-		if (data_length > (SIZE_RXFRAME - SIZE_SPL_HEADER))
-		{
-			cmd->length =   (SIZE_RXFRAME - SIZE_SPL_HEADER);
-		}
-		else
-		{
-			cmd->length = data_length;
-		}
-
-		void *err = memcpy(cmd->data, data, cmd->length);
-
-		if (NULL == err)
-		{
-			return cmd_execution_error;
-		}
-	}
-	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal);
-	return cmd_command_succsess;
-}
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired
 // @param[in] cmd_time command execution time to check
