@@ -5,6 +5,7 @@
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <hal/errors.h>
 #include <string.h>
+#include <hal/Drivers/I2C.h>
 #include "EPS.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
@@ -54,41 +55,87 @@ int EPS_Init()
 	return 0;
 }
 
-int eps_i2c_comm(){
-	uint8_t NOP_W = 0x02;//NOP_W
-	uint8_t NOP_R = 0x03;//NOP_R
-	uint8_t GET_CONF_W = 0x82;
-	uint8_t SET_CONF_W = 0x84;
-	uint8_t CONF_R = 0x85;//CONF_R
+void print_byte_arr(unsigned char arr[], int size) {
+	if (!arr && size <= 0)
+		return;
+	int i = 0;
+	for (; i < size - 1; i++)
+		printf("%d=%d,", i, arr[i]);
+	printf("%d=%d\n", i, arr[i]);
+}
 
-	uint8_t SAFETY_VOLT_LOTHR_H = 0x48;
-	uint8_t SAFETY_VOLT_LOTHR_L = 0x00; //read only. uint16. emergency
+uint16_t byte_arr_2_int16(unsigned char arr[], int size) {
+	return  arr[0] + (arr[1] << 8);
+}
 
-	uint8_t stid=26;
-	uint8_t ivid_7=7;
-	uint8_t ivid_5=5;
-	uint8_t bid=1;
+int i2c_write_read(I2Ctransfer *tr) {
+	int err = 0;
+	for (int i = 0; i < 10; i++) {
+		err = I2C_writeRead(tr);
+		if (err)
+			return err;
+
+		if (tr->readData[4] != NEW_RESP)
+			continue;
+		printf("i=%d\n", i);
+		print_byte_arr(tr->writeData, tr->writeSize);
+		print_byte_arr(tr->readData, tr->readSize);
+		break;
+	}
+	return err;
+}
 
 
+int eps_i2c_comm_config(uint16_t param, int write_sz, int read_sz){
 	//STID IVID 0x84 BID 0x0A 0x48 read only
-	int w_size = 6;
-	unsigned char i2c_wrie_data[] = { stid, ivid_5, GET_CONF_W, bid , SAFETY_VOLT_LOTHR_L, SAFETY_VOLT_LOTHR_H };
-	int err = I2C_write(EPS_I2C_ADDR, i2c_wrie_data, w_size);
+	I2Ctransfer tr = { 0 };
+	tr.slaveAddress = EPS_I2C_ADDR;
+	unsigned char i2c_write_data[] = { STID, IVID, GET_CONF_W, BID , ((unsigned char *)&param)[0], ((unsigned char *)&param)[1] };
+	//unsigned char i2c_write_data[] = { STID, IVID, GET_CONF_W, BID , 0x00, 0x48 };
+	tr.writeData = i2c_write_data;
+	tr.writeSize = write_sz;
+	tr.readData = malloc(read_sz);
+	tr.readSize = read_sz;
+	tr.writeReadDelay = 20;
+	int err = i2c_write_read(&tr);
 	if (err)
 		return err;
-	//STID IVID 0x85 BID 0x80 res 0x0A 0x48 0x?? 0x??
-	#define r_size  8 + 2
-	unsigned char i2c_read_data[r_size] = { 0 };
-	vTaskDelay(20);
-	err = I2C_read(EPS_I2C_ADDR, i2c_read_data, r_size);
 
-	unsigned char data[] = {0, ' '};
-	uint16_t val =  data[1] + (data[0] << 8);
+	uint16_t val;
+	if (read_sz - 8 == 1)
+		val = *(tr.readData+8);
+	else if (read_sz - 8 == 2)
+		val = byte_arr_2_int16(tr.readData+8, 2);
 
-	//memcpy(&val + 1 , i2c_read_data[8], 1);
-	//memcpy(&val, i2c_read_data[9], 1);
-
+	printf("val=%d\n", val);
 	return err;
+}
+
+int eps_i2c_comm(CC, write_sz, read_sz){
+	//STID IVID 0x84 BID 0x0A 0x48
+	I2Ctransfer tr = { 0 };
+	tr.slaveAddress = EPS_I2C_ADDR;
+	unsigned char i2c_write_data[] = { STID, IVID, CC, BID };
+	tr.writeData = i2c_write_data;
+	tr.writeSize = write_sz;
+	tr.readData = malloc(read_sz);
+	tr.readSize = read_sz;
+	tr.writeReadDelay = 20;
+
+	return i2c_write_read(&tr);
+}
+
+void RUN_EPS_I2C_COMM(){
+	//eps_i2c_comm(GET_SYSTEM_STATUS_W, GET_SYSTEM_STATUS_SIZE_W, GET_SYSTEM_STATUS_SIZE_R);
+	//eps_i2c_comm_config(TTC_I2C_SLAVE_ADDR, GET_CONF_SIZE_W, GET_CONF_SIZE_R);
+	eps_i2c_comm_config(SAFETY_VOLT_LOTHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	eps_i2c_comm_config(SAFETY_VOLT_HITHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+
+	eps_i2c_comm_config(LOTHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	eps_i2c_comm_config(HITHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+
+	eps_i2c_comm_config(AUTO_HEAT_ENA_BP1, GET_CONF_SIZE_W, GET_CONF_SIZE_R_8);
+
 }
 
 int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
