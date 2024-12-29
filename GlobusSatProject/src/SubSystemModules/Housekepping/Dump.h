@@ -2,6 +2,7 @@
 #define DUMP_H_
 
 #include "SubSystemModules/Communication/SatCommandHandler.h"
+#include "TLM_management.h"
 
 
 int InitDump();
@@ -25,4 +26,11 @@ void AbortDump();
  * 			-1 on failure
  */
 int DumpTelemetry(sat_packet_t *cmd);
+
+FileSystemResult FirstScan(char* c_file_name,
+		time_unix from_time,
+		time_unix to_time,
+		int* sent,
+		unsigned short dump_id,
+		unsigned short dump_type);
 #endif

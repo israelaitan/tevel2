@@ -147,9 +147,9 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned in
 	sat_packet_t packet = { 0 };
 	if (NULL != cmd) {
 		err = AssembleCommand(data, length, cmd->cmd_type, cmd->cmd_subtype,
-				cmd->ID, cmd->ordinal, cmd->targetSat, &packet);
+				cmd->ID, cmd->ordinal, cmd->targetSat, cmd->total, &packet);
 	} else {
-		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFF, 0, cmd->targetSat, &packet);
+		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFF, 0, cmd->targetSat, cmd->total, &packet);
 	}
 	if (err != 0) {
 		return err;
