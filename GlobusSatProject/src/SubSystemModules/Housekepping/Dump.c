@@ -301,9 +301,9 @@ unsigned short CalcPacketSize(char dump_type)
  {
 	switch (dump_type) {
 		case tlm_eps_raw_mb:
-			return 164;
+			return 120;//TODO:update and compress
 		case tlm_eps_eng_mb:
-			return 164;
+			return 120;//TODO:update and compress
 		case tlm_tx:
 			return 220;
 		case tlm_rx:
@@ -315,7 +315,7 @@ unsigned short CalcPacketSize(char dump_type)
 		case tlm_log:
 			return 225;
 		case tlm_wod:
-			return 225;
+			return 92;//TODO:update and compress
 		case tlm_pic32:
 			return 216;
 		case tlm_radfet:
