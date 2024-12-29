@@ -53,7 +53,7 @@ typedef enum
 #define FIRST_TIME (-1)
 #define FILE_NAME_WITH_INDEX_SIZE (MAX_F_FILE_NAME_SIZE+sizeof(int)*2)
 #define ELEMENTS_PER_READ (4500)
-#define MAX_ELEMENT_SIZE (235-8)
+#define MAX_ELEMENT_SIZE (225)
 #define FS_TAKE_SEMPH_DELAY	(1000 * 30)
 
 //struct for filesystem info

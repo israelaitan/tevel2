@@ -53,7 +53,7 @@ Boolean TestAssmbleCommand()
 	unsigned int id = 0x12345678;
 
 	sat_packet_t cmd = {0};
-	int err = AssembleCommand(data,length,type, subtype, id, 0, 8, &cmd);
+	int err = AssembleCommand(data,length,type, subtype, id, 0, 8, 1, &cmd);
 	if(0 != err){
 		printf("error in 'AssmbleCommand' = %d\n",err);
 		return TRUE;

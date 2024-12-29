@@ -43,7 +43,56 @@ typedef enum __attribute__ ((__packed__)){
 	INDEX_UP_SAFE,
 	INDEX_UP_CRUISE,
 	INDEX_UP_FULL
-}EpsThresholdsIndex;
+} EpsThresholdsIndex;
+
+typedef enum __attribute__ ((__packed__)){
+	STID = 26,
+	IVID = 5,
+	BID = 1
+} EPS_I2C_HEADER;
+
+typedef enum __attribute__ ((__packed__)){
+	NOP_W = 0x02,
+	NOP_R = 0x03,
+	GET_SYSTEM_STATUS_W = 0x40,
+	GET_SYSTEM_STATUS_R = 0x41,
+	GET_PIU_HK_ENG_W = 0xA2,
+	GET_PIU_HK_ENG_R = 0xA3,
+	GET_CONF_W = 0x82,
+	GET_CONF_R = 0x83,
+	SET_CONF_W = 0x84,
+	SET_CONF_R = 0x85,
+	CONF_R = 0x85
+} EPS_I2C_CMD;
+
+typedef enum __attribute__ ((__packed__)){
+	NOP_SIZE_W = 4,
+	NOP_SIZE_R = 5,
+	GET_SYSTEM_STATUS_SIZE_W = 4,
+	GET_SYSTEM_STATUS_SIZE_R = 36,
+	GET_CONF_SIZE_W = 6,
+	GET_CONF_SIZE_R_8 = 9,
+	GET_CONF_SIZE_R_16 = 10,
+	GET_PIU_HK_ENG_SIZE_W = 4,
+	GET_PIU_HK_ENG_SIZE_R = 116
+} EPS_I2C_CMD_SIZE;
+
+typedef enum __attribute__ ((__packed__)){
+	SAFETY_VOLT_LOTHR = 0x4042,//uint16 6200
+	SAFETY_VOLT_HITHR = 0x4043,//uint16 7000
+	TTC_I2C_SLAVE_ADDR = 0x4800,//uint16
+	EMLOPO_VOLT_LOTHR =  0x480A,//uint16 6000
+	EMLOPO_VOLT_HITHR =  0x480B,//uint16 6200
+	SAFETY_VOLT_LOTHR_USED = 0x480D,//uint16 6200
+	SAFETY_VOLT_HITHR_USED = 0x480E,//uint16 7000
+	LOTHR_BP1_HEATER = 0x3000,//int16 200
+	HITHR_BP1_HEATER = 0x3003,//int16 600
+	AUTO_HEAT_ENA_BP1 = 0x1001//int8 0
+} EPS_I2C_PRM;
+
+typedef enum __attribute__ ((__packed__)){
+	NEW_RESP = 0x80
+} EPS_I2C_RESP;
 
 typedef union __attribute__ ((__packed__)){
 	voltage_t raw[NUMBER_OF_THRESHOLD_VOLTAGES];

@@ -350,9 +350,9 @@ int InitSubsystems() {
 
 	EPS_Init();
 
-	InitAnts();//TODO: turn off somewhere after deploy
+	RUN_EPS_I2C_COMM();//TODO: remove
 
-	//eps_i2c_comm();//TODO: remove
+	InitAnts();//TODO: turn off somewhere after deploy
 
 	// initialize TRXVU (communication) component and ants
 	int err=InitTrxvu();
