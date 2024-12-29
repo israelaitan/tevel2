@@ -102,7 +102,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 
 int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (unsigned char) START_DUMP_SUBTYPE, type, id, ord, (unsigned char)T8GBS, total, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T8GBS, total, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
@@ -120,7 +120,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 	if(from_time < c_file.creation_time || from_time > to_time)
 		from_time = c_file.creation_time;
 	F_FILE* current_file = NULL;
-	int index_current = getFileIndex(c_file.creation_time,from_time);
+	int index_current = getFileIndex(c_file.creation_time, from_time);
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
 	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	uint8_t availFrames = 0;
@@ -229,14 +229,14 @@ void DumpStart(dump_arguments_t *task_args){
 		time_unix curr = 0;
 		Time_getUnixEpoch(&curr);
 		logg(DMPInfo, "I:starting dump loop at time: %u\n", curr);
-		//result = c_fileReadAndSend(filename, task_args->t_start, task_args->t_end, &total_packets_read, task_args->id, (char)(task_args->dump_type));
+		result = c_fileReadAndSend(filename, task_args->t_start, task_args->t_end, &total_packets_read, task_args->id, (char)(task_args->dump_type));
 
-		result = FirstScan((char*)filename,
+		/*result = FirstScan((char*)filename,
 				task_args->t_start,
 				task_args->t_end,
 				&total_packets_read,
 				task_args->id,
-				task_args->dump_type);
+				task_args->dump_type);*/
 		if (result) {
 			logg(error, "E:%d c_fileReadAndSend returned\n", result);
 			if (result == FS_ABORT)
@@ -442,7 +442,7 @@ FileSystemResult FirstScan(char* c_file_name,
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
 			int k;
-			for( k = 0; k < readen;) {
+			for( k = 0 ; k < readen ; k++) {
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
 				if(element_time > to_time) {
@@ -456,7 +456,6 @@ FileSystemResult FirstScan(char* c_file_name,
 					memcpy(data_to_send, element, size_elementWithTimeStamp);
 					tmp += size_elementWithTimeStamp;
 				} else {
-					k++;
 					element += size_elementWithTimeStamp;
 				}
 			}

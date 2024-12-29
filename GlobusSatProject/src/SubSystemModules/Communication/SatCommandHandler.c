@@ -95,8 +95,13 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(data_length);
+	unsigned short total = 0;
+	err = memcpy(&total, data + offset,sizeof(total));
+	if (NULL == err)
+		return cmd_execution_error;
+	offset += sizeof(total);
 
-	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, 1, targetSat, cmd);
+	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, targetSat, total, cmd);
 }
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired
