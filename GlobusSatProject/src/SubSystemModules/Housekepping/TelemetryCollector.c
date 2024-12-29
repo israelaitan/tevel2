@@ -26,6 +26,16 @@
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 
+unsigned char* AddTime(unsigned char* data, unsigned int sz){
+	unsigned int curr_time;
+	Time_getUnixEpoch(&curr_time);
+	unsigned char* res = malloc(sizeof(curr_time) + sz);
+	if (res) {
+		memcpy(res, &curr_time, sizeof(curr_time));
+		memcpy(res + sizeof(curr_time), data, sz);
+	}
+	return res;
+}
 
 int InitTelemetryCollector() {
 	return FRAM_read((unsigned char*)tlm_save_periods, TLM_SAVE_PERIOD_START_ADDR, NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
@@ -398,22 +408,31 @@ void TelemetrySaveRADFET() {
 int CMD_getPic32_TLM(sat_packet_t *cmd)
 {
 	PayloadEventData event_data;
-		SoreqResult result = payloadReadEvents(&event_data);
-		if (!result)
-			TransmitDataAsSPL_Packet(cmd, (unsigned char*)&event_data, sizeof(event_data));
-		else
+	SoreqResult result = payloadReadEvents(&event_data);
+	if (!result) {
+		unsigned char *data = AddTime((unsigned char*)&event_data, sizeof(event_data));
+		if (data) {
+			TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(event_data));
+			free(data);
+		}
+		else {
+			result = -1;//TODO:no memory
 			logg(error, "E:payloadGetPic32=%d\n", result);
+		}
+	}
+	else
+		logg(error, "E:payloadGetPic32=%d\n", result);
 }
 
 // Get Radfet TLM
 int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
 	PayloadEnvironmentData environment_data;
-		SoreqResult result = payloadReadEnvironment(&environment_data);
-		if (!result)
-			TransmitDataAsSPL_Packet(cmd, (unsigned char*)&environment_data, sizeof(environment_data));
-		else
-			logg(error, "E:TelemetryGetRADFET=%d\n", result);
+	SoreqResult result = payloadReadEnvironment(&environment_data);
+	if (!result)
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)&environment_data, sizeof(environment_data));
+	else
+		logg(error, "E:TelemetryGetRADFET=%d\n", result);
 }
 
 

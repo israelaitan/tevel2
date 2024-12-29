@@ -98,12 +98,17 @@ typedef enum __attribute__ ((__packed__)) eps_subtypes_t
 
 
 typedef enum __attribute__ ((__packed__)) telemetry_subtypes_t {
-	TLM_GET_EPS_SUBTYPE,
-	TLM_GET_SOLAR_SUBTYPE,
-	TLM_GET_TRXVU_SUBTYPE,
-	TLM_GET_ANTS_SUBTYPE,
-	TLM_GET_PIC32_SUBTYPE,
-	TLM_GET_RADFET_SUBTYPE
+	 TLM_GET_EPS_RAW_SUBTYPE = 0,
+	 TLM_GET_EPS_ENG_SUBTYPE = 1,
+	TLM_GET_TX_SUBTYPE = 2,
+	TLM_GET_RX_SUBTYPE = 3,
+	TLM_GET_ANTENNA_A_SUBTYPE = 4,
+	TLM_GET_ANTENNA_B_SUBTYPE = 5,
+	TLM_GET_LOG_SUBTYPE = 6,
+	TLM_GET_WOD_SUBTYPE = 7,
+	TLM_GET_PIC32_SUBTYPE = 8,
+	TLM_GET_RADFET_SUBTYPE = 9,
+	TLM_GET_SOLAR_SUBTYPE = 10
 } telemetry_subtypes_t;
 
 typedef enum __attribute__ ((__packed__)) files_subtypes_t {

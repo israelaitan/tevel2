@@ -108,6 +108,7 @@ int eps_i2c_comm_config(uint16_t param, int write_sz, int read_sz){
 		val = byte_arr_2_int16(tr.readData+8, 2);
 
 	printf("val=%d\n", val);
+	free(tr.readData);
 	return err;
 }
 
@@ -121,8 +122,9 @@ int eps_i2c_comm(CC, write_sz, read_sz){
 	tr.readData = malloc(read_sz);
 	tr.readSize = read_sz;
 	tr.writeReadDelay = 20;
-
-	return i2c_write_read(&tr);
+	int res = i2c_write_read(&tr);
+	free(tr.readData);
+	return res;
 }
 
 void RUN_EPS_I2C_COMM(){

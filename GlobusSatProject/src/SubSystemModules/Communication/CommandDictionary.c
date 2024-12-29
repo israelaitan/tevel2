@@ -141,8 +141,13 @@ int telemetry_command_router(sat_packet_t *cmd)
 	switch (cmd->cmd_subtype)
 	{
 
-	case TLM_GET_EPS_SUBTYPE:
-		err = CMD_getEPS_TLM(cmd);
+	case TLM_GET_EPS_RAW_SUBTYPE:
+		err = CMD_getEPS_TLM(cmd);//TODO:sep
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_EPS_ENG_SUBTYPE:
+		err = CMD_getEPS_TLM(cmd);//TODO:sep
 		ackType=ACK_NO_ACK;
 		break;
 
@@ -151,15 +156,24 @@ int telemetry_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
-	case TLM_GET_TRXVU_SUBTYPE:
-		err = CMD_getTRXVU_TLM(cmd);
+	case TLM_GET_TX_SUBTYPE:
+		err = CMD_getTRXVU_TLM(cmd);//TODO:sep
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_RX_SUBTYPE:
+		err = CMD_getTRXVU_TLM(cmd);//TODO:sep
 		ackType=ACK_NO_ACK;
 		break;
 
-	case TLM_GET_ANTS_SUBTYPE:
-		err = CMD_getAnts_TLM(cmd);
+	case TLM_GET_ANTENNA_A_SUBTYPE:
+		err = CMD_getAnts_TLM(cmd);//TODO:sep
 		ackType=ACK_NO_ACK;
 		break;
+
+	case TLM_GET_ANTENNA_B_SUBTYPE:
+			err = CMD_getAnts_TLM(cmd);//TODO:sep
+			ackType=ACK_NO_ACK;
+			break;
 
 	case TLM_GET_PIC32_SUBTYPE:
 		err = CMD_getPic32_TLM(cmd);
