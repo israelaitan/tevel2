@@ -380,7 +380,7 @@ void TelemetrySavePIC32() {
 	if (!result)
 		c_fileWrite(FILENAME_PIC32_TLM, &event_data);
 	else
-		logg(error, "E:payloadReadEvents=%d\n", result);
+		logg(error, "E:payloadTelemtrySavePic32=%d\n", result);
 }
 
 void TelemetrySaveRADFET() {
@@ -397,14 +397,23 @@ void TelemetrySaveRADFET() {
 // Get Pic32 TLM
 int CMD_getPic32_TLM(sat_packet_t *cmd)
 {
-	cmd = NULL;
-	return 0;
+	PayloadEventData event_data;
+		SoreqResult result = payloadReadEvents(&event_data);
+		if (!result)
+			TransmitDataAsSPL_Packet(cmd, (unsigned char*)&event_data, sizeof(event_data));
+		else
+			logg(error, "E:payloadGetPic32=%d\n", result);
 }
 
 // Get Radfet TLM
 int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
-	cmd = NULL;
-	return 0;
+	PayloadEnvironmentData environment_data;
+		SoreqResult result = payloadReadEnvironment(&environment_data);
+		if (!result)
+			TransmitDataAsSPL_Packet(cmd, (unsigned char*)&environment_data, sizeof(environment_data));
+		else
+			logg(error, "E:TelemetryGetRADFET=%d\n", result);
 }
+
 

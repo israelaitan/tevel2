@@ -31,8 +31,10 @@
 #define WOD_SAVE_TLM_PERIOD_ADDR  	    0x24		//24,25,26,27
 #define PIC32_SAVE_TLM_PERIOD_ADDR		0x28		//28,29,2A,2B
 #define RADFET_SAVE_TLM_PERIOD_ADDR 	0x2C		//2C,2D,2E,2F
-#define aaaa_ADDR						0x30		//30,31,32,33
-#define aabb_ADDR						0x34		//34,35,36,37
+#define TURN_ON_PAYLOAD_IN_INIT			0X30 		// (30,31,32,33) the flag tells us whether or not to turn on the payload during the init process
+#define TURN_ON_PAYLOAD_IN_INIT_SIZE	4			// size of the parameter in bytes
+#define PAYLOAD_TURN_OFF_BY_COMMAND		0x34		//(34,35,36,37) counter of all restarts that are done due to a command
+#define PAYLOAD_TURN_OFF_BY_COMMAND_SIZE 4 			// size of parameter in bytes
 #define aacc_ADDR						0x38		//38,39,3A,3B
 #define aadd_ADDR						0x3C		//3C,3D,3E,3F
 
@@ -56,7 +58,6 @@
 
 #define RESET_CMD_FLAG_ADDR				0x105		//<! the flag is raised whenever a restart is commissioned
 #define RESET_CMD_FLAG_SIZE				1			//<! size of the parameter in bytes
-
 
 #define TRANS_ABORT_FLAG_ADDR			0x500		//<! transmission abort request flag
 #define TRANS_ABORT_FLAG_SIZE			1			//<! size of mute flag in bytes

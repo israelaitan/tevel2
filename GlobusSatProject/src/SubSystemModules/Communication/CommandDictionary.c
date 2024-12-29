@@ -161,6 +161,16 @@ int telemetry_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
+	case TLM_GET_PIC32_SUBTYPE:
+		err = CMD_getPic32_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_RADFET_SUBTYPE:
+		err = CMD_getRadfet_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
 	default:
 		break;
 	}

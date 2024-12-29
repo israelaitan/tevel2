@@ -4,6 +4,7 @@
 #include <string.h>
 #include <hal/Timing/Time.h>
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
+#include "FRAM_FlightParameters.h"
 
 #define CLEAR_WDT 0x3F
 #define SOFT_RESET 0xF8
@@ -108,7 +109,19 @@ SoreqResult payloadReadEvents(PayloadEventData *event_data) {
 }
 
 SoreqResult payloadSoftReset() {
-    return payloadSendCommand(SOFT_RESET, 0, NULL, 0);
+	SoreqResult res = payloadSendCommand(SOFT_RESET, 0, NULL, 0);
+	if (!res)
+		payloadCommandRestartCount();
+    return res;
+}
+
+void payloadCommandRestartCount() {
+	unsigned int reset_cnt = 0;
+	int res = FRAM_read((unsigned char*)&reset_cnt, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
+	if(!res) {
+		reset_cnt++;
+		FRAM_write((unsigned char*)&reset_cnt, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
+	}
 }
 
 SoreqResult payloadTurnOff() {

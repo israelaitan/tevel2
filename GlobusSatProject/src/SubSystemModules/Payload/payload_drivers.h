@@ -107,4 +107,9 @@ SoreqResult payloadTurnOff();
  */
 SoreqResult payloadTurnOn();
 
+/**
+ * counts restarts that are done due to a command
+ */
+void payloadCommandRestartCount();
+
 #endif /* PAYLOAD_DRIVERS_H_ */

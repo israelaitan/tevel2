@@ -148,6 +148,13 @@ void WriteDefaultValuesToFRAM()
 
 	time_unix mute_end_time = 0;
 	FRAM_write((unsigned char*) &mute_end_time, MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
+
+	Boolean turn_on_payload_in_init = FALSE;
+	FRAM_write((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+
+	int turn_off_payload_by_command = 0;
+	FRAM_write((unsigned char*)&turn_off_payload_by_command, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
+
 }
 
 void ReadDefaultValuesToFRAM()
@@ -379,12 +386,24 @@ int InitSubsystems() {
 	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	num_of_resets++;
 	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	Boolean turn_on_payload_in_init;
+	err = FRAM_read((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+	if(!err)
+	{
+		if(turn_on_payload_in_init)
+		{
+			err = payloadInit();
 
-	err = payloadInit();
-	if (err)
-		logg(error, "E:%d Failed in payloadInit\n", err);
+			if (err)
+					logg(error, "E:%d Failed in payloadInit\n", err);
+			else
+				logg(event, "V: payloadInit was successful\n");
+		}
+		else
+				logg(event, "v: %d not to turn on payload during INIT\n", TURN_ON_PAYLOAD_IN_INIT);
+	}
 	else
-		logg(event, "V: payloadInit was successful\n");
+		logg(error, "E: %d FRAMread failed\n", err);
 
 	return 0;
 }
