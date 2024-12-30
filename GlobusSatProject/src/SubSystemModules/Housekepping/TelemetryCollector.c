@@ -54,6 +54,9 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_eps_eng_mb:
 		strcpy(filename,FILENAME_EPS_ENG_MB_TLM);
 		break;
+	case tlm_eps_avg_mb:
+		strcpy(filename,FILENAME_EPS_AVG_MB_TLM);
+		break;
 	case tlm_tx:
 		strcpy(filename,FILENAME_TX_TLM);
 		break;
@@ -188,19 +191,58 @@ void TelemetrySaveEPS()
 	else
 		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
+	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
+	err = isismepsv2_ivid5_piu__gethousekeepingrunningavg(EPS_I2C_BUS_INDEX, &tlm_mb_avg);
+
+	if (err == 0)
+		c_fileWrite(FILENAME_EPS_AVG_MB_TLM, &tlm_mb_avg);
+	else
+		logg(error, "E=%d isismepsv2_ivid5_piu__gethousekeepingrunningavg\n", err);
+
 }
 
 //get EPS TLM
-int CMD_getEPS_TLM(sat_packet_t *cmd)
-{
+int CMD_getEPS_ENG_TLM(sat_packet_t *cmd) {
 	int err = 0;
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 
-	if(err == 0)
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)&tlm_mb_eng.raw, sizeof(tlm_mb_eng));
+	if(err == 0){
+		unsigned char *data = AddTime((unsigned char*)&tlm_mb_eng, sizeof(tlm_mb_eng));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_eng));
+	}
 	else
 			logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
+
+	return err;
+}
+
+int CMD_getEPS_RAW_TLM(sat_packet_t *cmd) {
+	int err = 0;
+	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
+	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
+
+	if(err == 0){
+		unsigned char *data = AddTime((unsigned char*)&tlm_mb_raw, sizeof(tlm_mb_raw));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_raw));
+	}
+	else
+			logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
+
+	return err;
+}
+
+int CMD_getEPS_AVG_TLM(sat_packet_t *cmd) {
+	int err = 0;
+	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
+	err = isismepsv2_ivid5_piu__gethousekeepingrunningavg(EPS_I2C_BUS_INDEX, &tlm_mb_avg);
+
+	if(err == 0){
+		unsigned char *data = AddTime((unsigned char*)&tlm_mb_avg, sizeof(tlm_mb_avg));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_avg));
+	}
+	else
+			logg(error, "E=%d isismepsv2_ivid5_piu__gethousekeepingrunningavg\n", err);
 
 	return err;
 }
@@ -220,28 +262,38 @@ void TelemetrySaveTRXVU()
 
 }
 
-int CMD_getTRXVU_TLM(sat_packet_t *cmd)
+int CMD_getTX_TLM(sat_packet_t *cmd)
 {
-	int err1, err2;
-	unsigned char rawData[sizeof(isis_vu_e__get_tx_telemetry__from_t) + sizeof(isis_vu_e__get_tx_telemetry_last__from_t)];
+	int err;
+	unsigned char rawData[sizeof(unsigned int) + sizeof(isis_vu_e__get_tx_telemetry__from_t)];
 
 	isis_vu_e__get_tx_telemetry__from_t tx_tlm;
-	err1 = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
-	if (err1 == 0)
-		memcpy(&rawData, (unsigned char*)&tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
-
-	isis_vu_e__get_tx_telemetry_last__from_t rx_tlm;
-	err2 = isis_vu_e__get_tx_telemetry_last(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
-	if (err2 == 0)
-		memcpy(&rawData + sizeof(isis_vu_e__get_tx_telemetry__from_t), (unsigned char*)&rx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
-
-	if(err1 == 0 || err2 == 0)
-	{
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(isis_vu_e__get_tx_telemetry__from_t) + sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
-		return 0;
+	err = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
+	if (err == 0) {
+		unsigned int curr_time;
+		Time_getUnixEpoch(&curr_time);
+		memcpy(rawData, (unsigned char*)&curr_time, sizeof(unsigned int));
+		memcpy(rawData + sizeof(unsigned int), (unsigned char*)&tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(unsigned int) + sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	}
+	return err;
+}
 
-	return err1 || err2;
+int CMD_getRX_TLM(sat_packet_t *cmd)
+{
+	int err;
+	unsigned char rawData[sizeof(unsigned int) + sizeof(isis_vu_e__get_rx_telemetry__from_t)];
+
+	isis_vu_e__get_tx_telemetry__from_t rx_tlm;
+	err = isis_vu_e__get_rx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	if (err == 0) {
+		unsigned int curr_time;
+		Time_getUnixEpoch(&curr_time);
+		memcpy(rawData, (unsigned char*)&curr_time, sizeof(unsigned int));
+		memcpy(rawData + sizeof(unsigned int), (unsigned char*)&rx_tlm.raw, sizeof(isis_vu_e__get_rx_telemetry__from_t));
+		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(unsigned int) + sizeof(isis_vu_e__get_rx_telemetry__from_t));
+	}
+	return err;
 }
 
 void TelemetrySaveANT()
@@ -263,14 +315,28 @@ void TelemetrySaveANT()
 }
 
 // Get Antennas TLM
-int CMD_getAnts_TLM(sat_packet_t *cmd)
-{
+int CMD_getAnts_A_TLM(sat_packet_t *cmd) {
 	int err = 0;
 	isis_ants__get_all_telemetry__from_t ant_tlm;
-	err = isis_ants__get_all_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &ant_tlm);
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlm);
 
-	if (err == 0)
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*) &ant_tlm,sizeof(ant_tlm));
+	if (err == 0) {
+		unsigned char *data = AddTime(&ant_tlm, sizeof(isis_ants__get_all_telemetry__from_t));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(ant_tlm));
+	}
+
+	return err;
+}
+
+int CMD_getAnts_B_TLM(sat_packet_t *cmd) {
+	int err = 0;
+	isis_ants__get_all_telemetry__from_t ant_tlm;
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlm);
+
+	if (err == 0) {
+		unsigned char *data = AddTime(&ant_tlm, sizeof(isis_ants__get_all_telemetry__from_t));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(ant_tlm));
+	}
 
 	return err;
 }
@@ -386,6 +452,20 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 }
 
+int CMD_getWOD_TLM(sat_packet_t *cmd) {
+	WOD_Telemetry_t wod = { 0 };
+	GetCurrentWODTelemetry(&wod);
+	TransmitDataAsSPL_Packet(cmd, &wod, sizeof(WOD_Telemetry_t));
+	return 0;
+}
+
+int CMD_getLOG_TLM(sat_packet_t *cmd) {
+	unsigned char data[LOG_TLM_SIZE_WITH_TIME];
+	getLog_TLM(data, LOG_TLM_SIZE_WITH_TIME);
+	TransmitDataAsSPL_Packet(cmd, data, LOG_TLM_SIZE_WITH_TIME);
+	return 0;
+}
+
 void TelemetrySavePIC32() {
 
 	PayloadEventData event_data;
@@ -433,18 +513,15 @@ int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
 	PayloadEnvironmentData environment_data;
 	SoreqResult result = payloadReadEnvironment(&environment_data);
-	if (!result)
-	{
+	if (!result) {
 		unsigned char *data = AddTime((unsigned char*)&environment_data, sizeof(environment_data));
-		if(data)
-		{
-		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(environment_data));
-		free(data);
+		if(data) {
+			TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(environment_data));
+			free(data);
 		}
-		else
-		{
-		result = -1; // TODO: no memory;
-		logg(error, "E:payloadRdafet=%d\n", result);
+		else {
+			result = -1; // TODO: no memory;
+			logg(error, "E:payloadRdafet=%d\n", result);
 		}
 	}
 	else

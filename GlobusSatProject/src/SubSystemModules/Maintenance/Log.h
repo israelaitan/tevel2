@@ -9,9 +9,9 @@
 #define LOG_H_
 
 #define LOG_MSG_SIZE 80
-#define LOG_BUFFER_SIZE ((235 - 8) * 3)//SIZE_TXFRAME=235 - spl header
-#define LOG_TLM_SIZE (235 - 4 - 8)//SIZE_TXFRAME - sizeof(unsigned int) - spl header
-
+#define LOG_BUFFER_SIZE ((235 - 10) * 3)//SIZE_TXFRAME=235 - spl header
+#define LOG_TLM_SIZE (235 - 4 - 10)//SIZE_TXFRAME - sizeof(unsigned int) - spl header
+#define LOG_TLM_SIZE_WITH_TIME (235 - 10)
 #define CURR_LOG_LEVEL 4
 #define TLMInfo (LogLevel)2
 #define MTNInfo (LogLevel)2
@@ -42,5 +42,7 @@ void initLog();
 int getLastErrorMsgSize();
 
 void copyLastErrorMsg(unsigned char * buffer);
+
+void getLog_TLM(unsigned char * buffer, int size);
 
 #endif /* LOG_H_ */

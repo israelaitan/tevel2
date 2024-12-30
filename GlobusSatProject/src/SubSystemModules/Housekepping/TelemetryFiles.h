@@ -8,6 +8,7 @@
 //	---eps
 #define	FILENAME_EPS_RAW_MB_TLM			"eRwMB"
 #define FILENAME_EPS_ENG_MB_TLM			"eEgMB"
+#define FILENAME_EPS_AVG_MB_TLM			"eAvgMB"
 
 //	---trxvu
 #define FILENAME_TX_TLM					"tx"
@@ -25,6 +26,7 @@
 typedef enum {
 	tlm_eps_raw_mb,
 	tlm_eps_eng_mb,
+	tlm_eps_avg_mb,
 	tlm_tx,
 	tlm_rx,
 	tlm_antA,

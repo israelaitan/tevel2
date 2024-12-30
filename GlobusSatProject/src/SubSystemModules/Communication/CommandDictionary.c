@@ -149,38 +149,46 @@ int telemetry_command_router(sat_packet_t *cmd)
 	{
 
 	case TLM_GET_EPS_RAW_SUBTYPE:
-		err = CMD_getEPS_TLM(cmd);//TODO:sep
+		err = CMD_getEPS_RAW_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
 	case TLM_GET_EPS_ENG_SUBTYPE:
-		err = CMD_getEPS_TLM(cmd);//TODO:sep
+		err = CMD_getEPS_ENG_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
-	case TLM_GET_SOLAR_SUBTYPE:
-		err = CMD_getSolar_TLM(cmd);
+	case TLM_GET_EPS_AVG_SUBTYPE:
+		err = CMD_getEPS_AVG_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
 	case TLM_GET_TX_SUBTYPE:
-		err = CMD_getTRXVU_TLM(cmd);//TODO:sep
+		err = CMD_getTX_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 	case TLM_GET_RX_SUBTYPE:
-		err = CMD_getTRXVU_TLM(cmd);//TODO:sep
+		err = CMD_getRX_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
 	case TLM_GET_ANTENNA_A_SUBTYPE:
-		err = CMD_getAnts_TLM(cmd);//TODO:sep
+		err = CMD_getAnts_A_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
 	case TLM_GET_ANTENNA_B_SUBTYPE:
-			err = CMD_getAnts_TLM(cmd);//TODO:sep
-			ackType=ACK_NO_ACK;
-			break;
+		err = CMD_getAnts_B_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_LOG_SUBTYPE:
+		err = CMD_getLOG_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_WOD_SUBTYPE:
+		err = CMD_getWOD_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
 
 	case TLM_GET_PIC32_SUBTYPE:
 		err = CMD_getPic32_TLM(cmd);
@@ -189,6 +197,11 @@ int telemetry_command_router(sat_packet_t *cmd)
 
 	case TLM_GET_RADFET_SUBTYPE:
 		err = CMD_getRadfet_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_SOLAR_SUBTYPE:
+		err = CMD_getSolar_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 

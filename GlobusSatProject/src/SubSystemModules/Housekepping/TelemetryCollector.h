@@ -108,7 +108,9 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod);
  *  @brief Gets all EPS telemetry
  * @param[out] output EPS telemetry and sends them to ground control
  */
-int CMD_getEPS_TLM(sat_packet_t *cmd);
+int CMD_getEPS_ENG_TLM(sat_packet_t *cmd);
+int CMD_getEPS_RAW_TLM(sat_packet_t *cmd);
+int CMD_getEPS_AVG_TLM(sat_packet_t *cmd);
 
 /*!
  *  @brief Gets all Solar panels telemetry
@@ -120,14 +122,17 @@ int CMD_getSolar_TLM(sat_packet_t *cmd);
  * @brief Gets all TRXVU telemetry
  * @param[out] output TRXVU telemetry and sends them to ground control
  */
-int CMD_getTRXVU_TLM(sat_packet_t *cmd);
+int CMD_getTX_TLM(sat_packet_t *cmd);
+int CMD_getRX_TLM(sat_packet_t *cmd);
 
 /*!
  * @brief Gets all Antennas telemetry
  * @param[out] output Antennas telemetry and sends them to ground control
  */
-int CMD_getAnts_TLM(sat_packet_t *cmd);
-
+int CMD_getAnts_A_TLM(sat_packet_t *cmd);
+int CMD_getAnts_B_TLM(sat_packet_t *cmd);
+int CMD_getWOD_TLM(sat_packet_t *cmd);
+int CMD_getLOG_TLM(sat_packet_t *cmd);
 /*!
  * @brief Gets all Pic32 telemetry
  * @param[out] output Pic32 telemetry and sends them to ground control

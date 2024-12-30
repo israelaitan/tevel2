@@ -126,3 +126,18 @@ void copyLastErrorMsg(unsigned char * buffer){
 	memcpy(buffer, lastErrorMsg, realErrorSize);
 }
 
+void getLog_TLM(unsigned char * buffer, int size){
+	if (buffer == NULL)
+		return;
+	if (size != LOG_TLM_SIZE_WITH_TIME)
+		return;
+
+	int delta = 0;
+	if (index_ > LOG_TLM_SIZE)
+		delta +=  index_ - LOG_TLM_SIZE;
+	unsigned int curr_time;
+	Time_getUnixEpoch(&curr_time);
+	memcpy(buffer, &curr_time, sizeof(unsigned int));
+	memcpy(buffer + sizeof(unsigned int), logBuffer + delta, LOG_TLM_SIZE);
+}
+
