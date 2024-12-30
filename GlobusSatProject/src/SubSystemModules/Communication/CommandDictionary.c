@@ -124,7 +124,14 @@ int eps_command_router(sat_packet_t *cmd)
 		err = CMD_EPS_ResetWDT(cmd);
 		SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);
 		break;
-
+	case EPS_SET_CHANNEL_ON:
+		err = CMD_EPS_SetChannelStateOn(cmd);
+		SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);//TODO:add app ack
+		break;
+	case EPS_SET_CHANNEL_OFF:
+			err = CMD_EPS_SetChannelStateOff(cmd);
+			SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);//TODO:add app ack
+			break;
 	default:
 		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd->ID, cmd->ordinal,NULL,0);
 		break;

@@ -93,7 +93,9 @@ typedef enum __attribute__ ((__packed__)) eps_subtypes_t
 {
 	EPS_UPDATE_ALPHA,
 	EPS_RESET_WD,
-	EPS_GET_MODE
+	EPS_GET_MODE,
+	EPS_SET_CHANNEL_ON,
+	EPS_SET_CHANNEL_OFF
 }eps_subtypes_t;
 
 
