@@ -35,7 +35,8 @@
 #define TURN_ON_PAYLOAD_IN_INIT_SIZE	4			// size of the parameter in bytes
 #define PAYLOAD_TURN_OFF_BY_COMMAND		0x34		//(34,35,36,37) counter of all restarts that are done due to a command
 #define PAYLOAD_TURN_OFF_BY_COMMAND_SIZE 4 			// size of parameter in bytes
-#define aacc_ADDR						0x38		//38,39,3A,3B
+#define PAYLOAD_ON						0x38		//flag that indicates wheather paylod is on (38,39,3A,3B)
+#define PAYLOAD_ON_SIZE					4
 #define aadd_ADDR						0x3C		//3C,3D,3E,3F
 
 #define LAST_WAKEUP_TIME_ADDR			0X40		//40,41,42,43 <! saves the first time after satellites wakeup from reset
