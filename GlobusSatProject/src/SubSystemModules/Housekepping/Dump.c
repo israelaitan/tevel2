@@ -40,6 +40,8 @@ xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
 
 char allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
 char data_to_send[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
+int data_to_send_sz = 0;
+uint8_t data_to_send_dump_type = 0;
 
 
 int InitDump()
@@ -330,8 +332,7 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 {
 	C_FILE c_file;
 	int ord = 0;
-	unsigned short sz = CalcPacketSize(dump_type);
-	void* element = malloc(sz);
+	void* element = malloc(data_to_send_sz);
 	if (!element){
 		logg(error, "E:SendAll no memory");
 		return -1;
@@ -343,8 +344,8 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 	int availFrames = 0;
 	while (ord < total) {
 		logg(event, "V:SendAll ord= %d", ord);
-		memcpy(element, tmp, sz);
-		int err = send(element, sz, dump_id, ord, dump_type, total, &availFrames);
+		memcpy(element, tmp, data_to_send_sz);
+		int err = send(element, data_to_send_sz, dump_id, ord, dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -355,7 +356,7 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 		}
 		else {
 			if (availFrames != NO_TX_FRAME_AVAILABLE) {
-				tmp += sz;
+				tmp += data_to_send_sz;
 				(*sent)++;
 				ord++;
 			} else {
@@ -369,21 +370,19 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 }
 
 
-int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int* sent, sat_packet_t pack) {
-	C_FILE c_file;
-	*sent = 0;
-	unsigned short sz = CalcPacketSize(dump_type);
-	void* element = malloc(sz);
-	unsigned char* data1 = (unsigned char*)pack.data;
-	unsigned short length = pack.length;
-	unsigned short ind1;
+int CMD_GetDumpByIndex(sat_packet_t *pack) {
+	if (data_to_send_sz == 0)
+		return -1;
+	void* element = malloc(data_to_send_sz);
+	unsigned short index;
 	int availFrames = 0;
 	char* tmp = data_to_send;
-	for (int i = 0; i < length; i++) {
-		memcpy(&ind1, data1, 2);
-		tmp = data_to_send + sz * ind1;
-		memcpy(element, tmp, sz);
-		int err = send(element, sz, dump_id, ind1, dump_type, total, &availFrames);
+	int total = pack->length /  sizeof(unsigned short);
+	for (int i = 0; i < total;) {
+		memcpy(&index, pack->data + i*sizeof(unsigned short), sizeof(unsigned short));
+		tmp = data_to_send + data_to_send_sz * index;
+		memcpy(element, tmp, data_to_send_sz);
+		int err = send(element, data_to_send_sz, pack->ID, i,  data_to_send_dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -393,11 +392,11 @@ int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int
 			}
 		}
 		else {
-			if (availFrames != NO_TX_FRAME_AVAILABLE) {
-				(*sent)++;
-			} else {
+			if (availFrames == NO_TX_FRAME_AVAILABLE) {
 				logg(DMPInfo, "I:dump.no available frames\n");
 				vTaskDelay(100);
+			} else {
+				i++;
 			}
 		}
 	}
@@ -475,8 +474,9 @@ FileSystemResult FirstScan(char* c_file_name,
 			return FS_FAIL;
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
-	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short total = (curr_pos_data_to_send - data_to_send) / sz;
+	data_to_send_sz = CalcPacketSize(dump_type);
+	data_to_send_dump_type = dump_type;
+	unsigned short total = (curr_pos_data_to_send - data_to_send) / data_to_send_sz;
 	int err = SendAll(dump_id, dump_type, total, sent);
 	if (err != 0) {
 		return FS_FAIL;

@@ -45,23 +45,24 @@ typedef enum __attribute__ ((__packed__)) ack_subtype_t
 	ACK_DUMP_START = 		22,
 	ACK_DUMP_ABORT = 		23,
 	ACK_DUMP_FINISHED = 	24,
+	ACK_DUMP_BY_INDEX =		25,
 
-	ACK_GENERIC_I2C_CMD = 	25,
-	ACK_ARM_DISARM = 		26,					//after changing arm state of the ants
-	ACK_REDEPLOY = 			27,
-	ACK_ANT_CANCEL_DEP = 	28,
-	ACK_FRAM_RESET = 		29,
-	ACK_TLM_SET_COLL_CYCLE= 30,
-	ACK_SET_LOG_LEVEL = 	31,
-	ACK_GET_LOG_LEVEL = 	32,
+	ACK_GENERIC_I2C_CMD = 	26,
+	ACK_ARM_DISARM = 		27,					//after changing arm state of the ants
+	ACK_REDEPLOY = 			28,
+	ACK_ANT_CANCEL_DEP = 	29,
+	ACK_FRAM_RESET = 		30,
+	ACK_TLM_SET_COLL_CYCLE= 31,
+	ACK_SET_LOG_LEVEL = 	32,
+	ACK_GET_LOG_LEVEL = 	33,
 
-	ACK_FS_DELETE_ALL = 	33,
-	ACK_FS_DELETE_FILE = 	34,
+	ACK_FS_DELETE_ALL = 	34,
+	ACK_FS_DELETE_FILE = 	35,
 
-	ACK_PING = 				35,
-	ACK_UNKNOWN_SUBTYPE = 	36,				//when the given subtype is unknown
-	ACK_NO_ACK = 			37,						//Do not send ACK
-	ACK_ERROR_MSG = 		38 					// send this ACK when error has occurred
+	ACK_PING = 				36,
+	ACK_UNKNOWN_SUBTYPE = 	37,				//when the given subtype is unknown
+	ACK_NO_ACK = 			38,						//Do not send ACK
+	ACK_ERROR_MSG = 		39 					// send this ACK when error has occurred
 }ack_subtype_t;
 
 
@@ -73,6 +74,7 @@ typedef enum __attribute__ ((__packed__)) trxvu_subtypes_t {
 	TRXVU_IDLE_OFF,
 	START_DUMP_SUBTYPE,
 	STOP_DUMP_SUBTYPE,
+	GET_BY_INDEX_DUMP_SUBTYPE,
 	GET_BEACON_INTERVAL,
 	SET_BEACON_INTERVAL,
 	GET_TX_UPTIME,

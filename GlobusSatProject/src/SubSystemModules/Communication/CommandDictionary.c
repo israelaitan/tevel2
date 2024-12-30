@@ -31,6 +31,11 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_DUMP_ABORT;
 		break;
 
+	case GET_BY_INDEX_DUMP_SUBTYPE:
+		err = CMD_GetDumpByIndex(cmd);
+		ackType=ACK_DUMP_BY_INDEX;
+		break;
+
 	case MUTE_TRXVU:
 		err = CMD_MuteTRXVU(cmd);
 		ackType=ACK_MUTE;
