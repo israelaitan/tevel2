@@ -229,14 +229,14 @@ void DumpStart(dump_arguments_t *task_args){
 		time_unix curr = 0;
 		Time_getUnixEpoch(&curr);
 		logg(DMPInfo, "I:starting dump loop at time: %u\n", curr);
-		result = c_fileReadAndSend(filename, task_args->t_start, task_args->t_end, &total_packets_read, task_args->id, (char)(task_args->dump_type));
+		//result = c_fileReadAndSend(filename, task_args->t_start, task_args->t_end, &total_packets_read, task_args->id, (char)(task_args->dump_type));
 
-		/*result = FirstScan((char*)filename,
+		result = FirstScan((char*)filename,
 				task_args->t_start,
 				task_args->t_end,
 				&total_packets_read,
 				task_args->id,
-				task_args->dump_type);*/
+				task_args->dump_type);
 		if (result) {
 			logg(error, "E:%d c_fileReadAndSend returned\n", result);
 			if (result == FS_ABORT)
@@ -330,19 +330,25 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 {
 	C_FILE c_file;
 	int ord = 0;
-	void* element;
+	unsigned short sz = CalcPacketSize(dump_type);
+	void* element = malloc(sz);
+	if (!element){
+		logg(error, "E:SendAll no memory");
+		return -1;
+	}
 	*sent = 0;
 	char* tmp = data_to_send;
-	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
+
+	//unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	int availFrames = 0;
 	while (ord < total) {
-		memcpy(&element, tmp, sz);
-		int err = send(element, size_elementWithTimeStamp, dump_id, ord, dump_type, total, &availFrames);
+		logg(event, "V:SendAll ord= %d", ord);
+		memcpy(element, tmp, sz);
+		int err = send(element, sz, dump_id, ord, dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
-				vTaskDelay(100);
+				vTaskDelay(100);//TODO:?
 			else {
 				return err;
 			}
@@ -358,6 +364,7 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 			}
 		}
 	}
+	free(element);
 	return 0;
 }
 
@@ -365,9 +372,8 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int* sent, sat_packet_t pack) {
 	C_FILE c_file;
 	*sent = 0;
-	void* element;
 	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
+	void* element = malloc(sz);
 	unsigned char* data1 = (unsigned char*)pack.data;
 	unsigned short length = pack.length;
 	unsigned short ind1;
@@ -376,8 +382,8 @@ int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int
 	for (int i = 0; i < length; i++) {
 		memcpy(&ind1, data1, 2);
 		tmp = data_to_send + sz * ind1;
-		memcpy(&element, tmp, sz);
-		int err = send(element, size_elementWithTimeStamp, dump_id, ind1, dump_type, total, &availFrames);
+		memcpy(element, tmp, sz);
+		int err = send(element, sz, dump_id, ind1, dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -395,6 +401,7 @@ int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int
 			}
 		}
 	}
+	free(element);
 	return 0;
 }
 
@@ -409,7 +416,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	char curr_file_name[MAX_F_FILE_NAME_SIZE+sizeof(int)*2];
-	char* tmp = data_to_send;
+	char* curr_pos_data_to_send = data_to_send;
 	void* element;
 	int end_read = 0;
 	if(get_C_FILE_struct(c_file_name,&c_file,&addr)!=TRUE)
@@ -421,6 +428,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
 	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	*sent = 0;
+	int k = 0;
 	do {
 		get_file_name_by_index(c_file_name, index_current++, curr_file_name);
 		int error = f_managed_open(curr_file_name, "r", &current_file);
@@ -441,7 +449,6 @@ FileSystemResult FirstScan(char* c_file_name,
 			element = allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
-			int k;
 			for( k = 0 ; k < readen ; k++) {
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
@@ -453,11 +460,10 @@ FileSystemResult FirstScan(char* c_file_name,
 					if (CheckDumpAbort())
 							return FS_ABORT;
 					//int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type,  &availFrames);
-					memcpy(data_to_send, element, size_elementWithTimeStamp);
-					tmp += size_elementWithTimeStamp;
-				} else {
-					element += size_elementWithTimeStamp;
+					memcpy(curr_pos_data_to_send, element, size_elementWithTimeStamp);
+					curr_pos_data_to_send += size_elementWithTimeStamp;
 				}
+				element += size_elementWithTimeStamp;
 			}
 			if(end_read)
 				break;
@@ -470,7 +476,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
 	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short total = (tmp - data_to_send) / sz;
+	unsigned short total = (curr_pos_data_to_send - data_to_send) / sz;
 	int err = SendAll(dump_id, dump_type, total, sent);
 	if (err != 0) {
 		return FS_FAIL;
