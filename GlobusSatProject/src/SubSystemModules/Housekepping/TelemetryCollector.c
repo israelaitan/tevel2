@@ -422,6 +422,7 @@ int CMD_getPic32_TLM(sat_packet_t *cmd)
 	}
 	else
 		logg(error, "E:payloadGetPic32=%d\n", result);
+	return result;
 }
 
 // Get Radfet TLM
@@ -430,9 +431,22 @@ int CMD_getRadfet_TLM(sat_packet_t *cmd)
 	PayloadEnvironmentData environment_data;
 	SoreqResult result = payloadReadEnvironment(&environment_data);
 	if (!result)
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)&environment_data, sizeof(environment_data));
+	{
+		unsigned char *data = AddTime((unsigned char*)&environment_data, sizeof(environment_data));
+		if(data)
+		{
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(environment_data));
+		free(data);
+		}
+		else
+		{
+		result = -1; // TODO: no memory;
+		logg(error, "E:payloadRdafet=%d\n", result);
+		}
+	}
 	else
-		logg(error, "E:TelemetryGetRADFET=%d\n", result);
+		logg(error, "E:payloadGetRADFET=%d\n", result);
+	return result;
 }
 
 
