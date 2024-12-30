@@ -126,11 +126,24 @@ void payloadCommandRestartCount() {
 
 SoreqResult payloadTurnOff() {
 	isismepsv2_ivid5_piu__replyheader_t response;
-    return isismepsv2_ivid5_piu__outputbuschanneloff(EPS_INDEX, PAYLOAD_BUS_CHANNEL, &response);
+    int res =  isismepsv2_ivid5_piu__outputbuschanneloff(EPS_INDEX, PAYLOAD_BUS_CHANNEL, &response);
+    if(!res){
+    	Boolean flag = FALSE;
+    	FRAM_write((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+    	payloadcommandRestartCount();
+    }
+    return res;
 }
 
 SoreqResult payloadTurnOn() {
-	return eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
+	int res = eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
+	if(!res)
+	{
+		Boolean flag = TRUE;
+		FRAM_read((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+	}
+	return res;
 }
+
 
 

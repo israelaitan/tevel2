@@ -145,6 +145,7 @@ int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
 	int err = isismepsv2_ivid5_piu__outputbuschannelon(0, channel, &response);
 	if (err)
 		logg(error, "E:eps_set_5v_channels_on=%d failed\n", channel);
+	return err;
 }
 
 #define GetFilterdVoltage(curr_voltage) (voltage_t) (alpha * curr_voltage + (1 - alpha) * prev_filtered_voltage)

@@ -155,6 +155,9 @@ void WriteDefaultValuesToFRAM()
 	int turn_off_payload_by_command = 0;
 	FRAM_write((unsigned char*)&turn_off_payload_by_command, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
 
+	Boolean payload_on = FALSE;
+	FRAM_write((unsigned char*)&payload_on, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+
 }
 
 void ReadDefaultValuesToFRAM()

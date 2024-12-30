@@ -110,17 +110,20 @@ void TelemetryCollectorLogic()
 		logg(TLMInfo, "I:TelemetrySaveWOD\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
+	Boolean is_payload_on;
+	FRAM_read((unsigned char*)&is_payload_on, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+	if(is_payload_on) {
+		if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
+				TelemetrySavePIC32();
+				logg(TLMInfo, "I:TelemetrySavePIC_32\n");
+				Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
+		}
 
-	if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
-			TelemetrySavePIC32();
-			logg(TLMInfo, "I:TelemetrySavePIC_32\n");
-			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
-	}
-
-	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
-			TelemetrySaveRADFET();
-			logg(TLMInfo, "I:TelemetrySaveRADFET\n");
-			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
+		if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
+				TelemetrySaveRADFET();
+				logg(TLMInfo, "I:TelemetrySaveRADFET\n");
+				Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
+		}
 	}
 
 }
