@@ -127,6 +127,43 @@ int eps_i2c_comm(CC, write_sz, read_sz){
 	return res;
 }
 
+
+
+int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
+	isismepsv2_ivid5_piu__replyheader_t response;
+	int err = isismepsv2_ivid5_piu__outputbuschannelon(0, channel, &response);
+	if (err)
+		logg(error, "E:eps_set_5v_channels_on=%d failed\n", channel);
+	return err;
+}
+
+int eps_set_channels_off(isismepsv2_ivid5_piu__eps_channel_t channel){
+	isismepsv2_ivid5_piu__replyheader_t response;
+	int err = isismepsv2_ivid5_piu__outputbuschanneloff(0, channel, &response);
+	if (err)
+		logg(error, "E:eps_set_5v_channels_on=%d failed\n", channel);
+	return err;
+}
+
+int eps_get_channel_state(uint16_t *stat_obc_on){
+	int err = 0;
+	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
+	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
+	if(err)
+		logg(error, "E=%d eps_get_channel_state\n", err);
+	else
+		*stat_obc_on = tlm_mb_eng.fields.stat_obc_on;
+	return err;
+}
+
+int eps_check_channel_state(uint16_t channel, Boolean *status){
+	uint16_t stat_obc_on = 0;
+	int err = eps_get_channel_state(&stat_obc_on);
+	if (!err)
+		*status = (stat_obc_on & channel) == channel;
+	return err;
+}
+
 void RUN_EPS_I2C_COMM(){
 	//eps_i2c_comm(GET_SYSTEM_STATUS_W, GET_SYSTEM_STATUS_SIZE_W, GET_SYSTEM_STATUS_SIZE_R);
 	//eps_i2c_comm_config(TTC_I2C_SLAVE_ADDR, GET_CONF_SIZE_W, GET_CONF_SIZE_R);
@@ -137,15 +174,19 @@ void RUN_EPS_I2C_COMM(){
 	eps_i2c_comm_config(HITHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
 
 	eps_i2c_comm_config(AUTO_HEAT_ENA_BP1, GET_CONF_SIZE_W, GET_CONF_SIZE_R_8);
-
 }
 
-int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
-	isismepsv2_ivid5_piu__replyheader_t response;
-	int err = isismepsv2_ivid5_piu__outputbuschannelon(0, channel, &response);
-	if (err)
-		logg(error, "E:eps_set_5v_channels_on=%d failed\n", channel);
-	return err;
+void RUN_EPS_CHAN_STAT(){
+	uint16_t channel = 0x0010;//isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3
+	//uint16_t channel = 0x0020;//isismepsv2_ivid5_piu__eps_channel__channel_5v_sw2
+	Boolean status = FALSE;
+	eps_set_channels_off(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
+	eps_check_channel_state(channel, &status);
+	printf("status=%d\n", status);//status == 0
+
+	eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
+	eps_check_channel_state(channel, &status);
+	printf("status=%d\n", status); //status == 1
 }
 
 #define GetFilterdVoltage(curr_voltage) (voltage_t) (alpha * curr_voltage + (1 - alpha) * prev_filtered_voltage)

@@ -353,7 +353,7 @@ int InitSubsystems() {
 
 	EPS_Init();
 
-	RUN_EPS_I2C_COMM();//TODO: remove
+	//RUN_EPS_I2C_COMM();//TODO: remove
 
 	InitAnts();//TODO: turn off somewhere after deploy
 
