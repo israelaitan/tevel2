@@ -330,6 +330,8 @@ unsigned short CalcPacketSize(char dump_type)
 
 int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* sent)
 {
+	if (total == 0)
+		return -1;
 	C_FILE c_file;
 	int ord = 0;
 	void* element = malloc(data_to_send_sz);
@@ -382,7 +384,7 @@ int CMD_GetDumpByIndex(sat_packet_t *pack) {
 		memcpy(&index, pack->data + i*sizeof(unsigned short), sizeof(unsigned short));
 		tmp = data_to_send + data_to_send_sz * index;
 		memcpy(element, tmp, data_to_send_sz);
-		int err = send(element, data_to_send_sz, pack->ID, i,  data_to_send_dump_type, total, &availFrames);
+		int err = send(element, data_to_send_sz, pack->ID, index,  data_to_send_dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -474,9 +476,13 @@ FileSystemResult FirstScan(char* c_file_name,
 			return FS_FAIL;
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
+
 	data_to_send_sz = CalcPacketSize(dump_type);
 	data_to_send_dump_type = dump_type;
-	unsigned short total = (curr_pos_data_to_send - data_to_send) / data_to_send_sz;
+	int diff = curr_pos_data_to_send - data_to_send;
+	unsigned short total =  diff / data_to_send_sz;
+	if (diff > 0 && (diff < data_to_send_sz))
+		total = 1;
 	int err = SendAll(dump_id, dump_type, total, sent);
 	if (err != 0) {
 		return FS_FAIL;
