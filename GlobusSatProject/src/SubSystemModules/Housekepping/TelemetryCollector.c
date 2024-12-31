@@ -164,7 +164,7 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
 
 	// -- WOD file
-	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t) - LOG_MSG_SIZE);
+	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
 
 	// -- PAYLOAS file
@@ -381,7 +381,7 @@ void TelemetrySaveWOD()
 {
 	WOD_Telemetry_t wod = { 0 };
 	GetCurrentWODTelemetry(&wod);
-	_c_fileWrite(FILENAME_WOD_TLM, &wod, sizeof(WOD_Telemetry_t) - LOG_MSG_SIZE, 0);
+	c_fileWrite(FILENAME_WOD_TLM, &wod);
 }
 
 void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
@@ -400,9 +400,6 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 		wod->free_memory = space.free;
 		wod->corrupt_bytes = space.bad;
 	}
-	time_unix current_time = 0;
-	Time_getUnixEpoch((unsigned int *)&current_time);
-	wod->sat_time = current_time;
 
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
 	err += isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &hk_tlm);
@@ -458,7 +455,8 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 int CMD_getWOD_TLM(sat_packet_t *cmd) {
 	WOD_Telemetry_t wod = { 0 };
 	GetCurrentWODTelemetry(&wod);
-	TransmitDataAsSPL_Packet(cmd, &wod, sizeof(WOD_Telemetry_t));
+	unsigned char *data = AddTime(&wod, sizeof(WOD_Telemetry_t));
+	TransmitDataAsSPL_Packet(cmd, data, sizeof(WOD_Telemetry_t) + sizeof(unsigned int));
 	return 0;
 }
 

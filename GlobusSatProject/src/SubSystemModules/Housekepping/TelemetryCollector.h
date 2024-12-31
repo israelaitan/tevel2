@@ -11,7 +11,6 @@
 
 typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 {
-	time_unix sat_time;				///< current Unix time of the satellites clock [sec]
 	voltage_t vbat;					///< the current voltage on the battery [mV]
 	voltage_t volt_v0;
 	voltage_t volt_5V;				///< the current voltage on the 5V bus [mV]
@@ -36,8 +35,13 @@ typedef struct __attribute__ ((__packed__)) WOD_Telemetry_t
 	unsigned int corrupt_bytes;		///< number of currpted bytes in the memory	[bytes]
 	unsigned short number_of_resets;///< counts the number of resets the satellite has gone through [#]
 	unsigned short number_of_cmd_resets;///< counts the number of resets the satellite has gone through by cmd [#]
-	unsigned char last_error_msg[LOG_MSG_SIZE];
 } WOD_Telemetry_t;
+
+typedef struct __attribute__ ((__packed__)) Beacon_Telemetry_t {
+	time_unix sat_time;
+	WOD_Telemetry_t wod;
+	unsigned char last_error_msg[LOG_MSG_SIZE];
+} Beacon_Telemetry_t;
 
 typedef enum{
 	eps_tlm,
