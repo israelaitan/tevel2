@@ -46,6 +46,8 @@
 ////******************REMOVE
 		while(TRUE) {
 
+			EPS_Conditioning();
+
 			TRX_Logic();
 
 			TelemetryCollectorLogic();

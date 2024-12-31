@@ -143,6 +143,9 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingeng__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
+	res = c_fileCreate(FILENAME_EPS_AVG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_avg_mb);
+
 	// -- TRXVU files
 	res = c_fileCreate(FILENAME_TX_TLM,sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_tx);
@@ -161,7 +164,7 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_log);
 
 	// -- WOD file
-	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t));
+	res = c_fileCreate(FILENAME_WOD_TLM, sizeof(WOD_Telemetry_t) - LOG_MSG_SIZE);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
 
 	// -- PAYLOAS file
@@ -378,7 +381,7 @@ void TelemetrySaveWOD()
 {
 	WOD_Telemetry_t wod = { 0 };
 	GetCurrentWODTelemetry(&wod);
-	c_fileWrite(FILENAME_WOD_TLM, &wod);
+	_c_fileWrite(FILENAME_WOD_TLM, &wod, sizeof(WOD_Telemetry_t) - LOG_MSG_SIZE, 0);
 }
 
 void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)

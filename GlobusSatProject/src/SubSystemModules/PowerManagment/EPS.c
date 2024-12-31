@@ -199,9 +199,9 @@ int EPS_Conditioning()
 	voltage_t filtered_voltage = 0;					// the currently filtered voltage; y[i]
 
 	filtered_voltage = GetFilterdVoltage(curr_voltage);
-
+	//logg(event, "curr_voltage=%d, filtered_voltage=%d\n", curr_voltage, filtered_voltage);
 	// discharging
-	if (filtered_voltage < prev_filtered_voltage) {
+	if (filtered_voltage <= prev_filtered_voltage) {
 		if (filtered_voltage < eps_threshold_voltages.fields.Vdown_safe) {
 			EnterCriticalMode();
 		}

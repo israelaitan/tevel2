@@ -2,6 +2,7 @@
 #include "EPSOperationModes.h"
 #include "GlobalStandards.h"
 #include "SubSystemModules/Payload/payload_drivers.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 
 
@@ -14,8 +15,9 @@ int EnterFullMode()
 {
 	if(state == FullMode)
 		return 0;
-	int err = payloadTurnOn();
+	logg(event, "V:EPS from state=%d -> state=%d\n", state, FullMode);
 	state = FullMode;
+	int err = payloadTurnOn();
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
@@ -24,8 +26,9 @@ int EnterCruiseMode()
 {
 	if(state == CruiseMode)
 		return 0;
-	int err = payloadTurnOff();
+	logg(event, "V:EPS from state=%d -> state=%d\n", state, CruiseMode);
 	state = CruiseMode;
+	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
@@ -34,8 +37,9 @@ int EnterSafeMode()
 {
 	if(state == SafeMode)
 		return 0;
-	int err = payloadTurnOff();
+	logg(event, "V:EPS from state=%d -> state=%d\n", state, SafeMode);
 	state = SafeMode;
+	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
@@ -44,9 +48,9 @@ int EnterCriticalMode()
 {
 	if(state == CriticalMode)
 		return 0;
-	int err = payloadTurnOff();
+	logg(event, "V:EPS from state=%d -> state=%d\n", state, CriticalMode);
 	state = CriticalMode;
-
+	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(TRUE);
 	return err;
 }

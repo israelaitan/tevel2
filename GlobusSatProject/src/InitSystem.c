@@ -158,6 +158,12 @@ void WriteDefaultValuesToFRAM()
 	Boolean payload_on = FALSE;
 	FRAM_write((unsigned char*)&payload_on, PAYLOAD_ON, PAYLOAD_ON_SIZE);
 
+	float alpha = DEFAULT_ALPHA_VALUE;
+	FRAM_write((unsigned char*)&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, sizeof(alpha));
+	EpsThreshVolt_t _eps_threshold_voltages = DEFAULT_EPS_THRESHOLD_VOLTAGES;
+	FRAM_write((unsigned char*)&_eps_threshold_voltages, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+
+
 }
 
 void ReadDefaultValuesToFRAM()

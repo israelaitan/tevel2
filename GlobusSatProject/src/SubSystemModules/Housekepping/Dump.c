@@ -306,6 +306,8 @@ unsigned short CalcPacketSize(char dump_type)
 			return 120;//TODO:update and compress
 		case tlm_eps_eng_mb:
 			return 120;//TODO:update and compress
+		case tlm_eps_avg_mb:
+			return 120;//TODO:update and compress
 		case tlm_tx:
 			return 220;
 		case tlm_rx:
@@ -319,9 +321,9 @@ unsigned short CalcPacketSize(char dump_type)
 		case tlm_wod:
 			return 92;//TODO:update and compress
 		case tlm_pic32:
-			return 216;
+			return 220;
 		case tlm_radfet:
-			return 224;
+			return 216;
 		default:
 			return 0;
 
@@ -481,8 +483,10 @@ FileSystemResult FirstScan(char* c_file_name,
 	data_to_send_dump_type = dump_type;
 	int diff = curr_pos_data_to_send - data_to_send;
 	unsigned short total =  diff / data_to_send_sz;
-	if (diff > 0 && (diff < data_to_send_sz))
+	if (diff > 0 && (diff < data_to_send_sz)) {
 		total = 1;
+		data_to_send_sz = diff;
+	}
 	int err = SendAll(dump_id, dump_type, total, sent);
 	if (err != 0) {
 		return FS_FAIL;
