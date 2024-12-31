@@ -5,6 +5,8 @@
 #include <hal/Timing/Time.h>
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 #include "FRAM_FlightParameters.h"
+#include "SubSystemModules/PowerManagment/EPSOperationModes.h"
+#include "SubSystemModules/Maintenance/Log.h"
 
 #define CLEAR_WDT 0x3F
 #define SOFT_RESET 0xF8
@@ -99,11 +101,24 @@ SoreqResult payloadReadEvents(PayloadEventData *event_data) {
     CHANGE_ENDIAN(event_data->sel_count);
 
     // Read SEU count
-    payloadSendCommand(READ_PIC32_SEU, sizeof(buffer), buffer, 100 / portTICK_RATE_MS);
+    res = payloadSendCommand(READ_PIC32_SEU, sizeof(buffer), buffer, 100 / portTICK_RATE_MS);
     if (res)
         return res;
     memcpy(&event_data->seu_count, buffer + 4, 4);
     CHANGE_ENDIAN(event_data->seu_count);
+
+    int payload_turn_off_by_command;
+    res = FRAM_read((unsigned char*)&payload_turn_off_by_command, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
+    if(res)
+    	return res;
+
+    event_data ->payload_turn_off_by_command = payload_turn_off_by_command;
+
+    int sat_number_of_resets;
+    res = FRAM_read((unsigned char*)&sat_number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+    if(res)
+    	return res;
+    event_data ->sat_number_of_resets = sat_number_of_resets;
 
     return PAYLOAD_SUCCESS;
 }
@@ -130,19 +145,30 @@ SoreqResult payloadTurnOff() {
     if(!res){
     	Boolean flag = FALSE;
     	FRAM_write((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
-    	payloadcommandRestartCount();
+    	payloadCommandRestartCount();
     }
     return res;
 }
 
 SoreqResult payloadTurnOn() {
-	int res = eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
-	if(!res)
+	int res = 1;
+	if(GetSystemState() == FullMode)
 	{
-		Boolean flag = TRUE;
-		FRAM_read((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+		res = eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
+		if(!res)
+		{
+			Boolean flag = TRUE;
+			FRAM_read((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+		}
 	}
+	else
+	{
+		logg(error, "E:notinFullModeT=%d\n", res);
+	}
+
 	return res;
+
+
 }
 
 

@@ -197,18 +197,16 @@ int CMD_GetSolarPanelState(sat_packet_t *cmd) {
 
 int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd) {
 	uint8_t channel = 0;
+	int res;
 	memcpy(&channel, cmd->data, sizeof(channel));
 	isismepsv2_ivid5_piu__replyheader_t response;
-	int res =  isismepsv2_ivid5_piu__outputbuschannelon(EPS_I2C_BUS_INDEX, channel, &response);
-	if (res)
-		logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
+	if(channel == isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3)
+		res = payloadTurnOn();
 	else
 	{
-		if(channel == isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3)
-		{
-			Boolean flag = TRUE;
-			FRAM_write((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
-		}
+		res =  isismepsv2_ivid5_piu__outputbuschannelon(EPS_I2C_BUS_INDEX, channel, &response);
+			if (res)
+				logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
 	}
 	TransmitDataAsSPL_Packet(cmd, &response, sizeof(response));
 	return res;
@@ -216,18 +214,17 @@ int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd) {
 
 int CMD_EPS_SetChannelStateOff(sat_packet_t *cmd) {
 	uint8_t channel = 0;
+	int res;
 	memcpy(&channel, cmd->data, sizeof(channel));
 	isismepsv2_ivid5_piu__replyheader_t response;
-	int res =  isismepsv2_ivid5_piu__outputbuschanneloff(EPS_I2C_BUS_INDEX, channel, &response);
-	if (res)
-		logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
+	if(channel == isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3)
+		payloadTurnOff();
 	else
-		if(channel == isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3)
-		{
-			Boolean flag = FALSE;
-			FRAM_write((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
-			payloadCommandRestartCount();
-		}
+	{
+			res =  isismepsv2_ivid5_piu__outputbuschanneloff(EPS_I2C_BUS_INDEX, channel, &response);
+			if (res)
+				logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
+	}
 	TransmitDataAsSPL_Packet(cmd, &response, sizeof(response));
 	return res;
 }

@@ -41,6 +41,8 @@ typedef struct {
 typedef struct {
     int seu_count; /**< Count of Single Event Upsets (SEUs) */
     int sel_count; /**< Count of Single Event Latchups (SELs) */
+    int payload_turn_off_by_command; /**< Count of trun offs due to a command */
+    int sat_number_of_resets; /**< Count of all sat resets */
 } PayloadEventData;
 
 /**
