@@ -33,8 +33,8 @@
 #define DEFAULT_ALPHA_VALUE 0.4
 
 #define NUMBER_OF_THRESHOLD_VOLTAGES 	6 		///< first 3 are charging voltages, last 3 are discharging voltages
-#define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6500, (voltage_t)7100, (voltage_t)7300,	 \
-										  (voltage_t)6600, (voltage_t)7200, (voltage_t)7400}
+#define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6300, (voltage_t)6700, (voltage_t)7100,	 \
+										  (voltage_t)6350, (voltage_t)6750, (voltage_t)7150}
 
 typedef enum __attribute__ ((__packed__)){
 	INDEX_DOWN_SAFE,
@@ -83,8 +83,10 @@ typedef enum __attribute__ ((__packed__)){
 	TTC_I2C_SLAVE_ADDR = 0x4800,//uint16
 	EMLOPO_VOLT_LOTHR =  0x480A,//uint16 6000
 	EMLOPO_VOLT_HITHR =  0x480B,//uint16 6200
+	EMLOPO_PERIOD = 0x480C,//uint16 600s
 	SAFETY_VOLT_LOTHR_USED = 0x480D,//uint16 6200
 	SAFETY_VOLT_HITHR_USED = 0x480E,//uint16 7000
+	SAFETY_LINGER =0x480F,//uint16 60s
 	LOTHR_BP1_HEATER = 0x3000,//int16 200
 	HITHR_BP1_HEATER = 0x3003,//int16 600
 	AUTO_HEAT_ENA_BP1 = 0x1001//int8 0

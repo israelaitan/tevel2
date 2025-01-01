@@ -201,7 +201,7 @@ int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd) {
 	memcpy(&channel, cmd->data, sizeof(channel));
 	isismepsv2_ivid5_piu__replyheader_t response;
 	if(channel == isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3)
-		res = payloadTurnOn();
+		res = payloadInit(FALSE);
 	else
 	{
 		res =  isismepsv2_ivid5_piu__outputbuschannelon(EPS_I2C_BUS_INDEX, channel, &response);

@@ -30,7 +30,7 @@
 #include "SubSystemModules/Maintenance/Log.h"
 
 //idle global variables
-int				g_idle_period = 300 ; // idle time default = 5 min
+unsigned int	g_idle_period = 300 ; // idle time default = 5 min
 Boolean 		g_idle_flag = FALSE;
 time_unix 		g_idle_start_time = 0;
 
@@ -108,7 +108,7 @@ void HandleIdleAndMuteTime()
 	if(g_idle_flag==TRUE)
 	{
 		//if idle period has passed
-		if (CheckExecutionTime(g_idle_start_time, g_idle_period)==TRUE)
+		if (CheckExecutionTime(g_idle_start_time, g_idle_period) || GetEPSSystemState() == SafeMode)
 		{
 			SetIdleOff();
 		}
@@ -132,7 +132,7 @@ void HandleTransponderTime()
 {
 	if(getTransponderMode()==TURN_TRANSPONDER_ON)
 	{
-		if(checkEndTransponderMode()==TRUE)
+		if(checkEndTransponderMode() || GetEPSSystemState() == SafeMode)
 		{
 			CMD_turnOffTransponder();
 		}
@@ -150,34 +150,117 @@ int InitAnts() {
 	return err;
 }
 
-int SetFreqAndBitrate(){
-		int err = 0;
-		uint32_t rx_freq = TRXVU_RX_FREQ;//145970
-		uint32_t tx_freq = TRXVU_TX_FREQ;//436400
-		err = isis_vu_e__set_rx_freq(0, rx_freq);
-		if(err!=0) {
-				logg(error, "E: Error in the isis_vu_e__set_rx_freq: %d\n", err);
-				return err;
-		} else
-			logg(TRXInfo, "I:isis_vu_e__get_rx_freq succeeded\n");
+isis_vu_e__bitrate_t get_ground_tx_bitrate(){
+	uint8_t ground_tx_bitrate;
+	int res = FRAM_read((unsigned char*)&ground_tx_bitrate, TX_BITRATE_ADDR, sizeof(uint8_t));
+	if (res)
+		return isis_vu_e__bitrate_tlm__9600bps;
+	switch(ground_tx_bitrate){
+		case 0x1:
+			return isis_vu_e__bitrate_tlm__1200bps;
+		case 0x2:
+			return isis_vu_e__bitrate_tlm__2400bps;
+		case 0x4:
+			return isis_vu_e__bitrate_tlm__4800bps;
+		case 0x8:
+			return isis_vu_e__bitrate_tlm__9600bps;
+		default:
+			return isis_vu_e__bitrate_tlm__9600bps;
+	}
+}
 
-		err = isis_vu_e__set_tx_freq(0, tx_freq);
-		if(err!=0) {
-			logg(error, "E: Error in the isis_vu_e__set_tx_freq: %d\n", err);
-			return err;
-		} else
-			logg(TRXInfo, "I:isis_vu_e__set_tx_freq succeeded\n");
+byte tx_bitrate_to_i2c(isis_vu_e__bitrate_t bitrate){
+	byte i2c_tx_bitrate;
+	switch(bitrate) {
+		case isis_vu_e__bitrate_tlm__1200bps:
+			return 0x1;
+		case isis_vu_e__bitrate_tlm__2400bps:
+			return 0x2;
+		case isis_vu_e__bitrate_tlm__4800bps:
+			return 0x4;
+		case isis_vu_e__bitrate_tlm__9600bps:
+			return 0x8;
+		default:
+			return 0x8;
+	}
+}
 
-		err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
-		if(err!=0) {
-			logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
-			return err;
-		}
-		else
-			logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
-		vTaskDelay(100);
-		vu_getFrequenciesTest_revE();
+
+int SetBitRate(){
+	byte i2c_data[2] = { 0x28, 0x8 };
+	isis_vu_e__bitrate_t bitrate = get_ground_tx_bitrate();
+
+	isis_vu_e__state__from_t response;
+	int err =  isis_vu_e__state(0, &response);
+	if (err)
 		return err;
+	if (response.fields.bitrate == bitrate)
+		return 0;
+
+	//err = isis_vu_e__set_bitrate(0, bitrate);TODO: why it is not working? hence needed i2c
+	i2c_data[1] = tx_bitrate_to_i2c(bitrate);
+	err =  I2C_write(I2C_TRXVU_TC_ADDR, i2c_data, 2);
+	if (err)
+		return err;
+	vTaskDelay(100);
+	err =  isis_vu_e__state(0, &response);
+	if(err) {
+		logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
+		return err;
+	} else
+		logg(event, "V:isis_vu_e__set_bitrate=%d succeeded\n", response.fields.bitrate);
+	return err;
+}
+
+int SetRxFreq() {
+	int err = 0;
+	uint32_t rx_freq = TRXVU_RX_FREQ;//145970
+
+	isis_vu_e__get_rx_freq__from_t response;
+	err = isis_vu_e__get_rx_freq(0, &response);
+	if (err)
+		return err;
+	if (response.fields.freq == rx_freq)
+		return 0;
+
+	err = isis_vu_e__set_rx_freq(0, rx_freq);
+
+	if(err) {
+		logg(error, "E: Error in the isis_vu_e__set_rx_freq: %d\n", err);
+		return err;
+	} else {
+		vTaskDelay(100);
+		err = isis_vu_e__get_rx_freq(0, &response);
+		if (err)
+			return err;
+		logg(event, "V:isis_vu_e__set_rx_freq=%d succeeded\n", response.fields.freq);
+	}
+}
+
+int SetTxFreq() {
+	int err = 0;
+	uint32_t tx_freq = TRXVU_TX_FREQ;//436400
+	uint32_t freq_out;
+	err = isis_vu_e__get_tx_freq(0, &freq_out);
+	if (err)
+		return err;
+	if (freq_out == tx_freq)
+		return 0;
+	err = isis_vu_e__set_tx_freq(0, tx_freq);
+	if(err) {
+		logg(error, "E: Error in the isis_vu_e__set_tx_freq: %d\n", err);
+		return err;
+	} else {
+		vTaskDelay(100);
+		err = isis_vu_e__get_tx_freq(0, &freq_out);
+		logg(event, "E:isis_vu_e__set_tx_freq=%d succeeded\n", freq_out);
+	}
+}
+
+void SetFreqAndBitrate(){
+	SetRxFreq();
+	SetTxFreq();
+	SetBitRate();
 }
 
 int InitTrxvu() {
@@ -197,6 +280,7 @@ int InitTrxvu() {
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
 	SetFreqAndBitrate();
+	vu_getFrequenciesTest_revE();
 
 	SetIdleOff();
 
@@ -221,11 +305,8 @@ CommandHandlerErr TRX_Logic()
 	unsigned char* data = NULL;
 	unsigned int length=0;
 	CommandHandlerErr  res =0;
-	isis_vu_e__state__from_t response;
-	int rv =  isis_vu_e__state(0, &response);
-	if ((!rv && response.fields.bitrate != isis_vu_e__bitrate_tlm__9600bps))//probably trxvu restarted by wdt
-		SetFreqAndBitrate();
 
+	SetFreqAndBitrate();
 	onCmdCount = GetNumberOfFramesInBuffer();
 	if(onCmdCount>0) {
 		//printf("Command in bufffer =%d\n", onCmdCount);//TODO:remove
@@ -299,7 +380,7 @@ int CMD_SetIdleOn(sat_packet_t *cmd)
 		memcpy(&g_idle_period,cmd->data,sizeof(g_idle_period));
 		Time_getUnixEpoch((unsigned int*)&g_idle_start_time);
 		g_idle_flag=TRUE;
-		logg(TRXInfo, "I:Set idle state for %d seconds. \n", g_idle_period);
+		logg(event, "V:Set idle state for %d seconds. \n", g_idle_period);
 	}
 	return err;
 }

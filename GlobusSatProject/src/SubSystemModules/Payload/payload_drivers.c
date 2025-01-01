@@ -24,8 +24,28 @@
 #define CHANGE_ENDIAN(x) ((x) = ((x) >> 24 & 0xff) | ((x) << 8 & 0xff0000) | ((x) >> 8 & 0xff00) | ((x) << 24 & 0xff000000))
 
 
-SoreqResult payloadInit() {
-    return payloadTurnOn();
+SoreqResult payloadInit(Boolean check_allowed_on_init) {
+
+	if (!check_allowed_on_init)
+		 return payloadTurnOn();
+
+	Boolean turn_on_payload_in_init;
+	int err = FRAM_read((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+	if (err){
+		logg(error, "E: %d FRAMread failed\n", err);
+		return err;
+	}
+
+
+	if(turn_on_payload_in_init) {
+		err = payloadTurnOn();
+		if (err)
+				logg(error, "E:%d Failed in payloadInit\n", err);
+		else
+			logg(event, "V: payloadInit was successful\n");
+	} else
+			logg(event, "v: %d not to turn on payload during INIT\n", TURN_ON_PAYLOAD_IN_INIT);
+    return err;
 }
 
 SoreqResult payloadRead(int size, unsigned char *buffer) {
@@ -152,23 +172,15 @@ SoreqResult payloadTurnOff() {
 
 SoreqResult payloadTurnOn() {
 	int res = 1;
-	if(GetSystemState() == FullMode)
-	{
+	if(GetEPSSystemState() == FullMode) {
 		res = eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
-		if(!res)
-		{
+		if(!res) {
 			Boolean flag = TRUE;
 			FRAM_read((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
 		}
-	}
-	else
-	{
+	} else
 		logg(error, "E:notinFullModeT=%d\n", res);
-	}
-
 	return res;
-
-
 }
 
 

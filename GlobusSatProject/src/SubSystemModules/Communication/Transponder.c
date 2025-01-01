@@ -119,7 +119,6 @@ int set_transponder_RSSI(byte *param)
 
 int CMD_turnOnTransponder(sat_packet_t *cmd)
 {
-	logg(event, "V: Inside CMD_turnOnTransponder()\n");
 	int err = 0;
 	byte rssiData[2];
 	time_unix duration;
@@ -136,11 +135,8 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 	}
 
 	duration = getDuration(cmd);
+	logg(event, "V: Inside CMD_turnOnTransponder duration=%lu\n", duration);
 	CMD_SetIdleOff();
-
-	err = set_transonder_mode(TURN_TRANSPONDER_ON);
-	if (0 != err)
-		return err;
 
 	//set RSSI
 	unsigned short rssi;
@@ -151,7 +147,7 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 		logg(error, "E: Transponder RSSI not found in FRAM - Using default");
 	}
 
-	logg(TRXInfo, "I: Transponder RSSI is: %d\n", rssi);
+	logg(event, "I: Transponder RSSI is: %d\n", rssi);
 
 	memcpy(rssiData, &rssi, TRANSPONDER_RSSI_SIZE);
 	err = set_transponder_RSSI(rssiData);
@@ -160,13 +156,25 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 		return err;
 	}
 
+	//TODO: need to found out why it is needed? and why it works actually on 145900 and not on 145970 as required
+	uint32_t rx_freq = TRXVU_RX_FREQ;//145970
+	byte i2c_data[5] = { 0 };
+	i2c_data[0] = 0x32;
+	memcpy(i2c_data + 1, rx_freq, 4);
+	err =  I2C_write(I2C_TRXVU_RC_ADDR, i2c_data, 5);
+	vTaskDelay(100);
+
+	err = set_transonder_mode(TURN_TRANSPONDER_ON);
+	if (0 != err)
+		return err;
+
 	//Set transponder end time
 	err = Time_getUnixEpoch(&g_transp_end_time);
 	if (err)
 		return err;
 	g_transp_end_time += duration;
 	FRAM_write((unsigned char*) &g_transp_end_time ,TRANSPONDER_TURN_ON_END_TIME_ADRR, TRANSPONDER_TURN_ON_END_TIME_SIZE);
-	logg(event, "E: Turned On Transponder until: %lu\n", (long unsigned int)g_transp_end_time);
+	logg(event, "V: Turned On Transponder until: %lu\n", (long unsigned int)g_transp_end_time);
 
 	return err;
 }

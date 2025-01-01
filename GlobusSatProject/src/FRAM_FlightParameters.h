@@ -84,6 +84,10 @@
 #define TRANSPONDER_RSSI_ADDR				0x700		//transponder RSSI
 #define TRANSPONDER_RSSI_SIZE				2
 
+#define TX_BITRATE_ADDR						0x702		//tx bitrate
+#define TX_BITRATE_ADDR_SIZE				1
+
+
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes
 
@@ -110,4 +114,5 @@
 #define MIN_BEACON_INTERVAL				5			// beacon every 10 seconds
 #define TRANSPONDER_MAX_DURATION 		(72*60*60)  // max transponder duration is 72 hours
 #define ANT_DEPLOY_WAIT_PERIOD			(1*60)		// 45 minutes TODO:set to 45*60
+#define DEFAULT_BITRATE_VALUE			0x8
 #endif /* FRAM_FLIGHTPARAMETERS_H_ */

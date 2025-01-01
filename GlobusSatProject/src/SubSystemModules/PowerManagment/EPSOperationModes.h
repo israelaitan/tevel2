@@ -64,7 +64,7 @@ int SetEPS_Channels(channel_t channel);
  * returns the current system state according to the EpsState_t enumeration
  * @return system state according to EpsState_t
  */
-EpsState_t GetSystemState();
+EpsState_t GetEPSSystemState();
 
 /*
  * Gets the current system channel state

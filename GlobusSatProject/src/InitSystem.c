@@ -163,6 +163,8 @@ void WriteDefaultValuesToFRAM()
 	EpsThreshVolt_t _eps_threshold_voltages = DEFAULT_EPS_THRESHOLD_VOLTAGES;
 	FRAM_write((unsigned char*)&_eps_threshold_voltages, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 
+	uint8_t tx_bitrate = DEFAULT_BITRATE_VALUE;
+	FRAM_write((unsigned char*)&tx_bitrate, TX_BITRATE_ADDR, sizeof(uint8_t));
 
 }
 
@@ -395,24 +397,8 @@ int InitSubsystems() {
 	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	num_of_resets++;
 	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-	Boolean turn_on_payload_in_init;
-	err = FRAM_read((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
-	if(!err)
-	{
-		if(turn_on_payload_in_init)
-		{
-			err = payloadInit();
 
-			if (err)
-					logg(error, "E:%d Failed in payloadInit\n", err);
-			else
-				logg(event, "V: payloadInit was successful\n");
-		}
-		else
-				logg(event, "v: %d not to turn on payload during INIT\n", TURN_ON_PAYLOAD_IN_INIT);
-	}
-	else
-		logg(error, "E: %d FRAMread failed\n", err);
+	payloadInit(TRUE);
 
 	return 0;
 }

@@ -32,14 +32,14 @@ typedef struct __attribute__ ((__packed__))
 } dump_arguments_t;
 
 #define RESOLUTION 1
-#define SIZE_DUMP_BUFFER (4500 * LOG_TLM_SIZE) ///< buffer size for dump operations
+#define SIZE_DUMP_SEND_BUFFER (MAX_ELEMENT_SIZE * ELEMENTS_PER_SEND)
 
 xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
 xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
 
 char allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
-char data_to_send[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
+char data_to_send[SIZE_DUMP_SEND_BUFFER];
 int data_to_send_sz = 0;
 uint8_t data_to_send_dump_type = 0;
 
@@ -107,7 +107,6 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T8GBS, total, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
-
 
 FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned char dump_id, char dump_type)
 {
@@ -240,7 +239,7 @@ void DumpStart(dump_arguments_t *task_args){
 				task_args->id,
 				task_args->dump_type);
 		if (result) {
-			logg(error, "E:%d c_fileReadAndSend returned\n", result);
+			logg(error, "E:%d FirstScan returned\n", result);
 			if (result == FS_ABORT)
 				ack_return_code = ACK_DUMP_ABORT;
 		} else
@@ -347,7 +346,9 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 	//unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	int availFrames = 0;
 	while (ord < total) {
-		logg(event, "V:SendAll ord= %d", ord);
+		//logg(event, "V:SendAll ord= %d", ord);
+		if (CheckDumpAbort())
+			return FS_ABORT;
 		memcpy(element, tmp, data_to_send_sz);
 		int err = send(element, data_to_send_sz, dump_id, ord, dump_type, total, &availFrames);
 		if(err != 0) {
@@ -460,11 +461,13 @@ FileSystemResult FirstScan(char* c_file_name,
 					break;
 				}
 				if(element_time >= from_time) {
-					if (CheckDumpAbort())
-							return FS_ABORT;
-					//int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type,  &availFrames);
-					memcpy(curr_pos_data_to_send, element, size_elementWithTimeStamp);
-					curr_pos_data_to_send += size_elementWithTimeStamp;
+					if (curr_pos_data_to_send + size_elementWithTimeStamp < data_to_send + SIZE_DUMP_SEND_BUFFER){
+						memcpy(curr_pos_data_to_send, element, size_elementWithTimeStamp);
+						curr_pos_data_to_send += size_elementWithTimeStamp;
+					} else {//no more space. max allowed per dump
+						end_read = 1;
+						break;
+					}
 				}
 				element += size_elementWithTimeStamp;
 			}
@@ -476,6 +479,8 @@ FileSystemResult FirstScan(char* c_file_name,
 			return FS_COULD_NOT_GIVE_SEMAPHORE;
 		if (error != F_NO_ERROR)
 			return FS_FAIL;
+		if(end_read)
+			break;
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
 
@@ -489,7 +494,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	}
 	int err = SendAll(dump_id, dump_type, total, sent);
 	if (err != 0) {
-		return FS_FAIL;
+		return err;
 	}
 	return FS_SUCCSESS;
 }
