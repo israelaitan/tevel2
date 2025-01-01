@@ -28,7 +28,7 @@ void initTransponder();
  * @param[in]	set mode to TRUE for turning on the transponder, set to FALSE to turn off the transponder
  * @return		int indicating the error. 0 for success
  */
-int set_transonder_mode(Boolean mode);
+int set_transonder_mode(uint8_t mode);
 
 /**
  *@brief		change the RSSI to active the Transmit when the transponder mode is active

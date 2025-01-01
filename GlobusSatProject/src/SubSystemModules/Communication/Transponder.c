@@ -40,6 +40,9 @@
 static Boolean g_transp_mode=TURN_TRANSPONDER_OFF;
 static time_unix g_transp_end_time=0;
 
+#define TRXVU_NOMINAL_MODE 1
+#define TRXVU_TRANSPONDER_MODE 2
+
 void initTransponder()
 {
 	int err = 0;
@@ -75,7 +78,22 @@ void initTransponder()
 
 }
 
-int set_transonder_mode(Boolean mode)
+int set_transonder_mode(uint8_t mode) {
+	int err = isis_vu_e__set_tx_mode(0, mode);
+	if (err) {
+		logg(error, "E: set_transonder_mode to: %b  with err: %d\n", mode, err);
+		return err;
+	}
+
+	g_transp_mode = TRUE;
+	if (mode == TRXVU_NOMINAL_MODE)
+		g_transp_mode = FALSE;
+
+	FRAM_write((unsigned char*) &g_transp_mode ,TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+	return err;
+}
+
+int set_transonder_mode_i2c(Boolean mode)
 {
 	byte data[2];
 	data[0] = 0x38;
@@ -145,9 +163,8 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 	if(err) {
 		rssi = DEFAULT_TRANS_RSSI;
 		logg(error, "E: Transponder RSSI not found in FRAM - Using default");
-	}
-
-	logg(event, "I: Transponder RSSI is: %d\n", rssi);
+	} else
+		logg(event, "V: Transponder RSSI is: %d\n", rssi);
 
 	memcpy(rssiData, &rssi, TRANSPONDER_RSSI_SIZE);
 	err = set_transponder_RSSI(rssiData);
@@ -156,16 +173,21 @@ int CMD_turnOnTransponder(sat_packet_t *cmd)
 		return err;
 	}
 
-	//TODO: need to found out why it is needed? and why it works actually on 145900 and not on 145970 as required
-	uint32_t rx_freq = TRXVU_RX_FREQ;//145970
-	byte i2c_data[5] = { 0 };
-	i2c_data[0] = 0x32;
-	memcpy(i2c_data + 1, rx_freq, 4);
-	err =  I2C_write(I2C_TRXVU_RC_ADDR, i2c_data, 5);
+	uint32_t freq_in = TRXVU_RX_FREQ;//145970
+	err = isis_vu_e__set_transponder_in_freq(0, freq_in);
+	if (err)
+		return err;
 	vTaskDelay(100);
+	isis_vu_e__get_transponder_in_freq__from_t response;
+	err = isis_vu_e__get_transponder_in_freq(0, &response);
+	if (!err) {
+		logg(event, "V:isis_vu_e__get_transponder_in_freq=%d succeeded\n", response.fields.freq);
+	} else
+		logg(error, "E:isis_vu_e__get_transponder_in_freq=%d failed\n", err);
 
-	err = set_transonder_mode(TURN_TRANSPONDER_ON);
-	if (0 != err)
+	//err = set_transonder_mode(TURN_TRANSPONDER_ON);
+	err = set_transonder_mode(TRXVU_TRANSPONDER_MODE);
+	if (err)
 		return err;
 
 	//Set transponder end time
@@ -207,14 +229,8 @@ int CMD_set_transponder_RSSI(sat_packet_t *cmd)
 
 int CMD_turnOffTransponder()
 {
-	int err = 0;
-	if (g_transp_mode == TURN_TRANSPONDER_ON) {
-		logg(TRXInfo, "I: Inside CMD_turnOffTransponder()\n");
-		g_transp_end_time = 0;
-		err = set_transonder_mode(TURN_TRANSPONDER_OFF);
-		logg(TRXInfo, "I: Setting Transponder to OFF\n");
-	}
-
+	int err = err = set_transonder_mode(TRXVU_NOMINAL_MODE);
+	logg(event, "E: Setting Transponder to OFF err=%d\n", err);
 	return err;
 }
 
