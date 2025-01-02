@@ -45,7 +45,7 @@ typedef union __attribute__((__packed__)) _eps_eng__from_t
     } fields;
 } hk_eps_eng;
 
-#define SIZE_BEACON_SPARE 18 //225 - 4 - 203
+#define SIZE_BEACON_SPARE 20 //225 - 4 - 201
 
 typedef union __attribute__((__packed__)) _WOD_Telemetry_t
 {
@@ -54,13 +54,14 @@ typedef union __attribute__((__packed__)) _WOD_Telemetry_t
 	{
 		time_unix sat_time;
 		int32_t solar_panels[NUMBER_OF_SOLAR_PANELS]; // temp of each solar panel
-		unsigned int photo_diodes[NUMBER_OF_SOLAR_PANELS]; 			// photo diodes
 		unsigned int free_memory;		///< number of bytes free in the satellites SD [byte]
 		unsigned int corrupt_bytes;		///< number of currpted bytes in the memory	[bytes]
-		unsigned short number_of_resets;///< counts the number of resets the satellite has gone through [#]
-		unsigned short number_of_cmd_resets;///< counts the number of resets the satellite has gone through by cmd [#]
 		unsigned char last_error_msg[SIZE_BEACON_SPARE];
+		unsigned short number_of_sat_resets;
+		unsigned short number_of_cmd_resets;
 		int8_t eps_state;
+		PayloadEventData pic32;
+		PayloadEnvironmentData radfet;
 		hk_eps_eng eps_eng;
 		isis_vu_e__get_tx_telemetry__from_t tx;
 		isis_vu_e__get_rx_telemetry__from_t rx;

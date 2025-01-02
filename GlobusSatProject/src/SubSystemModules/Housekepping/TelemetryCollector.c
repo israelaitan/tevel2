@@ -24,13 +24,15 @@
 
 #define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
-#define EPS_LOC_INDEX  83
-#define RX_LOC_INDEX  EPS_LOC_INDEX + sizeof(hk_eps_eng)
-#define TX_LOC_INDEX  (RX_LOC_INDEX + sizeof(isis_vu_e__get_tx_telemetry__from_t))
-#define ANT_A_LOC_INDEX  (TX_LOC_INDEX + sizeof(isis_vu_e__get_rx_telemetry__from_t))
-#define ANT_B_LOC_INDEX  (ANT_A_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
-#define SOLAR_LOC_INDEX  (ANT_B_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
-#define PDIOD_LOC_INDEX  (SOLAR_LOC_INDEX + NUMBER_OF_SOLAR_PANELS * sizeof(int32_t))
+//#define PIC32_LOC_INDEX 61
+//#define RADFET_LOC_INDEX (PIC32_LOC_INDEX + sizeof(PayloadEventData))
+//#define EPS_LOC_INDEX  (RADFET_LOC_INDEX + sizeof(PayloadEnvironmentData))
+//#define RX_LOC_INDEX  (EPS_LOC_INDEX + sizeof(hk_eps_eng))
+//#define TX_LOC_INDEX  (RX_LOC_INDEX + sizeof(isis_vu_e__get_tx_telemetry__from_t))
+//#define ANT_A_LOC_INDEX  (TX_LOC_INDEX + sizeof(isis_vu_e__get_rx_telemetry__from_t))
+//#define ANT_B_LOC_INDEX  (ANT_A_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
+//#define SOLAR_LOC_INDEX  (ANT_B_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
+
 
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
@@ -225,7 +227,7 @@ void TelemetrySaveEPS()
 	if (err == 0) {
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
 		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_wod);
-		memcpy(wod_beacon.raw + EPS_LOC_INDEX, hk_eps_eng_for_wod.raw, sizeof(hk_eps_eng));
+		memcpy(wod_beacon.fields.eps_eng.raw, hk_eps_eng_for_wod.raw, sizeof(hk_eps_eng));
 	} else
 		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
@@ -292,14 +294,14 @@ void TelemetrySaveTRXVU()
 	err = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
 	if (err == 0) {
 		c_fileWrite(FILENAME_TX_TLM, &tx_tlm);
-		memcpy(wod_beacon.raw + RX_LOC_INDEX, tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
+		memcpy(wod_beacon.fields.rx.raw, tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	}
 
 	isis_vu_e__get_rx_telemetry__from_t rx_tlm;
 	err = isis_vu_e__get_rx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
 	if (err == 0) {
 		c_fileWrite(FILENAME_RX_TLM, &rx_tlm);
-		memcpy(wod_beacon.raw + TX_LOC_INDEX, rx_tlm.raw, sizeof(isis_vu_e__get_rx_telemetry__from_t));
+		memcpy(wod_beacon.fields.tx.raw, rx_tlm.raw, sizeof(isis_vu_e__get_rx_telemetry__from_t));
 	}
 }
 
@@ -346,7 +348,7 @@ void TelemetrySaveANT()
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlmA);
 	if (err == 0) {
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
-		memcpy(wod_beacon.raw + ANT_A_LOC_INDEX, ant_tlmA.raw, sizeof(isis_ants__get_all_telemetry__from_t));
+		memcpy(wod_beacon.fields.antA.raw, ant_tlmA.raw, sizeof(isis_ants__get_all_telemetry__from_t));
 	} else
 		logg(error, "E=%d TelemetrySaveANT side A\n", err);
 
@@ -354,7 +356,7 @@ void TelemetrySaveANT()
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
 	if (err == 0) {
 		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
-		memcpy(wod_beacon.raw + ANT_B_LOC_INDEX, ant_tlmB.raw, sizeof(isis_ants__get_all_telemetry__from_t));
+		memcpy(wod_beacon.fields.antB.raw, ant_tlmB.raw, sizeof(isis_ants__get_all_telemetry__from_t));
 	} else
 		logg(error, "E=%d TelemetrySaveANT side B\n", err);
 }
@@ -386,36 +388,35 @@ int CMD_getAnts_B_TLM(sat_packet_t *cmd) {
 	return err;
 }
 
-int getSolarPanelsTLM(int32_t *t)
-{
-	int err = 0;
-	uint8_t fault;
+Boolean SolarPanelv2_Temperature(int32_t paneltemps[]) {
+	IsisSolarPanelv2_Error_t error = 0;
+	int panel;
+	uint8_t status = 0;
+	float conv_temp;
 
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0, &t[0], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1, &t[1], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
-	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
+	IsisSolarPanelv2_wakeup();
 
-	return err;
+	for( panel = 0; panel < ISIS_SOLAR_PANEL_6; panel++ ) {
+		error = IsisSolarPanelv2_getTemperature(panel, &paneltemps[panel], &status);
+		if( error ) {
+			logg(error, "Panel %d : Error (%d), Status (0x%X)\n", panel, error, status);
+			continue;
+		}
+		paneltemps[panel] = (float)(paneltemps[panel]) * ISIS_SOLAR_PANEL_CONV;
+	}
+
+	IsisSolarPanelv2_sleep();
+	return error;
 }
 
 // Get Solar Panels TLM
-int CMD_getSolar_TLM(sat_packet_t *cmd)
-{
-	int err = 0;
-	int32_t t[ISIS_SOLAR_PANEL_6];
-
-	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
-	{
-		err = getSolarPanelsTLM(t);
-		if (err == ISIS_SOLAR_PANEL_STATE_AWAKE * ISIS_SOLAR_PANEL_COUNT)
-		{
-			TransmitDataAsSPL_Packet(cmd, (unsigned char*) t, sizeof(int32_t)*ISIS_SOLAR_PANEL_COUNT);
-		}
+int CMD_getSolar_TLM(sat_packet_t *cmd) {
+	int32_t panel_temps[ISIS_SOLAR_PANEL_6];
+	int err = SolarPanelv2_Temperature(panel_temps);
+	if (!err) {
+		unsigned char *data = AddTime(panel_temps,  sizeof(int32_t) * ISIS_SOLAR_PANEL_6);
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(int32_t) * ISIS_SOLAR_PANEL_6);
 	}
-
 	return err;
 }
 
@@ -442,23 +443,11 @@ WOD_Telemetry_t GetCurrentWODTelemetry()
 		wod_beacon.fields.free_memory = space.free;
 		wod_beacon.fields.corrupt_bytes = space.bad;
 	}
-	uint8_t status;
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0,&wod_beacon.fields.solar_panels[0],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1,&wod_beacon.fields.solar_panels[1],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2,&wod_beacon.fields.solar_panels[2],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3,&wod_beacon.fields.solar_panels[3],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4,&wod_beacon.fields.solar_panels[4],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5,&wod_beacon.fields.solar_panels[5],&status);
 
-	// get ADC channels vlaues (include the photo diodes mV values)
-	unsigned short adcSamples[8];
-	ADC_SingleShot( adcSamples );
-	int i;
-	for(i=0; i < NUMBER_OF_SOLAR_PANELS; i++ )
-		wod_beacon.fields.photo_diodes[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] ); // convert to mV data
+	SolarPanelv2_Temperature(&wod_beacon.fields.solar_panels);
 
     //Get number of resets is not managed
-	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_sat_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 	return wod_beacon;
 }
@@ -483,7 +472,7 @@ void TelemetrySavePIC32() {
 	SoreqResult result = payloadReadEvents(&event_data);
 	if (!result) {
 		c_fileWrite(FILENAME_PIC32_TLM, &event_data);
-		//memcpy(&wod_beacon + PIC32_LOC_INDEX, &event_data, sizeof(PayloadEventData));
+		memcpy(wod_beacon.fields.pic32.raw, event_data.raw, sizeof(event_data));
 	} else
 		logg(error, "E:payloadTelemtrySavePic32=%d\n", result);
 }
@@ -494,7 +483,7 @@ void TelemetrySaveRADFET() {
 	SoreqResult result = payloadReadEnvironment(&environment_data);
 	if (!result) {
 		c_fileWrite(FILENAME_RADFET_TLM, &environment_data);
-		//memcpy(&wod_beacon + RADFET_LOC_INDEX, &environment_data, sizeof(PayloadEnvironmentData));
+		memcpy(wod_beacon.fields.radfet.raw, environment_data.raw, sizeof(environment_data));
 	} else
 		logg(error, "E:TelemetrySaveRADFET=%d\n", result);
 

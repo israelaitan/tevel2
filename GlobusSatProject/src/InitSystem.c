@@ -17,6 +17,7 @@
 #include "SubSystemModules/Payload/payload_drivers.h"
 #include "TLM_management.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
+#include <satellite-subsystems/IsisSolarPanelv2.h>
 
 
 #define I2c_Timeout 10
@@ -25,6 +26,24 @@
 #define ANTENNA_DEPLOYMENT_TIMEOUT 30 //<! in seconds
 
 time_unix expected_deploy_time_sec = 0;
+
+#define _PIN_RESET PIN_GPIO08
+#define _PIN_INT   PIN_GPIO00
+
+Boolean SolarPanelv2Init(void) {
+
+	IsisSolarPanelv2_Error_t error = ISIS_SOLAR_PANEL_ERR_NONE;
+	Pin solarpanelv2_pins[2] = {_PIN_RESET, _PIN_INT};
+	error = IsisSolarPanelv2_initialize(slave0_spi, &solarpanelv2_pins[0], &solarpanelv2_pins[1]);
+	if(error != ISIS_SOLAR_PANEL_ERR_NONE)
+		logg(error, "IsisSolarPaneltest: IsisSolarPanelv2_initialize returned %dn", error);
+
+	error = IsisSolarPanelv2_sleep();
+	if(error != ISIS_SOLAR_PANEL_ERR_NONE)
+		logg(error, "E:IsisSolarPaneltest: IsisSolarPanelv2_sleep returned %d\n", error);
+
+	return TRUE;
+}
 
 int isFirstActivation(Boolean * status)
 {
@@ -217,7 +236,6 @@ void ReadDefaultValuesToFRAM()
 
 }
 
-
 	//אתחול ה FRAM
 int StartFRAM()
 {
@@ -372,13 +390,14 @@ int InitSubsystems() {
 	else
 		logg(event, "V: InitTrxvu was successful\n");
 
+
+	SolarPanelv2Init();
 	//Initialize the dump thread (queue and lock)
 	err=InitDump();
 	if (err!=0)
 		logg(error, "E:%d Failed in InitDump\n", err);
 	else
 		logg(event, "V: InitDump was successful\n");
-
 
 	err = InitTelemetryCollector();
 		if (err!=0)

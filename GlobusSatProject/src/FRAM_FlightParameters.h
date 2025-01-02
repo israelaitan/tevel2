@@ -33,8 +33,9 @@
 #define RADFET_SAVE_TLM_PERIOD_ADDR 	0x2C		//2C,2D,2E,2F
 #define TURN_ON_PAYLOAD_IN_INIT			0X30 		// (30,31,32,33) the flag tells us whether or not to turn on the payload during the init process
 #define TURN_ON_PAYLOAD_IN_INIT_SIZE	4			// size of the parameter in bytes
-#define PAYLOAD_TURN_OFF_BY_COMMAND		0x34		//(34,35,36,37) counter of all restarts that are done due to a command
-#define PAYLOAD_TURN_OFF_BY_COMMAND_SIZE 4 			// size of parameter in bytes
+#define PAYLOAD_TURN_OFF_BY_COMMAND		0x34		//(34,35) counter of all restarts that are done due to a command
+#define PAYLOAD_TURN_OFF_BY_COMMAND_SIZE 2 			// size of parameter in bytes
+#define place_holder_36					0x36		//(36,37)
 #define PAYLOAD_ON						0x38		//flag that indicates wheather paylod is on (38,39,3A,3B)
 #define PAYLOAD_ON_SIZE					4
 #define aadd_ADDR						0x3C		//3C,3D,3E,3F

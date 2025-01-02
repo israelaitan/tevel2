@@ -84,10 +84,10 @@ SoreqResult payloadReadEnvironment(PayloadEnvironmentData *environment_data) {
     if (res != PAYLOAD_SUCCESS)
         return res;
 
-    memcpy(&environment_data->adc_conversion_radfet1, buffer + 4, 4);
-    memcpy(&environment_data->adc_conversion_radfet2, buffer + 8, 4);
-    CHANGE_ENDIAN(environment_data->adc_conversion_radfet1);
-    CHANGE_ENDIAN(environment_data->adc_conversion_radfet2);
+    memcpy(&environment_data->fields.adc_conversion_radfet1, buffer + 4, 4);
+    memcpy(&environment_data->fields.adc_conversion_radfet2, buffer + 8, 4);
+    CHANGE_ENDIAN(environment_data->fields.adc_conversion_radfet1);
+    CHANGE_ENDIAN(environment_data->fields.adc_conversion_radfet2);
 
     // Read temperature ADC value
     int raw_temperature_adc;
@@ -102,7 +102,7 @@ SoreqResult payloadReadEnvironment(PayloadEnvironmentData *environment_data) {
     int remove_extra_bits = (raw_temperature_adc & (~(1 << 29))) >> 5; // Mask and shift to remove redundant bits
     float voltage = ADC_TO_VOLTAGE(remove_extra_bits); // Convert ADC value to voltage
     float temperature = VOLTAGE_TO_TEMPERATURE(voltage); // Convert voltage to temperature
-    environment_data->temperature = temperature;
+    environment_data->fields.temperature = temperature;
 
     return PAYLOAD_SUCCESS;
 }
@@ -116,29 +116,27 @@ SoreqResult payloadReadEvents(PayloadEventData *event_data) {
     res = payloadSendCommand(READ_PIC32_SEL, sizeof(buffer), buffer, 10 / portTICK_RATE_MS);
     if (res)
         return res;
-    memcpy(&event_data->sel_count, buffer + 4, 4);
-    if (event_data->sel_count == 0) memcpy(&event_data->sel_count, buffer + 8, 4);
-    CHANGE_ENDIAN(event_data->sel_count);
+    memcpy(&event_data->fields.sel_count, buffer + 4, 4);
+    if (event_data->fields.sel_count == 0) memcpy(&event_data->fields.sel_count, buffer + 8, 4);
+    CHANGE_ENDIAN(event_data->fields.sel_count);
 
     // Read SEU count
     res = payloadSendCommand(READ_PIC32_SEU, sizeof(buffer), buffer, 100 / portTICK_RATE_MS);
     if (res)
         return res;
-    memcpy(&event_data->seu_count, buffer + 4, 4);
-    CHANGE_ENDIAN(event_data->seu_count);
+    memcpy(&event_data->fields.seu_count, buffer + 4, 4);
+    CHANGE_ENDIAN(event_data->fields.seu_count);
 
-    int payload_turn_off_by_command;
+    uint16_t payload_turn_off_by_command;
     res = FRAM_read((unsigned char*)&payload_turn_off_by_command, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
     if(res)
     	return res;
 
-    event_data ->payload_turn_off_by_command = payload_turn_off_by_command;
-
-    int sat_number_of_resets;
+    uint16_t sat_number_of_resets;
     res = FRAM_read((unsigned char*)&sat_number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
     if(res)
     	return res;
-    event_data ->sat_number_of_resets = sat_number_of_resets;
+    event_data->fields.total_turn_off = sat_number_of_resets + payload_turn_off_by_command;
 
     return PAYLOAD_SUCCESS;
 }
@@ -176,7 +174,7 @@ SoreqResult payloadTurnOn() {
 		res = eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw3);
 		if(!res) {
 			Boolean flag = TRUE;
-			FRAM_read((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
+			FRAM_write((unsigned char*)&flag, PAYLOAD_ON, PAYLOAD_ON_SIZE);
 		}
 	} else
 		logg(error, "E:notinFullModeT=%d\n", res);

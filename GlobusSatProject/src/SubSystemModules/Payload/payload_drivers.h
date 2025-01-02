@@ -1,6 +1,7 @@
 #ifndef PAYLOAD_DRIVERS_H_
 #define PAYLOAD_DRIVERS_H_
 
+#include <stdint.h>
 #include <hal/boolean.h>
 
 /**
@@ -28,21 +29,26 @@ typedef enum {
  * @struct PayloadEnvironmentData
  * @brief Structure to hold RADFET and temperature readings.
  */
-typedef struct {
-    int adc_conversion_radfet1; /**< ADC conversion result for RADFET 1 */
-    int adc_conversion_radfet2; /**< ADC conversion result for RADFET 2 */
-    float temperature;            /**< Temperature measurement in degrees Celsius */
+typedef union __attribute__((__packed__)) {
+		unsigned char raw[12];
+		struct __attribute__ ((__packed__)) {
+		int adc_conversion_radfet1; /**< ADC conversion result for RADFET 1 */
+		int adc_conversion_radfet2; /**< ADC conversion result for RADFET 2 */
+		float temperature;            /**< Temperature measurement in degrees Celsius */
+	} fields;
 } PayloadEnvironmentData;
 
 /**
  * @struct PayloadEventData
  * @brief Structure to hold SEU and SEL event readings.
  */
-typedef struct {
-    int seu_count; /**< Count of Single Event Upsets (SEUs) */
-    int sel_count; /**< Count of Single Event Latchups (SELs) */
-    int payload_turn_off_by_command; /**< Count of trun offs due to a command */
-    int sat_number_of_resets; /**< Count of all sat resets */
+typedef union __attribute__((__packed__)) {
+	unsigned char raw[10];
+	struct __attribute__ ((__packed__)) {
+		int seu_count; /**< Count of Single Event Upsets (SEUs) */
+		int sel_count; /**< Count of Single Event Latchups (SELs) */
+		uint16_t total_turn_off; /**< Count of trun offs due to a command and due to sat resets */
+	} fields;
 } PayloadEventData;
 
 /**
