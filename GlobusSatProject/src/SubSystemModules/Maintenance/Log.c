@@ -120,10 +120,10 @@ int getLastErrorMsgSize() {
 	return realErrorSize;
 }
 
-void copyLastErrorMsg(unsigned char * buffer){
+void copyLastErrorMsg(unsigned char * buffer, unsigned char max){
 	if (buffer == NULL || realErrorSize == 0)
 		return;
-	memcpy(buffer, lastErrorMsg, realErrorSize);
+	memcpy(buffer, lastErrorMsg, max);
 }
 
 void getLog_TLM(unsigned char * buffer, int size){

@@ -41,7 +41,7 @@ void initLog();
 
 int getLastErrorMsgSize();
 
-void copyLastErrorMsg(unsigned char * buffer);
+void copyLastErrorMsg(unsigned char * buffer, unsigned char max);
 
 void getLog_TLM(unsigned char * buffer, int size);
 

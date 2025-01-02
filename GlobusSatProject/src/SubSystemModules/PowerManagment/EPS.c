@@ -128,7 +128,6 @@ int eps_i2c_comm(CC, write_sz, read_sz){
 }
 
 
-
 int eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel_t channel){
 	isismepsv2_ivid5_piu__replyheader_t response;
 	int err = isismepsv2_ivid5_piu__outputbuschannelon(0, channel, &response);

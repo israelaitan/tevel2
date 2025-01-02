@@ -230,7 +230,7 @@ int CMD_set_transponder_RSSI(sat_packet_t *cmd)
 int CMD_turnOffTransponder()
 {
 	int err = err = set_transonder_mode(TRXVU_NOMINAL_MODE);
-	logg(event, "E: Setting Transponder to OFF err=%d\n", err);
+	logg(event, "V: Setting Transponder to OFF err=%d\n", err);
 	return err;
 }
 

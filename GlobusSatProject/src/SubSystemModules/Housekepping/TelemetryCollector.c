@@ -20,11 +20,23 @@
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "SubSystemModules/Payload/payload_drivers.h"
+#include "SubSystemModules/PowerManagment/EPSOperationModes.h"
 
 #define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
+#define EPS_LOC_INDEX  83
+#define RX_LOC_INDEX  EPS_LOC_INDEX + sizeof(hk_eps_eng)
+#define TX_LOC_INDEX  (RX_LOC_INDEX + sizeof(isis_vu_e__get_tx_telemetry__from_t))
+#define ANT_A_LOC_INDEX  (TX_LOC_INDEX + sizeof(isis_vu_e__get_rx_telemetry__from_t))
+#define ANT_B_LOC_INDEX  (ANT_A_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
+#define SOLAR_LOC_INDEX  (ANT_B_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
+#define PDIOD_LOC_INDEX  (SOLAR_LOC_INDEX + NUMBER_OF_SOLAR_PANELS * sizeof(int32_t))
+
+
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
+WOD_Telemetry_t wod_beacon = { 0 };
+hk_eps_eng hk_eps_eng_for_wod = { 0 };
 
 unsigned char* AddTime(unsigned char* data, unsigned int sz){
 	unsigned int curr_time;
@@ -108,11 +120,11 @@ void TelemetryCollectorLogic()
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[ant_tlm]));
 	}
 
-	if (CheckExecutionTime(tlm_last_save_time[wod_tlm], tlm_save_periods[wod_tlm])){
-		TelemetrySaveWOD();
-		logg(TLMInfo, "I:TelemetrySaveWOD\n");
-		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
-	}
+	//if (CheckExecutionTime(tlm_last_save_time[wod_tlm], tlm_save_periods[wod_tlm])){
+	//	TelemetrySaveWOD();
+	//	logg(TLMInfo, "I:TelemetrySaveWOD\n");
+	//	Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
+	//}
 	Boolean is_payload_on;
 	FRAM_read((unsigned char*)&is_payload_on, PAYLOAD_ON, PAYLOAD_ON_SIZE);
 	if(is_payload_on) {
@@ -175,6 +187,28 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_radfet);
 }
 
+void to_hk_eps_eng(isismepsv2_ivid5_piu__gethousekeepingeng__from_t *tlm_mb_eng, hk_eps_eng *tlm_hk_eps_eng) {
+	tlm_hk_eps_eng->fields.bat_stat = tlm_mb_eng->fields.bat_stat;
+	tlm_hk_eps_eng->fields.batt_input = tlm_mb_eng->fields.batt_input;
+	tlm_hk_eps_eng->fields.cc1 = tlm_mb_eng->fields.cc1;
+	tlm_hk_eps_eng->fields.cc2 = tlm_mb_eng->fields.cc2;
+	tlm_hk_eps_eng->fields.cc3 = tlm_mb_eng->fields.cc3;
+	tlm_hk_eps_eng->fields.dist_input = tlm_mb_eng->fields.dist_input;
+	tlm_hk_eps_eng->fields.stat_obc_ocf = tlm_mb_eng->fields.stat_obc_ocf;
+	tlm_hk_eps_eng->fields.stat_obc_on = tlm_mb_eng->fields.stat_obc_on;
+	tlm_hk_eps_eng->fields.temp = tlm_mb_eng->fields.temp;
+	tlm_hk_eps_eng->fields.temp2 = tlm_mb_eng->fields.temp2;
+	tlm_hk_eps_eng->fields.vip_obc00 = tlm_mb_eng->fields.vip_obc00;
+	tlm_hk_eps_eng->fields.vip_obc01 = tlm_mb_eng->fields.vip_obc01;
+	tlm_hk_eps_eng->fields.vip_obc03 = tlm_mb_eng->fields.vip_obc03;
+	tlm_hk_eps_eng->fields.vip_obc04 = tlm_mb_eng->fields.vip_obc04;
+	tlm_hk_eps_eng->fields.vip_obc05 = tlm_mb_eng->fields.vip_obc05;
+	tlm_hk_eps_eng->fields.volt_brdsup = tlm_mb_eng->fields.volt_brdsup;
+	tlm_hk_eps_eng->fields.volt_vd0 = tlm_mb_eng->fields.volt_vd0;
+	tlm_hk_eps_eng->fields.volt_vd1 = tlm_mb_eng->fields.volt_vd1;
+	tlm_hk_eps_eng->fields.volt_vd2 = tlm_mb_eng->fields.volt_vd2;
+}
+
 void TelemetrySaveEPS()
 {
 	int err = 0;
@@ -188,10 +222,11 @@ void TelemetrySaveEPS()
 
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
-
-	if (err == 0)
+	if (err == 0) {
 		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
-	else
+		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_wod);
+		memcpy(wod_beacon.raw + EPS_LOC_INDEX, hk_eps_eng_for_wod.raw, sizeof(hk_eps_eng));
+	} else
 		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
 	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
@@ -255,14 +290,17 @@ void TelemetrySaveTRXVU()
 	int err = 0;
 	isis_vu_e__get_tx_telemetry__from_t tx_tlm;
 	err = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
-	if (err == 0)
+	if (err == 0) {
 		c_fileWrite(FILENAME_TX_TLM, &tx_tlm);
+		memcpy(wod_beacon.raw + RX_LOC_INDEX, tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
+	}
 
 	isis_vu_e__get_rx_telemetry__from_t rx_tlm;
 	err = isis_vu_e__get_rx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
-	if (err == 0)
+	if (err == 0) {
 		c_fileWrite(FILENAME_RX_TLM, &rx_tlm);
-
+		memcpy(wod_beacon.raw + TX_LOC_INDEX, rx_tlm.raw, sizeof(isis_vu_e__get_rx_telemetry__from_t));
+	}
 }
 
 int CMD_getTX_TLM(sat_packet_t *cmd)
@@ -272,13 +310,13 @@ int CMD_getTX_TLM(sat_packet_t *cmd)
 
 	isis_vu_e__get_tx_telemetry__from_t tx_tlm;
 	err = isis_vu_e__get_tx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &tx_tlm);
-	if (err == 0) {
-		unsigned int curr_time;
-		Time_getUnixEpoch(&curr_time);
-		memcpy(rawData, (unsigned char*)&curr_time, sizeof(unsigned int));
-		memcpy(rawData + sizeof(unsigned int), (unsigned char*)&tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
-		TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(unsigned int) + sizeof(isis_vu_e__get_tx_telemetry__from_t));
-	}
+	if (err)
+		return err;
+	unsigned int curr_time;
+	Time_getUnixEpoch(&curr_time);
+	memcpy(rawData, (unsigned char*)&curr_time, sizeof(unsigned int));
+	memcpy(rawData + sizeof(unsigned int), (unsigned char*)&tx_tlm.raw, sizeof(isis_vu_e__get_tx_telemetry__from_t));
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)rawData, sizeof(unsigned int) + sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	return err;
 }
 
@@ -302,18 +340,22 @@ int CMD_getRX_TLM(sat_packet_t *cmd)
 void TelemetrySaveANT()
 {
 	int err = 0;
+	if (GetEPSSystemState() >= SafeMode)
+		return;
 	isis_ants__get_all_telemetry__from_t ant_tlmA = { 0 };
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlmA);
-	if (err == 0)
+	if (err == 0) {
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
-	else
+		memcpy(wod_beacon.raw + ANT_A_LOC_INDEX, ant_tlmA.raw, sizeof(isis_ants__get_all_telemetry__from_t));
+	} else
 		logg(error, "E=%d TelemetrySaveANT side A\n", err);
 
 	isis_ants__get_all_telemetry__from_t ant_tlmB = { 0 };
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
-	if (err == 0)
+	if (err == 0) {
 		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
-	else
+		memcpy(wod_beacon.raw + ANT_B_LOC_INDEX, ant_tlmB.raw, sizeof(isis_ants__get_all_telemetry__from_t));
+	} else
 		logg(error, "E=%d TelemetrySaveANT side B\n", err);
 }
 
@@ -354,6 +396,7 @@ int getSolarPanelsTLM(int32_t *t)
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2, &t[2], &fault);
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3, &t[3], &fault);
 	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4, &t[4], &fault);
+	err = IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5, &t[5], &fault);
 
 	return err;
 }
@@ -362,7 +405,7 @@ int getSolarPanelsTLM(int32_t *t)
 int CMD_getSolar_TLM(sat_packet_t *cmd)
 {
 	int err = 0;
-	int32_t t[ISIS_SOLAR_PANEL_COUNT];
+	int32_t t[ISIS_SOLAR_PANEL_6];
 
 	if (IsisSolarPanelv2_getState() == ISIS_SOLAR_PANEL_STATE_AWAKE)
 	{
@@ -376,86 +419,53 @@ int CMD_getSolar_TLM(sat_packet_t *cmd)
 	return err;
 }
 
-
-void TelemetrySaveWOD()
+WOD_Telemetry_t GetCurrentWODTelemetry()
 {
-	WOD_Telemetry_t wod = { 0 };
-	GetCurrentWODTelemetry(&wod);
-	c_fileWrite(FILENAME_WOD_TLM, &wod);
-}
+	//memset(wod_beacon,0,sizeof(wod_beacon));
+	time_unix current_time = 0;
+	Time_getUnixEpoch((unsigned int *)&current_time);
+	wod_beacon.fields.sat_time = current_time;
 
-void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
-{
-	if (NULL == wod)
-		return;
+	int errorSizeMsg = getLastErrorMsgSize();
+	if (errorSizeMsg > 0) {
+		copyLastErrorMsg(wod_beacon.fields.last_error_msg, SIZE_BEACON_SPARE);
+		errorSizeMsg = SIZE_BEACON_SPARE;
+	}
+	wod_beacon.fields.eps_state = GetEPSSystemState();
 
-	memset(wod,0,sizeof(*wod));
 	int err = 0;
-
 	F_SPACE space = { 0 };
 	int drivenum = f_getdrive();
 	err = f_getlasterror();
 	err = f_getfreespace(drivenum, &space);
 	if (err == F_NO_ERROR){
-		wod->free_memory = space.free;
-		wod->corrupt_bytes = space.bad;
+		wod_beacon.fields.free_memory = space.free;
+		wod_beacon.fields.corrupt_bytes = space.bad;
 	}
-
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
-	err += isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &hk_tlm);
-
-	if(err == 0){
-		wod->vbat = hk_tlm.fields.dist_input.fields.volt;
-		wod->electric_current =  hk_tlm.fields.dist_input.fields.current;
-		wod->consumed_power = hk_tlm.fields.dist_input.fields.power;
-
-		wod->charging_power = hk_tlm.fields.batt_input.fields.power;
-
-		wod->current_v0 = hk_tlm.fields.vip_obc00.fields.current;
-		wod->volt_v0 = hk_tlm.fields.vip_obc00.fields.volt;
-
-		wod->current_3V3 = hk_tlm.fields.vip_obc05.fields.current;
-		wod->volt_3V3 = hk_tlm.fields.vip_obc05.fields.volt;
-
-		wod->current_5V = hk_tlm.fields.vip_obc01.fields.current;;
-		wod->volt_5V =hk_tlm.fields.vip_obc01.fields.volt;
-
-		wod->mcu_temp = hk_tlm.fields.temp;
-		wod->bat_temp = hk_tlm.fields.temp2;
-
-		wod->volt_in_mppt1 = hk_tlm.fields.cc1.fields.volt_in_mppt;
-		wod->curr_in_mppt1 = hk_tlm.fields.cc1.fields.curr_in_mppt;
-		wod->volt_in_mppt2 = hk_tlm.fields.cc2.fields.volt_in_mppt;
-		wod->curr_in_mppt2 = hk_tlm.fields.cc2.fields.curr_in_mppt;
-		wod->volt_in_mppt3 = hk_tlm.fields.cc3.fields.volt_in_mppt;
-		wod->curr_in_mppt3 = hk_tlm.fields.cc3.fields.curr_in_mppt;
-	}
-
 	uint8_t status;
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0,&wod->solar_panels[0],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1,&wod->solar_panels[1],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2,&wod->solar_panels[2],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3,&wod->solar_panels[3],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4,&wod->solar_panels[4],&status);
-	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5,&wod->solar_panels[5],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_0,&wod_beacon.fields.solar_panels[0],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_1,&wod_beacon.fields.solar_panels[1],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_2,&wod_beacon.fields.solar_panels[2],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_3,&wod_beacon.fields.solar_panels[3],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_4,&wod_beacon.fields.solar_panels[4],&status);
+	IsisSolarPanelv2_getTemperature(ISIS_SOLAR_PANEL_5,&wod_beacon.fields.solar_panels[5],&status);
 
 	// get ADC channels vlaues (include the photo diodes mV values)
 	unsigned short adcSamples[8];
 	ADC_SingleShot( adcSamples );
 	int i;
 	for(i=0; i < NUMBER_OF_SOLAR_PANELS; i++ )
-		wod->photo_diodes[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] ); // convert to mV data
-
+		wod_beacon.fields.photo_diodes[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] ); // convert to mV data
 
     //Get number of resets is not managed
-	FRAM_read((unsigned char*)&wod->number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+	return wod_beacon;
 }
 
 int CMD_getWOD_TLM(sat_packet_t *cmd) {
-	WOD_Telemetry_t wod = { 0 };
-	GetCurrentWODTelemetry(&wod);
-	unsigned char *data = AddTime(&wod, sizeof(WOD_Telemetry_t));
+	GetCurrentWODTelemetry();
+	unsigned char *data = AddTime(&wod_beacon, sizeof(WOD_Telemetry_t));
 	TransmitDataAsSPL_Packet(cmd, data, sizeof(WOD_Telemetry_t) + sizeof(unsigned int));
 	return 0;
 }
@@ -471,9 +481,10 @@ void TelemetrySavePIC32() {
 
 	PayloadEventData event_data;
 	SoreqResult result = payloadReadEvents(&event_data);
-	if (!result)
+	if (!result) {
 		c_fileWrite(FILENAME_PIC32_TLM, &event_data);
-	else
+		//memcpy(&wod_beacon + PIC32_LOC_INDEX, &event_data, sizeof(PayloadEventData));
+	} else
 		logg(error, "E:payloadTelemtrySavePic32=%d\n", result);
 }
 
@@ -481,9 +492,10 @@ void TelemetrySaveRADFET() {
 
 	PayloadEnvironmentData environment_data;
 	SoreqResult result = payloadReadEnvironment(&environment_data);
-	if (!result)
+	if (!result) {
 		c_fileWrite(FILENAME_RADFET_TLM, &environment_data);
-	else
+		//memcpy(&wod_beacon + RADFET_LOC_INDEX, &environment_data, sizeof(PayloadEnvironmentData));
+	} else
 		logg(error, "E:TelemetrySaveRADFET=%d\n", result);
 
 }

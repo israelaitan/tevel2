@@ -12,6 +12,7 @@
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
+#include "TRXVU.h"
 #include "GlobalStandards.h"
 #include "FRAM_FlightParameters.h"
 #include "SPL.h"
@@ -19,6 +20,7 @@
 #include "SatDataTx.h"
 
 #define BEACON_ID 100
+
 
 time_unix g_prev_beacon_time = 0;				// the time at which the previous beacon occured
 time_unix g_beacon_interval_time = 0;
@@ -48,7 +50,6 @@ void BeaconLogic()
 {
 	logg(TRXInfo, "I:Inside BeaconLogic()\n");
 	sat_packet_t packet;
-	Beacon_Telemetry_t beacon = { 0 };
 
 	//check if not on mute and EPS has enough power
 	if(CheckTransmitionAllowed())
@@ -57,18 +58,10 @@ void BeaconLogic()
 		if(CheckExecutionTime(g_prev_beacon_time, g_beacon_interval_time))
 		{
 			//get current Whole Orbit Data
-			GetCurrentWODTelemetry(&beacon.wod);
-
-			time_unix current_time = 0;
-			Time_getUnixEpoch((unsigned int *)&current_time);
-			beacon.sat_time = current_time;
-
-			int errorSizeMsg = getLastErrorMsgSize();
-			if (errorSizeMsg > 0)
-				copyLastErrorMsg(beacon.last_error_msg);
+			WOD_Telemetry_t beacon = GetCurrentWODTelemetry();
 
 			//create from WOD a packet to send to earth
-			AssembleCommand((unsigned char *)&beacon, sizeof(beacon) - LOG_MSG_SIZE + errorSizeMsg, trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, 1, &packet);
+			AssembleCommand((unsigned char *)&beacon, sizeof(beacon), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, 1, &packet);
 
 			// transmit packet to earth
 			uint8_t availableFrames = 0;
