@@ -311,21 +311,23 @@ unsigned short CalcPacketSize(char dump_type)
 		case tlm_eps_avg_mb:
 			return 120;//TODO:update and compress
 		case tlm_tx:
-			return 220;
-		case tlm_rx:
-			return 220;
-		case tlm_antA:
-			return 221;
-		case tlm_antB:
-			return 221;
-		case tlm_log:
-			return 225;
-		case tlm_wod:
-			return 92;//TODO:update and compress
-		case tlm_pic32:
-			return 220;
-		case tlm_radfet:
 			return 216;
+		case tlm_rx:
+			return 198;
+		case tlm_antA:
+			return 208;
+		case tlm_antB:
+			return 208;
+		case tlm_log:
+			return 219;
+		case tlm_wod:
+			return 219;
+		case tlm_pic32:
+			return 210;
+		case tlm_radfet:
+			return 208;
+		case tlm_solar:
+			return 196;
 		default:
 			return 0;
 
@@ -372,7 +374,6 @@ int SendAll(unsigned int dump_id, char dump_type, int* sent)
 			}
 		}
 	}
-	//free(element);
 	return 0;
 }
 
@@ -497,10 +498,3 @@ FileSystemResult FirstScan(char* c_file_name,
 	logg(event, "dump sent=%d", sent);
 	return FS_SUCCSESS;
 }
-
-// first scan v
-// send all v
-// send by index v()
-// lets lehorid v
-// beacon
-// file read and send

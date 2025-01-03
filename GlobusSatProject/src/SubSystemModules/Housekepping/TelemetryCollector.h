@@ -45,7 +45,7 @@ typedef union __attribute__((__packed__)) _eps_eng__from_t
     } fields;
 } hk_eps_eng;
 
-#define SIZE_BEACON_SPARE 14 //235 - 16 - 4 - 201
+#define SIZE_BEACON_SPARE 10 //235 - 16 - 4 - 205
 
 typedef union __attribute__((__packed__)) _WOD_Telemetry_t
 {
@@ -56,6 +56,7 @@ typedef union __attribute__((__packed__)) _WOD_Telemetry_t
 		int32_t solar_panels[NUMBER_OF_SOLAR_PANELS]; // temp of each solar panel
 		unsigned int free_memory;		///< number of bytes free in the satellites SD [byte]
 		unsigned int corrupt_bytes;		///< number of currpted bytes in the memory	[bytes]
+		unsigned int sat_wakeup_time;
 		unsigned char last_error_msg[SIZE_BEACON_SPARE];
 		unsigned short number_of_sat_resets;
 		unsigned short number_of_cmd_resets;
@@ -186,6 +187,7 @@ void TelemetrySavePIC32();
  *  @brief saves current radfet telemetry into file
  */
 void TelemetrySaveRADFET();
+int SaveSolar_TLM();
 
 Boolean checkPayloadReadEvents();
 

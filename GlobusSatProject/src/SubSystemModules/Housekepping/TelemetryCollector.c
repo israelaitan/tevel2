@@ -24,17 +24,6 @@
 
 #define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
-//#define PIC32_LOC_INDEX 61
-//#define RADFET_LOC_INDEX (PIC32_LOC_INDEX + sizeof(PayloadEventData))
-//#define EPS_LOC_INDEX  (RADFET_LOC_INDEX + sizeof(PayloadEnvironmentData))
-//#define RX_LOC_INDEX  (EPS_LOC_INDEX + sizeof(hk_eps_eng))
-//#define TX_LOC_INDEX  (RX_LOC_INDEX + sizeof(isis_vu_e__get_tx_telemetry__from_t))
-//#define ANT_A_LOC_INDEX  (TX_LOC_INDEX + sizeof(isis_vu_e__get_rx_telemetry__from_t))
-//#define ANT_B_LOC_INDEX  (ANT_A_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
-//#define SOLAR_LOC_INDEX  (ANT_B_LOC_INDEX + sizeof(isis_ants__get_all_telemetry__from_t))
-
-
-
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 WOD_Telemetry_t wod_beacon = { 0 };
@@ -95,6 +84,9 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_radfet:
 		strcpy(filename,FILENAME_RADFET_TLM);
 		break;
+	case tlm_solar:
+		strcpy(filename,FILENAME_SOLAR_TLM);
+		break;
 
 	default:
 		return -2;
@@ -122,11 +114,12 @@ void TelemetryCollectorLogic()
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[ant_tlm]));
 	}
 
-	//if (CheckExecutionTime(tlm_last_save_time[wod_tlm], tlm_save_periods[wod_tlm])){
-	//	TelemetrySaveWOD();
-	//	logg(TLMInfo, "I:TelemetrySaveWOD\n");
-	//	Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
-	//}
+	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm], tlm_save_periods[solar_panel_tlm])){
+		SaveSolar_TLM();
+		logg(TLMInfo, "I:TelemetrySaveSOLAR\n");
+		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
+	}
+
 	Boolean is_payload_on;
 	FRAM_read((unsigned char*)&is_payload_on, PAYLOAD_ON, PAYLOAD_ON_SIZE);
 	if(is_payload_on) {
@@ -187,6 +180,9 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 
 	res = c_fileCreate(FILENAME_RADFET_TLM, sizeof(PayloadEnvironmentData));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_radfet);
+
+	res = c_fileCreate(FILENAME_SOLAR_TLM, sizeof(int32_t) * ISIS_SOLAR_PANEL_6);
+	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
 }
 
 void to_hk_eps_eng(isismepsv2_ivid5_piu__gethousekeepingeng__from_t *tlm_mb_eng, hk_eps_eng *tlm_hk_eps_eng) {
@@ -399,7 +395,7 @@ Boolean SolarPanelv2_Temperature(int32_t paneltemps[]) {
 	for( panel = 0; panel < ISIS_SOLAR_PANEL_6; panel++ ) {
 		error = IsisSolarPanelv2_getTemperature(panel, &paneltemps[panel], &status);
 		if( error ) {
-			logg(error, "Panel %d : Error (%d), Status (0x%X)\n", panel, error, status);
+			logg(TLMInfo, "Panel %d : Error (%d), Status (0x%X)\n", panel, error, status);
 			continue;
 		}
 		paneltemps[panel] = (float)(paneltemps[panel]) * ISIS_SOLAR_PANEL_CONV;
@@ -407,6 +403,15 @@ Boolean SolarPanelv2_Temperature(int32_t paneltemps[]) {
 
 	IsisSolarPanelv2_sleep();
 	return error;
+}
+
+int SaveSolar_TLM(){
+	int32_t panel_temps[ISIS_SOLAR_PANEL_6];
+	int err = SolarPanelv2_Temperature(panel_temps);
+	if (!err) {
+		c_fileWrite(FILENAME_SOLAR_TLM, panel_temps);
+	}
+	return err;
 }
 
 // Get Solar Panels TLM
@@ -449,6 +454,8 @@ WOD_Telemetry_t* GetCurrentWODTelemetry()
     //Get number of resets is not managed
 	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_sat_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+	FRAM_read((unsigned char*)&wod_beacon.fields.sat_wakeup_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+
 	return &wod_beacon;
 }
 

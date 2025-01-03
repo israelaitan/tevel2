@@ -14,8 +14,9 @@
 #define FILENAME_TX_TLM					"tx"
 #define FILENAME_RX_TLM					"rx"
 #define FILENAME_RX_FRAME				"rxFrame"
-#define FILENAME_ANTENNA_SIDE_A_TLM			"antA"
-#define FILENAME_ANTENNA_SIDE_B_TLM			"antB"
+#define FILENAME_ANTENNA_SIDE_A_TLM		"antA"
+#define FILENAME_ANTENNA_SIDE_B_TLM		"antB"
+#define FILENAME_SOLAR_TLM				"solar"
 
 //	---log
 #define FILENAME_LOG_TLM			    "log"
@@ -34,7 +35,7 @@ typedef enum {
 	tlm_log,
 	tlm_wod,
 	tlm_pic32,
-	tlm_radfet
-
+	tlm_radfet,
+	tlm_solar
 }tlm_type;
 #endif /* TELEMETRYFILES_H_ */
