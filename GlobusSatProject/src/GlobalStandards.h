@@ -46,14 +46,14 @@
 .year = 0,			\
 .secondsOfYear = 0} 					///< Time structure of the date 1/1/2000 at 00:00
 
-#define UNIX_DEPLOY_DATE_JAN_D1_Y2020 {\
+#define UNIX_DEPLOY_DATE_JAN_D1_Y2025 {\
 .seconds = 0,		\
 .minutes = 0,		\
 .hours = 0,			\
 .day = 1,			\
 .date = 1,			\
 .month = 1,			\
-.year = 20,			\
+.year = 25,			\
 .secondsOfYear = 0}
 
 #define UNIX_DEPLOY_DATE_JAN_D1_Y2020_SEC 1577836800

@@ -18,7 +18,7 @@
  * @note the ACK is sent with the corresponding ID of the ACK inside the SPL packet
  * @return errors according t <hal/errors.h>
  */
-int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short ord, unsigned char *data, unsigned int length);
+int SendAckPacket(ack_subtype_t acksubtype, unsigned int id, unsigned short ord, unsigned char *data, unsigned char length);
 
 /*!
  * @brief transmits an ack packet as an SPL packet(using the SPL protocol)

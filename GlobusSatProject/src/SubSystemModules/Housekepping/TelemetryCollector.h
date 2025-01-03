@@ -45,11 +45,11 @@ typedef union __attribute__((__packed__)) _eps_eng__from_t
     } fields;
 } hk_eps_eng;
 
-#define SIZE_BEACON_SPARE 20 //225 - 4 - 201
+#define SIZE_BEACON_SPARE 14 //235 - 16 - 4 - 201
 
 typedef union __attribute__((__packed__)) _WOD_Telemetry_t
 {
-	unsigned char raw[225];
+	unsigned char raw[219];
 	struct __attribute__ ((__packed__))
 	{
 		time_unix sat_time;
@@ -134,7 +134,7 @@ void TelemetrySaveWOD();
  * @brief Gets all necessary telemetry and arranges it into a WOD structure
  * @param[out] output WOD telemetry. If an error occurred while getting TLM the fields will be zero
  */
-WOD_Telemetry_t GetCurrentWODTelemetry();
+WOD_Telemetry_t* GetCurrentWODTelemetry();
 
 /*!
  *  @brief Gets all EPS telemetry

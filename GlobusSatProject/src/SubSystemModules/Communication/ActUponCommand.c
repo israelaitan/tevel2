@@ -27,7 +27,7 @@ int ActUponCommand(sat_packet_t *cmd)
 	else if( cmd->cmd_type == ack_type ) {
 		unsigned char* data = NULL;
 		unsigned int length = 0;
-		SendAckPacket(ACK_PING, cmd->ID, cmd->ordinal, data, length);
+		SendAckPacket(ACK_PING, cmd->ID_GROUND, cmd->ordinal, data, length);
 	} else {
 		logg(error, "E:ActUponCommand:cmd_type unknown=%d\n" , cmd->cmd_type);
 		err = -2;

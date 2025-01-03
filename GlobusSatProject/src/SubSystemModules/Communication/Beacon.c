@@ -19,12 +19,9 @@
 #include "Beacon.h"
 #include "SatDataTx.h"
 
-#define BEACON_ID 100
-
 
 time_unix g_prev_beacon_time = 0;				// the time at which the previous beacon occured
 time_unix g_beacon_interval_time = 0;
-unsigned int id=  BEACON_ID;
 
 //Initialize beacon parameters
 void InitBeaconParams()
@@ -58,22 +55,20 @@ void BeaconLogic()
 		if(CheckExecutionTime(g_prev_beacon_time, g_beacon_interval_time))
 		{
 			//get current Whole Orbit Data
-			WOD_Telemetry_t beacon = GetCurrentWODTelemetry();
+			WOD_Telemetry_t *beacon = GetCurrentWODTelemetry();
 
 			//create from WOD a packet to send to earth
-			AssembleCommand(beacon.raw, sizeof(beacon.raw), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T3GBS, 1, &packet);
+			AssembleCommand(beacon->raw, sizeof(beacon->raw), trxvu_cmd_type, BEACON_SUBTYPE, 0, 0, 0, T3GBS, 1, &packet);
 
 			// transmit packet to earth
 			uint8_t availableFrames = 0;
 			TransmitSplPacket(&packet, &availableFrames);
 
+			memset(beacon, 0, sizeof(WOD_Telemetry_t));
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			//increase beacon ID
-			id++;
-
-			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID, packet.length );
+			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID_GROUND, packet.length );
 		}
 		else
 			logg(TRXInfo, "I: Beacon time did not arrive\n");

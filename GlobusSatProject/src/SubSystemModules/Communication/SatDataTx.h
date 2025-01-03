@@ -11,6 +11,9 @@
 #include <satellite-subsystems/isis_vu_e.h>
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
+
+unsigned int gl_sat_cmd_id;
+
 /*!
  * @breif Initializes data filed for transmission - semaphores, parameters from the FRAM
  * @return

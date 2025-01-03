@@ -16,12 +16,12 @@ typedef struct __attribute__ ((__packed__)) delayed_cmd_t
 } delayed_cmd_t;
 
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
-		unsigned char subtype, unsigned short id, unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd)
+		unsigned char subtype, unsigned int id_sat, unsigned int id_ground, unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd)
 {
 	if (NULL == cmd)
 		return cmd_null_pointer_error;
-
-	cmd->ID = id;
+	cmd->ID_SAT = id_sat;
+	cmd->ID_GROUND = id_ground;
 	cmd->targetSat = targetSat;
 	cmd->cmd_type = type;
 	cmd->cmd_subtype = subtype;
@@ -31,8 +31,8 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length
 
 	if (NULL != data) {
 
-		if (data_length > (SIZE_TXFRAME - SIZE_SPL_HEADER))
-			cmd->length =   (SIZE_TXFRAME - SIZE_SPL_HEADER);
+		if (data_length > MAX_COMMAND_DATA_LENGTH)
+			cmd->length =   MAX_COMMAND_DATA_LENGTH;
 		else
 			cmd->length = data_length;
 
@@ -41,7 +41,7 @@ CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length
 		if (NULL == err)
 			return cmd_execution_error;
 	}
-	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal, cmd->total);
+	logg(TRXInfo, "I:Command is: ID=%d, targetSat=%d, type=%d, subType=%d, length=%d, ordinal=%d\n", cmd->ID_GROUND, cmd->targetSat, cmd->cmd_type, cmd->cmd_subtype, cmd->length, cmd->ordinal, cmd->total);
 	return cmd_command_succsess;
 }
 
@@ -55,27 +55,28 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 
 	unsigned int offset = 0;
 
-	unsigned short ord = 0;
-	err = memcpy(&ord, data + offset, sizeof(ord));
+	unsigned int id_sat = 0;
+	err = memcpy(&id_sat, data + offset, sizeof(id_sat));
 	if (NULL == err)
 		return cmd_execution_error;
-	offset += sizeof(ord);
+	offset += sizeof(id_sat);
 
-	unsigned char id = 0;
-	err = memcpy(&id, data + offset, sizeof(id));
+	unsigned int id_ground = 0;
+	err = memcpy(&id_ground, data + offset, sizeof(id_ground));
 	if (NULL == err)
 		return cmd_execution_error;
-	offset += sizeof(id);
+	offset += sizeof(id_ground);
 
 	unsigned char targetSat = 0;
 	err = memcpy(&targetSat,data + offset,sizeof(targetSat));
 	if (NULL == err)
 		return cmd_execution_error;
 
-	else if( targetSat != T3GBS && targetSat != T0ALL ) {
+	if( targetSat != T3GBS && targetSat != T0ALL ) {
 		logg(TRXInfo, "The online command is for target satellite: %d\n" , targetSat);
 		return cmd_no_command_found;
 	}
+
 	offset += sizeof(targetSat);
 
 	unsigned char type;
@@ -90,18 +91,25 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd)
 		return cmd_execution_error;
 	offset += sizeof(subtype);
 
-	unsigned short data_length = 0;
+	unsigned char data_length = 0;
 	err = memcpy(&data_length, data + offset,sizeof(data_length));
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(data_length);
+
+	unsigned short ord = 0;
+	err = memcpy(&ord, data + offset, sizeof(ord));
+	if (NULL == err)
+		return cmd_execution_error;
+	offset += sizeof(ord);
+
 	unsigned short total = 0;
 	err = memcpy(&total, data + offset,sizeof(total));
 	if (NULL == err)
 		return cmd_execution_error;
 	offset += sizeof(total);
 
-	return AssembleCommand(data+offset, data_length, type,subtype, id, ord, targetSat, total, cmd);
+	return AssembleCommand(data+offset, data_length, type,subtype, id_sat, id_ground, ord, targetSat, total, cmd);
 }
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired

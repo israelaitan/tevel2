@@ -5,6 +5,8 @@
 #include <hal/Timing/Time.h>
 #include <hal/errors.h>
 
+#include <hal/Drivers/I2C.h>
+
 #include <satellite-subsystems/isis_vu_e.h>
 #include <satellite-subsystems/isis_ants.h>
 
@@ -170,7 +172,6 @@ isis_vu_e__bitrate_t get_ground_tx_bitrate(){
 }
 
 byte tx_bitrate_to_i2c(isis_vu_e__bitrate_t bitrate){
-	byte i2c_tx_bitrate;
 	switch(bitrate) {
 		case isis_vu_e__bitrate_tlm__1200bps:
 			return 0x1;
@@ -194,7 +195,7 @@ int SetBitRate(){
 	int err =  isis_vu_e__state(0, &response);
 	if (err)
 		return err;
-	if (response.fields.bitrate == bitrate)
+	if ((isis_vu_e__bitrate_t)response.fields.bitrate == bitrate)
 		return 0;
 
 	//err = isis_vu_e__set_bitrate(0, bitrate);TODO: why it is not working? hence needed i2c
@@ -235,6 +236,7 @@ int SetRxFreq() {
 			return err;
 		logg(event, "V:isis_vu_e__set_rx_freq=%d succeeded\n", response.fields.freq);
 	}
+	return err;
 }
 
 int SetTxFreq() {
@@ -255,6 +257,7 @@ int SetTxFreq() {
 		err = isis_vu_e__get_tx_freq(0, &freq_out);
 		logg(event, "E:isis_vu_e__set_tx_freq=%d succeeded\n", freq_out);
 	}
+	return err;
 }
 
 void SetFreqAndBitrate(){
@@ -303,7 +306,7 @@ CommandHandlerErr TRX_Logic()
 	//sat_packet_t *cmd = malloc(sizeof(sat_packet_t));
 	int onCmdCount;
 	unsigned char* data = NULL;
-	unsigned int length=0;
+	unsigned char length=0;
 	CommandHandlerErr  res =0;
 
 	SetFreqAndBitrate();
@@ -326,7 +329,7 @@ CommandHandlerErr TRX_Logic()
 			}
 
 			//Send Acknowledge to earth
-			SendAckPacket(ACK_RECEIVE_COMM, cmd.ID, cmd.ordinal, data, length);
+			SendAckPacket(ACK_RECEIVE_COMM, cmd.ID_GROUND, cmd.ordinal, data, length);
 
 			//run command
 			res = ActUponCommand(&cmd);

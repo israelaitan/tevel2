@@ -26,7 +26,7 @@ typedef struct __attribute__ ((__packed__))
 	unsigned short dump_type;
 	time_unix t_start;
 	time_unix t_end;
-	unsigned short id;
+	unsigned int id_ground;
 	unsigned short ord;
 
 } dump_arguments_t;
@@ -59,7 +59,7 @@ int InitDump()
 void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 		unsigned char *err, unsigned int size) {
 
-	SendAckPacket(acktype, task_args->id, task_args->ord, err, size);
+	SendAckPacket(acktype, task_args->id_ground, task_args->ord, err, size);
 	if (NULL != task_args) {
 		logg(TLMInfo, "I:free args\n");
 		//free(task_args);
@@ -105,13 +105,13 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 	return err;
 }
 
-int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
+int send(unsigned char * element, unsigned char size, unsigned int sat_id, unsigned int ground_id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T3GBS, total, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, sat_id, ground_id, ord, (unsigned char)T3GBS, total, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
-FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned char dump_id, char dump_type)
+FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned int dump_id, char dump_type)
 {
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
@@ -164,7 +164,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 					if (CheckDumpAbort())
 							return FS_ABORT;
 
-					int err = send(element, size_elementWithTimeStamp, dump_id, ord, dump_type, 1, &availFrames);//TODO:total irrelevant
+					int err = send(element, size_elementWithTimeStamp, dump_id, dump_id, ord, dump_type, 1, &availFrames);//TODO:total irrelevant
 					
 					if(err != 0) {
 						logg(error, "E:transmitsplpacket error: %d", err);
@@ -227,7 +227,7 @@ void DumpStart(dump_arguments_t *task_args){
 		}
 		logg(DMPInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
 
-		SendAckPacket(ACK_DUMP_START, task_args->id, task_args->ord,
+		SendAckPacket(ACK_DUMP_START, task_args->id_ground, task_args->ord,
 				(unsigned char*) &num_of_elements, sizeof(num_of_elements));
 
 		time_unix curr = 0;
@@ -239,7 +239,7 @@ void DumpStart(dump_arguments_t *task_args){
 				task_args->t_start,
 				task_args->t_end,
 				&total_packets_read,
-				task_args->id,
+				task_args->id_ground,
 				task_args->dump_type);
 		if (result) {
 			logg(error, "E:%d FirstScan returned\n", result);
@@ -276,7 +276,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 
 	//dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
 	unsigned int offset = 0;
-	dmp_pckt.id = cmd->ID;
+	dmp_pckt.id_ground = cmd->ID_GROUND;
 	dmp_pckt.ord = cmd->ordinal;
 
 	memcpy(&dmp_pckt.dump_type, cmd->data, sizeof(dmp_pckt.dump_type));
@@ -332,11 +332,7 @@ unsigned short CalcPacketSize(char dump_type)
 	}
 }
 
-int SendOne(){
-
-}
-
-int SendAll(unsigned char dump_id, char dump_type, int* sent)
+int SendAll(unsigned int dump_id, char dump_type, int* sent)
 {
 	C_FILE c_file;
 	gl_data_to_send_sz = CalcPacketSize(dump_type);
@@ -356,7 +352,7 @@ int SendAll(unsigned char dump_id, char dump_type, int* sent)
 		int size = gl_data_to_send_sz;
 		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
 			size = gl_reminder;
-		int err = send(tmp, size, dump_id, ord, dump_type, gl_total, &availFrames);
+		int err = send(tmp, size, dump_id, dump_id, ord, dump_type, gl_total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -399,7 +395,7 @@ int CMD_GetDumpByIndex(sat_packet_t *pack) {
 		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
 				size = gl_reminder;
 
-		int err = send(tmp, size, pack->ID, index,  gl_data_to_send_dump_type, total, &availFrames);
+		int err = send(tmp, size, pack->ID_GROUND, pack->ID_GROUND, index,  gl_data_to_send_dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed

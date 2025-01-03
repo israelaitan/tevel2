@@ -11,6 +11,8 @@
 #include <hal/Storage/FRAM.h>
 
 // <Satellite Management>
+#define SAT_CMD_ID_ADDR					0x00		//0,1,2,3
+#define SAT_CMD_ID_SIZE					4
 
 #define LAUNCH_TIME_ADDR				0X04		//4,5,6,7<! time at which the satellites starts finished 30 min after lauanch
 #define LAUNCH_TIME_SIZE				4			//<! size of parameter in bytes

@@ -86,6 +86,7 @@ int WakeUpFromReset() {
 	}
 	//set wakeup time in FRAM
 	FRAM_write((unsigned char *)&current_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+	return 0;
 }
 
 int WakeupFromResetCMD()

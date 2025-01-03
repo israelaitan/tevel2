@@ -420,7 +420,7 @@ int CMD_getSolar_TLM(sat_packet_t *cmd) {
 	return err;
 }
 
-WOD_Telemetry_t GetCurrentWODTelemetry()
+WOD_Telemetry_t* GetCurrentWODTelemetry()
 {
 	//memset(wod_beacon,0,sizeof(wod_beacon));
 	time_unix current_time = 0;
@@ -449,7 +449,7 @@ WOD_Telemetry_t GetCurrentWODTelemetry()
     //Get number of resets is not managed
 	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_sat_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	FRAM_read((unsigned char*)&wod_beacon.fields.number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
-	return wod_beacon;
+	return &wod_beacon;
 }
 
 int CMD_getWOD_TLM(sat_packet_t *cmd) {

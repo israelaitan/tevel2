@@ -118,7 +118,9 @@ void firstActivationProcedure()
 //שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
 {
-	logg(OBCInfo, "I:Inside WriteDefaultValuesToFRAM()\n");
+	unsigned int sat_cmd_id = 0;
+	FRAM_write((unsigned char*)&sat_cmd_id, SAT_CMD_ID_ADDR, SAT_CMD_ID_SIZE);
+
 	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
 	FRAM_write((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR,sizeof(DefNoCom));
 
@@ -258,7 +260,7 @@ int StartSPI()
 	//אתחול השעון של הלווין
 int StartTIME()
 {
-	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2020;
+	Time expected_deploy_time = UNIX_DEPLOY_DATE_JAN_D1_Y2025;
 	int err = Time_start(&expected_deploy_time, 0);
 	time_unix time_before_wakeup = 0;
 	Boolean isFirstA;

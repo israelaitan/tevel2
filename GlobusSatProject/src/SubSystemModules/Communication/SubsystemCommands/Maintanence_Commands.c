@@ -60,6 +60,7 @@ int CMD_FRAM_Init(sat_packet_t *cmd){
 	int err = IntializeFRAM();
 	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
 	restart();
+	return 0;
 }
 
 int CMD_FRAM_ReadAndTransmitt(sat_packet_t *cmd)
