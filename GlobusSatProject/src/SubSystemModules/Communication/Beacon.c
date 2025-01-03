@@ -61,7 +61,7 @@ void BeaconLogic()
 			WOD_Telemetry_t beacon = GetCurrentWODTelemetry();
 
 			//create from WOD a packet to send to earth
-			AssembleCommand(beacon.raw, sizeof(beacon.raw), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, 1, &packet);
+			AssembleCommand(beacon.raw, sizeof(beacon.raw), trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T3GBS, 1, &packet);
 
 			// transmit packet to earth
 			uint8_t availableFrames = 0;

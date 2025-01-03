@@ -2,7 +2,7 @@
 #ifndef SATCOMMANDS_H_
 #define SATCOMMANDS_H_
 
-#define T8GBS 8 //GIVAT SHMUEL SAT ID IN PACKETS
+#define T3GBS 3 //GIVAT SHMUEL SAT ID IN PACKETS
 #define T0ALL 0 //ALL SATS
 
 #define MAX_COMMAND_DATA_LENGTH 235 //SIZE_TXFRAME maximum AX25 data field available for downlink

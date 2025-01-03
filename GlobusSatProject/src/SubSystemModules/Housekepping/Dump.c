@@ -38,10 +38,13 @@ xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
 xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
 
-char allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
-char data_to_send[SIZE_DUMP_SEND_BUFFER];
-int data_to_send_sz = 0;
-uint8_t data_to_send_dump_type = 0;
+unsigned char gl_allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
+unsigned char gl_data_to_send[SIZE_DUMP_SEND_BUFFER];
+unsigned char *gl_curr_pos_data_to_send;
+int gl_data_to_send_sz = 0;
+uint8_t gl_data_to_send_dump_type = 0;
+unsigned short gl_total = 0;
+unsigned short gl_reminder = 0;
 
 
 int InitDump()
@@ -104,7 +107,7 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 
 int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T8GBS, total, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, id, ord, (unsigned char)T3GBS, total, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
@@ -146,7 +149,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 			if(left_to_read < ELEMENTS_PER_READ)
 				how_much_to_read = left_to_read;
 
-			element = allocked_read_elements;
+			element = gl_allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
 			int k;
@@ -329,28 +332,31 @@ unsigned short CalcPacketSize(char dump_type)
 	}
 }
 
-int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* sent)
-{
-	if (total == 0)
-		return -1;
-	C_FILE c_file;
-	int ord = 0;
-	void* element = malloc(data_to_send_sz);
-	if (!element){
-		logg(error, "E:SendAll no memory");
-		return -1;
-	}
-	*sent = 0;
-	char* tmp = data_to_send;
+int SendOne(){
 
-	//unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
+}
+
+int SendAll(unsigned char dump_id, char dump_type, int* sent)
+{
+	C_FILE c_file;
+	gl_data_to_send_sz = CalcPacketSize(dump_type);
+	gl_data_to_send_dump_type = dump_type;
+	int diff = gl_curr_pos_data_to_send - gl_data_to_send;
+	gl_reminder =  diff % gl_data_to_send_sz;
+	gl_total =  diff / gl_data_to_send_sz;
+	if (gl_reminder)
+		gl_total++;
+	*sent = 0;
+	unsigned char *tmp = gl_data_to_send;
+	int ord = 0;
 	int availFrames = 0;
-	while (ord < total) {
-		//logg(event, "V:SendAll ord= %d", ord);
+	while (tmp < gl_curr_pos_data_to_send) {
 		if (CheckDumpAbort())
 			return FS_ABORT;
-		memcpy(element, tmp, data_to_send_sz);
-		int err = send(element, data_to_send_sz, dump_id, ord, dump_type, total, &availFrames);
+		int size = gl_data_to_send_sz;
+		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
+			size = gl_reminder;
+		int err = send(tmp, size, dump_id, ord, dump_type, gl_total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -361,7 +367,7 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 		}
 		else {
 			if (availFrames != NO_TX_FRAME_AVAILABLE) {
-				tmp += data_to_send_sz;
+				tmp += size;
 				(*sent)++;
 				ord++;
 			} else {
@@ -370,24 +376,30 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 			}
 		}
 	}
-	free(element);
+	//free(element);
 	return 0;
 }
 
 
 int CMD_GetDumpByIndex(sat_packet_t *pack) {
-	if (data_to_send_sz == 0)
+	if (gl_data_to_send_sz == 0)
 		return -1;
-	void* element = malloc(data_to_send_sz);
 	unsigned short index;
 	int availFrames = 0;
-	char* tmp = data_to_send;
+	unsigned char *tmp = gl_data_to_send;
 	int total = pack->length /  sizeof(unsigned short);
 	for (int i = 0; i < total;) {
 		memcpy(&index, pack->data + i*sizeof(unsigned short), sizeof(unsigned short));
-		tmp = data_to_send + data_to_send_sz * index;
-		memcpy(element, tmp, data_to_send_sz);
-		int err = send(element, data_to_send_sz, pack->ID, index,  data_to_send_dump_type, total, &availFrames);
+		if (index >= gl_total) {
+			i++;
+			continue;
+		}
+		tmp = gl_data_to_send + gl_data_to_send_sz * index;
+		int size = gl_data_to_send_sz;
+		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
+				size = gl_reminder;
+
+		int err = send(tmp, size, pack->ID, index,  gl_data_to_send_dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -405,7 +417,6 @@ int CMD_GetDumpByIndex(sat_packet_t *pack) {
 			}
 		}
 	}
-	free(element);
 	return 0;
 }
 
@@ -420,7 +431,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	char curr_file_name[MAX_F_FILE_NAME_SIZE+sizeof(int)*2];
-	char* curr_pos_data_to_send = data_to_send;
+	gl_curr_pos_data_to_send = gl_data_to_send;
 	void* element;
 	int end_read = 0;
 	if(get_C_FILE_struct(c_file_name,&c_file,&addr)!=TRUE)
@@ -450,7 +461,7 @@ FileSystemResult FirstScan(char* c_file_name,
 			if(left_to_read < ELEMENTS_PER_READ)
 				how_much_to_read = left_to_read;
 
-			element = allocked_read_elements;
+			element = gl_allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
 			for( k = 0 ; k < readen ; k++) {
@@ -461,9 +472,9 @@ FileSystemResult FirstScan(char* c_file_name,
 					break;
 				}
 				if(element_time >= from_time) {
-					if (curr_pos_data_to_send + size_elementWithTimeStamp < data_to_send + SIZE_DUMP_SEND_BUFFER){
-						memcpy(curr_pos_data_to_send, element, size_elementWithTimeStamp);
-						curr_pos_data_to_send += size_elementWithTimeStamp;
+					if (gl_curr_pos_data_to_send + size_elementWithTimeStamp < gl_data_to_send + SIZE_DUMP_SEND_BUFFER){
+						memcpy(gl_curr_pos_data_to_send, element, size_elementWithTimeStamp);
+						gl_curr_pos_data_to_send += size_elementWithTimeStamp;
 					} else {//no more space. max allowed per dump
 						end_read = 1;
 						break;
@@ -484,18 +495,10 @@ FileSystemResult FirstScan(char* c_file_name,
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
 
-	data_to_send_sz = CalcPacketSize(dump_type);
-	data_to_send_dump_type = dump_type;
-	int diff = curr_pos_data_to_send - data_to_send;
-	unsigned short total =  diff / data_to_send_sz;
-	if (diff > 0 && (diff < data_to_send_sz)) {
-		total = 1;
-		data_to_send_sz = diff;
-	}
-	int err = SendAll(dump_id, dump_type, total, sent);
-	if (err != 0) {
+	int err = SendAll(dump_id, dump_type, sent);
+	if (err != 0)
 		return err;
-	}
+	logg(event, "dump sent=%d", sent);
 	return FS_SUCCSESS;
 }
 
