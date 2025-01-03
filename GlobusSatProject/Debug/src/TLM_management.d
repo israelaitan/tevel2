@@ -44,8 +44,19 @@ src/TLM_management.d: ../src/TLM_management.c \
  ../src/SubSystemModules/Housekepping/TelemetryCollector.h \
  ../src/SubSystemModules/Housekepping/TelemetryFiles.h \
  C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/TLM_management.h \
+ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/TRXVU.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e_types.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/common_types.h \
+ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/AckHandler.h \
+ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
+ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SPL.h \
  C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h \
  C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h \
+ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Payload/payload_drivers.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isismepsv2_ivid5_piu_types.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e_types.h \
+ C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_ants_types.h \
  ../src/SubSystemModules/Maintenance/Log.h
 
 C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//hal/freertos/include/freertos/FreeRTOS.h:
@@ -138,8 +149,30 @@ C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/TestingConfiguratio
 
 C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/TLM_management.h:
 
+C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/TRXVU.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e_types.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/common_types.h:
+
+C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/AckHandler.h:
+
+C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
+
+C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SPL.h:
+
 C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Communication/SatCommandHandler.h:
 
 C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Maintenance/Log.h:
+
+C:\Users\ground\Documents\GitHub\tevel2\GlobusSatProject\src/SubSystemModules/Payload/payload_drivers.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isismepsv2_ivid5_piu_types.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_vu_e_types.h:
+
+C:/Users/ground/Documents/GitHub/tevel2/GlobusSatProject/..//satellite-subsystems/satellite-subsystems/include/satellite-subsystems/isis_ants_types.h:
 
 ../src/SubSystemModules/Maintenance/Log.h:
