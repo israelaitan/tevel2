@@ -149,10 +149,11 @@ SoreqResult payloadSoftReset() {
 }
 
 void payloadCommandRestartCount() {
-	unsigned int reset_cnt = 0;
+	uint16_t reset_cnt = 0;
 	int res = FRAM_read((unsigned char*)&reset_cnt, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
 	if(!res) {
 		reset_cnt++;
+		logg(event, "PAYLOAD_TURN_OFF_BY_COMMAND=%d\n", reset_cnt);
 		FRAM_write((unsigned char*)&reset_cnt, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
 	}
 }
