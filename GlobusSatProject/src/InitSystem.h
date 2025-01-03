@@ -15,7 +15,7 @@
  */
 int StartFRAM();
 
-void IntializeFRAM();
+int IntializeFRAM();
 
 /*!
  * @brief	writes the default filght parameters to the corresponding FRAM addresses

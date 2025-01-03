@@ -98,19 +98,20 @@ void firstActivationProcedure()
 }
 
 //Initialize method to set FRAM to initial phase before first Init of satelite
- void IntializeFRAM() {
+ int IntializeFRAM() {
 	int err = 0;
 	err = StartSPI();
 	err = StartI2C();
 	err = StartFRAM();
 	if(err)
-		return;
+		return err;
 	int status = 1;
 	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
 
 	int a = 0;
 	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
 	WriteDefaultValuesToFRAM();
+	return err;
  }
 
 
@@ -313,6 +314,9 @@ int autoDeploy()
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 		logg(event, "V:setLastAntsAutoDeploymentTime success\n");
 	}
+
+	resArm = isis_ants__disarm(0);
+	resArm = isis_ants__disarm(1);
 	return resDeploy;
 }
 
@@ -410,22 +414,9 @@ int InitSubsystems() {
 		logg(error, "E:%d Failed in DeploySystem\n", err);
 	else
 		logg(event, "V: DeploySystem was successful\n");
-	unsigned short num_of_resets = 0;
 
 	//increase the number of total resets
-	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-	num_of_resets++;
-	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
-
-	unsigned int SATlastWakeUpTime = 0;
-	FRAM_read((unsigned char*)&SATlastWakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
-	time_unix current_time = 0;
-	Time_getUnixEpoch((unsigned int *)&current_time);
-	Boolean turn_on_payload_in_init = FALSE;
-	if(current_time - SATlastWakeUpTime < 60)
-			FRAM_write((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
-	//set wakeup time in FRAM
-	FRAM_write((unsigned char *)&current_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+	WakeUpFromReset();//must happen before payload init for short circuit protection
 	payloadInit(TRUE);
 	return 0;
 }

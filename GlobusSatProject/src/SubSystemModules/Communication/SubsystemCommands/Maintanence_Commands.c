@@ -23,6 +23,7 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "Maintanence_Commands.h"
+#include "InitSystem.h"
 
 int CMD_GenericI2C(sat_packet_t *cmd)
 {
@@ -52,6 +53,13 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	free(i2c_data);
 
 	return err;
+}
+
+int CMD_FRAM_Init(sat_packet_t *cmd){
+	logg(event, "V:CMD_FRAM_Init\n");
+	int err = IntializeFRAM();
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
+	restart();
 }
 
 int CMD_FRAM_ReadAndTransmitt(sat_packet_t *cmd)

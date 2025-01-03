@@ -149,6 +149,7 @@ typedef enum __attribute__ ((__packed__)) management_subtypes_t {
 	TLM_GET_COLL_CYCLE_SUBTYPE,
 	SET_LOG_SUBTYPE,
 	GET_LOG_SUBTYPE,
+	FRAM_INIT_SUBTYPE
 } management_subtypes_t;
 //-----------------
 
