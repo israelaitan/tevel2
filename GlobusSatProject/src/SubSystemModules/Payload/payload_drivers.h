@@ -17,6 +17,7 @@
  * @enum SoreqResult
  * @brief Result codes for payload operations.
  */
+
 typedef enum {
 	PAYLOAD_SUCCESS,        /**< Operation completed successfully */
     EPS_ERROR,              /**< General error in the EPS system */

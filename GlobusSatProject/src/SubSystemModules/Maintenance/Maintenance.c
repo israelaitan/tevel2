@@ -78,10 +78,8 @@ int WakeupFromResetCMD()
 	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 	if (reset_flag) {
 		time_unix curr_time = 0;
-		Time_getUnixEpoch((unsigned int *)&curr_time);
-
 		//set wakeup time in FRAM
-		FRAM_write((unsigned char *)&curr_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+		FRAM_read((unsigned char *)&curr_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 
 		err = SendAckPacket(ACK_RESET_WAKEUP, 0xffff, 0xffff, (unsigned char*) &curr_time,
 				sizeof(curr_time));

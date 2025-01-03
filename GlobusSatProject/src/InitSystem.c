@@ -417,7 +417,15 @@ int InitSubsystems() {
 	num_of_resets++;
 	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 
+	unsigned int SATlastWakeUpTime = 0;
+	FRAM_read((unsigned char*)&SATlastWakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+	time_unix current_time = 0;
+	Time_getUnixEpoch((unsigned int *)&current_time);
+	Boolean turn_on_payload_in_init = FALSE;
+	if(current_time - SATlastWakeUpTime < 60)
+			FRAM_write((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+	//set wakeup time in FRAM
+	FRAM_write((unsigned char *)&current_time, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
 	payloadInit(TRUE);
-
 	return 0;
 }
