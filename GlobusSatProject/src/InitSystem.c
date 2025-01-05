@@ -65,6 +65,7 @@ int isFirstActivation(Boolean * status)
 //בדיקה שעברו  מספר דק מהשיגור. טיפול במקרה שיש אתחול חוזר של המערכת
 void firstActivationProcedure()
 {
+
 	int err = 0;
 	const int TotalWaitTime = 1000 * ANT_DEPLOY_WAIT_PERIOD;
 	int AwaitedTime = 0;
@@ -187,6 +188,10 @@ void WriteDefaultValuesToFRAM()
 
 	uint8_t tx_bitrate = DEFAULT_BITRATE_VALUE;
 	FRAM_write((unsigned char*)&tx_bitrate, TX_BITRATE_ADDR, sizeof(uint8_t));
+
+	unsigned int sel_firstactiv = 445;
+	FRAM_write((unsigned char*)&sel_firstactiv, FIRST_ACTIV_NUM_PAYLOAD_RESET, FIRST_ACTIV_NUM_PAYLOAD_RESET_SIZE);
+
 
 }
 

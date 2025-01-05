@@ -37,7 +37,8 @@
 #define TURN_ON_PAYLOAD_IN_INIT_SIZE	4			// size of the parameter in bytes
 #define PAYLOAD_TURN_OFF_BY_COMMAND		0x34		//(34,35) counter of all restarts that are done due to a command
 #define PAYLOAD_TURN_OFF_BY_COMMAND_SIZE 2 			// size of parameter in bytes
-#define place_holder_36					0x36		//(36,37)
+#define FIRST_ACTIV_NUM_PAYLOAD_RESET	0x36		//(36,37)
+#define FIRST_ACTIV_NUM_PAYLOAD_RESET_SIZE 2 		// size of parameter in bytes
 #define PAYLOAD_ON						0x38		//flag that indicates wheather paylod is on (38,39,3A,3B)
 #define PAYLOAD_ON_SIZE					4
 #define aadd_ADDR						0x3C		//3C,3D,3E,3F
