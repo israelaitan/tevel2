@@ -186,6 +186,13 @@ byte tx_bitrate_to_i2c(isis_vu_e__bitrate_t bitrate){
 	}
 }
 
+int set_pll_power() {
+
+	byte i2c_data[2] = { 0xCF, 0xFF };//0xFFCF level4
+	//byte i2c_data[2] = { 0xCF, 0xEF };//0xEFCF level5
+	int err =  I2C_write(I2C_TRXVU_TC_ADDR, i2c_data, 2);
+	return err;
+}
 
 int SetBitRate(){
 	byte i2c_data[2] = { 0x28, 0x8 };
@@ -281,6 +288,8 @@ int InitTrxvu() {
 	}
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
+
+	set_pll_power();//TODO:remove just because ants folded
 
 	SetFreqAndBitrate();
 	vu_getFrequenciesTest_revE();

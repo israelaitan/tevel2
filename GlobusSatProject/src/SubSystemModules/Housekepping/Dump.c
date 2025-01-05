@@ -325,6 +325,8 @@ unsigned short CalcPacketSize(char dump_type)
 			return 208;
 		case tlm_solar:
 			return 196;
+		case tlm_adc:
+			return 196;
 		default:
 			return 0;
 

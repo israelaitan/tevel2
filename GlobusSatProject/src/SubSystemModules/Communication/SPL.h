@@ -113,7 +113,8 @@ typedef enum __attribute__ ((__packed__)) telemetry_subtypes_t {
 	TLM_GET_WOD_SUBTYPE = 8,
 	TLM_GET_PIC32_SUBTYPE = 9,
 	TLM_GET_RADFET_SUBTYPE = 10,
-	TLM_GET_SOLAR_SUBTYPE = 11
+	TLM_GET_SOLAR_SUBTYPE = 11,
+	TLM_GET_ADC_SUBTYPE = 12
 } telemetry_subtypes_t;
 
 typedef enum __attribute__ ((__packed__)) files_subtypes_t {

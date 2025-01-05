@@ -55,46 +55,48 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 		return -1;
 	}
 	switch (tlm_type) {
+		case tlm_eps_raw_mb:
+			strcpy(filename,FILENAME_EPS_RAW_MB_TLM);
+			break;
+		case tlm_eps_eng_mb:
+			strcpy(filename,FILENAME_EPS_ENG_MB_TLM);
+			break;
+		case tlm_eps_avg_mb:
+			strcpy(filename,FILENAME_EPS_AVG_MB_TLM);
+			break;
+		case tlm_tx:
+			strcpy(filename,FILENAME_TX_TLM);
+			break;
+		case tlm_rx:
+			strcpy(filename,FILENAME_RX_TLM);
+			break;
+		case tlm_antA:
+			strcpy(filename,FILENAME_ANTENNA_SIDE_A_TLM);
+			break;
+		case tlm_antB:
+			strcpy(filename,FILENAME_ANTENNA_SIDE_B_TLM);
+			break;
+		case tlm_log:
+			strcpy(filename,FILENAME_LOG_TLM);
+			break;
+		case tlm_wod:
+			strcpy(filename,FILENAME_WOD_TLM);
+			break;
+		case tlm_pic32:
+			strcpy(filename,FILENAME_PIC32_TLM);
+			break;
+		case tlm_radfet:
+			strcpy(filename,FILENAME_RADFET_TLM);
+			break;
+		case tlm_solar:
+			strcpy(filename,FILENAME_SOLAR_TLM);
+			break;
+		case tlm_adc:
+			strcpy(filename,FILENAME_ADC_TLM);
+			break;
 
-	case tlm_eps_raw_mb:
-		strcpy(filename,FILENAME_EPS_RAW_MB_TLM);
-		break;
-	case tlm_eps_eng_mb:
-		strcpy(filename,FILENAME_EPS_ENG_MB_TLM);
-		break;
-	case tlm_eps_avg_mb:
-		strcpy(filename,FILENAME_EPS_AVG_MB_TLM);
-		break;
-	case tlm_tx:
-		strcpy(filename,FILENAME_TX_TLM);
-		break;
-	case tlm_rx:
-		strcpy(filename,FILENAME_RX_TLM);
-		break;
-	case tlm_antA:
-		strcpy(filename,FILENAME_ANTENNA_SIDE_A_TLM);
-		break;
-	case tlm_antB:
-		strcpy(filename,FILENAME_ANTENNA_SIDE_B_TLM);
-		break;
-	case tlm_log:
-		strcpy(filename,FILENAME_LOG_TLM);
-		break;
-	case tlm_wod:
-		strcpy(filename,FILENAME_WOD_TLM);
-		break;
-	case tlm_pic32:
-		strcpy(filename,FILENAME_PIC32_TLM);
-		break;
-	case tlm_radfet:
-		strcpy(filename,FILENAME_RADFET_TLM);
-		break;
-	case tlm_solar:
-		strcpy(filename,FILENAME_SOLAR_TLM);
-		break;
-
-	default:
-		return -2;
+		default:
+			return -2;
 	}
 	return 0;
 }
@@ -121,6 +123,7 @@ void TelemetryCollectorLogic()
 
 	if (CheckExecutionTime(tlm_last_save_time[solar_panel_tlm], tlm_save_periods[solar_panel_tlm])){
 		SaveSolar_TLM();
+		SaveADC_TLM();
 		logg(TLMInfo, "I:TelemetrySaveSOLAR\n");
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[solar_panel_tlm]));
 	}
@@ -188,6 +191,8 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 
 	res = c_fileCreate(FILENAME_SOLAR_TLM, sizeof(int32_t) * ISIS_SOLAR_PANEL_6);
 	SAVE_FLAG_IF_FILE_CREATED(tlm_solar);
+	res = c_fileCreate(FILENAME_ADC_TLM, sizeof(unsigned int) * ISIS_SOLAR_PANEL_6);
+	SAVE_FLAG_IF_FILE_CREATED(tlm_adc);
 }
 
 void to_hk_eps_eng(isismepsv2_ivid5_piu__gethousekeepingeng__from_t *tlm_mb_eng, hk_eps_eng *tlm_hk_eps_eng) {
@@ -454,6 +459,40 @@ int SaveSolar_TLM(){
 	int err = SolarPanelv2_Temperature(panel_temps);
 	if (!err) {
 		c_fileWrite(FILENAME_SOLAR_TLM, panel_temps);
+	}
+	return err;
+}
+
+int SaveADC_TLM()
+{
+	unsigned int adc_mv[ISIS_SOLAR_PANEL_6];
+	unsigned short adcSamples[8];
+	unsigned int i;
+	int err = ADC_SingleShot( adcSamples );
+	if (err)
+		return err;
+	for( i=0; i < ISIS_SOLAR_PANEL_6; i++ )
+	{
+		adc_mv[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] );
+	}
+	c_fileWrite(FILENAME_ADC_TLM, adc_mv);
+	return err;
+}
+
+int CMD_getADC_TLM(sat_packet_t *cmd) {
+	unsigned int adc_mv[ISIS_SOLAR_PANEL_6];
+	unsigned short adcSamples[8];
+	unsigned int i;
+	int err = ADC_SingleShot( adcSamples );
+	if (err)
+		return err;
+	for( i=0; i < ISIS_SOLAR_PANEL_6; i++ )
+	{
+		adc_mv[i] = ADC_ConvertRaw10bitToMillivolt( adcSamples[i] );
+	}
+	if (!err) {
+		unsigned char *data = AddTime(adc_mv,  sizeof(unsigned int) * ISIS_SOLAR_PANEL_6);
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(int32_t) * ISIS_SOLAR_PANEL_6);
 	}
 	return err;
 }

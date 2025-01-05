@@ -205,6 +205,8 @@ int CMD_getEPS_AVG_TLM(sat_packet_t *cmd);
  */
 int CMD_getSolar_TLM(sat_packet_t *cmd);
 
+int CMD_getADC_TLM(sat_packet_t *cmd);
+
 /*!
  * @brief Gets all TRXVU telemetry
  * @param[out] output TRXVU telemetry and sends them to ground control

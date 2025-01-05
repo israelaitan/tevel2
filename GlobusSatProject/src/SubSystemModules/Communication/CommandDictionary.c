@@ -210,6 +210,11 @@ int telemetry_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
+	case TLM_GET_ADC_SUBTYPE:
+		err = CMD_getADC_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
 	default:
 		break;
 	}
