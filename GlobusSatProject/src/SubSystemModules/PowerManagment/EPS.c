@@ -27,16 +27,6 @@ int EPS_Init()
 		return -1;
 	}
 
-
-#ifdef SOLAR_PANELS_ASSEMBELED
-	rv = IsisSolarPanelv2_initialize(slave0_spi);
-	if (rv != 0) {
-		logg(error, "E:Solar Panel init failed\n");
-		return -2;
-	}
-	IsisSolarPanelv2_sleep();
-#endif
-
 	rv = GetThresholdVoltages(&eps_threshold_voltages);
 	if (0 != rv) {
 		return -3;
@@ -192,56 +182,28 @@ void RUN_EPS_CHAN_STAT(){
 
 int EPS_Conditioning()
 {
-	voltage_t curr_voltage = 0;				// x[i]
+	voltage_t curr_voltage = 0;
 	GetBatteryVoltage(&curr_voltage);
-
-	voltage_t filtered_voltage = 0;					// the currently filtered voltage; y[i]
-
-	filtered_voltage = GetFilterdVoltage(curr_voltage);
-	//logg(event, "curr_voltage=%d, filtered_voltage=%d\n", curr_voltage, filtered_voltage);
-	// discharging
-	if (filtered_voltage <= prev_filtered_voltage) {
-		if (filtered_voltage < eps_threshold_voltages.fields.Vdown_safe) {
-			EnterCriticalMode();
-		}
-		else if (filtered_voltage < eps_threshold_voltages.fields.Vdown_cruise) {
-			EnterSafeMode();
-		}
-		else if (filtered_voltage < eps_threshold_voltages.fields.Vdown_full) {
-			EnterCruiseMode();
-		}
-
+	if (curr_voltage < eps_threshold_voltages.fields.Vdown_safe) {
+			EnterCriticalMode(curr_voltage);
 	}
-	// charging
-	else if (filtered_voltage > prev_filtered_voltage) {
-
-		if (filtered_voltage > eps_threshold_voltages.fields.Vup_full) {
-			EnterFullMode();
-		}
-		else if (filtered_voltage > eps_threshold_voltages.fields.Vup_cruise) {
-			EnterCruiseMode();
-		}
-		else if (filtered_voltage > eps_threshold_voltages.fields.Vup_safe) {
-			EnterSafeMode();
-		}
+	else if (curr_voltage < eps_threshold_voltages.fields.Vdown_cruise) {
+			EnterSafeMode(curr_voltage);
 	}
-	prev_filtered_voltage = filtered_voltage;
-	return 0;
+	else if (curr_voltage < eps_threshold_voltages.fields.Vdown_full) {
+			EnterCruiseMode(curr_voltage);
+	}
+	else {
+		EnterFullMode(curr_voltage);
+	}
 }
 
 int GetBatteryVoltage(voltage_t *vbatt)
 {
 	int err = 0;
-
-#ifdef BATTERY_ATTACHED
-	isis_eps__gethousekeepingraw__from_t hk_tlm;
-	err = isis_eps__gethousekeepingraw__tm( EPS_I2C_BUS_INDEX,  &hk_tlm );
-	*vbatt = hk_tlm.fields.batt_input.fields.volt;
-#else
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng( EPS_I2C_BUS_INDEX,  &hk_tlm );
 	*vbatt = hk_tlm.fields.volt_vd0;//TODO:change to charging
-#endif
 	return err;
 }
 

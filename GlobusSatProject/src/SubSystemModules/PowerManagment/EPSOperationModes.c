@@ -5,8 +5,8 @@
 #include "SubSystemModules/Maintenance/Log.h"
 
 
-#define MIN_EPS_STATE_LINGER_TIME  60
-#define MIN_EPS_NEXT_STATE_LINGER_TIME  60
+#define MIN_EPS_STATE_LINGER_TIME  10
+#define MIN_EPS_NEXT_STATE_LINGER_TIME  10
 time_unix state_transition_time = 0;
 time_unix next_state_transition_time = 0;
 
@@ -42,52 +42,52 @@ Boolean is_next_state_time_linger_passed(EpsState_t next_state_request) {
 }
 
 
-int EnterFullMode()
+int EnterFullMode(voltage_t curr_voltage)
 {
 	if(!is_time_linger_passed() || state == FullMode)
 		return 0;
 	if(!is_next_state_time_linger_passed(FullMode))
 		return 0;
-	logg(event, "V:EPS from state=%d -> state=%d\n", state, FullMode);
+	logg(event, "V:EPS from state=%d -> state=%d v=%d\n", state, FullMode, curr_voltage);
 	state = FullMode;
 	int err = payloadInit(TRUE);
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
 
-int EnterCruiseMode()
+int EnterCruiseMode(voltage_t curr_voltage)
 {
 	if(!is_time_linger_passed() || state == CruiseMode)
 		return 0;
 	if(!is_next_state_time_linger_passed(CruiseMode))
 			return 0;
-	logg(event, "V:EPS from state=%d -> state=%d\n", state, CruiseMode);
+	logg(event, "V:EPS from state=%d -> state=%d v=%d\n", state, CruiseMode, curr_voltage);
 	state = CruiseMode;
 	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
 
-int EnterSafeMode()
+int EnterSafeMode(voltage_t curr_voltage)
 {
 	if( !is_time_linger_passed() || state == SafeMode)
 		return 0;
 	if(!is_next_state_time_linger_passed(SafeMode))
 		return 0;
-	logg(event, "V:EPS from state=%d -> state=%d\n", state, SafeMode);
+	logg(event, "V:EPS from state=%d -> state=%d v=%d\n", state, SafeMode, curr_voltage);
 	state = SafeMode;
 	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(FALSE);
 	return err;
 }
 
-int EnterCriticalMode()
+int EnterCriticalMode(voltage_t curr_voltage)
 {
 	if(!is_time_linger_passed() || state == CriticalMode)
 		return 0;
 	if(!is_next_state_time_linger_passed(CriticalMode))
 			return 0;
-	logg(event, "V:EPS from state=%d -> state=%d\n", state, CriticalMode);
+	logg(event, "V:EPS from state=%d -> state=%d v=%d\n", state, CriticalMode, curr_voltage);
 	state = CriticalMode;
 	int err = payloadTurnOff();
 	EpsSetLowVoltageFlag(TRUE);

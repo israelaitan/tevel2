@@ -394,7 +394,7 @@ void TelemetrySaveANT()
 		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
 		memcpy(wod_beacon.fields.antA.raw, ant_tlmA.raw, sizeof(isis_ants__get_all_telemetry__from_t));
 	} else
-		logg(error, "E=%d TelemetrySaveANT side A\n", err);
+		logg(TLMInfo, "E=%d TelemetrySaveANT side A\n", err);
 
 	isis_ants__get_all_telemetry__from_t ant_tlmB = { 0 };
 	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
@@ -402,7 +402,7 @@ void TelemetrySaveANT()
 		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
 		memcpy(wod_beacon.fields.antB.raw, ant_tlmB.raw, sizeof(isis_ants__get_all_telemetry__from_t));
 	} else
-		logg(error, "E=%d TelemetrySaveANT side B\n", err);
+		logg(TLMInfo, "E=%d TelemetrySaveANT side B\n", err);
 }
 
 // Get Antennas TLM
