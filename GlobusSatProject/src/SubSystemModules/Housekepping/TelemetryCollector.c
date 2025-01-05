@@ -30,6 +30,9 @@ WOD_Telemetry_t wod_beacon = { 0 };
 hk_eps_eng hk_eps_eng_for_save = { 0 };
 hk_eps_avg hk_eps_avg_for_save = { 0 };
 hk_eps_raw hk_eps_raw_for_save = { 0 };
+isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw = {0};
+isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng = {0};
+isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg = {0};
 
 unsigned char* AddTime(unsigned char* data, unsigned int sz){
 	unsigned int curr_time;
@@ -257,7 +260,6 @@ void TelemetrySaveEPS()
 {
 	int err = 0;
 
-	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
 	if (err == 0) {
 		to_hk_eps_raw(&tlm_mb_raw, &hk_eps_raw_for_save);
@@ -265,7 +267,6 @@ void TelemetrySaveEPS()
 	} else
 		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
 
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 	if (err == 0) {
 		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_save);
@@ -274,9 +275,7 @@ void TelemetrySaveEPS()
 	} else
 		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
-	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
 	err = isismepsv2_ivid5_piu__gethousekeepingrunningavg(EPS_I2C_BUS_INDEX, &tlm_mb_avg);
-
 	if (err == 0) {
 		to_hk_eps_avg(&tlm_mb_avg, &hk_eps_avg_for_save);
 		c_fileWrite(FILENAME_EPS_AVG_MB_TLM, &hk_eps_avg_for_save);
@@ -288,12 +287,11 @@ void TelemetrySaveEPS()
 //get EPS TLM
 int CMD_getEPS_ENG_TLM(sat_packet_t *cmd) {
 	int err = 0;
-	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
-
 	if(err == 0){
-		unsigned char *data = AddTime((unsigned char*)&tlm_mb_eng, sizeof(tlm_mb_eng));
-		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_eng));
+		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_save);
+		unsigned char *data = AddTime((unsigned char*)&hk_eps_eng_for_save, sizeof(hk_eps_eng_for_save));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(hk_eps_eng_for_save));
 	}
 	else
 			logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
@@ -303,12 +301,11 @@ int CMD_getEPS_ENG_TLM(sat_packet_t *cmd) {
 
 int CMD_getEPS_RAW_TLM(sat_packet_t *cmd) {
 	int err = 0;
-	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
-
 	if(err == 0){
-		unsigned char *data = AddTime((unsigned char*)&tlm_mb_raw, sizeof(tlm_mb_raw));
-		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_raw));
+		to_hk_eps_raw(&tlm_mb_raw, &hk_eps_raw_for_save);
+		unsigned char *data = AddTime((unsigned char*)&hk_eps_raw_for_save, sizeof(hk_eps_raw_for_save));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(hk_eps_raw_for_save));
 	}
 	else
 			logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
@@ -318,12 +315,11 @@ int CMD_getEPS_RAW_TLM(sat_packet_t *cmd) {
 
 int CMD_getEPS_AVG_TLM(sat_packet_t *cmd) {
 	int err = 0;
-	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
 	err = isismepsv2_ivid5_piu__gethousekeepingrunningavg(EPS_I2C_BUS_INDEX, &tlm_mb_avg);
-
 	if(err == 0){
-		unsigned char *data = AddTime((unsigned char*)&tlm_mb_avg, sizeof(tlm_mb_avg));
-		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(tlm_mb_avg));
+		to_hk_eps_avg(&tlm_mb_avg, &hk_eps_avg_for_save);
+		unsigned char *data = AddTime((unsigned char*)&hk_eps_avg_for_save, sizeof(hk_eps_avg_for_save));
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(hk_eps_avg_for_save));
 	}
 	else
 			logg(error, "E=%d isismepsv2_ivid5_piu__gethousekeepingrunningavg\n", err);
