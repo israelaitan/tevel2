@@ -68,7 +68,7 @@ void BeaconLogic()
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID_GROUND, packet.length );
+			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID_SAT, packet.length );
 		}
 		else
 			logg(TRXInfo, "I: Beacon time did not arrive\n");
