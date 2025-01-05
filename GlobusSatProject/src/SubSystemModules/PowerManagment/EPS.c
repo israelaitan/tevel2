@@ -60,7 +60,8 @@ uint16_t byte_arr_2_int16(unsigned char arr[], int size) {
 
 int i2c_write_read(I2Ctransfer *tr) {
 	int err = 0;
-	for (int i = 0; i < 10; i++) {
+	int i = 0;
+	for (i = 0; i < 10; i++) {
 		err = I2C_writeRead(tr);
 		if (err)
 			return err;

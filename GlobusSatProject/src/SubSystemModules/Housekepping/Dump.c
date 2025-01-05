@@ -384,7 +384,8 @@ int CMD_GetDumpByIndex(sat_packet_t *pack) {
 	int availFrames = 0;
 	unsigned char *tmp = gl_data_to_send;
 	int total = pack->length /  sizeof(unsigned short);
-	for (int i = 0; i < total;) {
+	int i;
+	for (i = 0; i < total;) {
 		memcpy(&index, pack->data + i*sizeof(unsigned short), sizeof(unsigned short));
 		if (index >= gl_total) {
 			i++;

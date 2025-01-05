@@ -51,7 +51,8 @@ SoreqResult payloadInit(Boolean check_allowed_on_init) {
 SoreqResult payloadRead(int size, unsigned char *buffer) {
 
     unsigned char wtd_and_read[] = {CLEAR_WDT};
-    for (int i = 0; i < TIMEOUT / READ_DELAY; ++i) {
+    int i;
+    for (i = 0; i < TIMEOUT / READ_DELAY; ++i) {
         if (I2C_write(PAYLOAD_I2C_ADDR, wtd_and_read, 1))
         	return PAYLOAD_I2C_WRITE_ERROR;
 

@@ -110,7 +110,7 @@ void HandleIdleAndMuteTime()
 	if(g_idle_flag==TRUE)
 	{
 		//if idle period has passed
-		if (CheckExecutionTime(g_idle_start_time, g_idle_period) || GetEPSSystemState() == SafeMode)
+		if (CheckExecutionTime(g_idle_start_time, g_idle_period) || GetEPSSystemState() >= SafeMode)
 		{
 			SetIdleOff();
 		}
@@ -134,7 +134,7 @@ void HandleTransponderTime()
 {
 	if(getTransponderMode()==TURN_TRANSPONDER_ON)
 	{
-		if(checkEndTransponderMode() || GetEPSSystemState() == SafeMode)
+		if(checkEndTransponderMode() || GetEPSSystemState() >= SafeMode)
 		{
 			CMD_turnOffTransponder();
 		}
