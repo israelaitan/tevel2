@@ -45,6 +45,60 @@ typedef union __attribute__((__packed__)) _eps_eng__from_t
     } fields;
 } hk_eps_eng;
 
+typedef union __attribute__((__packed__)) _eps_avg__from_t
+{
+    unsigned char raw[84];
+    struct __attribute__ ((__packed__))
+    {
+        int16_t volt_brdsup; /*!< Voltage of internal board supply in raw form */
+        int16_t temp; /*!< Measured temperature provided by a sensor internal to the MCU in raw form \note conversion: eng. value [in °C] = 0.01 * raw */
+        isismepsv2_ivid5_piu__vipdeng_t dist_input; /*!< Input V, I and P data taken at the input of the distribution part of the unit in raw form. Negative values indicate output flow. */
+        isismepsv2_ivid5_piu__vipdeng_t batt_input; /*!< Input V, I and P data taken at the input of the battery part of the unit in raw form. Negative values indicate output flow. */
+        uint16_t stat_obc_on; /*!< Bitflag field indicating channel-on status for the output bus channels. */
+        uint16_t stat_obc_ocf; /*!< Bitflag field indicating overcurrent latch-off fault status for the output bus channels. */
+        isismepsv2_ivid5_piu__batterypackstatus_t bat_stat; /*!< Bitflag field indicating BP board */
+        int16_t temp2; /*!< 2 and 4 cell battery pack: Battery pack temperature in between the center battery cells. \note conversion: eng. value [in °C] = 0.01 * raw */
+        int16_t volt_vd0; /*!< Voltage of voltage domain 0 */
+        int16_t volt_vd1; /*!< Voltage of voltage domain 0 */
+        int16_t volt_vd2; /*!< Voltage of voltage domain 0 */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc00; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc01; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc03; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc04; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc05; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__ccsdeng_t cc1; /*!< Data on conditioning chain */
+        isismepsv2_ivid5_piu__ccsdeng_t cc2; /*!< Data on conditioning chain */
+        isismepsv2_ivid5_piu__ccsdeng_t cc3; /*!< Data on conditioning chain */
+    } fields;
+} hk_eps_avg;
+
+typedef union __attribute__((__packed__)) _eps_raw__from_t
+{
+    unsigned char raw[84];
+    struct __attribute__ ((__packed__))
+    {
+	   uint16_t volt_brdsup; /*!< Voltage of internal board supply in raw form */
+	   uint16_t temp; /*!< Measured temperature provided by a sensor internal to the MCU in raw form \note conversion: eng. value [in C] = 0.32234 * raw + -280*/
+	   isismepsv2_ivid5_piu__vipdvd_t dist_input; /*!< Input V, I and P data taken at the input of the distribution part of the unit in raw form. Negative values indicate output flow. */
+	   isismepsv2_ivid5_piu__vipdvd_t batt_input; /*!< Input V, I and P data taken at the input of the battery part of the unit in raw form. Negative values indicate output flow. */
+	   uint16_t stat_obc_on; /*!< Bitflag field indicating channel-on status for the output bus channels. */
+	   uint16_t stat_obc_ocf; /*!< Bitflag field indicating overcurrent latch-off fault status for the output bus channels. */
+	   isismepsv2_ivid5_piu__batterypackstatus_t bat_stat; /*!< Bitflag field indicating BP board */
+	   uint16_t temp2; /*!< 2 and 4 cell battery pack: Battery pack temperature in between the center battery cells. \note conversion: eng. value = -0.00000000334856 * raw<sup>3</sup> + 0.0000221414 * raw<sup>2</sup> + -0.066728 * raw + 93.3244*/
+	   uint16_t volt_vd0; /*!< Voltage of voltage domain 0 in raw form */
+	   uint16_t volt_vd1; /*!< Voltage of voltage domain 1 in raw form */
+	   uint16_t volt_vd2; /*!< Voltage of voltage domain 2 in raw form */
+	   isismepsv2_ivid5_piu__vipdch_t vip_obc00; /*!< Output V, I and P of output bus channel in raw form */
+	   isismepsv2_ivid5_piu__vipdch_t vip_obc01; /*!< Output V, I and P of output bus channel in raw form */
+	   isismepsv2_ivid5_piu__vipdch_t vip_obc03; /*!< Output V, I and P of output bus channel in raw form */
+	   isismepsv2_ivid5_piu__vipdch_t vip_obc04; /*!< Output V, I and P of output bus channel in raw form */
+	   isismepsv2_ivid5_piu__vipdch_t vip_obc05; /*!< Output V, I and P of output bus channel in raw form */
+	   isismepsv2_ivid5_piu__ccsdraw_t cc1; /*!< Data on conditioning chain in raw form. */
+	   isismepsv2_ivid5_piu__ccsdraw_t cc2; /*!< Data on conditioning chain in raw form. */
+	   isismepsv2_ivid5_piu__ccsdraw_t cc3; /*!< Data on conditioning chain in raw form. */
+    } fields;
+} hk_eps_raw;
+
 #define SIZE_BEACON_SPARE 10 //235 - 16 - 4 - 205
 
 typedef union __attribute__((__packed__)) _WOD_Telemetry_t

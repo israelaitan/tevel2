@@ -227,9 +227,6 @@ void DumpStart(dump_arguments_t *task_args){
 		}
 		logg(DMPInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
 
-		SendAckPacket(ACK_DUMP_START, task_args->id_ground, task_args->ord,
-				(unsigned char*) &num_of_elements, sizeof(num_of_elements));
-
 		time_unix curr = 0;
 		Time_getUnixEpoch(&curr);
 		logg(DMPInfo, "I:starting dump loop at time: %u\n", curr);
@@ -248,7 +245,7 @@ void DumpStart(dump_arguments_t *task_args){
 		} else
 			logg(DMPInfo, "I:finish dump gracefully %d transmitted", num_packets_read);
 
-		FinishDump(task_args, ack_return_code, NULL, 0);
+		FinishDump(task_args, ack_return_code, &gl_total, sizeof(gl_total));
 	}
 }
 
@@ -305,15 +302,15 @@ unsigned short CalcPacketSize(char dump_type)
  {
 	switch (dump_type) {
 		case tlm_eps_raw_mb:
-			return 120;//TODO:update and compress
+			return 176;
 		case tlm_eps_eng_mb:
-			return 120;//TODO:update and compress
+			return 176;
 		case tlm_eps_avg_mb:
-			return 120;//TODO:update and compress
+			return 176;
 		case tlm_tx:
-			return 216;
-		case tlm_rx:
 			return 198;
+		case tlm_rx:
+			return 208;
 		case tlm_antA:
 			return 208;
 		case tlm_antB:
@@ -342,6 +339,8 @@ int SendAll(unsigned int dump_id, char dump_type, int* sent)
 	int diff = gl_curr_pos_data_to_send - gl_data_to_send;
 	gl_reminder =  diff % gl_data_to_send_sz;
 	gl_total =  diff / gl_data_to_send_sz;
+	SendAckPacket(ACK_DUMP_START, dump_id, 0,
+						(unsigned char*) &gl_total, sizeof(gl_total));
 	if (gl_reminder)
 		gl_total++;
 	*sent = 0;

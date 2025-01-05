@@ -9,7 +9,6 @@
 
 #define SIZE_RXFRAME	235		///< max size of data field in uplink
 #define SIZE_TXFRAME	235		///< max size of data field in downlink
-#define SIZE_SPL_HEADER 10
 #define SIZE_SPL_DATA (SIZE_TXFRAME - SIZE_SPL_HEADER)
 #define NO_TX_FRAME_AVAILABLE 255 //indication that the send buffer is full
 

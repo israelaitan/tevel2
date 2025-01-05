@@ -189,7 +189,7 @@ void WriteDefaultValuesToFRAM()
 	uint8_t tx_bitrate = DEFAULT_BITRATE_VALUE;
 	FRAM_write((unsigned char*)&tx_bitrate, TX_BITRATE_ADDR, sizeof(uint8_t));
 
-	unsigned int sel_firstactiv = 445;
+	unsigned int sel_firstactiv = 446;//5/1/2025 10:48
 	FRAM_write((unsigned char*)&sel_firstactiv, FIRST_ACTIV_NUM_PAYLOAD_RESET, FIRST_ACTIV_NUM_PAYLOAD_RESET_SIZE);
 
 

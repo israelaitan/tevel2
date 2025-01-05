@@ -65,6 +65,7 @@ void _logg(char* msg) {
     if (!reminder) {
     	Time_getUnixEpoch(&time);
     	memcpy(logBuffer + index_, &time, sizeof(time));
+    	//printf("\r\n log index =%d\n\n\r", index_);
     	index_ += sizeof(time);
     	memcpy(logBuffer + index_, msg, msgSize);
     	index_ += msgSize;
@@ -77,6 +78,7 @@ void _logg(char* msg) {
     		index_ += leftover;
     		Time_getUnixEpoch(&time);
     		memcpy(logBuffer + index_, &time, sizeof(time));
+    		//printf("\r\n log index =%d\n\n\r", index_);
     		index_ += sizeof(time);
     		memcpy(logBuffer + index_, msg + leftover, msgSize - leftover);
     		index_ += (msgSize - leftover);

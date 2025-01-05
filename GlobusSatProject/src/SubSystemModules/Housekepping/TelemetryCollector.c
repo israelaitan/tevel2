@@ -27,7 +27,9 @@
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 WOD_Telemetry_t wod_beacon = { 0 };
-hk_eps_eng hk_eps_eng_for_wod = { 0 };
+hk_eps_eng hk_eps_eng_for_save = { 0 };
+hk_eps_avg hk_eps_avg_for_save = { 0 };
+hk_eps_raw hk_eps_raw_for_save = { 0 };
 
 unsigned char* AddTime(unsigned char* data, unsigned int sz){
 	unsigned int curr_time;
@@ -144,13 +146,13 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	logg(event, "V:TelemetryCreateFiles()\n");
 	FileSystemResult res;
 	// -- EPS files
-	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingraw__from_t));
+	res = c_fileCreate(FILENAME_EPS_RAW_MB_TLM,sizeof(hk_eps_raw));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_raw_mb)
 
-	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingeng__from_t));
+	res = c_fileCreate(FILENAME_EPS_ENG_MB_TLM,sizeof(hk_eps_eng));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_eng_mb);
 
-	res = c_fileCreate(FILENAME_EPS_AVG_MB_TLM,sizeof(isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t));
+	res = c_fileCreate(FILENAME_EPS_AVG_MB_TLM,sizeof(hk_eps_avg));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_eps_avg_mb);
 
 	// -- TRXVU files
@@ -207,32 +209,78 @@ void to_hk_eps_eng(isismepsv2_ivid5_piu__gethousekeepingeng__from_t *tlm_mb_eng,
 	tlm_hk_eps_eng->fields.volt_vd2 = tlm_mb_eng->fields.volt_vd2;
 }
 
+void to_hk_eps_avg(isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t *tlm_mb_eng, hk_eps_eng *tlm_hk_eps_eng) {
+	tlm_hk_eps_eng->fields.bat_stat = tlm_mb_eng->fields.bat_stat;
+	tlm_hk_eps_eng->fields.batt_input = tlm_mb_eng->fields.batt_input;
+	tlm_hk_eps_eng->fields.cc1 = tlm_mb_eng->fields.cc1;
+	tlm_hk_eps_eng->fields.cc2 = tlm_mb_eng->fields.cc2;
+	tlm_hk_eps_eng->fields.cc3 = tlm_mb_eng->fields.cc3;
+	tlm_hk_eps_eng->fields.dist_input = tlm_mb_eng->fields.dist_input;
+	tlm_hk_eps_eng->fields.stat_obc_ocf = tlm_mb_eng->fields.stat_obc_ocf;
+	tlm_hk_eps_eng->fields.stat_obc_on = tlm_mb_eng->fields.stat_obc_on;
+	tlm_hk_eps_eng->fields.temp = tlm_mb_eng->fields.temp;
+	tlm_hk_eps_eng->fields.temp2 = tlm_mb_eng->fields.temp2;
+	tlm_hk_eps_eng->fields.vip_obc00 = tlm_mb_eng->fields.vip_obc00;
+	tlm_hk_eps_eng->fields.vip_obc01 = tlm_mb_eng->fields.vip_obc01;
+	tlm_hk_eps_eng->fields.vip_obc03 = tlm_mb_eng->fields.vip_obc03;
+	tlm_hk_eps_eng->fields.vip_obc04 = tlm_mb_eng->fields.vip_obc04;
+	tlm_hk_eps_eng->fields.vip_obc05 = tlm_mb_eng->fields.vip_obc05;
+	tlm_hk_eps_eng->fields.volt_brdsup = tlm_mb_eng->fields.volt_brdsup;
+	tlm_hk_eps_eng->fields.volt_vd0 = tlm_mb_eng->fields.volt_vd0;
+	tlm_hk_eps_eng->fields.volt_vd1 = tlm_mb_eng->fields.volt_vd1;
+	tlm_hk_eps_eng->fields.volt_vd2 = tlm_mb_eng->fields.volt_vd2;
+}
+
+void to_hk_eps_raw(isismepsv2_ivid5_piu__gethousekeepingraw__from_t *tlm_mb_raw, hk_eps_raw *tlm_hk_eps_raw) {
+	tlm_hk_eps_raw->fields.bat_stat = tlm_mb_raw->fields.bat_stat;
+	tlm_hk_eps_raw->fields.batt_input = tlm_mb_raw->fields.batt_input;
+	tlm_hk_eps_raw->fields.cc1 = tlm_mb_raw->fields.cc1;
+	tlm_hk_eps_raw->fields.cc2 = tlm_mb_raw->fields.cc2;
+	tlm_hk_eps_raw->fields.cc3 = tlm_mb_raw->fields.cc3;
+	tlm_hk_eps_raw->fields.dist_input = tlm_mb_raw->fields.dist_input;
+	tlm_hk_eps_raw->fields.stat_obc_ocf = tlm_mb_raw->fields.stat_obc_ocf;
+	tlm_hk_eps_raw->fields.stat_obc_on = tlm_mb_raw->fields.stat_obc_on;
+	tlm_hk_eps_raw->fields.temp = tlm_mb_raw->fields.temp;
+	tlm_hk_eps_raw->fields.temp2 = tlm_mb_raw->fields.temp2;
+	tlm_hk_eps_raw->fields.vip_obc00 = tlm_mb_raw->fields.vip_obc00;
+	tlm_hk_eps_raw->fields.vip_obc01 = tlm_mb_raw->fields.vip_obc01;
+	tlm_hk_eps_raw->fields.vip_obc03 = tlm_mb_raw->fields.vip_obc03;
+	tlm_hk_eps_raw->fields.vip_obc04 = tlm_mb_raw->fields.vip_obc04;
+	tlm_hk_eps_raw->fields.vip_obc05 = tlm_mb_raw->fields.vip_obc05;
+	tlm_hk_eps_raw->fields.volt_brdsup = tlm_mb_raw->fields.volt_brdsup;
+	tlm_hk_eps_raw->fields.volt_vd0 = tlm_mb_raw->fields.volt_vd0;
+	tlm_hk_eps_raw->fields.volt_vd1 = tlm_mb_raw->fields.volt_vd1;
+	tlm_hk_eps_raw->fields.volt_vd2 = tlm_mb_raw->fields.volt_vd2;
+}
+
 void TelemetrySaveEPS()
 {
 	int err = 0;
 
 	isismepsv2_ivid5_piu__gethousekeepingraw__from_t tlm_mb_raw;
 	err = isismepsv2_ivid5_piu__gethousekeepingraw(EPS_I2C_BUS_INDEX, &tlm_mb_raw);
-	if (err == 0)
-		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &tlm_mb_raw);
-	else
+	if (err == 0) {
+		to_hk_eps_raw(&tlm_mb_raw, &hk_eps_raw_for_save);
+		c_fileWrite(FILENAME_EPS_RAW_MB_TLM, &hk_eps_raw_for_save);
+	} else
 		logg(error, "E=%d isis_eps__gethousekeepingraw__tm\n", err);
 
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t tlm_mb_eng;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng(EPS_I2C_BUS_INDEX, &tlm_mb_eng);
 	if (err == 0) {
-		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &tlm_mb_eng);
-		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_wod);
-		memcpy(wod_beacon.fields.eps_eng.raw, hk_eps_eng_for_wod.raw, sizeof(hk_eps_eng));
+		to_hk_eps_eng(&tlm_mb_eng, &hk_eps_eng_for_save);
+		c_fileWrite(FILENAME_EPS_ENG_MB_TLM, &hk_eps_eng_for_save);
+		memcpy(wod_beacon.fields.eps_eng.raw, hk_eps_eng_for_save.raw, sizeof(hk_eps_eng));
 	} else
 		logg(error, "E=%d isis_eps__gethousekeepingeng__tm\n", err);
 
 	isismepsv2_ivid5_piu__gethousekeepingrunningavg__from_t tlm_mb_avg;
 	err = isismepsv2_ivid5_piu__gethousekeepingrunningavg(EPS_I2C_BUS_INDEX, &tlm_mb_avg);
 
-	if (err == 0)
-		c_fileWrite(FILENAME_EPS_AVG_MB_TLM, &tlm_mb_avg);
-	else
+	if (err == 0) {
+		to_hk_eps_avg(&tlm_mb_avg, &hk_eps_avg_for_save);
+		c_fileWrite(FILENAME_EPS_AVG_MB_TLM, &hk_eps_avg_for_save);
+	} else
 		logg(error, "E=%d isismepsv2_ivid5_piu__gethousekeepingrunningavg\n", err);
 
 }
