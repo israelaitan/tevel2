@@ -321,9 +321,6 @@ int autoDeploy()
 		FRAM_write((unsigned char*)&deploy_time, LAST_ANT_DEP_TIME_ADDR, LAST_ANT_DEP_TIME_SIZE);
 		logg(event, "V:setLastAntsAutoDeploymentTime success\n");
 	}
-
-	resArm = isis_ants__disarm(0);
-	resArm = isis_ants__disarm(1);
 	return resDeploy;
 }
 
