@@ -544,8 +544,7 @@ WOD_Telemetry_t* GetCurrentWODTelemetry()
 
 int CMD_getWOD_TLM(sat_packet_t *cmd) {
 	GetCurrentWODTelemetry();
-	unsigned char *data = AddTime(&wod_beacon, sizeof(WOD_Telemetry_t));
-	TransmitDataAsSPL_Packet(cmd, data, sizeof(WOD_Telemetry_t) + sizeof(unsigned int));
+	TransmitDataAsSPL_Packet(cmd, &wod_beacon, sizeof(WOD_Telemetry_t));
 	return 0;
 }
 

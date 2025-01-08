@@ -312,7 +312,7 @@ unsigned short CalcPacketSize(char dump_type)
 		case tlm_rx:
 			return 208;
 		case tlm_antA:
-			return 208;
+			return 208;//219/13 = 16.8 -> 16*13=208
 		case tlm_antB:
 			return 208;
 		case tlm_log:
