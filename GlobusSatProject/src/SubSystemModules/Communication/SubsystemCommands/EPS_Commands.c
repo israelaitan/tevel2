@@ -208,7 +208,7 @@ int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd) {
 			if (res)
 				logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
 	}
-	TransmitDataAsSPL_Packet(cmd, &response, sizeof(response));
+	TransmitDataAsSPL_Packet(cmd, response.raw, sizeof(response.raw));
 	return res;
 }
 

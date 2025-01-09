@@ -16,33 +16,13 @@ ISISMEPSV2_IVID5_PIU_t subsystem[1]; // One instance to be initialised.
 voltage_t prev_filtered_voltage = 0;		// y[i-1]
 
 float alpha = DEFAULT_ALPHA_VALUE;			//<! smoothing constant
+unsigned char heaters_active_mode = DEFAULT_HEATERS_ACTIVE_MODE;
 EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES};	// saves the current EPS logic threshold voltages
 
-int EPS_Init()
-{
-	subsystem[0].i2cAddr = EPS_I2C_ADDR;
-	int rv = ISISMEPSV2_IVID5_PIU_Init(subsystem, 1);
-	if (rv != E_NO_SS_ERR) {
-		logg(error, "E:EPS init failed\n");
-		return -1;
-	}
-
-	rv = GetThresholdVoltages(&eps_threshold_voltages);
-	if (0 != rv) {
-		return -3;
-	}
-
-	rv= GetAlpha(&alpha);
-	if (0 != rv) {
-		alpha = DEFAULT_ALPHA_VALUE;
-		return -4;
-	}
-	prev_filtered_voltage = 0;	//y[i-1]
-	GetBatteryVoltage(&prev_filtered_voltage);
-
-	EPS_Conditioning();
-
-	return 0;
+int GetHeatersActiveMode() {
+	int err = FRAM_read((unsigned char*) heaters_active_mode, EPS_BAT_HITERRS_ACTIVE_MODE_ADDR,
+			EPS_BAT_HITERRS_ACTIVE_MODE_SIZE);
+	return err;
 }
 
 void print_byte_arr(unsigned char arr[], int size) {
@@ -50,8 +30,8 @@ void print_byte_arr(unsigned char arr[], int size) {
 		return;
 	int i = 0;
 	for (; i < size - 1; i++)
-		printf("%d=%d,", i, arr[i]);
-	printf("%d=%d\n", i, arr[i]);
+		logg(EPSInfo, "%d=%d,", i, arr[i]);
+	logg(EPSInfo, "%d=%d\n", i, arr[i]);
 }
 
 uint16_t byte_arr_2_int16(unsigned char arr[], int size) {
@@ -76,8 +56,77 @@ int i2c_write_read(I2Ctransfer *tr) {
 	return err;
 }
 
+int eps_i2c_comm_set_config(uint16_t param, unsigned char *value, unsigned int val_size, int write_sz, int read_sz){
+	//STID IVID 0x84 BID 0x0A 0x48 read only
+	I2Ctransfer tr = { 0 };
+	tr.slaveAddress = EPS_I2C_ADDR;
+	unsigned char *i2c_write_data = malloc(write_sz);
+	int i = 0;
+	i2c_write_data[i++] =STID;
+	i2c_write_data[i++] = IVID;
+	i2c_write_data[i++] = SET_CONF_W;
+	i2c_write_data[i++] = BID;
+	i2c_write_data[i++] = ((unsigned char *)&param)[0];
+	i2c_write_data[i++] = ((unsigned char *)&param)[1];
+	i2c_write_data[i++] = value[0];
+	if (val_size == 2)
+		i2c_write_data[i++] = value[1];
+	//unsigned char i2c_write_data[] = { STID, IVID, GET_CONF_W, BID , 0x00, 0x48 };
+	tr.writeData = i2c_write_data;
+	tr.writeSize = write_sz;
+	tr.readData = malloc(read_sz);
+	tr.readSize = read_sz;
+	tr.writeReadDelay = 20;
+	int err = i2c_write_read(&tr);
+	if (!err) {
+		uint16_t val;
+		if (read_sz - 8 == 1)
+			val = *(tr.readData+8);
+		else if (read_sz - 8 == 2)
+			val = byte_arr_2_int16(tr.readData+8, 2);
 
-int eps_i2c_comm_config(uint16_t param, int write_sz, int read_sz){
+		printf("val=%d\n", val);
+	}
+	free(tr.readData);
+	free(tr.writeData);
+	return err;
+}
+
+void eps_set_battary_heater_mode(int8_t set){
+	eps_i2c_comm_set_config(AUTO_HEAT_ENA_BP1, (unsigned char *)&set, sizeof(int8_t), SET_CONF_SIZE_W_8, SET_CONF_SIZE_W_8 + 2);
+}
+
+int EPS_Init()
+{
+	subsystem[0].i2cAddr = EPS_I2C_ADDR;
+	int rv = ISISMEPSV2_IVID5_PIU_Init(subsystem, 1);
+	if (rv != E_NO_SS_ERR) {
+		logg(error, "E:EPS init failed\n");
+		return -1;
+	}
+
+	rv = GetThresholdVoltages(&eps_threshold_voltages);
+	if (0 != rv) {
+		return -3;
+	}
+
+	rv= GetAlpha(&alpha);
+	if (0 != rv) {
+		alpha = DEFAULT_ALPHA_VALUE;
+		return -4;
+	}
+	prev_filtered_voltage = 0;	//y[i-1]
+	GetBatteryVoltage(&prev_filtered_voltage);
+
+	GetHeatersActiveMode();
+	eps_set_battary_heater_mode(heaters_active_mode);
+
+	EPS_Conditioning();
+
+	return 0;
+}
+
+int eps_i2c_comm_get_config(uint16_t param, int write_sz, int read_sz){
 	//STID IVID 0x84 BID 0x0A 0x48 read only
 	I2Ctransfer tr = { 0 };
 	tr.slaveAddress = EPS_I2C_ADDR;
@@ -154,16 +203,23 @@ int eps_check_channel_state(uint16_t channel, Boolean *status){
 	return err;
 }
 
+void eps_set_battary_heater_trh(int16_t low, int16_t high){
+	eps_i2c_comm_set_config(LOTHR_BP1_HEATER, (unsigned char *)&low, sizeof(int16_t), SET_CONF_SIZE_W_16, SET_CONF_SIZE_W_16 + 2);
+	eps_i2c_comm_set_config(HITHR_BP1_HEATER, (unsigned char *)&high, sizeof(int16_t), SET_CONF_SIZE_W_16, SET_CONF_SIZE_W_16 + 2);
+}
+
 void RUN_EPS_I2C_COMM(){
 	//eps_i2c_comm(GET_SYSTEM_STATUS_W, GET_SYSTEM_STATUS_SIZE_W, GET_SYSTEM_STATUS_SIZE_R);
 	//eps_i2c_comm_config(TTC_I2C_SLAVE_ADDR, GET_CONF_SIZE_W, GET_CONF_SIZE_R);
-	eps_i2c_comm_config(SAFETY_VOLT_LOTHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
-	eps_i2c_comm_config(SAFETY_VOLT_HITHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	//eps_i2c_comm_get_config(SAFETY_VOLT_LOTHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	//eps_i2c_comm_get_config(SAFETY_VOLT_HITHR, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
 
-	eps_i2c_comm_config(LOTHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
-	eps_i2c_comm_config(HITHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	eps_set_battary_heater_trh(2200, 2400);
+	eps_i2c_comm_get_config(LOTHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
+	eps_i2c_comm_get_config(HITHR_BP1_HEATER, GET_CONF_SIZE_W, GET_CONF_SIZE_R_16);
 
-	eps_i2c_comm_config(AUTO_HEAT_ENA_BP1, GET_CONF_SIZE_W, GET_CONF_SIZE_R_8);
+	eps_set_battary_heater_mode(1);
+	eps_i2c_comm_get_config(AUTO_HEAT_ENA_BP1, GET_CONF_SIZE_W, GET_CONF_SIZE_R_8);
 }
 
 void RUN_EPS_CHAN_STAT(){

@@ -192,6 +192,8 @@ void WriteDefaultValuesToFRAM()
 	unsigned int sel_firstactiv = 446;//5/1/2025 10:48
 	FRAM_write((unsigned char*)&sel_firstactiv, FIRST_ACTIV_NUM_PAYLOAD_RESET, FIRST_ACTIV_NUM_PAYLOAD_RESET_SIZE);
 
+	unsigned char heaters_mode = DEFAULT_HEATERS_ACTIVE_MODE;
+	FRAM_write((unsigned char*)&heaters_mode, EPS_BAT_HITERRS_ACTIVE_MODE_ADDR, EPS_BAT_HITERRS_ACTIVE_MODE_SIZE);
 
 }
 
@@ -352,6 +354,7 @@ int InitSubsystems() {
 	//dont logg anythin brfore time init
 	int errSPI = StartSPI();
 	int errI2C = StartI2C();
+	int errRTC = RTC_start();
 	int errFRAM = StartFRAM();
 	int errTime = StartTIME();
 	Boolean firstActivation;
@@ -368,6 +371,10 @@ int InitSubsystems() {
 		logg(error, "E:%d Failed in StartI2C\n", errI2C);
 	else
 		logg(event, "V: StartI2C() - success\n");
+	if ( errRTC != 0 )
+		logg(error, "E:%d Failed in StartRTC\n", errRTC);
+	else
+		logg(event, "V: StartRTC() - success\n");
 	if ( errFRAM != 0 )
 		logg(error, "E:%d Failed in StartFRAM\n", errFRAM);
 	else

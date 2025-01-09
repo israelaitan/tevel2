@@ -34,6 +34,14 @@ void __logg(char* msg) {
     	//c_fileWrite(FILENAME_LOG_BCKP_TLM, logBuffer);
 }
 
+void dump_now() {
+	 if (index_  == 0 )
+			 return;
+	_c_fileWrite(FILENAME_LOG_TLM, logBuffer, LOG_BUFFER_SIZE, 0);
+	index_ = 0;
+	memset(logBuffer, 0, LOG_BUFFER_SIZE);
+}
+
 void _logg(char* msg) {
 	printf(msg);//TODO:comment
 	int msgSize = strlen(msg);
@@ -92,14 +100,15 @@ void logg(LogLevel level, char *fmt, ...) {
 	va_start(argptr, fmt);
 	vsprintf(logMsg, fmt, argptr);
 	va_end(argptr);
+	_logg(logMsg);
 	if (level == error) {
+		dump_now();
 		time_unix time;
 		Time_getUnixEpoch(&time);
 		memcpy(lastErrorMsg, &time, sizeof(time));
 		realErrorSize = strlen(logMsg);
 		memcpy(lastErrorMsg + sizeof(time), logMsg, realErrorSize);
 	}
-	_logg(logMsg);
 }
 
 void setLogLevel(LogLevel level)

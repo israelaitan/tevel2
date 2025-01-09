@@ -31,6 +31,7 @@
  	 	 	 |______________|
  */
 #define DEFAULT_ALPHA_VALUE 0.95
+#define DEFAULT_HEATERS_ACTIVE_MODE 1
 
 #define NUMBER_OF_THRESHOLD_VOLTAGES 	6 		///< first 3 are charging voltages, last 3 are discharging voltages
 #define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6300, (voltage_t)6700, (voltage_t)7100,	 \
@@ -74,7 +75,9 @@ typedef enum __attribute__ ((__packed__)){
 	GET_CONF_SIZE_R_8 = 9,
 	GET_CONF_SIZE_R_16 = 10,
 	GET_PIU_HK_ENG_SIZE_W = 4,
-	GET_PIU_HK_ENG_SIZE_R = 116
+	GET_PIU_HK_ENG_SIZE_R = 116,
+	SET_CONF_SIZE_W_8 = 7,
+	SET_CONF_SIZE_W_16 = 8
 } EPS_I2C_CMD_SIZE;
 
 typedef enum __attribute__ ((__packed__)){

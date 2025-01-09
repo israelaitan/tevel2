@@ -79,8 +79,17 @@
 #define MUTE_ON_END_TIME_ADRR				0x520		//mute turn off time
 #define MUTE_ON_END_TIME_SIZE				4
 
+#define EPS_BAT_HITERRS_ACTIVE_MODE_ADDR     0x540
+#define EPS_BAT_HITERRS_ACTIVE_MODE_SIZE     sizeof(unsigned char)
+
+#define EPS_BAT_HITERRS_LOW_TRH_MODE_ADDR     0x542
+#define EPS_BAT_HITERRS_LOW_TRH_MODE_SIZE     sizeof(unsigned short)
+
+#define EPS_BAT_HITERRS_HIGH_TRH_MODE_ADDR     0x544
+#define EPS_BAT_HITERRS_HIGH_TRH_MODE_SIZE     sizeof(unsigned short)
+
 #define EPS_ALPHA_FILTER_VALUE_ADDR     0x550			//<! filtering value in the LPF formula
-#define EPS_ALPHA_FILTER_VALUE_SIZE     sizeof(float)	//<! size of double (alpha)
+#define EPS_ALPHA_FILTER_VALUE_SIZE     sizeof(float)	//<! size of double (alpha) 8 byte
 
 #define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
 #define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
