@@ -168,10 +168,17 @@ int CMD_UpdateSatTime(sat_packet_t *cmd)
 	}
 
 	int err = 0;
+	time_unix curr_time = 0;
+	err = Time_getUnixEpoch(&curr_time);
 	time_unix set_time = 0;
 	memcpy(&set_time, cmd->data, sizeof(set_time));
-	err = Time_setUnixEpoch(set_time);
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&set_time, sizeof(set_time));
+
+	if (set_time < curr_time) {
+		err = -1;
+	} else {
+		err = Time_setUnixEpoch(set_time);
+	}
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
 	return err;
 }
 
