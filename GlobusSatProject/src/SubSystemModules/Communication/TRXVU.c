@@ -205,7 +205,7 @@ int SetBitRate(){
 	if ((isis_vu_e__bitrate_t)response.fields.bitrate == bitrate)
 		return 0;
 
-	//err = isis_vu_e__set_bitrate(0, bitrate);TODO: why it is not working? hence needed i2c
+	//err = isis_vu_e__set_bitrate(0, bitrate); why it is not working? hence needed i2c
 	i2c_data[1] = tx_bitrate_to_i2c(bitrate);
 	err =  I2C_write(I2C_TRXVU_TC_ADDR, i2c_data, 2);
 	if (err)
@@ -289,7 +289,7 @@ int InitTrxvu() {
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
-	set_pll_power();//TODO:remove just because ants folded
+	//set_pll_power();//TODO:remove just because ants folded
 
 	SetFreqAndBitrate();
 	vu_getFrequenciesTest_revE();
@@ -321,8 +321,6 @@ CommandHandlerErr TRX_Logic()
 	SetFreqAndBitrate();
 	onCmdCount = GetNumberOfFramesInBuffer();
 	if(onCmdCount>0) {
-		//printf("Command in bufffer =%d\n", onCmdCount);//TODO:remove
-		//get the online command
 		res = GetOnlineCommand(&cmd);
 		if(res==cmd_command_found)
 		{

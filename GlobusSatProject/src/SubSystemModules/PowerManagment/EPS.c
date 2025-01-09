@@ -260,7 +260,7 @@ int GetBatteryVoltage(voltage_t *vbatt)
 	int err = 0;
 	isismepsv2_ivid5_piu__gethousekeepingeng__from_t hk_tlm;
 	err = isismepsv2_ivid5_piu__gethousekeepingeng( EPS_I2C_BUS_INDEX,  &hk_tlm );
-	*vbatt = hk_tlm.fields.volt_vd0;//TODO:change to charging
+	*vbatt = hk_tlm.fields.volt_vd0;
 	return err;
 }
 

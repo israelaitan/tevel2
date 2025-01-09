@@ -16,7 +16,7 @@ int CMD_EPS_NOP(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	/* TODO:complete
+	/*
 	isis_eps__nop__from_t ieps_cmd;
 	err = isis_eps__nop__tm( EPS_I2C_BUS_INDEX, &ieps_cmd );
 	 */
@@ -27,7 +27,7 @@ int CMD_EPS_ResetWDT(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	/* TODO:complete
+	/*
 	isis_eps__watchdog__from_t ieps_cmd;
 	err = isis_eps__watchdog__tm( EPS_I2C_BUS_INDEX, &ieps_cmd );
 	*/
@@ -42,7 +42,7 @@ int CMD_GetEpsParameter(sat_packet_t *cmd)
 	}
 
 	int err = 0;
-	/* TODO:complete
+	/*
 	unsigned short int id = 0;
 	isis_eps__getparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(id));
@@ -76,7 +76,7 @@ int CMD_SetEpsParemeter(sat_packet_t *cmd)
 	}
 
 	int err = 0;
-	/* TODO:complete
+	/*
 	//unsigned short int id = 0;
 	isis_eps__setparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
@@ -113,7 +113,7 @@ int CMD_ResetParameter(sat_packet_t *cmd)
 		return E_INPUT_POINTER_NULL;
 	}
 	int err = 0;
-	/* TODO:complete
+	/*
 	//unsigned short int id = 0;
 	isis_eps__resetparameter__to_t parameter;
 	memcpy(&parameter, cmd->data, sizeof(parameter));
@@ -143,7 +143,7 @@ int CMD_ResetConfig(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	/* TODO:complete
+	/*
 	isis_eps__resetall__from_t rsp_cmd;
 	isis_eps__resetall__to_t  params = {{0}};
 	isis_eps__resetall__tmtc( ISIS_TRXVU_I2C_BUS_INDEX,  &params , &rsp_cmd );
@@ -155,7 +155,7 @@ int CMD_LoadConfig(sat_packet_t *cmd)
 {
 	(void)cmd;
 	int err = 0;
-	/* TODO:complete
+	/*
 	isis_eps__loadall__from_t rsp_cmd;
 	isis_eps__loadall__to_t params = {{0}};
 	err = isis_eps__loadall__tmtc( ISIS_TRXVU_I2C_BUS_INDEX, &params , &rsp_cmd );

@@ -45,7 +45,6 @@ static void _Handler(const Pin * pPin)
 {
 	if( PIO_Get(pPin) == 1 )
 	{
-		/* XXX: no need for null check since only enabled if callback */
 		_callback();
 	}
 }

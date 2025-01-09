@@ -590,7 +590,7 @@ int CMD_getPic32_TLM(sat_packet_t *cmd)
 			free(data);
 		}
 		else {
-			result = -1;//TODO:no memory
+			result = -1;
 			logg(error, "E:payloadGetPic32=%d\n", result);
 		}
 	}
@@ -611,7 +611,7 @@ int CMD_getRadfet_TLM(sat_packet_t *cmd)
 			free(data);
 		}
 		else {
-			result = -1; // TODO: no memory;
+			result = -1;
 			logg(error, "E:payloadRdafet=%d\n", result);
 		}
 	}

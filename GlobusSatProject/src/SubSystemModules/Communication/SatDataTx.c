@@ -126,7 +126,7 @@ Boolean CheckTransmitionAllowed() {
 		}
 	}
 	logg(TRXInfo, "I:TRASMITION NOT ALLOWED\n");
-	return TRUE;//TODO: should be FALSE
+	return FALSE;
 }
 
 int GetTrxvuBitrate(isis_vu_e__bitrate_t *bitrate) {

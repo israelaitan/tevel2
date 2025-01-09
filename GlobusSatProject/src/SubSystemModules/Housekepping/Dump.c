@@ -164,7 +164,7 @@ FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_
 					if (CheckDumpAbort())
 							return FS_ABORT;
 
-					int err = send(element, size_elementWithTimeStamp, dump_id, dump_id, ord, dump_type, 1, &availFrames);//TODO:total irrelevant
+					int err = send(element, size_elementWithTimeStamp, dump_id, dump_id, ord, dump_type, 1, &availFrames);//total irrelevant
 					
 					if(err != 0) {
 						logg(error, "E:transmitsplpacket error: %d", err);
@@ -359,7 +359,7 @@ int SendAll(unsigned int dump_id, char dump_type, int* sent)
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
-				vTaskDelay(100);//TODO:?
+				vTaskDelay(100);
 			else {
 				return err;
 			}

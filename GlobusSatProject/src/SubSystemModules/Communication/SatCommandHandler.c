@@ -135,7 +135,7 @@ CommandHandlerErr GetOnlineCommand(sat_packet_t *cmd)
 	isis_vu_e__get_frame__from_t rxFrameCmd = { 0, 0, 0, received_frame_data };
 
 	err = isis_vu_e__get_frame(0, &rxFrameCmd); //get the frame from the Rx buffer
-	isis_vu_e__remove_frame(0);//TODO:why?
+	isis_vu_e__remove_frame(0);
 	if (0 != err)
 		return cmd_execution_error;
 

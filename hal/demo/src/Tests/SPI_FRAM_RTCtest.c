@@ -220,7 +220,6 @@ void taskFRAMtest() {
 		while(1);
 	}
 
-	// TODO: Test block-protection!
 
 	while(1) {
 		retVal = FRAM_read(FRAMreadData, address, size);
