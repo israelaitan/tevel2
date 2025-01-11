@@ -43,7 +43,7 @@ void dump_now() {
 }
 
 void _logg(char* msg) {
-	printf(msg);//TODO:comment
+	printf(msg);//TODO:comment print
 	int msgSize = strlen(msg);
 	int msgSizeWithTime = sizeof(unsigned int) + msgSize;
 	if ( msgSizeWithTime > (SIZE_TXFRAME - SIZE_SPL_HEADER))

@@ -289,7 +289,7 @@ int InitTrxvu() {
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
-	//set_pll_power();//TODO:remove just because ants folded
+	//set_pll_power();//TODO:remove just because ants folded low tx power
 
 	SetFreqAndBitrate();
 	vu_getFrequenciesTest_revE();

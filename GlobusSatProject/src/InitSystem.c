@@ -23,7 +23,7 @@
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
-#define ANTENNA_DEPLOYMENT_TIMEOUT 30 //<! in seconds
+#define ANTENNA_DEPLOYMENT_TIMEOUT 5 //TODO: should be 30 in seconds
 
 time_unix expected_deploy_time_sec = 0;
 
@@ -296,7 +296,7 @@ int autoDeploy()
 
 	if(resArm == 0) {
 		logg(event, "V:Deploying: Side A\n");
-		//resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
+		resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE deploy
 		if (resDeploy!=0)
 			logg(error, "E:Failed deploy: Side A res=%d\n", resDeploy);
 	} else
@@ -306,7 +306,7 @@ int autoDeploy()
 	resArm = isis_ants__arm(1);
 	if(resArm == 0) {
 		logg(event, "V:Deploying: Side B\n");
-		//resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
+		resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE deploy
 		if (resDeploy!=0)
 			logg(error, "E:Failed deploy: Side B res=%d\n", resDeploy);
 	} else
