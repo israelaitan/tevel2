@@ -23,7 +23,7 @@
 #define I2c_Timeout 10
 #define I2c_SPEED_Hz 100000
 #define I2c_TimeoutTest portMAX_DELAY
-#define ANTENNA_DEPLOYMENT_TIMEOUT 5 //TODO: should be 30 in seconds
+#define ANTENNA_DEPLOYMENT_TIMEOUT 30 //TODO: should be 30 in seconds
 
 time_unix expected_deploy_time_sec = 0;
 
