@@ -31,7 +31,7 @@
 
 	void taskMain() {
 
-		TRACE_CONFIGURE(DBGU_STANDARD, 115200, BOARD_MCK);//TODO:remove trace_configure
+		//TRACE_CONFIGURE(DBGU_STANDARD, 115200, BOARD_MCK);//TODO:remove trace_configure
 
 		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 //TODO:compile release mode
