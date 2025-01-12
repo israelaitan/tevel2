@@ -195,6 +195,12 @@ void WriteDefaultValuesToFRAM()
 	unsigned char heaters_mode = DEFAULT_HEATERS_ACTIVE_MODE;
 	FRAM_write((unsigned char*)&heaters_mode, EPS_BAT_HITERRS_ACTIVE_MODE_ADDR, EPS_BAT_HITERRS_ACTIVE_MODE_SIZE);
 
+	unsigned short eps_state_linger = MIN_EPS_STATE_LINGER_TIME;
+	FRAM_write((unsigned char*)&eps_state_linger, EPS_MIN_EPS_STATE_LINGER_TIME_ADDR, EPS_MIN_EPS_STATE_LINGER_TIME_SIZE);
+
+	unsigned short eps_next_state_linger = MIN_EPS_NEXT_STATE_LINGER_TIME;
+	FRAM_write((unsigned char*)&eps_next_state_linger, EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_ADDR, EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_SIZE);
+
 }
 
 void ReadDefaultValuesToFRAM()

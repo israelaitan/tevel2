@@ -91,8 +91,15 @@
 #define EPS_ALPHA_FILTER_VALUE_ADDR     0x550			//<! filtering value in the LPF formula
 #define EPS_ALPHA_FILTER_VALUE_SIZE     sizeof(float)	//<! size of double (alpha) 8 byte
 
+#define EPS_MIN_EPS_STATE_LINGER_TIME_ADDR   0x558
+#define EPS_MIN_EPS_STATE_LINGER_TIME_SIZE   2
+
+#define EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_ADDR 0x55A
+#define EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_SIZE	2
+
 #define EPS_THRESH_VOLTAGES_ADDR		0x666		//<! starting address for eps threshold voltages array
 #define EPS_THRESH_VOLTAGES_SIZE (NUMBER_OF_THRESHOLD_VOLTAGES * sizeof(voltage_t)) //<! number of bytes in eps threshold voltages array
+
 
 #define TRANSPONDER_RSSI_ADDR				0x700		//transponder RSSI
 #define TRANSPONDER_RSSI_SIZE				2

@@ -33,9 +33,16 @@
 #define DEFAULT_ALPHA_VALUE 0.95
 #define DEFAULT_HEATERS_ACTIVE_MODE 1
 
+#define MIN_EPS_STATE_LINGER_TIME  10
+#define MIN_EPS_NEXT_STATE_LINGER_TIME  10
+
 #define NUMBER_OF_THRESHOLD_VOLTAGES 	6 		///< first 3 are charging voltages, last 3 are discharging voltages
 #define DEFAULT_EPS_THRESHOLD_VOLTAGES 	{(voltage_t)6300, (voltage_t)6700, (voltage_t)7100,	 \
 										  (voltage_t)6350, (voltage_t)6750, (voltage_t)7150}
+
+
+unsigned short gl_eps_state_linger;
+unsigned short gl_eps_next_state_linger;
 
 typedef enum __attribute__ ((__packed__)){
 	INDEX_DOWN_SAFE,

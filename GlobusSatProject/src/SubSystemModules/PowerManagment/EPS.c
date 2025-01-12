@@ -18,6 +18,8 @@ voltage_t prev_filtered_voltage = 0;		// y[i-1]
 float alpha = DEFAULT_ALPHA_VALUE;			//<! smoothing constant
 unsigned char heaters_active_mode = DEFAULT_HEATERS_ACTIVE_MODE;
 EpsThreshVolt_t eps_threshold_voltages = {.raw = DEFAULT_EPS_THRESHOLD_VOLTAGES};	// saves the current EPS logic threshold voltages
+extern unsigned short gl_eps_state_linger = 0;
+extern unsigned short gl_eps_next_state_linger = 0;
 
 int GetHeatersActiveMode() {
 	int err = FRAM_read((unsigned char*) heaters_active_mode, EPS_BAT_HITERRS_ACTIVE_MODE_ADDR,
@@ -96,6 +98,15 @@ void eps_set_battary_heater_mode(int8_t set){
 	eps_i2c_comm_set_config(AUTO_HEAT_ENA_BP1, (unsigned char *)&set, sizeof(int8_t), SET_CONF_SIZE_W_8, SET_CONF_SIZE_W_8 + 2);
 }
 
+int init_linger_thrs(){
+	FRAM_read((unsigned char*)&gl_eps_state_linger, EPS_MIN_EPS_STATE_LINGER_TIME_ADDR, EPS_MIN_EPS_STATE_LINGER_TIME_SIZE);
+	if (gl_eps_state_linger > 3600)
+		gl_eps_state_linger = MIN_EPS_STATE_LINGER_TIME;
+	FRAM_read((unsigned char*)&gl_eps_next_state_linger, EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_ADDR, EPS_MIN_EPS_NEXT_STATE_LINGER_TIME_SIZE);
+	if (gl_eps_next_state_linger > 3600)
+		gl_eps_next_state_linger = MIN_EPS_NEXT_STATE_LINGER_TIME;
+}
+
 int EPS_Init()
 {
 	subsystem[0].i2cAddr = EPS_I2C_ADDR;
@@ -120,6 +131,8 @@ int EPS_Init()
 
 	GetHeatersActiveMode();
 	eps_set_battary_heater_mode(heaters_active_mode);
+
+	init_linger_thrs();
 
 	EPS_Conditioning();
 
