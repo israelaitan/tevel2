@@ -55,7 +55,7 @@ typedef enum{
 
 #define NUMBER_OF_TELEMETRIES 8	///< number of telemetries the satellite saves
 
-#define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 5			///<
+#define NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS 7			///<
 
 int InitTelemetryCollector();
 /*!
@@ -153,6 +153,10 @@ void TelemetrySavePIC32();
  *  @brief saves current radfet telemetry into file
  */
 void TelemetrySaveRADFET();
+
+Boolean checkPayloadReadEvents();
+
+Boolean checkPayloadReadEnvironment();
 
 
 #endif /* TELEMETRYCOLLECTOR_H_ */

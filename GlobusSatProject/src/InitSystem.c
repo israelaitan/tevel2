@@ -14,7 +14,7 @@
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Housekepping/DUMP.h"
-#include <satellite-subsystems/isis_ants.h>
+#include "SubSystemModules/Payload/payload_drivers.h"
 #include "TLM_management.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
@@ -63,7 +63,7 @@ void firstActivationProcedure()
 
 		AwaitedTime += 1000*10;
 		FRAM_write((unsigned char*)&AwaitedTime ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
-		TelemetryCollectorLogic();
+		TelemetryCollectorLogic();//should kick tx and rx implicitly
 	}
 
 	//set deploment time in FRAM
@@ -77,6 +77,23 @@ void firstActivationProcedure()
 	logg(OBCInfo, "I:*****First Activation without Antenas deployed******\n");
 
 }
+
+//Initialize method to set FRAM to initial phase before first Init of satelite
+ void IntializeFRAM() {
+	int err = 0;
+	err = StartSPI();
+	err = StartI2C();
+	err = StartFRAM();
+	if(err)
+		return;
+	int status = 1;
+	FRAM_write((unsigned char*)&status,FIRST_ACTIVATION_FLAG_ADDR, FIRST_ACTIVATION_FLAG_SIZE );
+
+	int a = 0;
+	FRAM_write((unsigned char*)&a ,SECONDS_SINCE_DEPLOY_ADDR,SECONDS_SINCE_DEPLOY_SIZE);
+	WriteDefaultValuesToFRAM();
+ }
+
 
 //שמירת ערכי ברירת מחדל בזיכרון.
 void WriteDefaultValuesToFRAM()
@@ -102,6 +119,11 @@ void WriteDefaultValuesToFRAM()
 	time_unix wod=DEFAULT_WOD_SAVE_TLM_TIME;
 	FRAM_write((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
 
+	time_unix pic32 = DEFAULT_PIC32_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(pic32));
+	time_unix radfet = DEFAULT_RADFET_SAVE_TLM_TIME;
+	FRAM_write((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(radfet));
+
 	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
 	FRAM_write((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
 
@@ -114,10 +136,76 @@ void WriteDefaultValuesToFRAM()
 	unsigned char reset_flag = FALSE_8BIT;
 	FRAM_write(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
 
-	unsigned short rssi = 2500;
+	//uint16_t rssi = (uint16_t)(__builtin_bswap32(2500) >> 16u);
+	uint16_t rssi = 2500;
 	FRAM_write((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
 
+	unsigned int transponder_state = 0;
+	FRAM_write((unsigned char*) &transponder_state, TRANSPONDER_STATE_ADDR, TRANSPONDER_STATE_SIZE);
+
+	unsigned int mute_flag = 0;
+	FRAM_write((unsigned char*) &mute_flag, MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
+
+	time_unix mute_end_time = 0;
+	FRAM_write((unsigned char*) &mute_end_time, MUTE_ON_END_TIME_ADRR, MUTE_ON_END_TIME_SIZE);
+
+	Boolean turn_on_payload_in_init = FALSE;
+	FRAM_write((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+
+	int turn_off_payload_by_command = 0;
+	FRAM_write((unsigned char*)&turn_off_payload_by_command, PAYLOAD_TURN_OFF_BY_COMMAND, PAYLOAD_TURN_OFF_BY_COMMAND_SIZE);
+
 }
+
+void ReadDefaultValuesToFRAM()
+{
+	logg(OBCInfo, "I:Inside ReadDefaultValuesToFRAM()\n");
+	int DefNoCom=DEFAULT_NO_COMM_WDT_KICK_TIME;
+	FRAM_read((unsigned char*)&DefNoCom, NO_COMM_WDT_KICK_TIME_ADDR, NO_COMM_WDT_KICK_TIME_SIZE);
+	printf("FRAM NO_COMM_WDT_KICK_TIME_ADDR %d=%d  \n", NO_COMM_WDT_KICK_TIME_ADDR, DefNoCom);
+
+	unsigned int lastWakeUpTime = 0;
+	FRAM_read((unsigned char*)&lastWakeUpTime, LAST_WAKEUP_TIME_ADDR, LAST_WAKEUP_TIME_SIZE);
+	printf("FRAM LAST_WAKEUP_TIME_ADDR %d=%d  \n", LAST_WAKEUP_TIME_ADDR, lastWakeUpTime);
+
+	unsigned int noCom = UNIX_DEPLOY_DATE_JAN_D1_Y2020_SEC;
+	FRAM_read((unsigned char*) &noCom, LAST_COMM_TIME_ADDR, LAST_COMM_TIME_SIZE);
+	printf("FRAM LAST_COMM_TIME_ADDR %d=%d  \n", LAST_COMM_TIME_ADDR, noCom);
+
+	time_unix eps= DEFAULT_EPS_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&eps,EPS_SAVE_TLM_PERIOD_ADDR,sizeof(eps));
+	time_unix trxvu=DEFAULT_TRXVU_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&trxvu,TRXVU_SAVE_TLM_PERIOD_ADDR,sizeof(trxvu));
+	time_unix ant=DEFAULT_ANT_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&ant, ANT_SAVE_TLM_PERIOD_ADDR,sizeof(ant));
+	time_unix solar=DEFAULT_SOLAR_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&solar,SOLAR_SAVE_TLM_PERIOD_ADDR,sizeof(solar));
+	time_unix wod=DEFAULT_WOD_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&wod,WOD_SAVE_TLM_PERIOD_ADDR,sizeof(wod));
+
+	time_unix pic32 = DEFAULT_PIC32_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&pic32, PIC32_SAVE_TLM_PERIOD_ADDR,sizeof(pic32));
+	time_unix radfet = DEFAULT_RADFET_SAVE_TLM_TIME;
+	FRAM_read((unsigned char*)&radfet, RADFET_SAVE_TLM_PERIOD_ADDR,sizeof(radfet));
+
+	int beacon = DEFAULT_BEACON_INTERVAL_TIME;
+	FRAM_read((unsigned char*)&beacon,BEACON_INTERVAL_TIME_ADDR ,BEACON_INTERVAL_TIME_SIZE);
+
+	unsigned short resets = 0;
+	FRAM_read((unsigned char*)&resets,NUMBER_OF_RESETS_ADDR ,NUMBER_OF_RESETS_SIZE);
+
+	unsigned short resets_cmd = 0;
+	FRAM_read((unsigned char*) &resets_cmd, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
+
+	unsigned char reset_flag = FALSE_8BIT;
+	FRAM_read(&reset_flag, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+
+	unsigned short rssi;
+	FRAM_read((unsigned char*) &rssi, TRANSPONDER_RSSI_ADDR, TRANSPONDER_RSSI_SIZE);
+	printf("FRAM TRANSPONDER_RSSI_ADDR %d=%d  \n", TRANSPONDER_RSSI_ADDR, rssi);
+
+}
+
 
 	//אתחול ה FRAM
 int StartFRAM()
@@ -167,26 +255,22 @@ int autoDeploy()
 	// antena auto deploy - sides A
 	resArm = isis_ants__arm(0);
 
-	if(resArm == 0)
-	{
+	if(resArm == 0) {
 		logg(event, "V:Deploying: Side A\n");
-		resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);
+		//resDeploy = isis_ants__start_auto_deploy(0, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
 		if (resDeploy!=0)
-			logg(event, "V:Failed deploy: Side A res=%d\n", resDeploy);
-	}
-	else
+			logg(error, "E:Failed deploy: Side A res=%d\n", resDeploy);
+	} else
 		logg(error, "E:Failed Arming Side A with error: %d\n", resArm);
 
 	// antenata auto deploy - sides B
 	resArm = isis_ants__arm(1);
-	if(resArm == 0)
-	{
+	if(resArm == 0) {
 		logg(event, "V:Deploying: Side B\n");
-		resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);
+		//resDeploy = isis_ants__start_auto_deploy(1, ANTENNA_DEPLOYMENT_TIMEOUT);//TODO:REMOVE
 		if (resDeploy!=0)
-			logg(event, "V:Failed deploy: Side B res=%d\n", resDeploy);
-	}
-	else
+			logg(error, "E:Failed deploy: Side B res=%d\n", resDeploy);
+	} else
 		logg(error, "E:Failed Arming Side B with error: %d\n", resArm);
 
 
@@ -214,7 +298,7 @@ int DeploySystem()
 	if(isFirstA)
 	{
 
-		// waiting for 30 min (collect telemetry every 10 sec)-
+		// waiting for 30 min (collect telemetry every x sec)-
 		firstActivationProcedure();
 
 
@@ -224,12 +308,9 @@ int DeploySystem()
 	return res;
 }
 
-
-
 //Init sub system
 
-int InitSubsystems()
-{
+int InitSubsystems() {
 
 	//dont logg anythin brfore time init
 	int errSPI = StartSPI();
@@ -267,6 +348,11 @@ int InitSubsystems()
 	else
 		logg(event, "V: InitializeFS was successful isFirstActive=%d\n", resFirstActivation);
 
+	EPS_Init();
+
+	RUN_EPS_I2C_COMM();//TODO: remove
+
+	InitAnts();//TODO: turn off somewhere after deploy
 
 	// initialize TRXVU (communication) component and ants
 	int err=InitTrxvu();
@@ -282,14 +368,12 @@ int InitSubsystems()
 	else
 		logg(event, "V: InitDump was successful\n");
 
+
 	err = InitTelemetryCollector();
-	if (err!=0)
-		logg(error, "E:%d Failed in InitTelemetryCollector\n", err);
-	else
-		logg(event, "V: InitTelemetryCollector was successful\n");
-
-	EPS_Init();
-
+		if (err!=0)
+			logg(error, "E:%d Failed in InitTelemetryCollector\n", err);
+		else
+			logg(event, "V: InitTelemetryCollector was successful\n");
 	// Deploy system - open Antetnas
 	err = DeploySystem();
 	if (err)
@@ -302,5 +386,24 @@ int InitSubsystems()
 	FRAM_read((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
 	num_of_resets++;
 	FRAM_write((unsigned char*) &num_of_resets, NUMBER_OF_RESETS_ADDR, NUMBER_OF_RESETS_SIZE);
+	Boolean turn_on_payload_in_init;
+	err = FRAM_read((unsigned char*) &turn_on_payload_in_init, TURN_ON_PAYLOAD_IN_INIT, TURN_ON_PAYLOAD_IN_INIT_SIZE);
+	if(!err)
+	{
+		if(turn_on_payload_in_init)
+		{
+			err = payloadInit();
+
+			if (err)
+					logg(error, "E:%d Failed in payloadInit\n", err);
+			else
+				logg(event, "V: payloadInit was successful\n");
+		}
+		else
+				logg(event, "v: %d not to turn on payload during INIT\n", TURN_ON_PAYLOAD_IN_INIT);
+	}
+	else
+		logg(error, "E: %d FRAMread failed\n", err);
+
 	return 0;
 }

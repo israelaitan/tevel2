@@ -13,7 +13,8 @@
 #define FILENAME_TX_TLM					"tx"
 #define FILENAME_RX_TLM					"rx"
 #define FILENAME_RX_FRAME				"rxFrame"
-#define FILENAME_ANTENNA_TLM			"ant"
+#define FILENAME_ANTENNA_SIDE_A_TLM			"antA"
+#define FILENAME_ANTENNA_SIDE_B_TLM			"antB"
 
 //	---log
 #define FILENAME_LOG_TLM			    "log"

@@ -9,8 +9,7 @@
 #include "SubSystemModules/Communication/SatDataTx.h"
 #include "EPS_Commands.h"
 #include <hal/errors.h>
-
-
+#include "SubSystemModules/Maintenance/Log.h"
 
 
 int CMD_EPS_NOP(sat_packet_t *cmd)
@@ -189,11 +188,33 @@ int CMD_SolarPanelSleep(sat_packet_t *cmd)
 	return state;
 }
 
-int CMD_GetSolarPanelState(sat_packet_t *cmd)
-{
+int CMD_GetSolarPanelState(sat_packet_t *cmd) {
 	IsisSolarPanelv2_State_t state = 0;
 	state = IsisSolarPanelv2_getState();
 	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
 	return state;
 }
+
+int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd) {
+	uint8_t channel = 0;
+	memcpy(&channel, cmd->data, sizeof(channel));
+	isismepsv2_ivid5_piu__replyheader_t response;
+	int res =  isismepsv2_ivid5_piu__outputbuschannelon(EPS_I2C_BUS_INDEX, channel, &response);
+	if (res)
+		logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
+	TransmitDataAsSPL_Packet(cmd, &response, sizeof(response));
+	return res;
+}
+
+int CMD_EPS_SetChannelStateOff(sat_packet_t *cmd) {
+	uint8_t channel = 0;
+	memcpy(&channel, cmd->data, sizeof(channel));
+	isismepsv2_ivid5_piu__replyheader_t response;
+	int res =  isismepsv2_ivid5_piu__outputbuschanneloff(EPS_I2C_BUS_INDEX, channel, &response);
+	if (res)
+		logg(error, "E:CMD_SetChannelStateOn=%d\n", res);
+	TransmitDataAsSPL_Packet(cmd, &response, sizeof(response));
+	return res;
+}
+
 

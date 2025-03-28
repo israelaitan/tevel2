@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/Demos/payload/subdir.mk
 -include src/Demos/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
@@ -42,7 +43,7 @@ all: satellite-subsystems-demo.elf secondary-outputs
 satellite-subsystems-demo.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C Linker'
-	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra  -g -T C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/linker-scripts/sdram.lds -nostartfiles -Xlinker --gc-sections -L"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/freertos/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hal/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hcc/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/..//satellite-subsystems/lib" -Wl,-Map,"satellite-subsystems-demo.map" -lc -o "satellite-subsystems-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra  -g -T C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/linker-scripts/sdram.lds -nostartfiles -Xlinker --gc-sections -L"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/freertos/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hal/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hcc/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/..//satellite-subsystems/lib" -Wl,-Map,"satellite-subsystems-demo.map" -lc -o "satellite-subsystems-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

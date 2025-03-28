@@ -1,5 +1,6 @@
+#include <string.h>
+
 #include <hcc/api_fat.h>
-#include "GlobalStandards.h"
 #include <satellite-subsystems/isismepsv2_ivid5_piu.h>
 
 #include <satellite-subsystems/isis_vu_e.h>
@@ -11,23 +12,33 @@
 #include <hal/Timing/Time.h>
 #include <hal/drivers/ADC.h>
 
-#include <string.h>
-
+#include "GlobalStandards.h"
 #include "TelemetryCollector.h"
 #include "TelemetryFiles.h"
 #include "TLM_management.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "SubSystemModules/Communication/SatDataTx.h"
+#include "SubSystemModules/Payload/payload_drivers.h"
 
 #define SAVE_FLAG_IF_FILE_CREATED(type)	if(FS_SUCCSESS != res &&NULL != tlms_created){tlms_created[(type)] = FALSE_8BIT;}
 
 time_unix tlm_save_periods[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS] = {0};
 time_unix tlm_last_save_time[NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS]= {0};
 
+unsigned char* AddTime(unsigned char* data, unsigned int sz){
+	unsigned int curr_time;
+	Time_getUnixEpoch(&curr_time);
+	unsigned char* res = malloc(sizeof(curr_time) + sz);
+	if (res) {
+		memcpy(res, &curr_time, sizeof(curr_time));
+		memcpy(res + sizeof(curr_time), data, sz);
+	}
+	return res;
+}
 
 int InitTelemetryCollector() {
-	return FRAM_read((unsigned char*)tlm_save_periods,TLM_SAVE_PERIOD_START_ADDR,NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
+	return FRAM_read((unsigned char*)tlm_save_periods, TLM_SAVE_PERIOD_START_ADDR, NUM_OF_SUBSYSTEMS_SAVE_FUNCTIONS*sizeof(time_unix));
 }
 
 int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_SIZE])
@@ -49,8 +60,11 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	case tlm_rx:
 		strcpy(filename,FILENAME_RX_TLM);
 		break;
-	case tlm_antenna:
-		strcpy(filename,FILENAME_ANTENNA_TLM);
+	case tlm_antA:
+		strcpy(filename,FILENAME_ANTENNA_SIDE_A_TLM);
+		break;
+	case tlm_antB:
+		strcpy(filename,FILENAME_ANTENNA_SIDE_B_TLM);
 		break;
 	case tlm_log:
 		strcpy(filename,FILENAME_LOG_TLM);
@@ -70,7 +84,6 @@ int GetTelemetryFilenameByType(tlm_type tlm_type, char filename[MAX_F_FILE_NAME_
 	}
 	return 0;
 }
-
 
 void TelemetryCollectorLogic()
 {
@@ -98,6 +111,18 @@ void TelemetryCollectorLogic()
 		Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[wod_tlm]));
 	}
 
+	if (CheckExecutionTime(tlm_last_save_time[pic32_tlm], tlm_save_periods[pic32_tlm])){
+			TelemetrySavePIC32();
+			logg(TLMInfo, "I:TelemetrySavePIC_32\n");
+			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[pic32_tlm]));
+	}
+
+	if (CheckExecutionTime(tlm_last_save_time[radfet_tlm], tlm_save_periods[radfet_tlm])){
+			TelemetrySaveRADFET();
+			logg(TLMInfo, "I:TelemetrySaveRADFET\n");
+			Time_getUnixEpoch((unsigned int *)(&tlm_last_save_time[radfet_tlm]));
+	}
+
 }
 
 
@@ -116,12 +141,14 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	res = c_fileCreate(FILENAME_TX_TLM,sizeof(isis_vu_e__get_tx_telemetry__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_tx);
 
-	res = c_fileCreate(FILENAME_RX_TLM,sizeof(isis_vu_e__get_tx_telemetry_last__from_t));
+	res = c_fileCreate(FILENAME_RX_TLM,sizeof(isis_vu_e__get_rx_telemetry__from_t));
 	SAVE_FLAG_IF_FILE_CREATED(tlm_rx);
 
-	// -- ANT files
-	res = c_fileCreate(FILENAME_ANTENNA_TLM,sizeof(isis_ants__get_status__from_t));
-	SAVE_FLAG_IF_FILE_CREATED(tlm_antenna);
+	// -- ANTs files
+	res = c_fileCreate(FILENAME_ANTENNA_SIDE_A_TLM,sizeof(isis_ants__get_all_telemetry__from_t));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_antA);
+	res = c_fileCreate(FILENAME_ANTENNA_SIDE_B_TLM,sizeof(isis_ants__get_all_telemetry__from_t));
+		SAVE_FLAG_IF_FILE_CREATED(tlm_antB);
 
 	//-- LOG files
 	res = c_fileCreate(FILENAME_LOG_TLM, LOG_TLM_SIZE);
@@ -132,11 +159,11 @@ void TelemetryCreateFiles(Boolean8bit tlms_created[NUMBER_OF_TELEMETRIES])
 	SAVE_FLAG_IF_FILE_CREATED(tlm_wod);
 
 	// -- PAYLOAS file
-	//res = c_fileCreat(FILENAME_PIC32_TLM, sizeof(?));
-	//SVAE_FLAG_IF_FILE_CREATED(tlm_pic32);
+	res = c_fileCreate(FILENAME_PIC32_TLM, sizeof(PayloadEventData));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_pic32);
 
-	//res = c_fileCreat(FILENAME_RADFET_TLM, sizeof(?));
-	//SVAE_FLAG_IF_FILE_CREATED(tlm_radfet);
+	res = c_fileCreate(FILENAME_RADFET_TLM, sizeof(PayloadEnvironmentData));
+	SAVE_FLAG_IF_FILE_CREATED(tlm_radfet);
 }
 
 void TelemetrySaveEPS()
@@ -183,8 +210,8 @@ void TelemetrySaveTRXVU()
 	if (err == 0)
 		c_fileWrite(FILENAME_TX_TLM, &tx_tlm);
 
-	isis_vu_e__get_tx_telemetry_last__from_t rx_tlm;
-	err = isis_vu_e__get_tx_telemetry_last(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
+	isis_vu_e__get_rx_telemetry__from_t rx_tlm;
+	err = isis_vu_e__get_rx_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &rx_tlm);
 	if (err == 0)
 		c_fileWrite(FILENAME_RX_TLM, &rx_tlm);
 
@@ -217,10 +244,19 @@ int CMD_getTRXVU_TLM(sat_packet_t *cmd)
 void TelemetrySaveANT()
 {
 	int err = 0;
-	isis_ants__get_all_telemetry__from_t ant_tlmA;
-	err = isis_ants__get_all_telemetry(ISIS_TRXVU_I2C_BUS_INDEX, &ant_tlmA);
+	isis_ants__get_all_telemetry__from_t ant_tlmA = { 0 };
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_A_BUS_INDEX, &ant_tlmA);
 	if (err == 0)
-		c_fileWrite(FILENAME_ANTENNA_TLM, &ant_tlmA);
+		c_fileWrite(FILENAME_ANTENNA_SIDE_A_TLM, &ant_tlmA);
+	else
+		logg(error, "E=%d TelemetrySaveANT side A\n", err);
+
+	isis_ants__get_all_telemetry__from_t ant_tlmB = { 0 };
+	err = isis_ants__get_all_telemetry(ANTS_SIDE_B_BUS_INDEX, &ant_tlmB);
+	if (err == 0)
+		c_fileWrite(FILENAME_ANTENNA_SIDE_B_TLM, &ant_tlmB);
+	else
+		logg(error, "E=%d TelemetrySaveANT side B\n", err);
 }
 
 // Get Antennas TLM
@@ -347,27 +383,70 @@ void GetCurrentWODTelemetry(WOD_Telemetry_t *wod)
 	FRAM_read((unsigned char*)&wod->number_of_cmd_resets, NUMBER_OF_CMD_RESETS_ADDR, NUMBER_OF_CMD_RESETS_SIZE);
 }
 
-void TelemetrySavePIC32()
-{
+void TelemetrySavePIC32() {
 
+	PayloadEventData event_data;
+	SoreqResult result = payloadReadEvents(&event_data);
+	if (!result)
+		c_fileWrite(FILENAME_PIC32_TLM, &event_data);
+	else
+		logg(error, "E:payloadTelemtrySavePic32=%d\n", result);
 }
 
-void TelemetrySaveRADFET()
-{
+void TelemetrySaveRADFET() {
+
+	PayloadEnvironmentData environment_data;
+	SoreqResult result = payloadReadEnvironment(&environment_data);
+	if (!result)
+		c_fileWrite(FILENAME_RADFET_TLM, &environment_data);
+	else
+		logg(error, "E:TelemetrySaveRADFET=%d\n", result);
 
 }
 
 // Get Pic32 TLM
 int CMD_getPic32_TLM(sat_packet_t *cmd)
 {
-	cmd = NULL;
-	return 0;
+	PayloadEventData event_data;
+	SoreqResult result = payloadReadEvents(&event_data);
+	if (!result) {
+		unsigned char *data = AddTime((unsigned char*)&event_data, sizeof(event_data));
+		if (data) {
+			TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(event_data));
+			free(data);
+		}
+		else {
+			result = -1;//TODO:no memory
+			logg(error, "E:payloadGetPic32=%d\n", result);
+		}
+	}
+	else
+		logg(error, "E:payloadGetPic32=%d\n", result);
+	return result;
 }
 
 // Get Radfet TLM
 int CMD_getRadfet_TLM(sat_packet_t *cmd)
 {
-	cmd = NULL;
-	return 0;
+	PayloadEnvironmentData environment_data;
+	SoreqResult result = payloadReadEnvironment(&environment_data);
+	if (!result)
+	{
+		unsigned char *data = AddTime((unsigned char*)&environment_data, sizeof(environment_data));
+		if(data)
+		{
+		TransmitDataAsSPL_Packet(cmd, data, sizeof(unsigned int) + sizeof(environment_data));
+		free(data);
+		}
+		else
+		{
+		result = -1; // TODO: no memory;
+		logg(error, "E:payloadRdafet=%d\n", result);
+		}
+	}
+	else
+		logg(error, "E:payloadGetRADFET=%d\n", result);
+	return result;
 }
+
 
