@@ -14,13 +14,15 @@
 
 Boolean 		g_mute_flag = MUTE_OFF;				// mute flag - is the mute enabled
 time_unix 		g_mute_end_time = 0;				// time at which the mute will end
-
+extern unsigned int gl_sat_cmd_id = 0;
 xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
 
 void InitTxModule()
 {
 	if(NULL == xIsTransmitting)
 		vSemaphoreCreateBinary(xIsTransmitting);
+
+	FRAM_read((unsigned char*)&gl_sat_cmd_id, SAT_CMD_ID_ADDR, SAT_CMD_ID_SIZE);
 
 	int err = 0;
 	err = FRAM_read((unsigned char*) &g_mute_flag ,MUTE_FLAG_ADRR, MUTE_FLAG_SIZE);
@@ -146,19 +148,20 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned in
 	int err = 0;
 	sat_packet_t packet = { 0 };
 	if (NULL != cmd) {
-		err = AssembleCommand(data, length, cmd->cmd_type, cmd->cmd_subtype,
-				cmd->ID, cmd->ordinal, cmd->targetSat, cmd->total, &packet);
+		err = AssembleCommand(data, length, cmd->cmd_type, cmd->cmd_subtype, cmd->ID_SAT,
+				cmd->ID_GROUND, cmd->ordinal, cmd->targetSat, cmd->total, &packet);
 	} else {
-		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFF, 0, cmd->targetSat, 1, &packet);
+		err = AssembleCommand(data, length, 0xFF, 0xFF, 0xFFFF, 0xFFFF, 0, cmd->targetSat, cmd->total, &packet);
 	}
 	if (err != 0) {
 		return err;
 	}
-	err = TransmitSplPacket(&packet, NULL);
+	uint8_t avalFrames= 0;
+	err = TransmitSplPacket(&packet, &avalFrames);
 	return err;
 }
 
-int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
+int TransmitSplPacket(sat_packet_t *packet, uint8_t *avalFrames) {
 	if (!CheckTransmitionAllowed())
 		return -1;
 
@@ -171,9 +174,13 @@ int TransmitSplPacket(sat_packet_t *packet, int *avalFrames) {
 	if (xSemaphoreTake(xIsTransmitting,SECONDS_TO_TICKS(1)) != pdTRUE)
 		return E_GET_SEMAPHORE_FAILED;
 
+	packet->ID_SAT = gl_sat_cmd_id;
 	err = isis_vu_e__send_frame(ISIS_TRXVU_I2C_BUS_INDEX,
-			(unsigned char*) packet, data_length, (unsigned char*) avalFrames);
-
+			(unsigned char*) packet, data_length, avalFrames);
+	if (!err) {
+		gl_sat_cmd_id++;
+		FRAM_write((unsigned char*)&gl_sat_cmd_id, SAT_CMD_ID_ADDR, SAT_CMD_ID_SIZE);
+	}
 	xSemaphoreGive(xIsTransmitting);
 
 	return err;

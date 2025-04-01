@@ -31,6 +31,11 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_DUMP_ABORT;
 		break;
 
+	case GET_BY_INDEX_DUMP_SUBTYPE:
+		err = CMD_GetDumpByIndex(cmd);
+		ackType=ACK_DUMP_BY_INDEX;
+		break;
+
 	case MUTE_TRXVU:
 		err = CMD_MuteTRXVU(cmd);
 		ackType=ACK_MUTE;
@@ -100,7 +105,7 @@ int trxvu_command_router(sat_packet_t *cmd)
 		ackType=ACK_TRANSPONDER_OFF;
 		break;
 
-	case TRANSPONDER_RSSI:
+	case SET_TRANSPONDER_RSSI:
 		err = CMD_set_transponder_RSSI(cmd);
 		ackType=ACK_TRANSPONDER_RSSI;
 		break;
@@ -124,9 +129,16 @@ int eps_command_router(sat_packet_t *cmd)
 		err = CMD_EPS_ResetWDT(cmd);
 		SendErrorMSG(ACK_ERROR_MSG, ACK_RESET_EPS_WD,cmd, err);
 		break;
-
+	case EPS_SET_CHANNEL_ON:
+		err = CMD_EPS_SetChannelStateOn(cmd);
+		SendErrorMSG(ACK_ERROR_MSG, ACK_EPS_SET_CHANNEL_ON,cmd, err);
+		break;
+	case EPS_SET_CHANNEL_OFF:
+		err = CMD_EPS_SetChannelStateOff(cmd);
+		SendErrorMSG(ACK_ERROR_MSG, ACK_EPS_SET_CHANNEL_OFF,cmd, err);
+		break;
 	default:
-		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd->ID, cmd->ordinal,NULL,0);
+		SendAckPacket(ACK_UNKNOWN_SUBTYPE,cmd->ID_GROUND, cmd->ordinal,NULL,0);
 		break;
 	}
 
@@ -141,8 +153,55 @@ int telemetry_command_router(sat_packet_t *cmd)
 	switch (cmd->cmd_subtype)
 	{
 
-	case TLM_GET_EPS_SUBTYPE:
-		err = CMD_getEPS_TLM(cmd);
+	case TLM_GET_EPS_RAW_SUBTYPE:
+		err = CMD_getEPS_RAW_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_EPS_ENG_SUBTYPE:
+		err = CMD_getEPS_ENG_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_EPS_AVG_SUBTYPE:
+		err = CMD_getEPS_AVG_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_TX_SUBTYPE:
+		err = CMD_getTX_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_RX_SUBTYPE:
+		err = CMD_getRX_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_ANTENNA_A_SUBTYPE:
+		err = CMD_getAnts_A_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_ANTENNA_B_SUBTYPE:
+		err = CMD_getAnts_B_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_LOG_SUBTYPE:
+		err = CMD_getLOG_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+	case TLM_GET_WOD_SUBTYPE:
+		err = CMD_getWOD_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_PIC32_SUBTYPE:
+		err = CMD_getPic32_TLM(cmd);
+		ackType=ACK_NO_ACK;
+		break;
+
+	case TLM_GET_RADFET_SUBTYPE:
+		err = CMD_getRadfet_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
@@ -151,13 +210,8 @@ int telemetry_command_router(sat_packet_t *cmd)
 		ackType=ACK_NO_ACK;
 		break;
 
-	case TLM_GET_TRXVU_SUBTYPE:
-		err = CMD_getTRXVU_TLM(cmd);
-		ackType=ACK_NO_ACK;
-		break;
-
-	case TLM_GET_ANTS_SUBTYPE:
-		err = CMD_getAnts_TLM(cmd);
+	case TLM_GET_ADC_SUBTYPE:
+		err = CMD_getADC_TLM(cmd);
 		ackType=ACK_NO_ACK;
 		break;
 
@@ -282,6 +336,17 @@ int managment_command_router(sat_packet_t *cmd)
 		err =CMD_setLogLevel(cmd);
 		ackType=ACK_SET_LOG_LEVEL;
 		break;
+
+	case GET_LOG_SUBTYPE:
+		err = CMD_getLogLevel(cmd);
+		ackType=ACK_GET_LOG_LEVEL;
+		break;
+
+	case FRAM_INIT_SUBTYPE:
+		err = CMD_FRAM_Init(cmd);
+		ackType=ACK_GET_LOG_LEVEL;
+		break;
+
 
 	default:
 		break;

@@ -11,6 +11,9 @@
 #include <satellite-subsystems/isis_vu_e.h>
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 
+
+unsigned int gl_sat_cmd_id;
+
 /*!
  * @breif Initializes data filed for transmission - semaphores, parameters from the FRAM
  * @return
@@ -92,6 +95,6 @@ int TransmitDataAsSPL_Packet(sat_packet_t *cmd, unsigned char *data, unsigned in
  * of the VU_TC after the frame has been added. Set NULL to skip available slot count read-back.
  * @return    Error code according to <hal/errors.h>
  */
-int TransmitSplPacket(sat_packet_t *packet, int *avalFrames);
+int TransmitSplPacket(sat_packet_t *packet, uint8_t *avalFrames);
 
 #endif /* SATDATATX_H_ */

@@ -23,6 +23,7 @@
 #include "SubSystemModules/Housekepping/TelemetryCollector.h"
 #include "SubSystemModules/Maintenance/Log.h"
 #include "Maintanence_Commands.h"
+#include "InitSystem.h"
 
 int CMD_GenericI2C(sat_packet_t *cmd)
 {
@@ -45,6 +46,7 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	unsigned int offset = sizeof(slaveAddr) + sizeof(size);
 
 	err = I2C_write((unsigned int)slaveAddr, cmd->data + offset, (cmd->length - offset));
+	vTaskDelay(40);
 	err = I2C_read((unsigned int)slaveAddr, i2c_data, size);
 	if (err == E_NO_SS_ERR){
 		TransmitDataAsSPL_Packet(cmd, i2c_data, size);
@@ -52,6 +54,14 @@ int CMD_GenericI2C(sat_packet_t *cmd)
 	free(i2c_data);
 
 	return err;
+}
+
+int CMD_FRAM_Init(sat_packet_t *cmd){
+	logg(event, "V:CMD_FRAM_Init\n");
+	int err = IntializeFRAM();
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
+	restart();
+	return 0;
 }
 
 int CMD_FRAM_ReadAndTransmitt(sat_packet_t *cmd)
@@ -93,23 +103,21 @@ int CMD_FRAM_WriteAndTransmitt(sat_packet_t *cmd)
 		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
-
 	int err = 0;
 	unsigned int addr = 0;
-	unsigned short length = cmd->length;
+	unsigned int size = 0;
+	memcpy(&addr, cmd->data, sizeof(addr));
+	memcpy(&size, cmd->data + sizeof(addr),sizeof(size));
 	unsigned char *data = cmd->data;
 
-	memcpy(&addr, cmd->data, sizeof(addr));
-
-	err = FRAM_write(data + sizeof(addr), addr, length - sizeof(addr));
+	err = FRAM_write(data + sizeof(addr) + sizeof(size), addr, size);
 	if (err != 0){
 		return err;
 	}
-	err = FRAM_read(data, addr, length - sizeof(addr));
-	if (err != 0){
+	err = FRAM_read(data, addr, size);
+	if (err != 0)
 		return err;
-	}
-	TransmitDataAsSPL_Packet(cmd, data, length);
+	TransmitDataAsSPL_Packet(cmd, data, size);
 	return err;
 }
 
@@ -161,10 +169,17 @@ int CMD_UpdateSatTime(sat_packet_t *cmd)
 	}
 
 	int err = 0;
+	time_unix curr_time = 0;
+	err = Time_getUnixEpoch(&curr_time);
 	time_unix set_time = 0;
 	memcpy(&set_time, cmd->data, sizeof(set_time));
-	err = Time_setUnixEpoch(set_time);
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&set_time, sizeof(set_time));
+
+	if (set_time < curr_time) {
+		err = -1;
+	} else {
+		err = Time_setUnixEpoch(set_time);
+	}
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&err, sizeof(err));
 	return err;
 }
 
@@ -248,7 +263,25 @@ int CMD_setLogLevel(sat_packet_t *cmd)
 
 	//set log level
 	setLogLevel(logLevel);
-	logg(event, "I: Set log level to: %d", logLevel);
+	logg(event, "V: Set log level to: %d", logLevel);
+	return 0;
+}
+
+int CMD_getLogLevel(sat_packet_t *cmd)
+{
+	logg(MTNInfo, "I:inside CMD_getLogLevel()\n");
+
+	if (cmd == NULL || cmd->data == NULL)
+	{
+		logg(error, "E: Input is NULL");
+		return E_INPUT_POINTER_NULL;
+	}
+
+	//get log level
+	LogLevel logLevel = getLogLevel();
+
+	logg(event, "V: Get log level is: %d\n", logLevel);
+	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&logLevel, sizeof(logLevel));
 	return 0;
 }
 

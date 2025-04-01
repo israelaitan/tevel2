@@ -2,14 +2,26 @@
 #ifndef SATCOMMANDS_H_
 #define SATCOMMANDS_H_
 
-#define T8GBS 8 //GIVAT SHMUEL SAT ID IN PACKETS
+#define T3GBS 3 //GIVAT SHMUEL SAT ID IN PACKETS
 #define T0ALL 0 //ALL SATS
 
-#define MAX_COMMAND_DATA_LENGTH 225 //maximum AX25 data field available for downlink
-#define SAT_PACKET_HEADER_LENGTH 10 // short*3+char*4
+#define SAT_PACKET_HEADER_LENGTH 16
+#define MAX_COMMAND_DATA_LENGTH (235-SAT_PACKET_HEADER_LENGTH) //SIZE_TXFRAME maximum AX25 data field available for downlink
 
-//<! how many command can be saved in the buffer
-#define MAX_NUM_OF_DELAYED_CMD (100)
+typedef struct __attribute__ ((__packed__)) sat_packet_t
+{
+	//!!!change in header size requires update to SAT_PACKET_HEADER_LENGTH
+	unsigned int ID_SAT;
+	unsigned int ID_GROUND;			///< ID of the received/transmitted command
+	unsigned char targetSat;    ///< packet target satelite
+	unsigned char cmd_type;		///< type of the command. according to SPL protocol
+	unsigned char cmd_subtype;	///< sub-type of the command. according to SPL protocol
+	unsigned char length;		///< length of the received data.
+	unsigned short ordinal;
+	unsigned short total;
+	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
+
+}sat_packet_t;
 
 typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 	cmd_command_succsess = 0,				///< a successful operation. no errors
@@ -19,20 +31,6 @@ typedef enum __attribute__ ((__packed__)) CommandHandlerErr{
 	cmd_null_pointer_error,					///< input parameter pointer is null
 	cmd_execution_error 					///< an execution error has occured
 }CommandHandlerErr;
-
-typedef struct __attribute__ ((__packed__)) sat_packet_t
-{
-	//!!!change in header size requires update to SAT_PACKET_HEADER_LENGTH
-	unsigned short ordinal;								///< ord number of packet in sequence
-	unsigned char ID;							///< ID of the received/transmitted command
-	unsigned char targetSat;                             ///< packet target satelite
-	unsigned char cmd_type;								///< type of the command. according to SPL protocol
-	unsigned char cmd_subtype;							///< sub-type of the command. according to SPL protocol
-	unsigned short length;						///< length of the received data.
-	unsigned short total;
-	unsigned char data[MAX_COMMAND_DATA_LENGTH];///< data buffer
-
-}sat_packet_t;
 
 /*!
  * @brief parses given frame from TRXVU into 'sat_command_t' structure.
@@ -55,7 +53,7 @@ CommandHandlerErr ParseDataToCommand(unsigned char * data, sat_packet_t *cmd);
  * @note helpful when assembling assembling a cmd for downlink. assemble
  */
 CommandHandlerErr AssembleCommand(unsigned char *data, unsigned char data_length, unsigned char type,
-		unsigned char subtype,unsigned short id, unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd);
+		unsigned char subtype,unsigned int id_sat, unsigned int id_ground , unsigned short ord, unsigned char targetSat, unsigned short total, sat_packet_t *cmd);
 
 /*!
  * @brief returns an online command to be executed if there is one in the RX buffer.

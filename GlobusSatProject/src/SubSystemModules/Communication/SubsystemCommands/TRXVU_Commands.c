@@ -31,7 +31,6 @@ int CMD_ForceDumpAbort(sat_packet_t *cmd)
 	return 0;
 }
 
-
 int CMD_MuteTRXVU(sat_packet_t *cmd)
 {
 

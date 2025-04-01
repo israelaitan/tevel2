@@ -26,20 +26,25 @@ typedef struct __attribute__ ((__packed__))
 	unsigned short dump_type;
 	time_unix t_start;
 	time_unix t_end;
-	unsigned short id;
+	unsigned int id_ground;
 	unsigned short ord;
 
 } dump_arguments_t;
 
 #define RESOLUTION 1
-#define SIZE_DUMP_BUFFER (4500 * LOG_TLM_SIZE) ///< buffer size for dump operations
+#define SIZE_DUMP_SEND_BUFFER (MAX_ELEMENT_SIZE * ELEMENTS_PER_SEND)
 
 xQueueHandle xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
 xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
 
-char allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
-char data_to_send[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
+unsigned char gl_allocked_read_elements[(MAX_ELEMENT_SIZE)*(ELEMENTS_PER_READ)];
+unsigned char gl_data_to_send[SIZE_DUMP_SEND_BUFFER];
+unsigned char *gl_curr_pos_data_to_send;
+int gl_data_to_send_sz = 0;
+uint8_t gl_data_to_send_dump_type = 0;
+unsigned short gl_total = 0;
+unsigned short gl_reminder = 0;
 
 
 int InitDump()
@@ -54,7 +59,7 @@ int InitDump()
 void FinishDump(dump_arguments_t *task_args, ack_subtype_t acktype,
 		unsigned char *err, unsigned int size) {
 
-	SendAckPacket(acktype, task_args->id, task_args->ord, err, size);
+	SendAckPacket(acktype, task_args->id_ground, task_args->ord, err, size);
 	if (NULL != task_args) {
 		logg(TLMInfo, "I:free args\n");
 		//free(task_args);
@@ -100,14 +105,13 @@ int getTelemetryMetaData(tlm_type type, char* filename, int* size_of_element) {
 	return err;
 }
 
-int send(unsigned char * element, unsigned char size, unsigned char id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
+int send(unsigned char * element, unsigned char size, unsigned int sat_id, unsigned int ground_id, unsigned short ord, unsigned char type, unsigned short total, int * availFrames){
 	sat_packet_t dump_tlm = { 0 };
-	AssembleCommand( element, size, (unsigned char) START_DUMP_SUBTYPE, type, id, ord, (unsigned char)T8GBS, total, &dump_tlm);
+	AssembleCommand( element, size, (unsigned char) telemetry_cmd_type, type, sat_id, ground_id, ord, (unsigned char)T3GBS, total, &dump_tlm);
 	return TransmitSplPacket(&dump_tlm, availFrames);
 }
 
-
-/*FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned char dump_id, char dump_type)
+FileSystemResult c_fileReadAndSend(char* c_file_name, time_unix from_time, time_unix to_time, int * sent, unsigned int dump_id, char dump_type)
 {
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
@@ -120,16 +124,18 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 	if(from_time < c_file.creation_time || from_time > to_time)
 		from_time = c_file.creation_time;
 	F_FILE* current_file = NULL;
-	int index_current = getFileIndex(c_file.creation_time,from_time);
+	int index_current = getFileIndex(c_file.creation_time, from_time);
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
 	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
-	int availFrames = 0;
+	uint8_t availFrames = 0;
 	*sent = 0;
 	do {
 		get_file_name_by_index(c_file_name, index_current++, curr_file_name);
 		int error = f_managed_open(curr_file_name, "r", &current_file);
-		if ( error != 0 || curr_file_name == NULL )
+		if ( error != 0 || curr_file_name == NULL ){
+			logg(error, "E:dump f_managed_open failed=%d curr_file_name=%s\n", error, curr_file_name);
 			continue;
+		}
 		int file_length = f_filelength(curr_file_name);
 		int length = file_length / (size_elementWithTimeStamp);//number of elements in currnet_file
 		int left_to_read = length;
@@ -143,7 +149,7 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 			if(left_to_read < ELEMENTS_PER_READ)
 				how_much_to_read = left_to_read;
 
-			element = allocked_read_elements;
+			element = gl_allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
 			int k;
@@ -157,7 +163,9 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 				if(element_time >= from_time) {
 					if (CheckDumpAbort())
 							return FS_ABORT;
-					int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type, total, &availFrames);
+
+					int err = send(element, size_elementWithTimeStamp, dump_id, dump_id, ord, dump_type, 1, &availFrames);//total irrelevant
+					
 					if(err != 0) {
 						logg(error, "E:transmitsplpacket error: %d", err);
 						if (err == -1)//transmition not allowed
@@ -172,8 +180,9 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 							k++;
 							element += size_elementWithTimeStamp;
 							(*sent)++;
+							ord++;
 						} else {
-							logg(DMPInfo, "I:dump.no available frames\n");
+							logg(event, "V:dump.no available frames\n");
 							vTaskDelay(100);
 						}
 					}
@@ -194,7 +203,7 @@ int send(unsigned char * element, unsigned char size, unsigned char id, unsigned
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
 
 	return FS_SUCCSESS;
-}*/
+}
 
 void DumpStart(dump_arguments_t *task_args){
 	while(1) {
@@ -218,9 +227,6 @@ void DumpStart(dump_arguments_t *task_args){
 		}
 		logg(DMPInfo, "I:filename: %s, size of element: %d t_start: %d t_end: %d\n", filename, size_of_element, task_args->t_start, task_args->t_end);
 
-		SendAckPacket(ACK_DUMP_START, task_args->id, task_args->ord,
-				(unsigned char*) &num_of_elements, sizeof(num_of_elements));
-
 		time_unix curr = 0;
 		Time_getUnixEpoch(&curr);
 		logg(DMPInfo, "I:starting dump loop at time: %u\n", curr);
@@ -230,16 +236,16 @@ void DumpStart(dump_arguments_t *task_args){
 				task_args->t_start,
 				task_args->t_end,
 				&total_packets_read,
-				task_args->id,
+				task_args->id_ground,
 				task_args->dump_type);
 		if (result) {
-			logg(error, "E:%d c_fileReadAndSend returned\n", result);
+			logg(error, "E:%d FirstScan returned\n", result);
 			if (result == FS_ABORT)
 				ack_return_code = ACK_DUMP_ABORT;
 		} else
 			logg(DMPInfo, "I:finish dump gracefully %d transmitted", num_packets_read);
 
-		FinishDump(task_args, ack_return_code, NULL, 0);
+		FinishDump(task_args, ack_return_code, &gl_total, sizeof(gl_total));
 	}
 }
 
@@ -267,7 +273,7 @@ int DumpTelemetry(sat_packet_t *cmd)
 
 	//dump_arguments_t *dmp_pckt = malloc(sizeof(*dmp_pckt));
 	unsigned int offset = 0;
-	dmp_pckt.id = cmd->ID;
+	dmp_pckt.id_ground = cmd->ID_GROUND;
 	dmp_pckt.ord = cmd->ordinal;
 
 	memcpy(&dmp_pckt.dump_type, cmd->data, sizeof(dmp_pckt.dump_type));
@@ -296,44 +302,60 @@ unsigned short CalcPacketSize(char dump_type)
  {
 	switch (dump_type) {
 		case tlm_eps_raw_mb:
-			return 164;
+			return 176;
 		case tlm_eps_eng_mb:
-			return 164;
+			return 176;
+		case tlm_eps_avg_mb:
+			return 176;
 		case tlm_tx:
-			return 220;
+			return 198;
 		case tlm_rx:
-			return 220;
+			return 208;
 		case tlm_antA:
-			return 221;
+			return 208;//219/13 = 16.8 -> 16*13=208
 		case tlm_antB:
-			return 221;
+			return 208;
 		case tlm_log:
-			return 225;
+			return 219;
 		case tlm_wod:
-			return 225;
+			return 219;
 		case tlm_pic32:
-			return 216;
+			return 210;
 		case tlm_radfet:
-			return 224;
+			return 208;
+		case tlm_solar:
+			return 196;
+		case tlm_adc:
+			return 196;
 		default:
 			return 0;
 
 	}
 }
 
-int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* sent)
+int SendAll(unsigned int dump_id, char dump_type, int* sent)
 {
 	C_FILE c_file;
-	int ord = 0;
-	void* element;
+	gl_data_to_send_sz = CalcPacketSize(dump_type);
+	gl_data_to_send_dump_type = dump_type;
+	int diff = gl_curr_pos_data_to_send - gl_data_to_send;
+	gl_reminder =  diff % gl_data_to_send_sz;
+	gl_total =  diff / gl_data_to_send_sz;
+	SendAckPacket(ACK_DUMP_START, dump_id, 0,
+						(unsigned char*) &gl_total, sizeof(gl_total));
+	if (gl_reminder)
+		gl_total++;
 	*sent = 0;
-	char* tmp = data_to_send;
-	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
+	unsigned char *tmp = gl_data_to_send;
+	int ord = 0;
 	int availFrames = 0;
-	while (ord < total) {
-		memcpy(&element, tmp, sz);
-		int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type, total, &availFrames);
+	while (tmp < gl_curr_pos_data_to_send) {
+		if (CheckDumpAbort())
+			return FS_ABORT;
+		int size = gl_data_to_send_sz;
+		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
+			size = gl_reminder;
+		int err = send(tmp, size, dump_id, dump_id, ord, dump_type, gl_total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -344,8 +366,9 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 		}
 		else {
 			if (availFrames != NO_TX_FRAME_AVAILABLE) {
-				tmp += sz;
+				tmp += size;
 				(*sent)++;
+				ord++;
 			} else {
 				logg(DMPInfo, "I:dump.no available frames\n");
 				vTaskDelay(100);
@@ -356,22 +379,26 @@ int SendAll(unsigned char dump_id, char dump_type, unsigned short total, int* se
 }
 
 
-int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int* sent, sat_packet_t pack) {
-	C_FILE c_file;
-	*sent = 0;
-	void* element;
-	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
-	unsigned char* data1 = (unsigned char*)pack.data;
-	unsigned short length = pack.length;
-	unsigned short ind1;
+int CMD_GetDumpByIndex(sat_packet_t *pack) {
+	if (gl_data_to_send_sz == 0)
+		return -1;
+	unsigned short index;
 	int availFrames = 0;
-	char* tmp = data_to_send;
-	for (int i = 0; i < length; i++) {
-		memcpy(&ind1, data1, 2);
-		tmp = data_to_send + sz * ind1;
-		memcpy(&element, tmp, sz);
-		int err = send(element, size_elementWithTimeStamp, dump_id, ind1, dump_type, total, &availFrames);
+	unsigned char *tmp = gl_data_to_send;
+	int total = pack->length /  sizeof(unsigned short);
+	int i;
+	for (i = 0; i < total;) {
+		memcpy(&index, pack->data + i*sizeof(unsigned short), sizeof(unsigned short));
+		if (index >= gl_total) {
+			i++;
+			continue;
+		}
+		tmp = gl_data_to_send + gl_data_to_send_sz * index;
+		int size = gl_data_to_send_sz;
+		if (gl_curr_pos_data_to_send - tmp < gl_data_to_send_sz)
+				size = gl_reminder;
+
+		int err = send(tmp, size, pack->ID_GROUND, pack->ID_GROUND, index,  gl_data_to_send_dump_type, total, &availFrames);
 		if(err != 0) {
 			logg(error, "E:transmitsplpacket error: %d", err);
 			if (err == -1)//transmition not allowed
@@ -381,11 +408,11 @@ int SendByIndex(unsigned char dump_id, char dump_type, unsigned short total, int
 			}
 		}
 		else {
-			if (availFrames != NO_TX_FRAME_AVAILABLE) {
-				(*sent)++;
-			} else {
+			if (availFrames == NO_TX_FRAME_AVAILABLE) {
 				logg(DMPInfo, "I:dump.no available frames\n");
 				vTaskDelay(100);
+			} else {
+				i++;
 			}
 		}
 	}
@@ -403,7 +430,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	C_FILE c_file;
 	unsigned int addr;//FRAM ADDRESS
 	char curr_file_name[MAX_F_FILE_NAME_SIZE+sizeof(int)*2];
-	char* tmp = data_to_send;
+	gl_curr_pos_data_to_send = gl_data_to_send;
 	void* element;
 	int end_read = 0;
 	if(get_C_FILE_struct(c_file_name,&c_file,&addr)!=TRUE)
@@ -415,6 +442,7 @@ FileSystemResult FirstScan(char* c_file_name,
 	get_file_name_by_index(c_file_name,index_current,curr_file_name);
 	unsigned short size_elementWithTimeStamp = c_file.size_of_element + sizeof(unsigned int);
 	*sent = 0;
+	int k = 0;
 	do {
 		get_file_name_by_index(c_file_name, index_current++, curr_file_name);
 		int error = f_managed_open(curr_file_name, "r", &current_file);
@@ -432,11 +460,10 @@ FileSystemResult FirstScan(char* c_file_name,
 			if(left_to_read < ELEMENTS_PER_READ)
 				how_much_to_read = left_to_read;
 
-			element = allocked_read_elements;
+			element = gl_allocked_read_elements;
 			readen = f_read(element, (size_t)size_elementWithTimeStamp, how_much_to_read, current_file);
 			left_to_read -= readen;
-			int k;
-			for( k = 0; k < readen;) {
+			for( k = 0 ; k < readen ; k++) {
 				unsigned int element_time;
 				memcpy( &element_time, element, sizeof(int) );
 				if(element_time > to_time) {
@@ -444,15 +471,15 @@ FileSystemResult FirstScan(char* c_file_name,
 					break;
 				}
 				if(element_time >= from_time) {
-					if (CheckDumpAbort())
-							return FS_ABORT;
-					//int err = send(element, size_elementWithTimeStamp, dump_id, ord++, dump_type,  &availFrames);
-					memcpy(data_to_send, element, size_elementWithTimeStamp);
-					tmp += size_elementWithTimeStamp;
-				} else {
-					k++;
-					element += size_elementWithTimeStamp;
+					if (gl_curr_pos_data_to_send + size_elementWithTimeStamp < gl_data_to_send + SIZE_DUMP_SEND_BUFFER){
+						memcpy(gl_curr_pos_data_to_send, element, size_elementWithTimeStamp);
+						gl_curr_pos_data_to_send += size_elementWithTimeStamp;
+					} else {//no more space. max allowed per dump
+						end_read = 1;
+						break;
+					}
 				}
+				element += size_elementWithTimeStamp;
 			}
 			if(end_read)
 				break;
@@ -462,20 +489,14 @@ FileSystemResult FirstScan(char* c_file_name,
 			return FS_COULD_NOT_GIVE_SEMAPHORE;
 		if (error != F_NO_ERROR)
 			return FS_FAIL;
+		if(end_read)
+			break;
 	} while( getFileIndex(c_file.creation_time, c_file.last_time_modified) >= index_current &&
 			getFileIndex(c_file.creation_time, to_time) >= index_current );
-	unsigned short sz = CalcPacketSize(dump_type);
-	unsigned short total = (tmp - data_to_send) / sz;
-	int err = SendAll(dump_id, dump_type, total, sent);
-	if (err != 0) {
-		return FS_FAIL;
-	}
+
+	int err = SendAll(dump_id, dump_type, sent);
+	if (err != 0)
+		return err;
+	logg(event, "dump sent=%d", sent);
 	return FS_SUCCSESS;
 }
-
-// first scan v
-// send all v
-// send by index v()
-// lets lehorid v
-// beacon
-// file read and send

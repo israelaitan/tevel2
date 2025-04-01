@@ -12,17 +12,16 @@
 #include "SubSystemModules/Communication/SatCommandHandler.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
 #include "SubSystemModules/Maintenance/Log.h"
+#include "TRXVU.h"
 #include "GlobalStandards.h"
 #include "FRAM_FlightParameters.h"
 #include "SPL.h"
 #include "Beacon.h"
 #include "SatDataTx.h"
 
-#define BEACON_ID 100
 
 time_unix g_prev_beacon_time = 0;				// the time at which the previous beacon occured
 time_unix g_beacon_interval_time = 0;
-unsigned int id=  BEACON_ID;
 
 //Initialize beacon parameters
 void InitBeaconParams()
@@ -46,10 +45,8 @@ void InitBeaconParams()
 //Beacon logic code
 void BeaconLogic()
 {
-
 	logg(TRXInfo, "I:Inside BeaconLogic()\n");
 	sat_packet_t packet;
-	WOD_Telemetry_t wod = { 0 };
 
 	//check if not on mute and EPS has enough power
 	if(CheckTransmitionAllowed())
@@ -58,32 +55,26 @@ void BeaconLogic()
 		if(CheckExecutionTime(g_prev_beacon_time, g_beacon_interval_time))
 		{
 			//get current Whole Orbit Data
-			GetCurrentWODTelemetry(&wod);
-
-			int errorSizeMsg = getLastErrorMsgSize();
-			if (errorSizeMsg > 0)
-				copyLastErrorMsg(wod.last_error_msg);
+			WOD_Telemetry_t *beacon = GetCurrentWODTelemetry();
 
 			//create from WOD a packet to send to earth
-			AssembleCommand((unsigned char *)&wod, sizeof(wod) - LOG_MSG_SIZE + errorSizeMsg, trxvu_cmd_type, BEACON_SUBTYPE, id, 0, T8GBS, 1, &packet);
+			AssembleCommand(beacon->raw, sizeof(beacon->raw), trxvu_cmd_type, BEACON_SUBTYPE, 0, 0, 0, T3GBS, 1, &packet);
 
 			// transmit packet to earth
-			int availableFrames = 0;
+			uint8_t availableFrames = 0;
 			TransmitSplPacket(&packet, &availableFrames);
 
+			memset(beacon, 0, sizeof(WOD_Telemetry_t));
 			//set last beacon time
 			Time_getUnixEpoch((unsigned int *)&g_prev_beacon_time);
 
-			//increase beacon ID
-			id++;
-
-			logg(TRXInfo, "I: ### Beacon sent - id: %d data: %s\n",packet.ID, packet.data );
+			logg(event, "V: ### Beacon sent - id: %d data.length: %d\n",packet.ID_SAT, packet.length );
 		}
 		else
 			logg(TRXInfo, "I: Beacon time did not arrive\n");
 	}
 	else
-		logg(TRXInfo, "I:---beacon NOT allowed\n");
+		logg(event, "V:---beacon NOT allowed\n");
 }
 
 //Update beacon intervals - allows changing this interval from earth

@@ -312,7 +312,7 @@ void taskThermalTest() {
 			TRACE_WARNING(" taskThermalTest: Error during RTC_testGetSet: %d \n\r", retValRTC);
 		}
 
-		// XXX: Test SD-Cards
+
 #if(0)
 		fileSystemTest(card0, testIteration, TRUE);
 		vTaskDelay(10);

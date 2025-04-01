@@ -11,16 +11,16 @@
 #include "TRXVU.h"
 #include <SubSystemModules/Maintenance/Log.h>
 
-int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short ord,
-		unsigned char *data, unsigned int length)
+int SendAckPacket(ack_subtype_t acksubtype, unsigned int ground_id, unsigned short ord,
+		unsigned char *data, unsigned char length)
 {
 	int err = 0;
 	sat_packet_t ack = { 0 };
+	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, 0, ground_id, ord, T3GBS, 1, &ack);
 
-	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, 1, &ack);
-
-	err = TransmitSplPacket(&ack, NULL);
-	vTaskDelay(10);
+	uint8_t availableFrames = 0;
+	err = TransmitSplPacket(&ack, &availableFrames);
+	//vTaskDelay(10);
 	return err;
 }
 
@@ -31,23 +31,23 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 	if (err == 0) {
 		ack = succ_subt;
-		logg(event, "Command Ack: %d was successful\n", ack);
+		logg(event, "V:Command Ack: %d was successful\n", ack);
 	}
 	else {
 		ack = fail_subt;
-		logg(error, "Command ack: %d was Failed with error: %d\n", ack, err);
+		logg(error, "V:Command ack: %d was Failed with error: %d\n", ack, err);
 	}
 
 	if (ack != ACK_NO_ACK)
 	{
-		SendAckPacket(ack, cmd->ID, cmd->ordinal, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(ack, cmd->ID_GROUND, cmd->ordinal, (unsigned char*) &err, sizeof(err));
 	}
 }
 
 void SendErrorMSG_IfError(ack_subtype_t subtype, sat_packet_t *cmd, int err)
 {
 	if (err != 0) {
-		SendAckPacket(subtype, cmd->ID, cmd->ordinal, (unsigned char*) &err, sizeof(err));
+		SendAckPacket(subtype, cmd->ID_GROUND, cmd->ordinal, (unsigned char*) &err, sizeof(err));
 	}
 }
 

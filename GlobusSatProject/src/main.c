@@ -31,10 +31,14 @@
 
 	void taskMain() {
 
-		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
+		//TRACE_CONFIGURE(DBGU_STANDARD, 115200, BOARD_MCK);//TODO:remove trace_configure
 
+		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
+//TODO:compile release mode
+//TODO:abfX2
 ////******************REMOVE
-//		IntializeFRAM();
+//		IntializeFRAM();//TODO: first flight init fram
+//		ReadDefaultValuesToFRAM();
 ////******************REMOVE
 		InitSubsystems();
 
@@ -43,11 +47,14 @@
 ////******************REMOVE
 		while(TRUE) {
 
+			EPS_Conditioning();
+
 			TRX_Logic();
 
 			TelemetryCollectorLogic();
 
 			Maintenance();
+
 		}
 	}
 

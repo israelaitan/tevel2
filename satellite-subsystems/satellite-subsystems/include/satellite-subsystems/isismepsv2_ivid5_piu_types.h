@@ -214,7 +214,7 @@ typedef union __attribute__((__packed__)) _isismepsv2_ivid5_piu__getconfiguratio
  */
 typedef union __attribute__((__packed__)) _isismepsv2_ivid5_piu__gethousekeepingeng__from_t
 {
-    unsigned char raw[78];
+    unsigned char raw[116];
     struct __attribute__ ((__packed__))
     {
         isismepsv2_ivid5_piu__replyheader_t reply_header; /*!< "See \""System Type Identifier (STID)\"" (page 22)" */
@@ -227,19 +227,19 @@ typedef union __attribute__((__packed__)) _isismepsv2_ivid5_piu__gethousekeeping
         uint16_t stat_obc_ocf; /*!< Bitflag field indicating overcurrent latch-off fault status for the output bus channels. */
         isismepsv2_ivid5_piu__batterypackstatus_t bat_stat; /*!< Bitflag field indicating BP board */
         int16_t temp2; /*!< 2 and 4 cell battery pack: Battery pack temperature in between the center battery cells. \note conversion: eng. value [in °C] = 0.01 * raw */
-       // int16_t temp3; /*!< 2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack. \note conversion: eng. value [in °C] = 0.01 * raw */
+        int16_t temp3; /*!< 2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack. \note conversion: eng. value [in °C] = 0.01 * raw */
         int16_t volt_vd0; /*!< Voltage of voltage domain 0 */
         int16_t volt_vd1; /*!< Voltage of voltage domain 0 */
         int16_t volt_vd2; /*!< Voltage of voltage domain 0 */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc00; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc01; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc02; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc03; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc04; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc02; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc03; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc04; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc05; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc06; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc07; /*!< Output V, I and P of output bus channel */
-       // isismepsv2_ivid5_piu__vipdeng_t vip_obc08; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc06; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc07; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc08; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__ccsdeng_t cc1; /*!< Data on conditioning chain */
         isismepsv2_ivid5_piu__ccsdeng_t cc2; /*!< Data on conditioning chain */
         isismepsv2_ivid5_piu__ccsdeng_t cc3; /*!< Data on conditioning chain */
@@ -439,19 +439,19 @@ typedef union __attribute__((__packed__)) _isismepsv2_ivid5_piu__gethousekeeping
         uint16_t stat_obc_ocf; /*!< Bitflag field indicating overcurrent latch-off fault status for the output bus channels. */
         isismepsv2_ivid5_piu__batterypackstatus_t bat_stat; /*!< Bitflag field indicating BP board */
         int16_t temp2; /*!< 2 and 4 cell battery pack: Battery pack temperature in between the center battery cells. */
-       // int16_t temp3; /*!< 2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack. */
+        int16_t temp3; /*!< 2 cell battery pack: not used 4 cell battery pack: Battery pack temperature on the front of the battery pack. */
         int16_t volt_vd0; /*!< Voltage of voltage domain 0 */
         int16_t volt_vd1; /*!< Voltage of voltage domain 0 */
         int16_t volt_vd2; /*!< Voltage of voltage domain 0 */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc00; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc01; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc02; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc03; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc04; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc02; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc03; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc04; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__vipdeng_t vip_obc05; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc06; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc07; /*!< Output V, I and P of output bus channel */
-       //isismepsv2_ivid5_piu__vipdeng_t vip_obc08; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc06; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc07; /*!< Output V, I and P of output bus channel */
+        isismepsv2_ivid5_piu__vipdeng_t vip_obc08; /*!< Output V, I and P of output bus channel */
         isismepsv2_ivid5_piu__ccsdeng_t cc1; /*!< Data on conditioning chain */
         isismepsv2_ivid5_piu__ccsdeng_t cc2; /*!< Data on conditioning chain */
         isismepsv2_ivid5_piu__ccsdeng_t cc3; /*!< Data on conditioning chain */

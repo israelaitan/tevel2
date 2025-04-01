@@ -158,7 +158,7 @@ uint8_t INPUT_GetUINT8( char* printStr )
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return (uint8_t)value;
 }
@@ -190,7 +190,7 @@ uint16_t INPUT_GetUINT16( char* printStr )
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return (uint16_t)value;
 }
@@ -222,7 +222,7 @@ uint32_t INPUT_GetUINT32( char* printStr )
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return (uint32_t)value;
 }
@@ -254,7 +254,7 @@ uint8_t INPUT_GetHEX8( char* printStr )
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return (uint8_t)value;
 }
@@ -286,7 +286,7 @@ uint16_t INPUT_GetHEX16( char* printStr )
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return (uint16_t)value;
 }
@@ -310,11 +310,10 @@ float INPUT_GetFLOAT( char* printStr )
 
 		value = strtof((char*)_input, &pEnd );
 
-		/* TODO: check limits? */
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return value;
 }
@@ -338,11 +337,10 @@ double INPUT_GetDOUBLE( char* printStr )
 
 		value = strtod((char*)_input, &pEnd );
 
-		/* TODO: check limits? */
 
 		done = 1;
 	}
-	while(!done); /* TODO: timeout! */
+	while(!done);
 
 	return value;
 }
@@ -370,7 +368,6 @@ static int _GetInput( char *input, int len )
 		{
 			WDT_forceKickEveryNms(10);
 			vTaskDelay(1);
-			/* TODO: timeout ? */
 		}
 		while( !DBGU_IsRxReady() );
 

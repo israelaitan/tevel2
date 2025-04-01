@@ -168,10 +168,10 @@ FileSystemResult createSemahores_FS()
 	return FS_SUCCSESS;
 }
 
-FileSystemResult formatAndCreateFiles()
+FileSystemResult formatAndCreateFiles(int sd_index)
 {
-	sd_format(DEFAULT_SD);
-	FS fs = {0,DEFAULT_SD};
+	sd_format(sd_index);
+	FS fs = {0, sd_index};
 	if(FRAM_write((unsigned char*)&fs,FSFRAM,sizeof(FS))!=0)
 	{
 		return FS_FAT_API_FAIL;
@@ -231,7 +231,7 @@ FileSystemResult InitializeFS(Boolean first_time)
 
 	if(first_time)
 	{
-		return formatAndCreateFiles();
+		return formatAndCreateFiles(DEFAULT_SD);
 	}
 
 
@@ -442,19 +442,18 @@ static FileSystemResult deleteElementsFromFile(char* file_name,unsigned long fro
 	int i;
 	for(i = 0; i<f_filelength(file_name); i+=full_element_size)
 	{
-
-		f_read(buffer,1,full_element_size,file);
+		f_read(buffer,1, full_element_size, file);
 		unsigned int element_time = *((unsigned int*)buffer);
-		if(element_time<from_time||element_time>to_time)
+		if(element_time < from_time || element_time > to_time)
 		{
-			f_write(buffer,1,full_element_size,temp_file);
+			f_write(buffer, 1, full_element_size, temp_file);
 		}
 	}
 	f_managed_close(&file);
 	f_managed_close(&temp_file);
 	//free(buffer);
 	f_delete(file_name);
-	f_rename("temp",file_name);
+	f_rename("temp", file_name);
 	return FS_SUCCSESS;
 
 }
@@ -486,7 +485,7 @@ FileSystemResult c_fileDeleteElements(char* c_file_name, time_unix from_time,
 	}
 	int first_file_index = getFileIndex(c_file.creation_time,from_time);
 	int last_file_index = getFileIndex(c_file.creation_time,to_time);
-	if(first_file_index+1<last_file_index)//delete all files between first to kast file
+	if(first_file_index+1<last_file_index)//delete all files between first to last file
 	{
 		int i;
 		for(i =first_file_index+1; i<last_file_index;i++)

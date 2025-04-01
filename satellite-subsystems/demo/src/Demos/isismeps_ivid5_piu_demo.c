@@ -464,7 +464,7 @@ Boolean isismepsv2_ivid5_piu__demo__init(void)
 
 	//Initialize the I2C
 	printf("\nI2C Initialize\n\r");
-	retValInt = I2C_start(200000, 10);
+	retValInt = I2C_start(100000, 10);
 
 	if(retValInt != 0)
 	{

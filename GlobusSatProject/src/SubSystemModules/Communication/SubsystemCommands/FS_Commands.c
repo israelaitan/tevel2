@@ -76,10 +76,15 @@ int CMD_DeleteFilesOfType(sat_packet_t *cmd)
 	return err;
 }
 
+//also for change sd
 int CMD_DeleteFS(sat_packet_t *cmd)
 {
-	(void)cmd;
-	return formatAndCreateFiles();
+	uint8_t sd_index = 0;
+	memcpy(&sd_index, cmd->data, sizeof(uint8_t));
+	if (sd_index > 1)
+		return -1;
+
+	return formatAndCreateFiles(sd_index);
 }
 
 int CMD_GetLastFS_Error(sat_packet_t *cmd)

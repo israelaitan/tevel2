@@ -26,6 +26,8 @@ typedef enum __attribute__ ((__packed__)) reset_type_t
  */
 int CMD_GenericI2C(sat_packet_t *cmd);
 
+int CMD_FRAM_Init(sat_packet_t *cmd);
+
 /*!
  * @brief reads a section from the FRAM and transmittes to GS
  * @return errors according to FRAM.h
@@ -137,5 +139,7 @@ int CMD_SetTLM_CollectionCycle(sat_packet_t *cmd);
 int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd);
 
 int CMD_setLogLevel(sat_packet_t *cmd);
+
+int CMD_getLogLevel(sat_packet_t *cmd);
 
 #endif /* MAINTANENCE_COMMANDS_H_ */

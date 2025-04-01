@@ -4,7 +4,6 @@
 
 #include "GlobalStandards.h"
 
-//TODO: change 'SYSTEMX' to the actual system
 #define CHANNELS_OFF 0x00 	//!< channel state when all systems are off
 #define CHNNELS_ON	 0XFF	//!< channel
 #define SYSTEM0		 0x01	//!< channel state when 'SYSTEM0' is on
@@ -28,28 +27,28 @@ typedef enum{
  * @return	0 on success
  * 			errors according to <hal/errors.h>
  */
-int EnterFullMode();
+int EnterFullMode(unsigned short curr_voltage);
 
 /*!
  * @brief Executes the necessary procedure in order to initiate the system into Cruise mode
  * @return	0 on success
  * 			errors according to <hal/errors.h>
  */
-int EnterCruiseMode();
+int EnterCruiseMode(unsigned short curr_voltage);
 
 /*!
  * @brief Executes the necessary procedure in order to initiate the system into Safe mode
  * @return	0 on success
  * 			errors according to <hal/errors.h>
  */
-int EnterSafeMode();
+int EnterSafeMode(unsigned short curr_voltage);
 
 /*!
  * @brief Executes the necessary procedure in order to initiate the system into Critical mode
  * @return	0 on success
  * 			errors according to <hal/errors.h>
  */
-int EnterCriticalMode();
+int EnterCriticalMode(unsigned short curr_voltage);
 
 /*!
  * @brief Sets the channel state according to the bitwise 'logic on'
@@ -64,7 +63,7 @@ int SetEPS_Channels(channel_t channel);
  * returns the current system state according to the EpsState_t enumeration
  * @return system state according to EpsState_t
  */
-EpsState_t GetSystemState();
+EpsState_t GetEPSSystemState();
 
 /*
  * Gets the current system channel state
