@@ -40,33 +40,6 @@ time_unix 		g_ants_last_dep_time = 0;
 int				g_ants_dep_period = ANT_DEPLOY_WAIT_PERIOD; //30 min
 sat_packet_t cmd;
 
-
-Boolean vu_getFrequenciesTest_revE(void)
-{
-	isis_vu_e__get_rx_freq__from_t rx_freq;
-	uint32_t tx_freq;
-	int rv = isis_vu_e__get_rx_freq(0, &rx_freq);
-	if(rv) {
-		logg(error, "E:Subsystem receiver call failed. rv = %d", rv);
-		return TRUE;
-	}
-
-	rv = isis_vu_e__get_tx_freq(0, &tx_freq);
-	if(rv) {
-		logg(error, "E:Subsystem transmitter call failed. rv = %d", rv);
-		return TRUE;
-	}
-
-	isis_vu_e__state__from_t response;
-	rv =  isis_vu_e__state(0, &response);
-	if(rv!=0)
-			logg(error, "E:isis_vu_e__state: %d\n", rv);
-
-	logg(event, "v:idle=%d bitrate=%d rx_freq=%lu rx_state-%d tx_freq=%lu\n", response.fields.idle, response.fields.bitrate, rx_freq.fields.freq, rx_freq.fields.status,  tx_freq);
-
-	return rv;
-}
-
 void setLastAntsAutoDeploymentTime(time_unix time)
 {
 	g_ants_last_dep_time = time;
@@ -139,49 +112,26 @@ void HandleTransponderTime()
 	}
 }
 
-int InitAnts() {
-	eps_set_channels_on(isismepsv2_ivid5_piu__eps_channel__channel_5v_sw2);
+int InitAnts(){
+	//Set Antenas addresses for both sides
+
 	ISIS_ANTS_t address[2];
 	address[0].i2cAddr = ANTS_I2C_SIDE_A_ADDR;
 	address[1].i2cAddr = ANTS_I2C_SIDE_B_ADDR;
+
+	//initialize Antenas system
 	int err = ISIS_ANTS_Init(address, 2);
 	if(err)
-		logg(error, "E: Error in the initialization of the Antennas: %d\n", err);
+		logg(error, "Error in the initialization of the Antennas: %d\n", err);
+	else
+		logg(TRXInfo, "I: Initialization of the Antennas succeeded\n");
 	return err;
 }
 
-int SetFreqAndBitrate(){
-		int err = 0;
-		uint32_t rx_freq = TRXVU_RX_FREQ;//145970
-		uint32_t tx_freq = TRXVU_TX_FREQ;//436400
-		err = isis_vu_e__set_rx_freq(0, rx_freq);
-		if(err!=0) {
-				logg(error, "E: Error in the isis_vu_e__set_rx_freq: %d\n", err);
-				return err;
-		} else
-			logg(TRXInfo, "I:isis_vu_e__get_rx_freq succeeded\n");
-
-		err = isis_vu_e__set_tx_freq(0, tx_freq);
-		if(err!=0) {
-			logg(error, "E: Error in the isis_vu_e__set_tx_freq: %d\n", err);
-			return err;
-		} else
-			logg(TRXInfo, "I:isis_vu_e__set_tx_freq succeeded\n");
-
-		err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
-		if(err!=0) {
-			logg(error, "E: Error in the isis_vu_e__set_bitrate: %d\n", err);
-			return err;
-		}
-		else
-			logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
-		vTaskDelay(100);
-		vu_getFrequenciesTest_revE();
-		return err;
-}
-
-int InitTrxvu() {
+int InitTrxvu()
+{
 	logg(TRXInfo, "I:InitTrxvu() started\n");
+
 	ISIS_VU_E_t myTRXVU[1];
 	myTRXVU[0].rxAddr = I2C_TRXVU_RC_ADDR;
 	myTRXVU[0].txAddr = I2C_TRXVU_TC_ADDR;
@@ -190,22 +140,37 @@ int InitTrxvu() {
 
 	driver_error_t err = ISIS_VU_E_Init(myTRXVU, 1);
 	if(err!=0) {
-		logg(error, "E: in the ISIS_VU_E_Init: %d\n", err);
+		logg(error, "E: in the initialization: %d\n", err);
 		return err;
 	}
 	else
 		logg(TRXInfo, "I: IsisTrxvu_initialize succeeded\n");
 
-	SetFreqAndBitrate();
+	err = isis_vu_e__set_bitrate(0, isis_vu_e__bitrate__9600bps);
+	if(err!=0) {
+		logg(error, "E: Error in the IsisTrxvu_tcSetAx25Bitrate: %d\n", err);
+		return err;
+	}
+	else
+		logg(TRXInfo, "I:IsisTrxvu_tcSetAx25Bitrate succeeded\n");
 
+
+	//initialize idle to off
 	SetIdleOff();
 
+	//check if antennas are open
 	areAntennasOpen();
 
+	//Initialize Antennas
+	InitAnts();
+
+	//Initialize TRXVU transmit lock
 	InitTxModule();
 
+	//init transponder
 	initTransponder();
 
+	//Initialize beacon parameters
 	InitBeaconParams();
 
 	return err;
@@ -221,14 +186,12 @@ CommandHandlerErr TRX_Logic()
 	unsigned char* data = NULL;
 	unsigned int length=0;
 	CommandHandlerErr  res =0;
-	isis_vu_e__state__from_t response;
-	int rv =  isis_vu_e__state(0, &response);
-	if ((!rv && response.fields.bitrate != isis_vu_e__bitrate_tlm__9600bps))//probably trxvu restarted by wdt
-		SetFreqAndBitrate();
 
+	//check if we have online command (frames in buffer)
 	onCmdCount = GetNumberOfFramesInBuffer();
-	if(onCmdCount>0) {
-		//printf("Command in bufffer =%d\n", onCmdCount);//TODO:remove
+
+	if(onCmdCount>0)
+	{
 		//get the online command
 		res = GetOnlineCommand(&cmd);
 		if(res==cmd_command_found)

@@ -93,21 +93,23 @@ int CMD_FRAM_WriteAndTransmitt(sat_packet_t *cmd)
 		logg(error, "E: Input is NULL");
 		return E_INPUT_POINTER_NULL;
 	}
+
 	int err = 0;
 	unsigned int addr = 0;
-	unsigned int size = 0;
-	memcpy(&addr, cmd->data, sizeof(addr));
-	memcpy(&size, cmd->data + sizeof(addr),sizeof(size));
+	unsigned short length = cmd->length;
 	unsigned char *data = cmd->data;
 
-	err = FRAM_write(data + sizeof(addr) + sizeof(size), addr, size);
+	memcpy(&addr, cmd->data, sizeof(addr));
+
+	err = FRAM_write(data + sizeof(addr), addr, length - sizeof(addr));
 	if (err != 0){
 		return err;
 	}
-	err = FRAM_read(data, addr, size);
-	if (err != 0)
+	err = FRAM_read(data, addr, length - sizeof(addr));
+	if (err != 0){
 		return err;
-	TransmitDataAsSPL_Packet(cmd, data, size);
+	}
+	TransmitDataAsSPL_Packet(cmd, data, length);
 	return err;
 }
 
@@ -246,25 +248,7 @@ int CMD_setLogLevel(sat_packet_t *cmd)
 
 	//set log level
 	setLogLevel(logLevel);
-	logg(event, "V: Set log level to: %d", logLevel);
-	return 0;
-}
-
-int CMD_getLogLevel(sat_packet_t *cmd)
-{
-	logg(MTNInfo, "I:inside CMD_getLogLevel()\n");
-
-	if (cmd == NULL || cmd->data == NULL)
-	{
-		logg(error, "E: Input is NULL");
-		return E_INPUT_POINTER_NULL;
-	}
-
-	//get log level
-	LogLevel logLevel = getLogLevel();
-
-	logg(event, "V: Get log level is: %d\n", logLevel);
-	TransmitDataAsSPL_Packet(cmd, (unsigned char*)&logLevel, sizeof(logLevel));
+	logg(event, "I: Set log level to: %d", logLevel);
 	return 0;
 }
 

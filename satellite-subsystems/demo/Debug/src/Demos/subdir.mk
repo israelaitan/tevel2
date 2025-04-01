@@ -17,8 +17,6 @@ C_SRCS += \
 ../src/Demos/isis_ants_demo.c \
 ../src/Demos/isismeps_ivid5_pdu_demo.c \
 ../src/Demos/isismeps_ivid5_piu_demo.c \
-../src/Demos/isismeps_ivid7_piu_demo.c \
-../src/Demos/payload_demo.c \
 ../src/Demos/trxvu_frame_ready.c 
 
 OBJS += \
@@ -35,8 +33,6 @@ OBJS += \
 ./src/Demos/isis_ants_demo.o \
 ./src/Demos/isismeps_ivid5_pdu_demo.o \
 ./src/Demos/isismeps_ivid5_piu_demo.o \
-./src/Demos/isismeps_ivid7_piu_demo.o \
-./src/Demos/payload_demo.o \
 ./src/Demos/trxvu_frame_ready.o 
 
 C_DEPS += \
@@ -53,8 +49,6 @@ C_DEPS += \
 ./src/Demos/isis_ants_demo.d \
 ./src/Demos/isismeps_ivid5_pdu_demo.d \
 ./src/Demos/isismeps_ivid5_piu_demo.d \
-./src/Demos/isismeps_ivid7_piu_demo.d \
-./src/Demos/payload_demo.d \
 ./src/Demos/trxvu_frame_ready.d 
 
 
@@ -62,7 +56,7 @@ C_DEPS += \
 src/Demos/%.o: ../src/Demos/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross ARM C Compiler'
-	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra  -g -Dsdram -Dat91sam9g20 -DTRACE_LEVEL=5 -DDEBUG=1 -D'BASE_REVISION_NUMBER=$(REV)' -D'BASE_REVISION_HASH_SHORT=$(REVHASH_SHORT)' -D'BASE_REVISION_HASH=$(REVHASH)' -I"C:\Users\ground\Documents\GitHub\tevel2\satellite-subsystems\demo\src" -I"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/include" -I"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hal/include" -I"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/freertos/include" -I"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hcc/include" -I"C:/Users/ground/Documents/GitHub/tevel2/satellite-subsystems/demo/..//satellite-subsystems/include" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra  -g -Dsdram -Dat91sam9g20 -DTRACE_LEVEL=5 -DDEBUG=1 -D'BASE_REVISION_NUMBER=$(REV)' -D'BASE_REVISION_HASH_SHORT=$(REVHASH_SHORT)' -D'BASE_REVISION_HASH=$(REVHASH)' -I"C:\Users\sattlite\Documents\GitHub\tevel2\satellite-subsystems\demo\src" -I"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/at91/include" -I"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hal/include" -I"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/freertos/include" -I"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/../..//hal/hcc/include" -I"C:/Users/sattlite/Documents/GitHub/tevel2/satellite-subsystems/demo/..//satellite-subsystems/include" -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

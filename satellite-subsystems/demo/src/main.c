@@ -14,7 +14,6 @@
 #include "Demos/IsisTRXVUrevDdemo.h"
 #include "Demos/IsisTRXVUrevEdemo.h"
 #include "Demos/IsisAOCSdemo.h"
-#include "Demos/payload_demo.h"
 #include <satellite-subsystems/version/version.h>
 
 #include <at91/utility/exithandler.h>
@@ -82,10 +81,9 @@ Boolean selectAndExecuteTest()
 	printf("\t 9) ISIS PDU iMEPS test \n\r");
 	printf("\t 10) ISIS PIU iCEPS Test \n\r");
 	printf("\t 11) ISIS AOCS test \n\r");
-	printf("\t 12) Payload test \n\r");
 
 
-	while(UTIL_DbguGetIntegerMinMax(&selection, 1, 12) == 0);
+	while(UTIL_DbguGetIntegerMinMax(&selection, 1, 11) == 0);
 
 	switch(selection)
 	{
@@ -121,9 +119,6 @@ Boolean selectAndExecuteTest()
 			break;
 		case 11:
 			offerMoreTests = isis_aocs_demo();
-			break;
-		case 12:
-			offerMoreTests = Payloadtest();
 			break;
 
 		default:

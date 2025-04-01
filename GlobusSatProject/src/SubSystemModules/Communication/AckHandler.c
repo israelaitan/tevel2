@@ -19,9 +19,8 @@ int SendAckPacket(ack_subtype_t acksubtype, unsigned short id, unsigned short or
 
 	AssembleCommand(data, length, (char)ack_type, (char)acksubtype, id, ord, T8GBS, 1, &ack);
 
-	uint8_t availableFrames = 0;
-	err = TransmitSplPacket(&ack, &availableFrames);
-	//vTaskDelay(10);
+	err = TransmitSplPacket(&ack, NULL);
+	vTaskDelay(10);
 	return err;
 }
 
@@ -32,11 +31,11 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 	if (err == 0) {
 		ack = succ_subt;
-		logg(event, "V:Command Ack: %d was successful\n", ack);
+		logg(event, "Command Ack: %d was successful\n", ack);
 	}
 	else {
 		ack = fail_subt;
-		logg(error, "V:Command ack: %d was Failed with error: %d\n", ack, err);
+		logg(error, "Command ack: %d was Failed with error: %d\n", ack, err);
 	}
 
 	if (ack != ACK_NO_ACK)

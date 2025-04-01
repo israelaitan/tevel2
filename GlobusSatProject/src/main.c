@@ -31,13 +31,10 @@
 
 	void taskMain() {
 
-		TRACE_CONFIGURE(DBGU_STANDARD, 115200, BOARD_MCK);//TODO:remove
-
 		WDT_startWatchdogKickTask(10 / portTICK_RATE_MS, FALSE);
 
 ////******************REMOVE
 //		IntializeFRAM();
-//		ReadDefaultValuesToFRAM();
 ////******************REMOVE
 		InitSubsystems();
 
@@ -51,7 +48,6 @@
 			TelemetryCollectorLogic();
 
 			Maintenance();
-
 		}
 	}
 

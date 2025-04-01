@@ -138,6 +138,4 @@ int CMD_GetTLM_CollectionCycle(sat_packet_t *cmd);
 
 int CMD_setLogLevel(sat_packet_t *cmd);
 
-int CMD_getLogLevel(sat_packet_t *cmd);
-
 #endif /* MAINTANENCE_COMMANDS_H_ */

@@ -58,8 +58,4 @@ int CMD_SolarPanelSleep(sat_packet_t *cmd);
 
 int CMD_GetSolarPanelState(sat_packet_t *cmd);
 
-int CMD_EPS_SetChannelStateOn(sat_packet_t *cmd);
-
-int CMD_EPS_SetChannelStateOff(sat_packet_t *cmd);
-
 #endif /* EPS_COMMANDS_H_ */

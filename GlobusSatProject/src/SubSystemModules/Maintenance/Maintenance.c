@@ -151,9 +151,12 @@ time_unix GetGsWdtKickTime()
 void Maintenance()
 {
 	SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+
 	WakeupFromResetCMD();
+
 	//initialize TLM periods
 	InitTelemetryCollector();
+
 	//reset if no communication for over a week
 	if(IsGroundCommunicationWDTKick()) {
 		logg(event, "Maintenance.Reseting ODBC");

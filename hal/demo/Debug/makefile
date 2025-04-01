@@ -43,7 +43,7 @@ all: hal-demo.elf secondary-outputs
 hal-demo.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C Linker'
-	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra -Werror  -g -T C:/Users/ground/Documents/GitHub/tevel2/hal/demo/..//at91/linker-scripts/sdram.lds -nostartfiles -Xlinker --gc-sections -L"C:/Users/ground/Documents/GitHub/tevel2/hal/demo/..//at91/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/hal/demo/..//freertos/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/hal/demo/..//hal/lib" -L"C:/Users/ground/Documents/GitHub/tevel2/hal/demo/..//hcc/lib" -Wl,-Map,"hal-demo.map" -lc -o "hal-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=arm926ej-s -O0 -fmessage-length=0 -ffunction-sections -Wall -Wextra -Werror  -g -T C:/Users/sattlite/Documents/GitHub/tevel2/hal/demo/..//at91/linker-scripts/sdram.lds -nostartfiles -Xlinker --gc-sections -L"C:/Users/sattlite/Documents/GitHub/tevel2/hal/demo/..//at91/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/hal/demo/..//freertos/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/hal/demo/..//hal/lib" -L"C:/Users/sattlite/Documents/GitHub/tevel2/hal/demo/..//hcc/lib" -Wl,-Map,"hal-demo.map" -lc -o "hal-demo.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

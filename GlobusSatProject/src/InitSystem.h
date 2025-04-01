@@ -15,14 +15,11 @@
  */
 int StartFRAM();
 
-void IntializeFRAM();
-
 /*!
  * @brief	writes the default filght parameters to the corresponding FRAM addresses
  * @see FRAM_FlightParameters.h
  */
 void WriteDefaultValuesToFRAM();
-void ReadDefaultValuesToFRAM();
 
 /*!
  * @brief	Starts the I2C using drivers, and checks for errors.

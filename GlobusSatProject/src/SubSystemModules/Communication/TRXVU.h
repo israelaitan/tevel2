@@ -7,7 +7,7 @@
 #include "AckHandler.h"
 #include "SatCommandHandler.h"
 
-#define SIZE_RXFRAME	235		///< max size of data field in uplink
+#define SIZE_RXFRAME	200		///< max size of data field in uplink
 #define SIZE_TXFRAME	235		///< max size of data field in downlink
 #define SIZE_SPL_HEADER 8
 #define NO_TX_FRAME_AVAILABLE 255 //indication that the send buffer is full
